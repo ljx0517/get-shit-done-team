@@ -150,6 +150,7 @@ const frontmatter = require('./lib/frontmatter.cjs');
 const profilePipeline = require('./lib/profile-pipeline.cjs');
 const profileOutput = require('./lib/profile-output.cjs');
 const workstream = require('./lib/workstream.cjs');
+const capture = require('./lib/capture.cjs');
 
 // ─── Arg parsing helpers ──────────────────────────────────────────────────────
 
@@ -885,6 +886,18 @@ async function runCommand(command, args, cwd, raw) {
         workstream.cmdWorkstreamProgress(cwd, raw);
       } else {
         error('Unknown workstream subcommand. Available: create, list, status, complete, set, get, progress');
+      }
+      break;
+    }
+
+    case 'capture': {
+      const subcommand = args[1];
+      if (subcommand === 'save') {
+        capture.cmdCaptureSave(cwd, args.slice(2), raw);
+      } else if (subcommand === 'graph') {
+        capture.cmdCaptureGraph(cwd, raw);
+      } else {
+        error('Unknown capture subcommand. Available: save, graph');
       }
       break;
     }
