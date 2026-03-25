@@ -54,6 +54,8 @@ body:
         - label: Codex
         - label: Copilot
         - label: Antigravity
+        - label: Cursor
+        - label: Windsurf
         - label: All runtimes
 
   - type: textarea
