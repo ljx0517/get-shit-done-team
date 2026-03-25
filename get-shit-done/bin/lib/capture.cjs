@@ -119,31 +119,18 @@ function updateGraph(graphPath, graph, newNodes, newEdges, entities, fragmentId)
 
 // ─── Trigger check ────────────────────────────────────────────────────────────
 
-const THRESHOLDS = { minNodes: 3, minMultiEvidencePct: 0.5, minEdges: 1 };
-
 /**
- * Pure math — no domain knowledge.
+ * Return raw graph statistics for AI judgment.
+ * ready is always null — AI decides whether to trigger discuss-phase.
  * @param {{ nodes, edges, evidence }} graph
- * @returns {{ ready: boolean, nodeCount, edgeCount, multiEvidencePct, message }}
+ * @returns {{ ready: null, nodeCount, edgeCount, multiEvidenceCount }}
  */
 function checkMilestoneTrigger(graph) {
   const nodeCount = graph.nodes.length;
   const edgeCount = graph.edges.length;
   const multiEvidenceCount = Object.values(graph.evidence)
     .filter(arr => arr.length > 1).length;
-  const multiEvidencePct = nodeCount > 0 ? multiEvidenceCount / nodeCount : 0;
-
-  const ready =
-    nodeCount >= THRESHOLDS.minNodes &&
-    multiEvidencePct >= THRESHOLDS.minMultiEvidencePct &&
-    edgeCount >= THRESHOLDS.minEdges;
-
-  const pctStr = `${Math.round(multiEvidencePct * 100)}%`;
-  const message = ready
-    ? '碎片已足够支撑 milestone — 建议运行 /gsd:discuss-phase 开始规划'
-    : `尚未达到阈值 (节点 ${nodeCount}/${THRESHOLDS.minNodes}, 多证据 ${pctStr}/50%, 边 ${edgeCount}/${THRESHOLDS.minEdges})`;
-
-  return { ready, nodeCount, edgeCount, multiEvidenceCount, multiEvidencePct: pctStr, message };
+  return { ready: null, nodeCount, edgeCount, multiEvidenceCount };
 }
 
 // ─── Subcommands ──────────────────────────────────────────────────────────────
@@ -196,7 +183,7 @@ function cmdCaptureSave(cwd, args, raw) {
     }, null, 2), 'utf-8');
 
     output({ fragment: fragmentId, entities, new_nodes: nodes, new_edges: edgesRaw, trigger }, raw,
-      `fragment=${fragmentId}\nnodes=${trigger.nodeCount}\nedges=${trigger.edgeCount}\nready=${trigger.ready}\nmessage=${trigger.message}`
+      `fragment=${fragmentId}\nnodes=${trigger.nodeCount}\nedges=${trigger.edgeCount}\nmultiEvidence=${trigger.multiEvidenceCount}`
     );
   });
 }
@@ -214,10 +201,33 @@ function cmdCaptureGraph(cwd, raw) {
   );
 }
 
+/**
+ * `capture fragments` — list all fragments with id + content.
+ */
+function cmdCaptureFragments(cwd, raw) {
+  const paths = planningPaths(cwd);
+  const fragmentsDir = path.join(paths.planning, 'captures', 'fragments');
+  if (!fs.existsSync(fragmentsDir)) {
+    output({ fragments: [], count: 0 }, raw, '(无碎片)');
+    return;
+  }
+  const files = fs.readdirSync(fragmentsDir)
+    .filter(f => f.endsWith('.md'))
+    .sort();
+  const fragments = files.map(f => ({
+    id: f.replace('.md', ''),
+    content: fs.readFileSync(path.join(fragmentsDir, f), 'utf-8'),
+  }));
+  output({ fragments, count: fragments.length }, raw,
+    fragments.map(f => `[${f.id}]\n${f.content}`).join('\n---\n')
+  );
+}
+
 module.exports = {
   loadGraph,
   updateGraph,
   checkMilestoneTrigger,
   cmdCaptureSave,
   cmdCaptureGraph,
+  cmdCaptureFragments,
 };

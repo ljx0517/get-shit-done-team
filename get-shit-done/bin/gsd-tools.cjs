@@ -917,8 +917,10 @@ async function runCommand(command, args, cwd, raw) {
         capture.cmdCaptureSave(cwd, args.slice(2), raw);
       } else if (subcommand === 'graph') {
         capture.cmdCaptureGraph(cwd, raw);
+      } else if (subcommand === 'fragments') {
+        capture.cmdCaptureFragments(cwd, raw);
       } else {
-        error('Unknown capture subcommand. Available: save, graph');
+        error('Unknown capture subcommand. Available: save, graph, fragments');
       }
       break;
     }
