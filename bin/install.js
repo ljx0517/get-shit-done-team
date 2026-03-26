@@ -2050,6 +2050,84 @@ function mergeCodexConfig(configPath, gsdBlock) {
   fs.writeFileSync(configPath, content);
 }
 
+/**
+ * Repair config.toml files corrupted by pre-#1346 GSD installs.
+ * Non-boolean keys (e.g. model = "gpt-5.3-codex") that ended up under [features]
+ * are relocated before the [features] header so Codex can parse them correctly.
+ * Returns the content unchanged if no trapped keys are found.
+ */
+function repairTrappedFeaturesKeys(content) {
+  const eol = detectLineEnding(content);
+  const lineRecords = getTomlLineRecords(content);
+  const featuresSection = getTomlTableSections(content)
+    .find((section) => !section.array && section.path === 'features');
+
+  if (!featuresSection) {
+    return content;
+  }
+
+  // Find non-boolean key-value lines inside [features] that don't belong there.
+  // Boolean keys (codex_hooks, multi_agent, etc.) are legitimate feature flags.
+  const trappedLines = lineRecords.filter((record) => {
+    if (record.tableHeader || record.startsInMultilineString) return false;
+    if (record.tablePath !== 'features') return false;
+    if (record.start < featuresSection.headerEnd) return false;
+    if (record.end + record.eol.length > featuresSection.end) return false;
+    if (!record.keySegments || record.keySegments.length === 0) return false;
+
+    // Check if the value is a boolean — if so, it belongs under [features]
+    const equalsIndex = findTomlAssignmentEquals(record.text);
+    if (equalsIndex === -1) return false;
+    const commentStart = findTomlCommentStart(record.text);
+    const valueText = record.text
+      .slice(equalsIndex + 1, commentStart === -1 ? record.text.length : commentStart)
+      .trim();
+    if (valueText === 'true' || valueText === 'false') return false;
+
+    // Skip values that start a multiline string — they may legitimately live
+    // under [features] and spanning multiple lines makes relocation unsafe.
+    if (valueText.startsWith("'''") || valueText.startsWith('"""')) return false;
+
+    // Non-boolean value — this key is trapped
+    return true;
+  });
+
+  if (trappedLines.length === 0) {
+    return content;
+  }
+
+  // Build the relocated text block from trapped lines
+  const relocatedText = trappedLines.map((r) => r.text).join(eol) + eol;
+
+  // Remove trapped lines from their current positions (with their EOLs)
+  const removalRanges = trappedLines.map((r) => ({
+    start: r.start,
+    end: r.end + r.eol.length,
+  }));
+  let cleaned = removeContentRanges(content, removalRanges);
+
+  // Collapse any runs of 3+ blank lines left behind
+  cleaned = collapseTomlBlankLines(cleaned);
+
+  // Re-locate the [features] header in the cleaned content
+  const cleanedRecords = getTomlLineRecords(cleaned);
+  const cleanedFeaturesHeader = cleanedRecords.find(
+    (r) => r.tableHeader && r.tableHeader.path === 'features' && !r.tableHeader.array
+  );
+
+  if (!cleanedFeaturesHeader) {
+    return cleaned;
+  }
+
+  // Insert relocated keys before [features]
+  const before = cleaned.slice(0, cleanedFeaturesHeader.start);
+  const after = cleaned.slice(cleanedFeaturesHeader.start);
+  const needsGap = before.length > 0 && !before.endsWith(eol + eol);
+  const trailingGap = after.length > 0 && !relocatedText.endsWith(eol + eol) ? eol : '';
+
+  return before + (needsGap ? eol : '') + relocatedText + trailingGap + after;
+}
+
 function ensureCodexHooksFeature(configContent) {
   const eol = detectLineEnding(configContent);
   const lineRecords = getTomlLineRecords(configContent);
@@ -2071,8 +2149,9 @@ function ensureCodexHooksFeature(configContent) {
       );
 
     if (sectionLines.length > 0) {
+      const rewritten = rewriteTomlKeyLines(configContent, sectionLines, 'codex_hooks');
       return {
-        content: rewriteTomlKeyLines(configContent, sectionLines, 'codex_hooks'),
+        content: repairTrappedFeaturesKeys(rewritten),
         ownership: null,
       };
     }
@@ -2081,8 +2160,9 @@ function ensureCodexHooksFeature(configContent) {
     const needsSeparator = sectionBody.length > 0 && !sectionBody.endsWith('\n') && !sectionBody.endsWith('\r\n');
     const insertPrefix = sectionBody.length === 0 && featuresSection.headerEnd === configContent.length ? eol : '';
     const insertText = `${insertPrefix}${needsSeparator ? eol : ''}codex_hooks = true${eol}`;
+    const merged = configContent.slice(0, featuresSection.end) + insertText + configContent.slice(featuresSection.end);
     return {
-      content: configContent.slice(0, featuresSection.end) + insertText + configContent.slice(featuresSection.end),
+      content: repairTrappedFeaturesKeys(merged),
       ownership: 'section',
     };
   }
