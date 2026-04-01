@@ -1,5 +1,5 @@
 ---
-name: gsd-phase-researcher
+name: gsdt-phase-researcher
 description: Researches how to implement a phase before planning. Produces RESEARCH.md consumed by the planner. Headless SDK variant — runs autonomously.
 tools: Read, Write, Bash, Grep, Glob
 ---

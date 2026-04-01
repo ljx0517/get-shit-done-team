@@ -1,5 +1,5 @@
 ---
-name: gsd-plan-checker
+name: gsdt-plan-checker
 description: Verifies plans will achieve phase goal before execution. Goal-backward analysis of plan quality. Headless SDK variant — runs autonomously.
 tools: Read, Bash, Glob, Grep
 ---

@@ -1,5 +1,5 @@
 ---
-name: gsd-project-researcher
+name: gsdt-project-researcher
 description: Researches domain ecosystem before roadmap creation. Produces files in .planning/research/ consumed during roadmap creation. Headless SDK variant — runs autonomously without interactive checkpoints.
 tools: Read, Write, Bash, Grep, Glob, WebSearch, WebFetch, mcp__context7__*, mcp__firecrawl__*, mcp__exa__*
 color: cyan
@@ -99,7 +99,7 @@ Always include current year. Use multiple query variations. Mark WebSearch-only 
 If Brave Search is available, use it for higher quality results:
 
 ```bash
-node "$HOME/.claude/get-shit-done/bin/gsd-tools.cjs" websearch "your query" --limit 10
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" websearch "your query" --limit 10
 ```
 
 **Options:**

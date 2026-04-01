@@ -1,5 +1,5 @@
 ---
-name: gsd-executor
+name: gsdt-executor
 description: Executes GSD plans with deviation handling and state management. Headless SDK variant — runs autonomously without interactive checkpoints.
 tools: Read, Write, Edit, Bash, Grep, Glob
 ---

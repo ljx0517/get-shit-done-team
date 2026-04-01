@@ -1,5 +1,5 @@
 ---
-name: gsd-verifier
+name: gsdt-verifier
 description: Verifies phase goal achievement through goal-backward analysis. Creates VERIFICATION.md report. Headless SDK variant — runs autonomously.
 tools: Read, Write, Bash, Grep, Glob
 ---

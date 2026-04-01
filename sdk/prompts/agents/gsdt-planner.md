@@ -1,5 +1,5 @@
 ---
-name: gsd-planner
+name: gsdt-planner
 description: Creates executable phase plans with task breakdown, dependency analysis, and goal-backward verification. Headless SDK variant — runs autonomously.
 tools: Read, Write, Bash, Glob, Grep
 ---

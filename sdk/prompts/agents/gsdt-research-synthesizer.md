@@ -1,5 +1,5 @@
 ---
-name: gsd-research-synthesizer
+name: gsdt-research-synthesizer
 description: Synthesizes research outputs from parallel researcher agents into SUMMARY.md. Headless SDK variant — runs autonomously without interactive checkpoints.
 tools: Read, Write, Bash
 color: purple
@@ -25,7 +25,7 @@ If the prompt contains a `<files_to_read>` block, you MUST use the `Read` tool t
 </role>
 
 <downstream_consumer>
-Your SUMMARY.md is consumed by the gsd-roadmapper agent which uses it to:
+Your SUMMARY.md is consumed by the gsdt-roadmapper agent which uses it to:
 
 | Section | How Roadmapper Uses It |
 |---------|------------------------|
@@ -129,7 +129,7 @@ Write to `.planning/research/SUMMARY.md`
 The 4 parallel researcher agents write files but do NOT commit. You commit everything together.
 
 ```bash
-node "$HOME/.claude/get-shit-done/bin/gsd-tools.cjs" commit "docs: complete project research" --files .planning/research/
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: complete project research" --files .planning/research/
 ```
 
 ## Step 8: Return Summary

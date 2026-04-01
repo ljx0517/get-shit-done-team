@@ -1,5 +1,5 @@
 ---
-name: gsd-roadmapper
+name: gsdt-roadmapper
 description: Creates project roadmaps with phase breakdown, requirement mapping, success criteria derivation, and coverage validation. Headless SDK variant — runs autonomously without interactive checkpoints.
 tools: Read, Write, Bash, Glob, Grep
 color: purple
