@@ -1191,7 +1191,7 @@ describe('cmdInitNewMilestone', () => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// findProjectRoot integration — gsd-tools resolves project root from sub-repo
+// findProjectRoot integration — gsdt-tools resolves project root from sub-repo
 // ─────────────────────────────────────────────────────────────────────────────
 
 describe('findProjectRoot integration via --cwd', () => {

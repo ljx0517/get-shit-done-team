@@ -30,7 +30,7 @@ const {
   findPhaseInternal,
   findProjectRoot,
   detectSubRepos,
-} = require('../get-shit-done/bin/lib/core.cjs');
+} = require('../gsdt/bin/lib/core.cjs');
 
 // ─── loadConfig ────────────────────────────────────────────────────────────────
 
@@ -87,9 +87,9 @@ describe('loadConfig', () => {
 
   // Bug: loadConfig previously omitted model_overrides from return value
   test('returns model_overrides when present (REG-01)', () => {
-    writeConfig({ model_overrides: { 'gsd-executor': 'opus' } });
+    writeConfig({ model_overrides: { 'gsdt-executor': 'opus' } });
     const config = loadConfig(tmpDir);
-    assert.deepStrictEqual(config.model_overrides, { 'gsd-executor': 'opus' });
+    assert.deepStrictEqual(config.model_overrides, { 'gsdt-executor': 'opus' });
   });
 
   test('returns model_overrides as null when not in config', () => {
@@ -213,7 +213,7 @@ describe('resolveModelInternal', () => {
 
   describe('model profile structural validation', () => {
     test('all known agents resolve to a valid string for each profile', () => {
-      const knownAgents = ['gsd-planner', 'gsd-executor', 'gsd-phase-researcher', 'gsd-codebase-mapper'];
+      const knownAgents = ['gsdt-planner', 'gsdt-executor', 'gsdt-phase-researcher', 'gsdt-codebase-mapper'];
       const profiles = ['quality', 'balanced', 'budget', 'inherit'];
       const validValues = ['inherit', 'sonnet', 'haiku', 'opus'];
 
@@ -230,7 +230,7 @@ describe('resolveModelInternal', () => {
     });
 
     test('inherit profile forces all known agents to inherit model', () => {
-      const knownAgents = ['gsd-planner', 'gsd-executor', 'gsd-phase-researcher', 'gsd-codebase-mapper'];
+      const knownAgents = ['gsdt-planner', 'gsdt-executor', 'gsdt-phase-researcher', 'gsdt-codebase-mapper'];
       writeConfig({ model_profile: 'inherit' });
       for (const agent of knownAgents) {
         assert.strictEqual(resolveModelInternal(tmpDir, agent), 'inherit');
@@ -242,25 +242,25 @@ describe('resolveModelInternal', () => {
     test('per-agent override takes precedence over profile', () => {
       writeConfig({
         model_profile: 'balanced',
-        model_overrides: { 'gsd-executor': 'haiku' },
+        model_overrides: { 'gsdt-executor': 'haiku' },
       });
-      assert.strictEqual(resolveModelInternal(tmpDir, 'gsd-executor'), 'haiku');
+      assert.strictEqual(resolveModelInternal(tmpDir, 'gsdt-executor'), 'haiku');
     });
 
     test('opus override resolves to opus', () => {
       writeConfig({
-        model_overrides: { 'gsd-executor': 'opus' },
+        model_overrides: { 'gsdt-executor': 'opus' },
       });
-      assert.strictEqual(resolveModelInternal(tmpDir, 'gsd-executor'), 'opus');
+      assert.strictEqual(resolveModelInternal(tmpDir, 'gsdt-executor'), 'opus');
     });
 
     test('agents not in override fall back to profile', () => {
       writeConfig({
         model_profile: 'quality',
-        model_overrides: { 'gsd-executor': 'haiku' },
+        model_overrides: { 'gsdt-executor': 'haiku' },
       });
-      // gsd-planner not overridden, should use quality profile -> opus
-      assert.strictEqual(resolveModelInternal(tmpDir, 'gsd-planner'), 'opus');
+      // gsdt-planner not overridden, should use quality profile -> opus
+      assert.strictEqual(resolveModelInternal(tmpDir, 'gsdt-planner'), 'opus');
     });
   });
 
@@ -277,15 +277,15 @@ describe('resolveModelInternal', () => {
 
     test('defaults to balanced profile when model_profile missing', () => {
       writeConfig({});
-      // balanced profile, gsd-planner -> opus
-      assert.strictEqual(resolveModelInternal(tmpDir, 'gsd-planner'), 'opus');
+      // balanced profile, gsdt-planner -> opus
+      assert.strictEqual(resolveModelInternal(tmpDir, 'gsdt-planner'), 'opus');
     });
   });
 
   describe('resolve_model_ids: "omit"', () => {
     test('returns empty string for known agents', () => {
       writeConfig({ resolve_model_ids: 'omit' });
-      assert.strictEqual(resolveModelInternal(tmpDir, 'gsd-planner'), '');
+      assert.strictEqual(resolveModelInternal(tmpDir, 'gsdt-planner'), '');
     });
 
     test('returns empty string for unknown agents', () => {
@@ -296,14 +296,14 @@ describe('resolveModelInternal', () => {
     test('still respects model_overrides even when omit', () => {
       writeConfig({
         resolve_model_ids: 'omit',
-        model_overrides: { 'gsd-planner': 'openai/gpt-5.4' },
+        model_overrides: { 'gsdt-planner': 'openai/gpt-5.4' },
       });
-      assert.strictEqual(resolveModelInternal(tmpDir, 'gsd-planner'), 'openai/gpt-5.4');
+      assert.strictEqual(resolveModelInternal(tmpDir, 'gsdt-planner'), 'openai/gpt-5.4');
     });
 
     test('returns empty string with inherit profile', () => {
       writeConfig({ resolve_model_ids: 'omit', model_profile: 'inherit' });
-      assert.strictEqual(resolveModelInternal(tmpDir, 'gsd-planner'), '');
+      assert.strictEqual(resolveModelInternal(tmpDir, 'gsdt-planner'), '');
     });
   });
 });
@@ -966,14 +966,14 @@ describe('normalizeMd', () => {
 describe('stale hook filter', () => {
   test('filter should only match gsd-prefixed .js files', () => {
     const files = [
-      'gsd-check-update.js',
-      'gsd-context-monitor.js',
-      'gsd-prompt-guard.js',
-      'gsd-statusline.js',
-      'gsd-workflow-guard.js',
+      'gsdt-check-update.js',
+      'gsdt-context-monitor.js',
+      'gsdt-prompt-guard.js',
+      'gsdt-statusline.js',
+      'gsdt-workflow-guard.js',
       'guard-edits-outside-project.js',  // user hook
       'my-custom-hook.js',               // user hook
-      'gsd-check-update.js.bak',         // backup file
+      'gsdt-check-update.js.bak',         // backup file
       'README.md',                       // non-js file
     ];
 
@@ -981,11 +981,11 @@ describe('stale hook filter', () => {
     const filtered = files.filter(gsdFilter);
 
     assert.deepStrictEqual(filtered, [
-      'gsd-check-update.js',
-      'gsd-context-monitor.js',
-      'gsd-prompt-guard.js',
-      'gsd-statusline.js',
-      'gsd-workflow-guard.js',
+      'gsdt-check-update.js',
+      'gsdt-context-monitor.js',
+      'gsdt-prompt-guard.js',
+      'gsdt-statusline.js',
+      'gsdt-workflow-guard.js',
     ], 'should only include gsd-prefixed .js files');
 
     assert.ok(!filtered.includes('guard-edits-outside-project.js'), 'must not include user hooks');
@@ -996,13 +996,13 @@ describe('stale hook filter', () => {
 // ─── stale hook path regression (#1249) ──────────────────────────────────────
 
 describe('stale hook path', () => {
-  test('gsd-check-update.js checks get-shit-done/hooks/ not configDir/hooks/', () => {
+  test('gsdt-check-update.js checks gsdt/hooks/ not configDir/hooks/', () => {
     const content = fs.readFileSync(
-      path.join(__dirname, '..', 'hooks', 'gsd-check-update.js'), 'utf-8'
+      path.join(__dirname, '..', 'hooks', 'gsdt-check-update.js'), 'utf-8'
     );
     assert.ok(
       content.includes("path.join(configDir, 'get-shit-done', 'hooks')"),
-      'stale hook check must look in configDir/get-shit-done/hooks/, not configDir/hooks/'
+      'stale hook check must look in configDir/gsdt/hooks/, not configDir/hooks/'
     );
     assert.ok(
       !content.includes("path.join(configDir, 'hooks')") ||
@@ -1016,7 +1016,7 @@ describe('stale hook path', () => {
 // ─── resolveWorktreeRoot ─────────────────────────────────────────────────────
 
 describe('resolveWorktreeRoot', () => {
-  const { resolveWorktreeRoot } = require('../get-shit-done/bin/lib/core.cjs');
+  const { resolveWorktreeRoot } = require('../gsdt/bin/lib/core.cjs');
   let tmpDir;
 
   beforeEach(() => {
@@ -1041,7 +1041,7 @@ describe('resolveWorktreeRoot', () => {
 // ─── resolveWorktreeRoot — linked worktree with .planning/ (#1315) ───────────
 
 describe('resolveWorktreeRoot with linked worktree .planning/', () => {
-  const { resolveWorktreeRoot } = require('../get-shit-done/bin/lib/core.cjs');
+  const { resolveWorktreeRoot } = require('../gsdt/bin/lib/core.cjs');
   const { execSync: execSyncLocal } = require('child_process');
   // On Windows CI, os.tmpdir() may return 8.3 short paths (RUNNER~1) while
   // git returns long paths (runneradmin). realpathSync.native resolves both.
@@ -1112,7 +1112,7 @@ describe('resolveWorktreeRoot with linked worktree .planning/', () => {
 // ─── monorepo worktree CWD preservation (#1283) ─────────────────────────────
 
 describe('monorepo worktree CWD preservation', () => {
-  const { resolveWorktreeRoot } = require('../get-shit-done/bin/lib/core.cjs');
+  const { resolveWorktreeRoot } = require('../gsdt/bin/lib/core.cjs');
   let tmpDir;
 
   beforeEach(() => {
@@ -1149,7 +1149,7 @@ describe('monorepo worktree CWD preservation', () => {
 // ─── withPlanningLock ────────────────────────────────────────────────────────
 
 describe('withPlanningLock', () => {
-  const { withPlanningLock, planningDir } = require('../get-shit-done/bin/lib/core.cjs');
+  const { withPlanningLock, planningDir } = require('../gsdt/bin/lib/core.cjs');
   let tmpDir;
 
   beforeEach(() => {

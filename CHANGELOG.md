@@ -9,7 +9,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.30.0] - 2026-03-26
 
 ### Added
-- **GSD SDK** — Headless TypeScript SDK (`@gsd-build/sdk`) with `gsd-sdk init` and `gsd-sdk auto` CLI commands for autonomous project execution
+- **GSD SDK** — Headless TypeScript SDK (`@gsdt/sdk`) with `gsdt-sdk init` and `gsdt-sdk auto` CLI commands for autonomous project execution
 - **`--sdk` installer flag** — Optionally install the GSD SDK during setup (interactive prompt or `--sdk` flag)
 
 ## [1.29.0] - 2026-03-25
@@ -46,10 +46,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.28.0] - 2026-03-22
 
 ### Added
-- **Workstream namespacing** — Parallel milestone work via `/gsd:workstreams`
+- **Workstream namespacing** — Parallel milestone work via `/gsdt:workstreams`
 - **Multi-project workspace commands** — Manage multiple GSD projects from a single root
-- **`/gsd:forensics` command** — Post-mortem workflow investigation
-- **`/gsd:milestone-summary` command** — Post-build onboarding for completed milestones
+- **`/gsdt:forensics` command** — Post-mortem workflow investigation
+- **`/gsdt:milestone-summary` command** — Post-build onboarding for completed milestones
 - **`workflow.skip_discuss` setting** — Bypass discuss-phase in autonomous mode
 - **`workflow.discuss_mode` assumptions config** — Control discuss-phase behavior
 - **UI-phase recommendation** — Automatically surfaced for UI-heavy phases
@@ -57,7 +57,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **Data-flow tracing, environment audit, and behavioral spot-checks** in verification
 - **Multi-runtime selection** in interactive installer
 - **Text mode support** for plan-phase workflow
-- **"Follow the Indirection" debugging technique** in gsd-debugger
+- **"Follow the Indirection" debugging technique** in gsdt-debugger
 - **`--reviews` flag** for `gsd:plan-phase`
 - **Temp file reaper** — Prevents unbounded /tmp accumulation
 
@@ -89,11 +89,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **Advisor mode** — Research-backed discussion with parallel agents evaluating gray areas before you decide
 - **Multi-repo workspace support** — Auto-detection and project root resolution for monorepos and multi-repo setups
 - **Cursor CLI runtime support** — Full installation and command conversion for Cursor
-- **`/gsd:fast` command** — Trivial inline tasks that skip planning entirely
-- **`/gsd:review` command** — Cross-AI peer review of current phase or branch
-- **`/gsd:plant-seed` command** — Backlog parking lot for ideas and persistent context threads
-- **`/gsd:pr-branch` command** — Clean PR branches filtering `.planning/` commits
-- **`/gsd:audit-uat` command** — Verification debt tracking across phases
+- **`/gsdt:fast` command** — Trivial inline tasks that skip planning entirely
+- **`/gsdt:review` command** — Cross-AI peer review of current phase or branch
+- **`/gsdt:plant-seed` command** — Backlog parking lot for ideas and persistent context threads
+- **`/gsdt:pr-branch` command** — Clean PR branches filtering `.planning/` commits
+- **`/gsdt:audit-uat` command** — Verification debt tracking across phases
 - **`--analyze` flag for discuss-phase** — Trade-off analysis during discussion
 - **`research_before_questions` config option** — Run research before discussion questions instead of after
 - **Ticket-based phase identifiers** — Support for team workflows using ticket IDs
@@ -105,7 +105,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **Quick-task branch support** — Isolated branches for quick-mode tasks
 - **Decision IDs** — Discuss-to-plan traceability via decision identifiers
 - **Stub detection** — Verifier and executor detect incomplete implementations
-- **Security hardening** — Centralized `security.cjs` module with path traversal prevention, prompt injection detection/sanitization, safe JSON parsing, field name validation, and shell argument validation. PreToolUse `gsd-prompt-guard` hook scans writes to `.planning/` for injection patterns
+- **Security hardening** — Centralized `security.cjs` module with path traversal prevention, prompt injection detection/sanitization, safe JSON parsing, field name validation, and shell argument validation. PreToolUse `gsdt-prompt-guard` hook scans writes to `.planning/` for injection patterns
 
 ### Changed
 - CI matrix updated to Node 20, 22, 24 — dropped EOL Node 18
@@ -138,12 +138,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.26.0] - 2026-03-18
 
 ### Added
-- **Developer profiling pipeline** — `/gsd:profile-user` analyzes Claude Code session history to build behavioral profiles across 8 dimensions (communication, decisions, debugging, UX, vendor choices, frustrations, learning style, explanation depth). Generates `USER-PROFILE.md`, `/gsd:dev-preferences`, and `CLAUDE.md` profile section. Includes `--questionnaire` fallback and `--refresh` for re-analysis (#1084)
-- **`/gsd:ship` command** — PR creation from verified phase work. Auto-generates rich PR body from planning artifacts, pushes branch, creates PR via `gh`, and updates STATE.md (#829)
-- **`/gsd:next` command** — Automatic workflow advancement to the next logical step (#927)
+- **Developer profiling pipeline** — `/gsdt:profile-user` analyzes Claude Code session history to build behavioral profiles across 8 dimensions (communication, decisions, debugging, UX, vendor choices, frustrations, learning style, explanation depth). Generates `USER-PROFILE.md`, `/gsdt:dev-preferences`, and `CLAUDE.md` profile section. Includes `--questionnaire` fallback and `--refresh` for re-analysis (#1084)
+- **`/gsdt:ship` command** — PR creation from verified phase work. Auto-generates rich PR body from planning artifacts, pushes branch, creates PR via `gh`, and updates STATE.md (#829)
+- **`/gsdt:next` command** — Automatic workflow advancement to the next logical step (#927)
 - **Cross-phase regression gate** — Execute-phase runs prior phases' test suites after execution, catching regressions before they compound (#945)
 - **Requirements coverage gate** — Plan-phase verifies all phase requirements are covered by at least one plan before proceeding (#984)
-- **Structured session handoff artifact** — `/gsd:pause-work` writes `.planning/HANDOFF.json` for machine-readable cross-session continuity (#940)
+- **Structured session handoff artifact** — `/gsdt:pause-work` writes `.planning/HANDOFF.json` for machine-readable cross-session continuity (#940)
 - **WAITING.json signal file** — Machine-readable signal for decision points requiring user input (#1034)
 - **Interactive executor mode** — Pair-programming style execution with step-by-step user involvement (#963)
 - **MCP tool awareness** — GSD subagents can discover and use MCP server tools (#973)
@@ -151,14 +151,14 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **Model alias-to-full-ID resolution** — Task API compatibility for model alias strings (#991)
 - **Execution hardening** — Pre-wave dependency checks, cross-plan data contracts, and export-level spot checks (#1082)
 - **Markdown normalization** — Generated markdown conforms to markdownlint standards (#1112)
-- **`/gsd:audit-uat` command** — Cross-phase audit of all outstanding UAT and verification items. Scans every phase for pending, skipped, blocked, and human_needed items. Cross-references against codebase to detect stale documentation. Produces prioritized human test plan grouped by testability
+- **`/gsdt:audit-uat` command** — Cross-phase audit of all outstanding UAT and verification items. Scans every phase for pending, skipped, blocked, and human_needed items. Cross-references against codebase to detect stale documentation. Produces prioritized human test plan grouped by testability
 - **Verification debt tracking** — Five structural improvements to prevent silent loss of UAT/verification items when projects advance:
-  - Cross-phase health check in `/gsd:progress` (Step 1.6) surfaces outstanding items from ALL prior phases
+  - Cross-phase health check in `/gsdt:progress` (Step 1.6) surfaces outstanding items from ALL prior phases
   - `status: partial` in UAT files distinguishes incomplete testing from completed sessions
   - `result: blocked` with `blocked_by` tag for tests blocked by external dependencies (server, device, build, third-party)
   - `human_needed` verification items now persist as HUMAN-UAT.md files (trackable across sessions)
   - Phase completion and transition warnings surface verification debt non-blockingly
-- **Advisor mode for discuss-phase** — Spawns parallel research agents during `/gsd:discuss-phase` to evaluate gray areas before user decides. Returns structured comparison tables calibrated to user's vendor philosophy. Activates only when `USER-PROFILE.md` exists (#1211)
+- **Advisor mode for discuss-phase** — Spawns parallel research agents during `/gsdt:discuss-phase` to evaluate gray areas before user decides. Returns structured comparison tables calibrated to user's vendor philosophy. Activates only when `USER-PROFILE.md` exists (#1211)
 
 ### Changed
 - Test suite consolidated: runtime converters deduplicated, helpers standardized (#1169)
@@ -166,7 +166,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Documented `inherit` profile for non-Anthropic providers (#1036)
 
 ### Fixed
-- Agent suggests non-existent `/gsd:transition` — replaced with real commands (#1081, #1100)
+- Agent suggests non-existent `/gsdt:transition` — replaced with real commands (#1081, #1100)
 - PROJECT.md drift and phase completion counter accuracy (#956)
 - Copilot executor stuck issue — runtime compatibility fallback added (#1128)
 - Explicit agent type listings prevent fallback after `/clear` (#949)
@@ -186,14 +186,14 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 - **Antigravity runtime support** — Full installation support for the Antigravity AI agent runtime (`--antigravity`), alongside Claude Code, OpenCode, Gemini, Codex, and Copilot
-- **`/gsd:do` command** — Freeform text router that dispatches natural language to the right GSD command
-- **`/gsd:note` command** — Zero-friction idea capture with append, list, and promote-to-todo subcommands
+- **`/gsdt:do` command** — Freeform text router that dispatches natural language to the right GSD command
+- **`/gsdt:note` command** — Zero-friction idea capture with append, list, and promote-to-todo subcommands
 - **Context window warning toggle** — Config option to disable context monitor warnings (`hooks.context_monitor: false`)
 - **Comprehensive documentation** — New `docs/` directory with feature, architecture, agent, command, CLI, and configuration guides
 
 ### Changed
-- `/gsd:discuss-phase` shows remaining discussion areas when asking to continue or move on
-- `/gsd:plan-phase` asks user about research instead of silently deciding
+- `/gsdt:discuss-phase` shows remaining discussion areas when asking to continue or move on
+- `/gsdt:plan-phase` asks user about research instead of silently deciding
 - Improved GitHub issue and PR templates with industry best practices
 - Settings clarify balanced profile uses Sonnet for research
 
@@ -210,24 +210,24 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.24.0] - 2026-03-15
 
 ### Added
-- **`/gsd:quick --research` flag** — Spawns focused research agent before planning, composable with `--discuss` and `--full` (#317)
+- **`/gsdt:quick --research` flag** — Spawns focused research agent before planning, composable with `--discuss` and `--full` (#317)
 - **`inherit` model profile** for OpenCode — agents inherit the user's selected runtime model via `/model`
 - **Persistent debug knowledge base** — resolved debug sessions append to `.planning/debug/knowledge-base.md`, eliminating cold-start investigation on recurring issues
-- **Programmatic `/gsd:set-profile`** — runs as a script instead of LLM-driven workflow, executes in seconds instead of 30-40s
+- **Programmatic `/gsdt:set-profile`** — runs as a script instead of LLM-driven workflow, executes in seconds instead of 30-40s
 
 ### Fixed
 - ROADMAP.md searches scoped to current milestone — multi-milestone projects no longer match phases from archived milestones
 - OpenCode agent frontmatter conversion — agents get correct `name:`, `model: inherit`, `mode: subagent`
 - `opencode.jsonc` config files respected during install (previously only `.json` was detected) (#1053)
 - Windows installer crash on EPERM/EACCES when scanning protected directories (#964)
-- `gsd-tools.cjs` uses absolute paths in all install types (#820)
+- `gsdt-tools.cjs` uses absolute paths in all install types (#820)
 - Invalid `skills:` frontmatter removed from UI agent files
 
 ## [1.23.0] - 2026-03-15
 
 ### Added
-- `/gsd:ui-phase` + `/gsd:ui-review` — UI design contract generation and retroactive 6-pillar visual audit for frontend phases (closes #986)
-- `/gsd:stats` — project statistics dashboard: phases, plans, requirements, git metrics, and timeline
+- `/gsdt:ui-phase` + `/gsdt:ui-review` — UI design contract generation and retroactive 6-pillar visual audit for frontend phases (closes #986)
+- `/gsdt:stats` — project statistics dashboard: phases, plans, requirements, git metrics, and timeline
 - **Copilot CLI** runtime support — install with `--copilot`, maps Claude Code tools to GitHub Copilot tools
 - **`gsd-autonomous` skill** for Codex runtime — enables autonomous GSD execution
 - **Node repair operator** — autonomous recovery when task verification fails: RETRY, DECOMPOSE, or PRUNE before escalating to user. Configurable via `workflow.node_repair_budget` (default: 2 attempts). Disable with `workflow.node_repair: false`
@@ -236,11 +236,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Quick mode uses `YYMMDD-xxx` timestamp IDs instead of auto-increment numbers
 
 ### Changed
-- `/gsd:discuss-phase` supports explicit `--batch` mode for grouped question intake
+- `/gsdt:discuss-phase` supports explicit `--batch` mode for grouped question intake
 
 ### Fixed
-- `/gsd:new-milestone` no longer resets `workflow.research` config during milestone transitions
-- `/gsd:update` is runtime-aware and targets the correct runtime directory
+- `/gsdt:new-milestone` no longer resets `workflow.research` config during milestone transitions
+- `/gsdt:update` is runtime-aware and targets the correct runtime directory
 - Phase-complete properly updates REQUIREMENTS.md traceability (closes #848)
 - Auto-advance no longer triggers without `--auto` flag (closes #1026, #932)
 - `--auto` flag correctly skips interactive discussion questions (closes #1025)
@@ -260,11 +260,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.22.4] - 2026-03-03
 
 ### Added
-- `--discuss` flag for `/gsd:quick` — lightweight pre-planning discussion to gather context before quick tasks
+- `--discuss` flag for `/gsdt:quick` — lightweight pre-planning discussion to gather context before quick tasks
 
 ### Fixed
 - Windows: `@file:` protocol resolution for large init payloads (>50KB) — all 32 workflow/agent files now resolve temp file paths instead of letting agents hallucinate `/tmp` paths (#841)
-- Missing `skills` frontmatter on gsd-nyquist-auditor agent
+- Missing `skills` frontmatter on gsdt-nyquist-auditor agent
 
 ## [1.22.3] - 2026-03-03
 
@@ -323,7 +323,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Codex multi-agent support: `request_user_input` mapping, multi-agent config, and agent role generation for Codex runtime
 - Analysis paralysis guard in agents to prevent over-deliberation during planning
 - Exhaustive cross-check and task-level TDD patterns in agent workflows
-- Code-aware discuss phase with codebase scouting — `/gsd:discuss-phase` now analyzes relevant source files before asking questions
+- Code-aware discuss phase with codebase scouting — `/gsdt:discuss-phase` now analyzes relevant source files before asking questions
 
 ### Fixed
 - Update checker clears both cache paths to prevent stale version notifications
@@ -354,13 +354,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 - YAML frontmatter sync to STATE.md for machine-readable status tracking
-- `/gsd:add-tests` command for post-phase test generation
+- `/gsdt:add-tests` command for post-phase test generation
 - Codex runtime support with skills-first installation
-- Standard `project_context` block in gsd-verifier output
+- Standard `project_context` block in gsdt-verifier output
 - Codex changelog and usage documentation
 
 ### Changed
-- Improved onboarding UX: installer now suggests `/gsd:new-project` instead of `/gsd:help`
+- Improved onboarding UX: installer now suggests `/gsdt:new-project` instead of `/gsdt:help`
 - Updated Discord invite to vanity URL (discord.gg/gsd)
 - Compressed Nyquist validation layer to align with GSD meta-prompt conventions
 - Requirements propagation now includes `phase_req_ids` from ROADMAP to workflow agents
@@ -368,7 +368,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 - Multi-level decimal phase handling (e.g., 72.1.1) with proper regex escaping
-- `/gsd:update` always installs latest package version
+- `/gsdt:update` always installs latest package version
 - STATE.md decision corruption and dollar sign handling
 - STATE.md frontmatter mapping for requirements-completed status
 - Progress bar percent clamping to prevent RangeError crashes
@@ -392,7 +392,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.20.5] - 2026-02-19
 
 ### Fixed
-- `/gsd:health --repair` now creates timestamped backup before regenerating STATE.md (#657)
+- `/gsdt:health --repair` now creates timestamped backup before regenerating STATE.md (#657)
 
 ### Changed
 - Subagents now discover and load project CLAUDE.md and skills at spawn time for better project context (#671, #672)
@@ -440,21 +440,21 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.20.0] - 2026-02-15
 
 ### Added
-- `/gsd:health` command — validates `.planning/` directory integrity with `--repair` flag for auto-fixing config.json and STATE.md
-- `--full` flag for `/gsd:quick` — enables plan-checking (max 2 iterations) and post-execution verification on quick tasks
-- `--auto` flag wired from `/gsd:new-project` through the full phase chain (discuss → plan → execute)
+- `/gsdt:health` command — validates `.planning/` directory integrity with `--repair` flag for auto-fixing config.json and STATE.md
+- `--full` flag for `/gsdt:quick` — enables plan-checking (max 2 iterations) and post-execution verification on quick tasks
+- `--auto` flag wired from `/gsdt:new-project` through the full phase chain (discuss → plan → execute)
 - Auto-advance chains phase execution across full milestones when `workflow.auto_advance` is enabled
 
 ### Fixed
-- Plans created without user context — `/gsd:plan-phase` warns when no CONTEXT.md exists, `/gsd:discuss-phase` warns when plans already exist (#253)
+- Plans created without user context — `/gsdt:plan-phase` warns when no CONTEXT.md exists, `/gsdt:discuss-phase` warns when plans already exist (#253)
 - OpenCode installer converts `general-purpose` subagent type to OpenCode's `general`
-- `/gsd:complete-milestone` respects `commit_docs` setting when merging branches
+- `/gsdt:complete-milestone` respects `commit_docs` setting when merging branches
 - Phase directories tracked in git via `.gitkeep` files
 
 ## [1.19.2] - 2026-02-15
 
 ### Added
-- User-level default settings via `~/.gsd/defaults.json` — set GSD defaults across all projects
+- User-level default settings via `~/.gsdt/defaults.json` — set GSD defaults across all projects
 - Per-agent model overrides — customize which Claude model each agent uses
 
 ### Changed
@@ -466,7 +466,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Large JSON payloads write to temp files to prevent truncation in tool calls
 - Phase heading matching now supports `####` depth
 - Phase padding normalized in insert command
-- ESM conflicts prevented by renaming gsd-tools.js to .cjs
+- ESM conflicts prevented by renaming gsdt-tools.js to .cjs
 - Config directory paths quoted in hook templates for local installs
 - Settings file corruption prevented by using Write tool for file creation
 - Plan-phase autocomplete fixed by removing "execution" from description
@@ -505,26 +505,26 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.18.0] - 2026-02-08
 
 ### Added
-- `--auto` flag for `/gsd:new-project` — runs research → requirements → roadmap automatically after config questions. Expects idea document via @ reference (e.g., `/gsd:new-project --auto @prd.md`)
+- `--auto` flag for `/gsdt:new-project` — runs research → requirements → roadmap automatically after config questions. Expects idea document via @ reference (e.g., `/gsdt:new-project --auto @prd.md`)
 
 ### Fixed
 - Windows: SessionStart hook now spawns detached process correctly
 - Windows: Replaced HEREDOC with literal newlines for git commit compatibility
-- Research decision from `/gsd:new-milestone` now persists to config.json
+- Research decision from `/gsdt:new-milestone` now persists to config.json
 
 ## [1.17.0] - 2026-02-08
 
 ### Added
-- **gsd-tools verification suite**: `verify plan-structure`, `verify phase-completeness`, `verify references`, `verify commits`, `verify artifacts`, `verify key-links` — deterministic structural checks
-- **gsd-tools frontmatter CRUD**: `frontmatter get/set/merge/validate` — safe YAML frontmatter operations with schema validation
-- **gsd-tools template fill**: `template fill summary/plan/verification` — pre-filled document skeletons
-- **gsd-tools state progression**: `state advance-plan`, `state update-progress`, `state record-metric`, `state add-decision`, `state add-blocker`, `state resolve-blocker`, `state record-session` — automates STATE.md updates
-- **Local patch preservation**: Installer now detects locally modified GSD files, backs them up to `gsd-local-patches/`, and creates a manifest for restoration
-- `/gsd:reapply-patches` command to merge local modifications back after GSD updates
+- **gsdt-tools verification suite**: `verify plan-structure`, `verify phase-completeness`, `verify references`, `verify commits`, `verify artifacts`, `verify key-links` — deterministic structural checks
+- **gsdt-tools frontmatter CRUD**: `frontmatter get/set/merge/validate` — safe YAML frontmatter operations with schema validation
+- **gsdt-tools template fill**: `template fill summary/plan/verification` — pre-filled document skeletons
+- **gsdt-tools state progression**: `state advance-plan`, `state update-progress`, `state record-metric`, `state add-decision`, `state add-blocker`, `state resolve-blocker`, `state record-session` — automates STATE.md updates
+- **Local patch preservation**: Installer now detects locally modified GSD files, backs them up to `gsdt-local-patches/`, and creates a manifest for restoration
+- `/gsdt:reapply-patches` command to merge local modifications back after GSD updates
 
 ### Changed
-- Agents (executor, planner, plan-checker, verifier) now use gsd-tools for state updates and verification instead of manual markdown parsing
-- `/gsd:update` workflow now notifies about backed-up local patches and suggests `/gsd:reapply-patches`
+- Agents (executor, planner, plan-checker, verifier) now use gsdt-tools for state updates and verification instead of manual markdown parsing
+- `/gsdt:update` workflow now notifies about backed-up local patches and suggests `/gsdt:reapply-patches`
 
 ### Fixed
 - Added workaround for Claude Code `classifyHandoffIfNeeded` bug that causes false agent failures — execute-phase and quick workflows now spot-check actual output before reporting failure
@@ -532,7 +532,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.16.0] - 2026-02-08
 
 ### Added
-- 10 new gsd-tools CLI commands that replace manual AI orchestration of mechanical operations:
+- 10 new gsdt-tools CLI commands that replace manual AI orchestration of mechanical operations:
   - `phase add <desc>` — append phase to roadmap + create directory
   - `phase insert <after> <desc>` — insert decimal phase
   - `phase remove <N> [--force]` — remove phase with full renumbering
@@ -545,7 +545,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   - `scaffold [context|uat|verification|phase-dir]` — template generation
 
 ### Changed
-- Workflows now delegate deterministic operations to gsd-tools CLI, reducing token usage and errors:
+- Workflows now delegate deterministic operations to gsdt-tools CLI, reducing token usage and errors:
   - `remove-phase.md`: 13 manual steps → 1 CLI call + confirm + commit
   - `add-phase.md`: 6 manual steps → 1 CLI call + state update
   - `insert-phase.md`: 7 manual steps → 1 CLI call + state update
@@ -553,10 +553,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   - `progress.md`: roadmap parsing delegated to `roadmap analyze`
 
 ### Fixed
-- Execute-phase now correctly spawns `gsd-executor` subagents instead of generic task agents
-- `commit_docs=false` setting now respected in all `.planning/` commit paths (execute-plan, debugger, reference docs all route through gsd-tools CLI)
+- Execute-phase now correctly spawns `gsdt-executor` subagents instead of generic task agents
+- `commit_docs=false` setting now respected in all `.planning/` commit paths (execute-plan, debugger, reference docs all route through gsdt-tools CLI)
 - Execute-phase orchestrator no longer bloats context by embedding file content — passes paths instead, letting subagents read in their fresh context
-- Windows: Normalized backslash paths in gsd-tools invocations (contributed by @rmindel)
+- Windows: Normalized backslash paths in gsdt-tools invocations (contributed by @rmindel)
 
 ## [1.15.0] - 2026-02-08
 
@@ -566,7 +566,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.14.0] - 2026-02-08
 
 ### Added
-- Context-optimizing parsing commands in gsd-tools (`phase-plan-index`, `state-snapshot`, `summary-extract`) — reduces agent context usage by returning structured JSON instead of raw file content
+- Context-optimizing parsing commands in gsdt-tools (`phase-plan-index`, `state-snapshot`, `summary-extract`) — reduces agent context usage by returning structured JSON instead of raw file content
 
 ### Fixed
 - Installer no longer deletes opencode.json on JSONC parse errors — now handles comments, trailing commas, and BOM correctly (#474)
@@ -574,18 +574,18 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.13.0] - 2026-02-08
 
 ### Added
-- `gsd-tools history-digest` — Compiles phase summaries into structured JSON for faster context loading
-- `gsd-tools phases list` — Lists phase directories with filtering (replaces fragile `ls | sort -V` patterns)
-- `gsd-tools roadmap get-phase` — Extracts phase sections from ROADMAP.md
-- `gsd-tools phase next-decimal` — Calculates next decimal phase number for insert operations
-- `gsd-tools state get/patch` — Atomic STATE.md field operations
-- `gsd-tools template select` — Chooses summary template based on plan complexity
+- `gsdt-tools history-digest` — Compiles phase summaries into structured JSON for faster context loading
+- `gsdt-tools phases list` — Lists phase directories with filtering (replaces fragile `ls | sort -V` patterns)
+- `gsdt-tools roadmap get-phase` — Extracts phase sections from ROADMAP.md
+- `gsdt-tools phase next-decimal` — Calculates next decimal phase number for insert operations
+- `gsdt-tools state get/patch` — Atomic STATE.md field operations
+- `gsdt-tools template select` — Chooses summary template based on plan complexity
 - Summary template variants: minimal (~30 lines), standard (~60 lines), complex (~100 lines)
 - Test infrastructure with 22 tests covering new commands
 
 ### Changed
 - Planner uses two-step context assembly: digest for selection, full SUMMARY for understanding
-- Agents migrated from bash patterns to structured gsd-tools commands
+- Agents migrated from bash patterns to structured gsdt-tools commands
 - Nested YAML frontmatter parsing now handles `dependency-graph.provides`, `tech-stack.added` correctly
 
 ## [1.12.1] - 2026-02-08
@@ -598,12 +598,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 - **Architecture: Thin orchestrator pattern** — Commands now delegate to workflows, reducing command file size by ~75% and improving maintainability
-- **Centralized utilities** — New `gsd-tools.cjs` (11 functions) replaces repetitive bash patterns across 50+ files
+- **Centralized utilities** — New `gsdt-tools.cjs` (11 functions) replaces repetitive bash patterns across 50+ files
 - **Token reduction** — ~22k characters removed from affected command/workflow/agent files
 - **Condensed agent prompts** — Same behavior with fewer words (executor, planner, verifier, researcher agents)
 
 ### Added
-- `gsd-tools.cjs` CLI utility with functions: state load/update, resolve-model, find-phase, commit, verify-summary, generate-slug, current-timestamp, list-todos, verify-path-exists, config-ensure-section
+- `gsdt-tools.cjs` CLI utility with functions: state load/update, resolve-model, find-phase, commit, verify-summary, generate-slug, current-timestamp, list-todos, verify-path-exists, config-ensure-section
 
 ## [1.11.2] - 2026-02-05
 
@@ -614,17 +614,17 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Install respects `attribution.commit` setting for OpenCode compatibility (#286)
 
 ### Fixed
-- **CRITICAL:** Prevent API keys from being committed via `/gsd:map-codebase` (#429)
+- **CRITICAL:** Prevent API keys from being committed via `/gsdt:map-codebase` (#429)
 - Enforce context fidelity in planning pipeline - agents now honor CONTEXT.md decisions (#326, #216, #206)
 - Executor verifies task completion to prevent hallucinated success (#315)
-- Auto-create `config.json` when missing during `/gsd:settings` (#264)
-- `/gsd:update` respects local vs global install location
+- Auto-create `config.json` when missing during `/gsdt:settings` (#264)
+- `/gsdt:update` respects local vs global install location
 - Researcher writes RESEARCH.md regardless of `commit_docs` setting
 - Statusline crash handling, color validation, git staging rules
 - Statusline.js reference updated during install (#330)
 - Parallelization config setting now respected (#379)
 - ASCII box-drawing vs text content with diacritics (#289)
-- Removed broken gsd-gemini link (404)
+- Removed broken gsdt-gemini link (404)
 
 ## [1.11.1] - 2026-01-31
 
@@ -637,7 +637,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Context compliance verification dimension in plan checker — flags if plans contradict user decisions
 
 ### Fixed
-- CONTEXT.md from `/gsd:discuss-phase` now properly flows to all downstream agents (researcher, planner, checker, revision loop)
+- CONTEXT.md from `/gsdt:discuss-phase` now properly flows to all downstream agents (researcher, planner, checker, revision loop)
 
 ## [1.10.1] - 2025-01-30
 
@@ -656,7 +656,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.9.12] - 2025-01-23
 
 ### Removed
-- `/gsd:whats-new` command — use `/gsd:update` instead (shows changelog with cancel option)
+- `/gsdt:whats-new` command — use `/gsdt:update` instead (shows changelog with cancel option)
 
 ### Fixed
 - Restored auto-release GitHub Actions workflow
@@ -677,7 +677,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.9.9] - 2026-01-23
 
 ### Added
-- `/gsd:join-discord` command to quickly access the GSD Discord community invite link
+- `/gsdt:join-discord` command to quickly access the GSD Discord community invite link
 
 ## [1.9.8] - 2025-01-22
 
@@ -691,7 +691,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 - OpenCode installer now uses correct XDG-compliant config path (`~/.config/opencode/`) instead of `~/.opencode/`
-- OpenCode commands use flat structure (`command/gsd-help.md`) matching OpenCode's expected format
+- OpenCode commands use flat structure (`command/gsdt-help.md`) matching OpenCode's expected format
 - OpenCode permissions written to `~/.config/opencode/opencode.json`
 
 ## [1.9.6] - 2026-01-22
@@ -712,7 +712,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Subagents can now access MCP tools (Context7, etc.) - workaround for Claude Code bug #13898
 - Installer: Escape/Ctrl+C now cancels instead of installing globally
 - Installer: Fixed hook paths on Windows
-- Removed stray backticks in `/gsd:new-project` output
+- Removed stray backticks in `/gsdt:new-project` output
 
 ### Changed
 - Condensed verbose documentation in templates and workflows (-170 lines)
@@ -731,8 +731,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Removed
 - **Codebase Intelligence System** — Removed due to overengineering concerns
-  - Deleted `/gsd:analyze-codebase` command
-  - Deleted `/gsd:query-intel` command
+  - Deleted `/gsdt:analyze-codebase` command
+  - Deleted `/gsdt:query-intel` command
   - Removed SQLite graph database and sql.js dependency (21MB)
   - Removed intel hooks (gsd-intel-index.js, gsd-intel-session.js, gsd-intel-prune.js)
   - Removed entity file generation and templates
@@ -743,19 +743,19 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.9.0] - 2025-01-20
 
 ### Added
-- **Model Profiles** — `/gsd:set-profile` for quality/balanced/budget agent configurations
-- **Workflow Settings** — `/gsd:settings` command for toggling workflow behaviors interactively
+- **Model Profiles** — `/gsdt:set-profile` for quality/balanced/budget agent configurations
+- **Workflow Settings** — `/gsdt:settings` command for toggling workflow behaviors interactively
 
 ### Fixed
 - Orchestrators now inline file contents in Task prompts (fixes context issues with @ references)
 - Tech debt from milestone audit addressed
-- All hooks now use `gsd-` prefix for consistency (statusline.js → gsd-statusline.js)
+- All hooks now use `gsd-` prefix for consistency (statusline.js → gsdt-statusline.js)
 
 ## [1.8.0] - 2026-01-19
 
 ### Added
 - Uncommitted planning mode: Keep `.planning/` local-only (not committed to git) via `planning.commit_docs: false` in config.json. Useful for OSS contributions, client work, or privacy preferences.
-- `/gsd:new-project` now asks about git tracking during initial setup, letting you opt out of committing planning docs from the start
+- `/gsdt:new-project` now asks about git tracking during initial setup, letting you opt out of committing planning docs from the start
 
 ## [1.7.1] - 2026-01-19
 
@@ -765,7 +765,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.7.0] - 2026-01-19
 
 ### Added
-- **Quick Mode** (`/gsd:quick`) — Execute small, ad-hoc tasks with GSD guarantees but skip optional agents (researcher, checker, verifier). Quick tasks live in `.planning/quick/` with their own tracking in STATE.md.
+- **Quick Mode** (`/gsdt:quick`) — Execute small, ad-hoc tasks with GSD guarantees but skip optional agents (researcher, checker, verifier). Quick tasks live in `.planning/quick/` with their own tracking in STATE.md.
 
 ### Changed
 - Improved progress bar calculation to clamp values within 0-100 range
@@ -777,7 +777,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Consistent `allowed-tools` YAML format across agents
 - Corrected agent name in research-phase heading
 - Removed hardcoded 2025 year from search query examples
-- Removed dead gsd-researcher agent references
+- Removed dead gsdt-phase-researcher agent references
 - Integrated unused reference files into documentation
 
 ### Housekeeping
@@ -793,7 +793,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.6.3] - 2025-01-17
 
 ### Added
-- `--gaps-only` flag for `/gsd:execute-phase` — executes only gap closure plans after verify-work finds issues, eliminating redundant state discovery
+- `--gaps-only` flag for `/gsdt:execute-phase` — executes only gap closure plans after verify-work finds issues, eliminating redundant state discovery
 
 ## [1.6.2] - 2025-01-17
 
@@ -808,28 +808,28 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 - Installer performs clean install of GSD folders, removing orphaned files from previous versions
-- `/gsd:update` shows changelog and asks for confirmation before updating, with clear warning about what gets replaced
+- `/gsdt:update` shows changelog and asks for confirmation before updating, with clear warning about what gets replaced
 
 ## [1.6.0] - 2026-01-17
 
 ### Changed
-- **BREAKING:** Unified `/gsd:new-milestone` flow — now mirrors `/gsd:new-project` with questioning → research → requirements → roadmap in a single command
+- **BREAKING:** Unified `/gsdt:new-milestone` flow — now mirrors `/gsdt:new-project` with questioning → research → requirements → roadmap in a single command
 - Roadmapper agent now references templates instead of inline structures for easier maintenance
 
 ### Removed
-- **BREAKING:** `/gsd:discuss-milestone` — consolidated into `/gsd:new-milestone`
-- **BREAKING:** `/gsd:create-roadmap` — integrated into project/milestone flows
-- **BREAKING:** `/gsd:define-requirements` — integrated into project/milestone flows
-- **BREAKING:** `/gsd:research-project` — integrated into project/milestone flows
+- **BREAKING:** `/gsdt:discuss-milestone` — consolidated into `/gsdt:new-milestone`
+- **BREAKING:** `/gsdt:create-roadmap` — integrated into project/milestone flows
+- **BREAKING:** `/gsdt:define-requirements` — integrated into project/milestone flows
+- **BREAKING:** `/gsdt:research-project` — integrated into project/milestone flows
 
 ### Added
-- `/gsd:verify-work` now includes next-step routing after verification completes
+- `/gsdt:verify-work` now includes next-step routing after verification completes
 
 ## [1.5.30] - 2026-01-17
 
 ### Fixed
 - Output templates in `plan-phase`, `execute-phase`, and `audit-milestone` now render markdown correctly instead of showing literal backticks
-- Next-step suggestions now consistently recommend `/gsd:discuss-phase` before `/gsd:plan-phase` across all routing paths
+- Next-step suggestions now consistently recommend `/gsdt:discuss-phase` before `/gsdt:plan-phase` across all routing paths
 
 ## [1.5.29] - 2025-01-16
 
@@ -846,7 +846,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 - Consolidated milestone workflow into single command
 - Merged domain expertise skills into agent configurations
-- **BREAKING:** Removed `/gsd:execute-plan` command (use `/gsd:execute-phase` instead)
+- **BREAKING:** Removed `/gsdt:execute-plan` command (use `/gsdt:execute-phase` instead)
 
 ### Fixed
 - Phase directory matching now handles both zero-padded (05-*) and unpadded (5-*) folder names
@@ -884,12 +884,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Consistent zero-padding for phase directories (01-name, not 1-name)
 - Plan file naming: `{phase}-{plan}-PLAN.md` pattern restored across all agents
 - Double-path bug in researcher git add command
-- Removed `/gsd:research-phase` from next-step suggestions (use `/gsd:plan-phase` instead)
+- Removed `/gsdt:research-phase` from next-step suggestions (use `/gsdt:plan-phase` instead)
 
 ## [1.5.22] - 2025-01-16
 
 ### Added
-- Statusline update indicator — shows `⬆ /gsd:update` when a new version is available
+- Statusline update indicator — shows `⬆ /gsdt:update` when a new version is available
 
 ### Fixed
 - Planner now updates ROADMAP.md placeholders after planning completes
@@ -901,9 +901,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Research synthesizer agent that consolidates parallel research into SUMMARY.md
 
 ### Changed
-- **Unified `/gsd:new-project` flow** — Single command now handles questions → research → requirements → roadmap (~10 min)
+- **Unified `/gsdt:new-project` flow** — Single command now handles questions → research → requirements → roadmap (~10 min)
 - Simplified README to reflect streamlined workflow: new-project → plan-phase → execute-phase
-- Added optional `/gsd:discuss-phase` documentation for UI/UX/behavior decisions before planning
+- Added optional `/gsdt:discuss-phase` documentation for UI/UX/behavior decisions before planning
 
 ### Fixed
 - verify-work now shows clear checkpoint box with action prompt ("Type 'pass' or describe what's wrong")
@@ -926,31 +926,31 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.5.19] - 2026-01-16
 
 ### Changed
-- `/gsd:discuss-phase` redesigned with intelligent gray area analysis — analyzes phase to identify discussable areas (UI, UX, Behavior, etc.), presents multi-select for user control, deep-dives each area with focused questioning
+- `/gsdt:discuss-phase` redesigned with intelligent gray area analysis — analyzes phase to identify discussable areas (UI, UX, Behavior, etc.), presents multi-select for user control, deep-dives each area with focused questioning
 - Explicit scope guardrail prevents scope creep during discussion — captures deferred ideas without acting on them
 - CONTEXT.md template restructured for decisions (domain boundary, decisions by category, Claude's discretion, deferred ideas)
 - Downstream awareness: discuss-phase now explicitly documents that CONTEXT.md feeds researcher and planner agents
-- `/gsd:plan-phase` now integrates research — spawns `gsd-phase-researcher` before planning unless research exists or `--skip-research` flag used
+- `/gsdt:plan-phase` now integrates research — spawns `gsdt-phase-researcher` before planning unless research exists or `--skip-research` flag used
 
 ## [1.5.18] - 2026-01-16
 
 ### Added
 - **Plan verification loop** — Plans are now verified before execution with a planner → checker → revise cycle
-  - New `gsd-plan-checker` agent (744 lines) validates plans will achieve phase goals
+  - New `gsdt-plan-checker` agent (744 lines) validates plans will achieve phase goals
   - Six verification dimensions: requirement coverage, task completeness, dependency correctness, key links, scope sanity, must_haves derivation
   - Max 3 revision iterations before user escalation
   - `--skip-verify` flag for experienced users who want to bypass verification
-- **Dedicated planner agent** — `gsd-planner` (1,319 lines) consolidates all planning expertise
+- **Dedicated planner agent** — `gsdt-planner` (1,319 lines) consolidates all planning expertise
   - Complete methodology: discovery levels, task breakdown, dependency graphs, scope estimation, goal-backward analysis
   - Revision mode for handling checker feedback
   - TDD integration and checkpoint patterns
 - **Statusline integration** — Context usage, model, and current task display
 
 ### Changed
-- `/gsd:plan-phase` refactored to thin orchestrator pattern (310 lines)
-  - Spawns `gsd-planner` for planning, `gsd-plan-checker` for verification
+- `/gsdt:plan-phase` refactored to thin orchestrator pattern (310 lines)
+  - Spawns `gsdt-planner` for planning, `gsdt-plan-checker` for verification
   - User sees status between agent spawns (not a black box)
-- Planning references deprecated with redirects to `gsd-planner` agent sections
+- Planning references deprecated with redirects to `gsdt-planner` agent sections
   - `plan-format.md`, `scope-estimation.md`, `goal-backward.md`, `principles.md`
   - `workflows/plan-phase.md`
 
@@ -963,48 +963,48 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.5.17] - 2026-01-15
 
 ### Added
-- New `/gsd:update` command — check for updates, install, and display changelog of what changed (better UX than raw `npx get-shit-done-cc`)
+- New `/gsdt:update` command — check for updates, install, and display changelog of what changed (better UX than raw `npx gsdt`)
 
 ## [1.5.16] - 2026-01-15
 
 ### Added
-- New `gsd-researcher` agent (915 lines) with comprehensive research methodology, 4 research modes (ecosystem, feasibility, implementation, comparison), source hierarchy, and verification protocols
-- New `gsd-debugger` agent (990 lines) with scientific debugging methodology, hypothesis testing, and 7+ investigation techniques
-- New `gsd-codebase-mapper` agent for brownfield codebase analysis
+- New `gsdt-phase-researcher` agent (915 lines) with comprehensive research methodology, 4 research modes (ecosystem, feasibility, implementation, comparison), source hierarchy, and verification protocols
+- New `gsdt-debugger` agent (990 lines) with scientific debugging methodology, hypothesis testing, and 7+ investigation techniques
+- New `gsdt-codebase-mapper` agent for brownfield codebase analysis
 - Research subagent prompt template for context-only spawning
 
 ### Changed
-- `/gsd:research-phase` refactored to thin orchestrator — now injects rich context (key insight framing, downstream consumer info, quality gates) to gsd-researcher agent
-- `/gsd:research-project` refactored to spawn 4 parallel gsd-researcher agents with milestone-aware context (greenfield vs v1.1+) and roadmap implications guidance
-- `/gsd:debug` refactored to thin orchestrator (149 lines) — spawns gsd-debugger agent with full debugging expertise
-- `/gsd:new-milestone` now explicitly references MILESTONE-CONTEXT.md
+- `/gsdt:research-phase` refactored to thin orchestrator — now injects rich context (key insight framing, downstream consumer info, quality gates) to gsdt-phase-researcher agent
+- `/gsdt:research-project` refactored to spawn 4 parallel gsdt-phase-researcher agents with milestone-aware context (greenfield vs v1.1+) and roadmap implications guidance
+- `/gsdt:debug` refactored to thin orchestrator (149 lines) — spawns gsdt-debugger agent with full debugging expertise
+- `/gsdt:new-milestone` now explicitly references MILESTONE-CONTEXT.md
 
 ### Deprecated
-- `workflows/research-phase.md` — consolidated into gsd-researcher agent
-- `workflows/research-project.md` — consolidated into gsd-researcher agent
-- `workflows/debug.md` — consolidated into gsd-debugger agent
-- `references/research-pitfalls.md` — consolidated into gsd-researcher agent
-- `references/debugging.md` — consolidated into gsd-debugger agent
-- `references/debug-investigation.md` — consolidated into gsd-debugger agent
+- `workflows/research-phase.md` — consolidated into gsdt-phase-researcher agent
+- `workflows/research-project.md` — consolidated into gsdt-phase-researcher agent
+- `workflows/debug.md` — consolidated into gsdt-debugger agent
+- `references/research-pitfalls.md` — consolidated into gsdt-phase-researcher agent
+- `references/debugging.md` — consolidated into gsdt-debugger agent
+- `references/debug-investigation.md` — consolidated into gsdt-debugger agent
 
 ## [1.5.15] - 2025-01-15
 
 ### Fixed
-- **Agents now install correctly** — The `agents/` folder (gsd-executor, gsd-verifier, gsd-integration-checker, gsd-milestone-auditor) was missing from npm package, now included
+- **Agents now install correctly** — The `agents/` folder (gsdt-executor, gsdt-verifier, gsdt-integration-checker, gsd-milestone-auditor) was missing from npm package, now included
 
 ### Changed
-- Consolidated `/gsd:plan-fix` into `/gsd:plan-phase --gaps` for simpler workflow
+- Consolidated `/gsdt:plan-fix` into `/gsdt:plan-phase --gaps` for simpler workflow
 - UAT file writes now batched instead of per-response for better performance
 
 ## [1.5.14] - 2025-01-15
 
 ### Fixed
-- Plan-phase now always routes to `/gsd:execute-phase` after planning, even for single-plan phases
+- Plan-phase now always routes to `/gsdt:execute-phase` after planning, even for single-plan phases
 
 ## [1.5.13] - 2026-01-15
 
 ### Fixed
-- `/gsd:new-milestone` now presents research and requirements paths as equal options, matching `/gsd:new-project` format
+- `/gsdt:new-milestone` now presents research and requirements paths as equal options, matching `/gsdt:new-project` format
 
 ## [1.5.12] - 2025-01-15
 
@@ -1019,7 +1019,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 - `MILESTONE-AUDIT.md` now versioned as `v{version}-MILESTONE-AUDIT.md` and archived on completion
-- `progress` now correctly routes to `/gsd:discuss-milestone` when between milestones (Route F)
+- `progress` now correctly routes to `/gsdt:discuss-milestone` when between milestones (Route F)
 
 ## [1.5.11] - 2025-01-15
 
@@ -1037,12 +1037,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.5.9] - 2025-01-15
 
 ### Added
-- Milestone audit system (`/gsd:audit-milestone`) for verifying milestone completion with parallel verification agents
+- Milestone audit system (`/gsdt:audit-milestone`) for verifying milestone completion with parallel verification agents
 
 ### Changed
 - Checkpoint display format improved with box headers and unmissable "→ YOUR ACTION:" prompts
 - Subagent colors updated (executor: yellow, integration-checker: blue)
-- Execute-phase now recommends `/gsd:audit-milestone` when milestone completes
+- Execute-phase now recommends `/gsdt:audit-milestone` when milestone completes
 
 ### Fixed
 - Research-phase no longer gatekeeps by domain type
@@ -1056,25 +1056,25 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Verification loop: When gaps are found, verifier generates fix plans that execute automatically before re-verifying
 
 ### Changed
-- `gsd-executor` subagent color changed from red to blue
+- `gsdt-executor` subagent color changed from red to blue
 
 ## [1.5.7] - 2025-01-15
 
 ### Added
-- `gsd-executor` subagent: Dedicated agent for plan execution with full workflow logic built-in
-- `gsd-verifier` subagent: Goal-backward verification that checks if phase goals are actually achieved (not just tasks completed)
+- `gsdt-executor` subagent: Dedicated agent for plan execution with full workflow logic built-in
+- `gsdt-verifier` subagent: Goal-backward verification that checks if phase goals are actually achieved (not just tasks completed)
 - Phase verification: Automatic verification runs when a phase completes to catch stubs and incomplete implementations
 - Goal-backward planning reference: Documentation for deriving must-haves from goals
 
 ### Changed
-- execute-plan and execute-phase now spawn `gsd-executor` subagent instead of using inline workflow
+- execute-plan and execute-phase now spawn `gsdt-executor` subagent instead of using inline workflow
 - Roadmap and planning workflows enhanced with goal-backward analysis
 
 ### Removed
 - Obsolete templates (`checkpoint-resume.md`, `subagent-task-prompt.md`) — logic now lives in subagents
 
 ### Fixed
-- Updated remaining `general-purpose` subagent references to use `gsd-executor`
+- Updated remaining `general-purpose` subagent references to use `gsdt-executor`
 
 ## [1.5.6] - 2025-01-15
 
@@ -1105,7 +1105,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **define-requirements**: Works without prior research. Gathers requirements through conversation when FEATURES.md doesn't exist.
 
 ### Removed
-- Dead `/gsd:status` command (referenced abandoned background agent model)
+- Dead `/gsdt:status` command (referenced abandoned background agent model)
 - Unused `agent-history.md` template
 - `_archive/` directory with old execute-phase version
 
@@ -1133,8 +1133,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.5.0] - 2026-01-14
 
 ### Added
-- New `/gsd:research-project` command for pre-roadmap ecosystem research — spawns parallel agents to investigate stack, features, architecture, and pitfalls before you commit to a roadmap
-- New `/gsd:define-requirements` command for scoping v1 requirements from research findings — transforms "what exists in this domain" into "what we're building"
+- New `/gsdt:research-project` command for pre-roadmap ecosystem research — spawns parallel agents to investigate stack, features, architecture, and pitfalls before you commit to a roadmap
+- New `/gsdt:define-requirements` command for scoping v1 requirements from research findings — transforms "what exists in this domain" into "what we're building"
 - Requirements traceability: phases now map to specific requirement IDs with 100% coverage validation
 
 ### Changed
@@ -1170,7 +1170,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.4.25] - 2026-01-14
 
 ### Added
-- New `/gsd:whats-new` command shows changes since your installed version
+- New `/gsdt:whats-new` command shows changes since your installed version
 - VERSION file written during installation for version tracking
 - CHANGELOG.md now included in package installation
 
@@ -1303,7 +1303,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.4.3] - 2026-01-13
 
 ### Added
-- `/gsd:debug` command for systematic debugging with persistent state
+- `/gsdt:debug` command for systematic debugging with persistent state
 
 ## [1.4.2] - 2026-01-13
 
@@ -1313,9 +1313,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.4.1] - 2026-01-13
 
 ### Added
-- Parallel phase execution via `/gsd:execute-phase`
-- Parallel-aware planning in `/gsd:plan-phase`
-- `/gsd:status` command for parallel agent monitoring
+- Parallel phase execution via `/gsdt:execute-phase`
+- Parallel-aware planning in `/gsdt:plan-phase`
+- `/gsdt:status` command for parallel agent monitoring
 - Parallelization configuration in config.json
 - Wave-based parallel execution with dependency graphs
 
@@ -1338,7 +1338,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.3.34] - 2026-01-11
 
 ### Added
-- `/gsd:add-todo` and `/gsd:check-todos` for mid-session idea capture
+- `/gsdt:add-todo` and `/gsdt:check-todos` for mid-session idea capture
 
 ## [1.3.33] - 2026-01-11
 
@@ -1351,7 +1351,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.3.32] - 2026-01-10
 
 ### Added
-- `/gsd:resume-task` for resuming interrupted subagent executions
+- `/gsdt:resume-task` for resuming interrupted subagent executions
 
 ## [1.3.31] - 2026-01-08
 
@@ -1367,15 +1367,15 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.3.29] - 2026-01-08
 
 ### Added
-- `/gsd:verify-work` for conversational UAT validation
-- `/gsd:plan-fix` for fixing UAT issues
+- `/gsdt:verify-work` for conversational UAT validation
+- `/gsdt:plan-fix` for fixing UAT issues
 - UAT issues template
 
 ## [1.3.28] - 2026-01-07
 
 ### Added
 - `--config-dir` CLI argument for multi-account setups
-- `/gsd:remove-phase` command
+- `/gsdt:remove-phase` command
 
 ### Fixed
 - Validation for --config-dir edge cases
@@ -1523,12 +1523,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.3.1] - 2025-12-17
 
 ### Added
-- `/gsd:map-codebase` documentation in help and README
+- `/gsdt:map-codebase` documentation in help and README
 
 ## [1.3.0] - 2025-12-17
 
 ### Added
-- `/gsd:map-codebase` command for brownfield project analysis
+- `/gsdt:map-codebase` command for brownfield project analysis
 - Codebase map templates (stack, architecture, structure, conventions, testing, integrations, concerns)
 - Parallel Explore agent orchestration for codebase analysis
 - Brownfield integration into GSD workflows
@@ -1624,9 +1624,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 - Pre-roadmap research workflow
-- `/gsd:research-phase` for niche domain ecosystem discovery
-- `/gsd:research-project` command with workflow and templates
-- `/gsd:create-roadmap` command with research-aware workflow
+- `/gsdt:research-phase` for niche domain ecosystem discovery
+- `/gsdt:research-project` command with workflow and templates
+- `/gsdt:create-roadmap` command with research-aware workflow
 - Research subagent prompt templates
 
 ### Changed
@@ -1636,7 +1636,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.0.11] - 2025-12-15
 
 ### Added
-- `/gsd:research-phase` for niche domain ecosystem discovery
+- `/gsdt:research-phase` for niche domain ecosystem discovery
 
 ## [1.0.10] - 2025-12-15
 
@@ -1696,191 +1696,191 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 - Initial release of GSD (Get Shit Done) meta-prompting system
-- Core slash commands: `/gsd:new-project`, `/gsd:discuss-phase`, `/gsd:plan-phase`, `/gsd:execute-phase`
+- Core slash commands: `/gsdt:new-project`, `/gsdt:discuss-phase`, `/gsdt:plan-phase`, `/gsdt:execute-phase`
 - PROJECT.md and STATE.md templates
 - Phase-based development workflow
 - YOLO mode for autonomous execution
 - Interactive mode with checkpoints
 
-[Unreleased]: https://github.com/gsd-build/get-shit-done/compare/v1.30.0...HEAD
-[1.30.0]: https://github.com/gsd-build/get-shit-done/releases/tag/v1.30.0
-[1.29.0]: https://github.com/gsd-build/get-shit-done/releases/tag/v1.29.0
-[1.28.0]: https://github.com/gsd-build/get-shit-done/releases/tag/v1.28.0
-[1.27.0]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.27.0
-[1.26.0]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.26.0
-[1.25.0]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.25.0
-[1.24.0]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.24.0
-[1.23.0]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.23.0
-[1.22.4]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.22.4
-[1.22.3]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.22.3
-[1.22.2]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.22.2
-[1.22.1]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.22.1
-[1.22.0]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.22.0
-[1.21.1]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.21.1
-[1.21.0]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.21.0
-[1.20.6]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.20.6
-[1.20.5]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.20.5
-[1.20.4]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.20.4
-[1.20.3]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.20.3
-[1.20.2]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.20.2
-[1.20.1]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.20.1
-[1.20.0]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.20.0
-[1.19.2]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.19.2
-[1.19.1]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.19.1
-[1.19.0]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.19.0
-[1.18.0]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.18.0
-[1.17.0]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.17.0
-[1.16.0]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.16.0
-[1.15.0]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.15.0
-[1.14.0]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.14.0
-[1.13.0]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.13.0
-[1.12.1]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.12.1
-[1.12.0]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.12.0
-[1.11.2]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.11.2
-[1.11.1]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.11.0
-[1.10.1]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.10.1
-[1.10.0]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.10.0
-[1.9.12]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.9.12
-[1.9.11]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.9.11
-[1.9.10]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.9.10
-[1.9.9]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.9.9
-[1.9.8]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.9.8
-[1.9.7]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.9.7
-[1.9.6]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.9.6
-[1.9.5]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.9.5
-[1.9.4]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.9.4
-[1.9.2]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.9.2
-[1.9.0]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.9.0
-[1.8.0]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.8.0
-[1.7.1]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.7.1
-[1.7.0]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.7.0
-[1.6.4]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.6.4
-[1.6.3]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.6.3
-[1.6.2]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.6.2
-[1.6.1]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.6.1
-[1.6.0]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.6.0
-[1.5.30]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.30
-[1.5.29]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.29
-[1.5.28]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.28
-[1.5.27]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.27
-[1.5.26]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.26
-[1.5.25]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.25
-[1.5.24]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.24
-[1.5.23]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.23
-[1.5.22]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.22
-[1.5.21]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.21
-[1.5.20]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.20
-[1.5.19]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.19
-[1.5.18]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.18
-[1.5.17]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.17
-[1.5.16]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.16
-[1.5.15]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.15
-[1.5.14]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.14
-[1.5.13]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.13
-[1.5.12]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.12
-[1.5.11]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.11
-[1.5.10]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.10
-[1.5.9]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.9
-[1.5.8]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.8
-[1.5.7]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.7
-[1.5.6]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.6
-[1.5.5]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.5
-[1.5.4]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.4
-[1.5.3]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.3
-[1.5.2]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.2
-[1.5.1]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.1
-[1.5.0]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.5.0
-[1.4.29]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.29
-[1.4.28]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.28
-[1.4.27]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.27
-[1.4.26]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.26
-[1.4.25]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.25
-[1.4.24]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.24
-[1.4.23]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.23
-[1.4.22]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.22
-[1.4.21]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.21
-[1.4.20]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.20
-[1.4.19]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.19
-[1.4.18]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.18
-[1.4.17]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.17
-[1.4.16]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.16
-[1.4.15]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.15
-[1.4.14]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.14
-[1.4.13]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.13
-[1.4.12]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.12
-[1.4.11]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.11
-[1.4.10]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.10
-[1.4.9]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.9
-[1.4.8]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.8
-[1.4.7]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.7
-[1.4.6]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.6
-[1.4.5]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.5
-[1.4.4]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.4
-[1.4.3]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.3
-[1.4.2]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.2
-[1.4.1]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.1
-[1.4.0]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.4.0
-[1.3.34]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.34
-[1.3.33]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.33
-[1.3.32]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.32
-[1.3.31]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.31
-[1.3.30]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.30
-[1.3.29]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.29
-[1.3.28]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.28
-[1.3.27]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.27
-[1.3.26]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.26
-[1.3.25]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.25
-[1.3.24]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.24
-[1.3.23]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.23
-[1.3.22]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.22
-[1.3.21]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.21
-[1.3.20]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.20
-[1.3.19]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.19
-[1.3.18]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.18
-[1.3.17]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.17
-[1.3.16]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.16
-[1.3.15]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.15
-[1.3.14]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.14
-[1.3.13]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.13
-[1.3.12]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.12
-[1.3.11]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.11
-[1.3.10]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.10
-[1.3.9]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.9
-[1.3.8]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.8
-[1.3.7]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.7
-[1.3.6]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.6
-[1.3.5]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.5
-[1.3.4]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.4
-[1.3.3]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.3
-[1.3.2]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.2
-[1.3.1]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.1
-[1.3.0]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.3.0
-[1.2.13]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.2.13
-[1.2.12]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.2.12
-[1.2.11]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.2.11
-[1.2.10]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.2.10
-[1.2.9]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.2.9
-[1.2.8]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.2.8
-[1.2.7]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.2.7
-[1.2.6]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.2.6
-[1.2.5]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.2.5
-[1.2.4]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.2.4
-[1.2.3]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.2.3
-[1.2.2]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.2.2
-[1.2.1]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.2.1
-[1.2.0]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.2.0
-[1.1.2]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.1.2
-[1.1.1]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.1.1
-[1.1.0]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.1.0
-[1.0.11]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.0.11
-[1.0.10]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.0.10
-[1.0.9]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.0.9
-[1.0.8]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.0.8
-[1.0.7]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.0.7
-[1.0.6]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.0.6
-[1.0.5]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.0.5
-[1.0.4]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.0.4
-[1.0.3]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.0.3
-[1.0.2]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.0.2
-[1.0.1]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.0.1
-[1.0.0]: https://github.com/glittercowboy/get-shit-done/releases/tag/v1.0.0
+[Unreleased]: https://github.com/gsd-build/gsdt/compare/v1.30.0...HEAD
+[1.30.0]: https://github.com/gsd-build/gsdt/releases/tag/v1.30.0
+[1.29.0]: https://github.com/gsd-build/gsdt/releases/tag/v1.29.0
+[1.28.0]: https://github.com/gsd-build/gsdt/releases/tag/v1.28.0
+[1.27.0]: https://github.com/glittercowboy/gsdt/releases/tag/v1.27.0
+[1.26.0]: https://github.com/glittercowboy/gsdt/releases/tag/v1.26.0
+[1.25.0]: https://github.com/glittercowboy/gsdt/releases/tag/v1.25.0
+[1.24.0]: https://github.com/glittercowboy/gsdt/releases/tag/v1.24.0
+[1.23.0]: https://github.com/glittercowboy/gsdt/releases/tag/v1.23.0
+[1.22.4]: https://github.com/glittercowboy/gsdt/releases/tag/v1.22.4
+[1.22.3]: https://github.com/glittercowboy/gsdt/releases/tag/v1.22.3
+[1.22.2]: https://github.com/glittercowboy/gsdt/releases/tag/v1.22.2
+[1.22.1]: https://github.com/glittercowboy/gsdt/releases/tag/v1.22.1
+[1.22.0]: https://github.com/glittercowboy/gsdt/releases/tag/v1.22.0
+[1.21.1]: https://github.com/glittercowboy/gsdt/releases/tag/v1.21.1
+[1.21.0]: https://github.com/glittercowboy/gsdt/releases/tag/v1.21.0
+[1.20.6]: https://github.com/glittercowboy/gsdt/releases/tag/v1.20.6
+[1.20.5]: https://github.com/glittercowboy/gsdt/releases/tag/v1.20.5
+[1.20.4]: https://github.com/glittercowboy/gsdt/releases/tag/v1.20.4
+[1.20.3]: https://github.com/glittercowboy/gsdt/releases/tag/v1.20.3
+[1.20.2]: https://github.com/glittercowboy/gsdt/releases/tag/v1.20.2
+[1.20.1]: https://github.com/glittercowboy/gsdt/releases/tag/v1.20.1
+[1.20.0]: https://github.com/glittercowboy/gsdt/releases/tag/v1.20.0
+[1.19.2]: https://github.com/glittercowboy/gsdt/releases/tag/v1.19.2
+[1.19.1]: https://github.com/glittercowboy/gsdt/releases/tag/v1.19.1
+[1.19.0]: https://github.com/glittercowboy/gsdt/releases/tag/v1.19.0
+[1.18.0]: https://github.com/glittercowboy/gsdt/releases/tag/v1.18.0
+[1.17.0]: https://github.com/glittercowboy/gsdt/releases/tag/v1.17.0
+[1.16.0]: https://github.com/glittercowboy/gsdt/releases/tag/v1.16.0
+[1.15.0]: https://github.com/glittercowboy/gsdt/releases/tag/v1.15.0
+[1.14.0]: https://github.com/glittercowboy/gsdt/releases/tag/v1.14.0
+[1.13.0]: https://github.com/glittercowboy/gsdt/releases/tag/v1.13.0
+[1.12.1]: https://github.com/glittercowboy/gsdt/releases/tag/v1.12.1
+[1.12.0]: https://github.com/glittercowboy/gsdt/releases/tag/v1.12.0
+[1.11.2]: https://github.com/glittercowboy/gsdt/releases/tag/v1.11.2
+[1.11.1]: https://github.com/glittercowboy/gsdt/releases/tag/v1.11.0
+[1.10.1]: https://github.com/glittercowboy/gsdt/releases/tag/v1.10.1
+[1.10.0]: https://github.com/glittercowboy/gsdt/releases/tag/v1.10.0
+[1.9.12]: https://github.com/glittercowboy/gsdt/releases/tag/v1.9.12
+[1.9.11]: https://github.com/glittercowboy/gsdt/releases/tag/v1.9.11
+[1.9.10]: https://github.com/glittercowboy/gsdt/releases/tag/v1.9.10
+[1.9.9]: https://github.com/glittercowboy/gsdt/releases/tag/v1.9.9
+[1.9.8]: https://github.com/glittercowboy/gsdt/releases/tag/v1.9.8
+[1.9.7]: https://github.com/glittercowboy/gsdt/releases/tag/v1.9.7
+[1.9.6]: https://github.com/glittercowboy/gsdt/releases/tag/v1.9.6
+[1.9.5]: https://github.com/glittercowboy/gsdt/releases/tag/v1.9.5
+[1.9.4]: https://github.com/glittercowboy/gsdt/releases/tag/v1.9.4
+[1.9.2]: https://github.com/glittercowboy/gsdt/releases/tag/v1.9.2
+[1.9.0]: https://github.com/glittercowboy/gsdt/releases/tag/v1.9.0
+[1.8.0]: https://github.com/glittercowboy/gsdt/releases/tag/v1.8.0
+[1.7.1]: https://github.com/glittercowboy/gsdt/releases/tag/v1.7.1
+[1.7.0]: https://github.com/glittercowboy/gsdt/releases/tag/v1.7.0
+[1.6.4]: https://github.com/glittercowboy/gsdt/releases/tag/v1.6.4
+[1.6.3]: https://github.com/glittercowboy/gsdt/releases/tag/v1.6.3
+[1.6.2]: https://github.com/glittercowboy/gsdt/releases/tag/v1.6.2
+[1.6.1]: https://github.com/glittercowboy/gsdt/releases/tag/v1.6.1
+[1.6.0]: https://github.com/glittercowboy/gsdt/releases/tag/v1.6.0
+[1.5.30]: https://github.com/glittercowboy/gsdt/releases/tag/v1.5.30
+[1.5.29]: https://github.com/glittercowboy/gsdt/releases/tag/v1.5.29
+[1.5.28]: https://github.com/glittercowboy/gsdt/releases/tag/v1.5.28
+[1.5.27]: https://github.com/glittercowboy/gsdt/releases/tag/v1.5.27
+[1.5.26]: https://github.com/glittercowboy/gsdt/releases/tag/v1.5.26
+[1.5.25]: https://github.com/glittercowboy/gsdt/releases/tag/v1.5.25
+[1.5.24]: https://github.com/glittercowboy/gsdt/releases/tag/v1.5.24
+[1.5.23]: https://github.com/glittercowboy/gsdt/releases/tag/v1.5.23
+[1.5.22]: https://github.com/glittercowboy/gsdt/releases/tag/v1.5.22
+[1.5.21]: https://github.com/glittercowboy/gsdt/releases/tag/v1.5.21
+[1.5.20]: https://github.com/glittercowboy/gsdt/releases/tag/v1.5.20
+[1.5.19]: https://github.com/glittercowboy/gsdt/releases/tag/v1.5.19
+[1.5.18]: https://github.com/glittercowboy/gsdt/releases/tag/v1.5.18
+[1.5.17]: https://github.com/glittercowboy/gsdt/releases/tag/v1.5.17
+[1.5.16]: https://github.com/glittercowboy/gsdt/releases/tag/v1.5.16
+[1.5.15]: https://github.com/glittercowboy/gsdt/releases/tag/v1.5.15
+[1.5.14]: https://github.com/glittercowboy/gsdt/releases/tag/v1.5.14
+[1.5.13]: https://github.com/glittercowboy/gsdt/releases/tag/v1.5.13
+[1.5.12]: https://github.com/glittercowboy/gsdt/releases/tag/v1.5.12
+[1.5.11]: https://github.com/glittercowboy/gsdt/releases/tag/v1.5.11
+[1.5.10]: https://github.com/glittercowboy/gsdt/releases/tag/v1.5.10
+[1.5.9]: https://github.com/glittercowboy/gsdt/releases/tag/v1.5.9
+[1.5.8]: https://github.com/glittercowboy/gsdt/releases/tag/v1.5.8
+[1.5.7]: https://github.com/glittercowboy/gsdt/releases/tag/v1.5.7
+[1.5.6]: https://github.com/glittercowboy/gsdt/releases/tag/v1.5.6
+[1.5.5]: https://github.com/glittercowboy/gsdt/releases/tag/v1.5.5
+[1.5.4]: https://github.com/glittercowboy/gsdt/releases/tag/v1.5.4
+[1.5.3]: https://github.com/glittercowboy/gsdt/releases/tag/v1.5.3
+[1.5.2]: https://github.com/glittercowboy/gsdt/releases/tag/v1.5.2
+[1.5.1]: https://github.com/glittercowboy/gsdt/releases/tag/v1.5.1
+[1.5.0]: https://github.com/glittercowboy/gsdt/releases/tag/v1.5.0
+[1.4.29]: https://github.com/glittercowboy/gsdt/releases/tag/v1.4.29
+[1.4.28]: https://github.com/glittercowboy/gsdt/releases/tag/v1.4.28
+[1.4.27]: https://github.com/glittercowboy/gsdt/releases/tag/v1.4.27
+[1.4.26]: https://github.com/glittercowboy/gsdt/releases/tag/v1.4.26
+[1.4.25]: https://github.com/glittercowboy/gsdt/releases/tag/v1.4.25
+[1.4.24]: https://github.com/glittercowboy/gsdt/releases/tag/v1.4.24
+[1.4.23]: https://github.com/glittercowboy/gsdt/releases/tag/v1.4.23
+[1.4.22]: https://github.com/glittercowboy/gsdt/releases/tag/v1.4.22
+[1.4.21]: https://github.com/glittercowboy/gsdt/releases/tag/v1.4.21
+[1.4.20]: https://github.com/glittercowboy/gsdt/releases/tag/v1.4.20
+[1.4.19]: https://github.com/glittercowboy/gsdt/releases/tag/v1.4.19
+[1.4.18]: https://github.com/glittercowboy/gsdt/releases/tag/v1.4.18
+[1.4.17]: https://github.com/glittercowboy/gsdt/releases/tag/v1.4.17
+[1.4.16]: https://github.com/glittercowboy/gsdt/releases/tag/v1.4.16
+[1.4.15]: https://github.com/glittercowboy/gsdt/releases/tag/v1.4.15
+[1.4.14]: https://github.com/glittercowboy/gsdt/releases/tag/v1.4.14
+[1.4.13]: https://github.com/glittercowboy/gsdt/releases/tag/v1.4.13
+[1.4.12]: https://github.com/glittercowboy/gsdt/releases/tag/v1.4.12
+[1.4.11]: https://github.com/glittercowboy/gsdt/releases/tag/v1.4.11
+[1.4.10]: https://github.com/glittercowboy/gsdt/releases/tag/v1.4.10
+[1.4.9]: https://github.com/glittercowboy/gsdt/releases/tag/v1.4.9
+[1.4.8]: https://github.com/glittercowboy/gsdt/releases/tag/v1.4.8
+[1.4.7]: https://github.com/glittercowboy/gsdt/releases/tag/v1.4.7
+[1.4.6]: https://github.com/glittercowboy/gsdt/releases/tag/v1.4.6
+[1.4.5]: https://github.com/glittercowboy/gsdt/releases/tag/v1.4.5
+[1.4.4]: https://github.com/glittercowboy/gsdt/releases/tag/v1.4.4
+[1.4.3]: https://github.com/glittercowboy/gsdt/releases/tag/v1.4.3
+[1.4.2]: https://github.com/glittercowboy/gsdt/releases/tag/v1.4.2
+[1.4.1]: https://github.com/glittercowboy/gsdt/releases/tag/v1.4.1
+[1.4.0]: https://github.com/glittercowboy/gsdt/releases/tag/v1.4.0
+[1.3.34]: https://github.com/glittercowboy/gsdt/releases/tag/v1.3.34
+[1.3.33]: https://github.com/glittercowboy/gsdt/releases/tag/v1.3.33
+[1.3.32]: https://github.com/glittercowboy/gsdt/releases/tag/v1.3.32
+[1.3.31]: https://github.com/glittercowboy/gsdt/releases/tag/v1.3.31
+[1.3.30]: https://github.com/glittercowboy/gsdt/releases/tag/v1.3.30
+[1.3.29]: https://github.com/glittercowboy/gsdt/releases/tag/v1.3.29
+[1.3.28]: https://github.com/glittercowboy/gsdt/releases/tag/v1.3.28
+[1.3.27]: https://github.com/glittercowboy/gsdt/releases/tag/v1.3.27
+[1.3.26]: https://github.com/glittercowboy/gsdt/releases/tag/v1.3.26
+[1.3.25]: https://github.com/glittercowboy/gsdt/releases/tag/v1.3.25
+[1.3.24]: https://github.com/glittercowboy/gsdt/releases/tag/v1.3.24
+[1.3.23]: https://github.com/glittercowboy/gsdt/releases/tag/v1.3.23
+[1.3.22]: https://github.com/glittercowboy/gsdt/releases/tag/v1.3.22
+[1.3.21]: https://github.com/glittercowboy/gsdt/releases/tag/v1.3.21
+[1.3.20]: https://github.com/glittercowboy/gsdt/releases/tag/v1.3.20
+[1.3.19]: https://github.com/glittercowboy/gsdt/releases/tag/v1.3.19
+[1.3.18]: https://github.com/glittercowboy/gsdt/releases/tag/v1.3.18
+[1.3.17]: https://github.com/glittercowboy/gsdt/releases/tag/v1.3.17
+[1.3.16]: https://github.com/glittercowboy/gsdt/releases/tag/v1.3.16
+[1.3.15]: https://github.com/glittercowboy/gsdt/releases/tag/v1.3.15
+[1.3.14]: https://github.com/glittercowboy/gsdt/releases/tag/v1.3.14
+[1.3.13]: https://github.com/glittercowboy/gsdt/releases/tag/v1.3.13
+[1.3.12]: https://github.com/glittercowboy/gsdt/releases/tag/v1.3.12
+[1.3.11]: https://github.com/glittercowboy/gsdt/releases/tag/v1.3.11
+[1.3.10]: https://github.com/glittercowboy/gsdt/releases/tag/v1.3.10
+[1.3.9]: https://github.com/glittercowboy/gsdt/releases/tag/v1.3.9
+[1.3.8]: https://github.com/glittercowboy/gsdt/releases/tag/v1.3.8
+[1.3.7]: https://github.com/glittercowboy/gsdt/releases/tag/v1.3.7
+[1.3.6]: https://github.com/glittercowboy/gsdt/releases/tag/v1.3.6
+[1.3.5]: https://github.com/glittercowboy/gsdt/releases/tag/v1.3.5
+[1.3.4]: https://github.com/glittercowboy/gsdt/releases/tag/v1.3.4
+[1.3.3]: https://github.com/glittercowboy/gsdt/releases/tag/v1.3.3
+[1.3.2]: https://github.com/glittercowboy/gsdt/releases/tag/v1.3.2
+[1.3.1]: https://github.com/glittercowboy/gsdt/releases/tag/v1.3.1
+[1.3.0]: https://github.com/glittercowboy/gsdt/releases/tag/v1.3.0
+[1.2.13]: https://github.com/glittercowboy/gsdt/releases/tag/v1.2.13
+[1.2.12]: https://github.com/glittercowboy/gsdt/releases/tag/v1.2.12
+[1.2.11]: https://github.com/glittercowboy/gsdt/releases/tag/v1.2.11
+[1.2.10]: https://github.com/glittercowboy/gsdt/releases/tag/v1.2.10
+[1.2.9]: https://github.com/glittercowboy/gsdt/releases/tag/v1.2.9
+[1.2.8]: https://github.com/glittercowboy/gsdt/releases/tag/v1.2.8
+[1.2.7]: https://github.com/glittercowboy/gsdt/releases/tag/v1.2.7
+[1.2.6]: https://github.com/glittercowboy/gsdt/releases/tag/v1.2.6
+[1.2.5]: https://github.com/glittercowboy/gsdt/releases/tag/v1.2.5
+[1.2.4]: https://github.com/glittercowboy/gsdt/releases/tag/v1.2.4
+[1.2.3]: https://github.com/glittercowboy/gsdt/releases/tag/v1.2.3
+[1.2.2]: https://github.com/glittercowboy/gsdt/releases/tag/v1.2.2
+[1.2.1]: https://github.com/glittercowboy/gsdt/releases/tag/v1.2.1
+[1.2.0]: https://github.com/glittercowboy/gsdt/releases/tag/v1.2.0
+[1.1.2]: https://github.com/glittercowboy/gsdt/releases/tag/v1.1.2
+[1.1.1]: https://github.com/glittercowboy/gsdt/releases/tag/v1.1.1
+[1.1.0]: https://github.com/glittercowboy/gsdt/releases/tag/v1.1.0
+[1.0.11]: https://github.com/glittercowboy/gsdt/releases/tag/v1.0.11
+[1.0.10]: https://github.com/glittercowboy/gsdt/releases/tag/v1.0.10
+[1.0.9]: https://github.com/glittercowboy/gsdt/releases/tag/v1.0.9
+[1.0.8]: https://github.com/glittercowboy/gsdt/releases/tag/v1.0.8
+[1.0.7]: https://github.com/glittercowboy/gsdt/releases/tag/v1.0.7
+[1.0.6]: https://github.com/glittercowboy/gsdt/releases/tag/v1.0.6
+[1.0.5]: https://github.com/glittercowboy/gsdt/releases/tag/v1.0.5
+[1.0.4]: https://github.com/glittercowboy/gsdt/releases/tag/v1.0.4
+[1.0.3]: https://github.com/glittercowboy/gsdt/releases/tag/v1.0.3
+[1.0.2]: https://github.com/glittercowboy/gsdt/releases/tag/v1.0.2
+[1.0.1]: https://github.com/glittercowboy/gsdt/releases/tag/v1.0.1
+[1.0.0]: https://github.com/glittercowboy/gsdt/releases/tag/v1.0.0

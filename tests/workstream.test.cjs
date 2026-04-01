@@ -331,9 +331,9 @@ describe('workstream progress', () => {
   });
 });
 
-// ─── Integration: gsd-tools --ws flag ────────────────────────────────────────
+// ─── Integration: gsdt-tools --ws flag ────────────────────────────────────────
 
-describe('gsd-tools --ws flag integration', () => {
+describe('gsdt-tools --ws flag integration', () => {
   let tmpDir;
 
   before(() => {
@@ -444,7 +444,7 @@ describe('path traversal rejection', () => {
   });
 
   describe('setActiveWorkstream rejects invalid names directly', () => {
-    const { setActiveWorkstream } = require('../get-shit-done/bin/lib/core.cjs');
+    const { setActiveWorkstream } = require('../gsdt/bin/lib/core.cjs');
     for (const name of maliciousNames) {
       test(`throws for ${name}`, () => {
         assert.throws(

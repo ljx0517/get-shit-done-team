@@ -6,16 +6,16 @@ const { execSync, execFileSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-const TOOLS_PATH = path.join(__dirname, '..', 'get-shit-done', 'bin', 'gsd-tools.cjs');
+const TOOLS_PATH = path.join(__dirname, '..', 'get-shit-done', 'bin', 'gsdt-tools.cjs');
 
 /**
- * Run gsd-tools command.
+ * Run gsdt-tools command.
  *
  * @param {string|string[]} args - Command string (shell-interpreted) or array
  *   of arguments (shell-bypassed via execFileSync, safe for JSON and dollar signs).
  * @param {string} cwd - Working directory.
  * @param {object} [env] - Optional env overrides merged on top of process.env.
- *   Pass { HOME: cwd } to sandbox ~/.gsd/ lookups in tests that assert concrete
+ *   Pass { HOME: cwd } to sandbox ~/.gsdt/ lookups in tests that assert concrete
  *   config values that could be overridden by a developer's defaults.json.
  */
 function runGsdTools(args, cwd = process.cwd(), env = {}) {

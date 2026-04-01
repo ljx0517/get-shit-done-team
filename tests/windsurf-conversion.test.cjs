@@ -44,15 +44,15 @@ description: Plan a phase
 ---
 
 Next:
-/gsd:execute-phase 17
-/gsd-help
+/gsdt:execute-phase 17
+/gsdt-help
 gsd:progress
 `;
 
     const result = convertClaudeCommandToWindsurfSkill(input, 'gsd-plan-phase');
-    // Slash commands: /gsd:execute-phase -> /gsd-execute-phase
+    // Slash commands: /gsdt:execute-phase -> /gsd-execute-phase
     assert.ok(result.includes('/gsd-execute-phase 17'), 'slash command gsd: -> gsd-');
-    assert.ok(result.includes('/gsd-help'), '/gsd-help preserved');
+    assert.ok(result.includes('/gsdt-help'), '/gsdt-help preserved');
     assert.ok(result.includes('gsd-progress'), 'bare gsd: -> gsd-');
   });
 

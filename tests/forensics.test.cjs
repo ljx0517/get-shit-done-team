@@ -17,7 +17,7 @@ const workflowPath = path.join(repoRoot, 'get-shit-done', 'workflows', 'forensic
 
 describe('forensics command', () => {
   test('command file exists', () => {
-    assert.ok(fs.existsSync(commandPath), 'commands/gsd/forensics.md should exist');
+    assert.ok(fs.existsSync(commandPath), 'commands/gsdt/forensics.md should exist');
   });
 
   test('command has correct frontmatter', () => {
@@ -142,7 +142,7 @@ describe('forensics workflow', () => {
     const content = fs.readFileSync(workflowPath, 'utf-8');
     assert.ok(
       content.includes('state record-session'),
-      'should update STATE.md via gsd-tools'
+      'should update STATE.md via gsdt-tools'
     );
   });
 

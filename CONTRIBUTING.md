@@ -83,7 +83,7 @@ const { createTempProject, createTempGitProject, createTempDir, cleanup, runGsdT
 | `createTempGitProject(prefix?)` | Same + git init + initial commit | Testing git-dependent features |
 | `createTempDir(prefix?)` | Bare temp directory | Testing features that don't need `.planning/` |
 | `cleanup(tmpDir)` | Removes directory recursively | Always use in `afterEach` |
-| `runGsdTools(args, cwd, env?)` | Executes gsd-tools.cjs | Testing CLI commands |
+| `runGsdTools(args, cwd, env?)` | Executes gsdt-tools.cjs | Testing CLI commands |
 
 ### Test Structure
 
@@ -170,20 +170,20 @@ npm run test:coverage
 ## Code Style
 
 - **CommonJS** (`.cjs`) — the project uses `require()`, not ESM `import`
-- **No external dependencies in core** — `gsd-tools.cjs` and all lib files use only Node.js built-ins
+- **No external dependencies in core** — `gsdt-tools.cjs` and all lib files use only Node.js built-ins
 - **Conventional commits** — `feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `ci:`
 
 ## File Structure
 
 ```
 bin/install.js          — Installer (multi-runtime)
-get-shit-done/
+gsdt/
   bin/lib/              — Core library modules (.cjs)
   workflows/            — Workflow definitions (.md)
   references/           — Reference documentation (.md)
   templates/            — File templates
 agents/                 — Agent definitions (.md)
-commands/gsd/           — Slash command definitions (.md)
+commands/gsdt/           — Slash command definitions (.md)
 tests/                  — Test files (.test.cjs)
   helpers.cjs           — Shared test utilities
 docs/                   — User-facing documentation

@@ -15,7 +15,7 @@ const COMMAND_PATH = path.join(__dirname, '..', 'commands', 'gsd', 'execute-phas
 
 describe('execute-phase command: active flags are explicit', () => {
   test('command file exists', () => {
-    assert.ok(fs.existsSync(COMMAND_PATH), 'commands/gsd/execute-phase.md should exist');
+    assert.ok(fs.existsSync(COMMAND_PATH), 'commands/gsdt/execute-phase.md should exist');
   });
 
   test('objective says documented flags are not implied active', () => {

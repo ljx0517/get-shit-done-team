@@ -2,7 +2,7 @@
  * GSD Tools Tests - config.cjs
  *
  * CLI integration tests for config-ensure-section, config-set, and config-get
- * commands exercised through gsd-tools.cjs via execSync.
+ * commands exercised through gsdt-tools.cjs via execSync.
  *
  * Requirements: TEST-13
  */
@@ -46,7 +46,7 @@ describe('config-ensure-section command', () => {
     assert.strictEqual(output.created, true);
 
     const config = readConfig(tmpDir);
-    // Verify structure and types — exact values may vary if ~/.gsd/defaults.json exists
+    // Verify structure and types — exact values may vary if ~/.gsdt/defaults.json exists
     assert.strictEqual(typeof config.model_profile, 'string');
     assert.strictEqual(typeof config.commit_docs, 'boolean');
     assert.strictEqual(typeof config.parallelization, 'boolean');
