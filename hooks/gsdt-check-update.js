@@ -65,7 +65,7 @@ const child = spawn(process.execPath, ['-e', `
   } catch (e) {}
 
   // Check for stale hooks — compare hook version headers against installed VERSION
-  // Hooks live inside get-shit-done/hooks/, not configDir/hooks/
+  // Hooks live inside gsdt/hooks/, not configDir/hooks/
   let staleHooks = [];
   if (configDir) {
     const hooksDir = path.join(configDir, 'get-shit-done', 'hooks');
@@ -93,7 +93,7 @@ const child = spawn(process.execPath, ['-e', `
 
   let latest = null;
   try {
-    latest = execSync('npm view get-shit-done-cc version', { encoding: 'utf8', timeout: 10000, windowsHide: true }).trim();
+    latest = execSync('npm view gsdt version', { encoding: 'utf8', timeout: 10000, windowsHide: true }).trim();
   } catch (e) {}
 
   const result = {
