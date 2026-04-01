@@ -6,18 +6,18 @@
 
 | 代理 | `quality` | `balanced` | `budget` |
 |-------|-----------|------------|----------|
-| gsd-planner | opus | opus | sonnet |
-| gsd-roadmapper | opus | sonnet | sonnet |
-| gsd-executor | opus | sonnet | sonnet |
-| gsd-phase-researcher | opus | sonnet | haiku |
-| gsd-project-researcher | opus | sonnet | haiku |
-| gsd-research-synthesizer | sonnet | sonnet | haiku |
-| gsd-debugger | opus | sonnet | sonnet |
-| gsd-codebase-mapper | sonnet | haiku | haiku |
-| gsd-verifier | sonnet | sonnet | haiku |
-| gsd-plan-checker | sonnet | sonnet | haiku |
-| gsd-integration-checker | sonnet | sonnet | haiku |
-| gsd-nyquist-auditor | sonnet | sonnet | haiku |
+| gsdt-planner | opus | opus | sonnet |
+| gsdt-roadmapper | opus | sonnet | sonnet |
+| gsdt-executor | opus | sonnet | sonnet |
+| gsdt-phase-researcher | opus | sonnet | haiku |
+| gsdt-project-researcher | opus | sonnet | haiku |
+| gsdt-research-synthesizer | sonnet | sonnet | haiku |
+| gsdt-debugger | opus | sonnet | sonnet |
+| gsdt-codebase-mapper | sonnet | haiku | haiku |
+| gsdt-verifier | sonnet | sonnet | haiku |
+| gsdt-plan-checker | sonnet | sonnet | haiku |
+| gsdt-integration-checker | sonnet | sonnet | haiku |
+| gsdt-nyquist-auditor | sonnet | sonnet | haiku |
 
 ## 配置理念
 
@@ -56,8 +56,8 @@
 {
   "model_profile": "balanced",
   "model_overrides": {
-    "gsd-executor": "opus",
-    "gsd-planner": "haiku"
+    "gsdt-executor": "opus",
+    "gsdt-planner": "haiku"
   }
 }
 ```
@@ -66,7 +66,7 @@
 
 ## 切换配置
 
-运行时：`/gsd:set-profile <profile>`
+运行时：`/gsdt:set-profile <profile>`
 
 项目默认值：在 `.planning/config.json` 中设置：
 ```json
@@ -77,16 +77,16 @@
 
 ## 设计理由
 
-**为什么 gsd-planner 使用 Opus？**
+**为什么 gsdt-planner 使用 Opus？**
 规划涉及架构决策、目标分解和任务设计。这是模型质量影响最大的地方。
 
-**为什么 gsd-executor 使用 Sonnet？**
+**为什么 gsdt-executor 使用 Sonnet？**
 执行者遵循明确的 PLAN.md 指令。计划已包含推理；执行只是实现。
 
 **为什么 balanced 中验证器使用 Sonnet（而非 Haiku）？**
 验证需要目标回溯推理 —— 检查代码是否**交付**了阶段承诺的内容，而不仅仅是模式匹配。Sonnet 处理得很好；Haiku 可能会遗漏细微的差距。
 
-**为什么 gsd-codebase-mapper 使用 Haiku？**
+**为什么 gsdt-codebase-mapper 使用 Haiku？**
 只读探索和模式提取。不需要推理，只需从文件内容输出结构化结果。
 
 **为什么用 `inherit` 而不是直接传递 `opus`？**

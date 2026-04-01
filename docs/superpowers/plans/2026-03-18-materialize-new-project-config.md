@@ -2,11 +2,11 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** When `/gsd:new-project` creates `.planning/config.json`, the file contains all effective defaults — not just the 6 user-chosen keys — so developers can see every setting without reading source code.
+**Goal:** When `/gsdt:new-project` creates `.planning/config.json`, the file contains all effective defaults — not just the 6 user-chosen keys — so developers can see every setting without reading source code.
 
 **Architecture:** Add a single JS function `buildNewProjectConfig(cwd, userChoices)` in `config.cjs` as the one source of truth for a new project's full config. Expose it as a CLI command `config-new-project`. Update the `new-project.md` workflow to call this command instead of writing a partial JSON inline.
 
-**Tech Stack:** Node.js/CommonJS, existing gsd-tools CLI, `node:test` for tests.
+**Tech Stack:** Node.js/CommonJS, existing gsdt-tools CLI, `node:test` for tests.
 
 ---
 
@@ -61,9 +61,9 @@ Full config that should exist from the start:
 
 | File | Action | Purpose |
 |------|--------|---------|
-| `get-shit-done/bin/lib/config.cjs` | Modify | Add `buildNewProjectConfig()` + `cmdConfigNewProject()` |
-| `get-shit-done/bin/gsd-tools.cjs` | Modify | Register `config-new-project` case + update usage string |
-| `get-shit-done/workflows/new-project.md` | Modify | Steps 2a + 5: replace inline JSON write with CLI call |
+| `gsdt/bin/lib/config.cjs` | Modify | Add `buildNewProjectConfig()` + `cmdConfigNewProject()` |
+| `gsdt/bin/gsdt-tools.cjs` | Modify | Register `config-new-project` case + update usage string |
+| `gsdt/workflows/new-project.md` | Modify | Steps 2a + 5: replace inline JSON write with CLI call |
 | `tests/config.test.cjs` | Modify | Add `config-new-project` test suite |
 
 ---
@@ -72,7 +72,7 @@ Full config that should exist from the start:
 
 **Files:**
 
-- Modify: `get-shit-done/bin/lib/config.cjs`
+- Modify: `gsdt/bin/lib/config.cjs`
 
 - [ ] **Step 1.1: Write the failing tests first**
 
@@ -235,7 +235,7 @@ Expected: All `config-new-project` tests fail with "config-new-project is not a 
 
 - [ ] **Step 1.3: Implement `buildNewProjectConfig` and `cmdConfigNewProject` in config.cjs**
 
-In `get-shit-done/bin/lib/config.cjs`, add the following after the `validateKnownConfigKeyPath` function (around line 35) and before `ensureConfigFile`:
+In `gsdt/bin/lib/config.cjs`, add the following after the `validateKnownConfigKeyPath` function (around line 35) and before `ensureConfigFile`:
 
 ```js
 /**
@@ -243,7 +243,7 @@ In `get-shit-done/bin/lib/config.cjs`, add the following after the `validateKnow
  *
  * Merges (in order of increasing priority):
  *   1. Hardcoded defaults
- *   2. User-level defaults from ~/.gsd/defaults.json (if present)
+ *   2. User-level defaults from ~/.gsdt/defaults.json (if present)
  *   3. userChoices (the settings the user explicitly selected during new-project)
  *
  * Returns a plain object — does NOT write any files.
@@ -256,7 +256,7 @@ function buildNewProjectConfig(cwd, userChoices) {
   const braveKeyFile = path.join(homedir, '.gsd', 'brave_api_key');
   const hasBraveSearch = !!(process.env.BRAVE_API_KEY || fs.existsSync(braveKeyFile));
 
-  // Load user-level defaults from ~/.gsd/defaults.json if available
+  // Load user-level defaults from ~/.gsdt/defaults.json if available
   const globalDefaultsPath = path.join(homedir, '.gsd', 'defaults.json');
   let userDefaults = {};
   try {
@@ -317,8 +317,8 @@ function buildNewProjectConfig(cwd, userChoices) {
  * Command: create a fully-materialized .planning/config.json for a new project.
  *
  * Accepts user-chosen settings as a JSON string (the keys the user explicitly
- * configured during /gsd:new-project). All remaining keys are filled from
- * hardcoded defaults and optional ~/.gsd/defaults.json.
+ * configured during /gsdt:new-project). All remaining keys are filled from
+ * hardcoded defaults and optional ~/.gsdt/defaults.json.
  *
  * Idempotent: if config.json already exists, returns { created: false }.
  */
@@ -377,19 +377,19 @@ Expected: All `config-new-project` tests pass. Existing tests still pass.
 
 ```bash
 cd /Users/diego/Dev/get-shit-done
-git add get-shit-done/bin/lib/config.cjs tests/config.test.cjs
+git add gsdt/bin/lib/config.cjs tests/config.test.cjs
 git commit -m "feat: add config-new-project command for full config materialization"
 ```
 
 ---
 
-## Task 2: Register `config-new-project` in gsd-tools.cjs
+## Task 2: Register `config-new-project` in gsdt-tools.cjs
 
 **Files:**
 
-- Modify: `get-shit-done/bin/gsd-tools.cjs`
+- Modify: `gsdt/bin/gsdt-tools.cjs`
 
-- [ ] **Step 2.1: Add the case to the switch in gsd-tools.cjs**
+- [ ] **Step 2.1: Add the case to the switch in gsdt-tools.cjs**
 
 After the `config-get` case (around line 401), add:
 
@@ -409,7 +409,7 @@ New: `...config-ensure-section, config-new-project, init`
 
 ```bash
 cd /Users/diego/Dev/get-shit-done
-node get-shit-done/bin/gsd-tools.cjs config-new-project '{"mode":"interactive","granularity":"standard"}' --cwd /tmp/gsd-smoke-$(date +%s)
+node gsdt/bin/gsdt-tools.cjs config-new-project '{"mode":"interactive","granularity":"standard"}' --cwd /tmp/gsd-smoke-$(date +%s)
 ```
 
 Expected: outputs `{"created":true,"path":".planning/config.json"}` (or similar).
@@ -429,8 +429,8 @@ Expected: All pass.
 
 ```bash
 cd /Users/diego/Dev/get-shit-done
-git add get-shit-done/bin/gsd-tools.cjs
-git commit -m "feat: register config-new-project in gsd-tools CLI router"
+git add gsdt/bin/gsdt-tools.cjs
+git commit -m "feat: register config-new-project in gsdt-tools CLI router"
 ```
 
 ---
@@ -439,7 +439,7 @@ git commit -m "feat: register config-new-project in gsd-tools CLI router"
 
 **Files:**
 
-- Modify: `get-shit-done/workflows/new-project.md`
+- Modify: `gsdt/workflows/new-project.md`
 
 This is the core change. Two places need updating:
 
@@ -470,7 +470,7 @@ Create `.planning/config.json` using the CLI (fills in all defaults automaticall
 
 ```bash
 mkdir -p .planning
-node "$HOME/.claude/get-shit-done/bin/gsd-tools.cjs" config-new-project "$(cat <<'CHOICES'
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" config-new-project "$(cat <<'CHOICES'
 {
   "mode": "yolo",
   "granularity": "[selected: coarse|standard|fine]",
@@ -516,7 +516,7 @@ Create `.planning/config.json` using the CLI (fills in all defaults automaticall
 
 ```bash
 mkdir -p .planning
-node "$HOME/.claude/get-shit-done/bin/gsd-tools.cjs" config-new-project "$(cat <<'CHOICES'
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" config-new-project "$(cat <<'CHOICES'
 {
   "mode": "[selected: yolo|interactive]",
   "granularity": "[selected: coarse|standard|fine]",
@@ -542,7 +542,7 @@ The command merges your selections with all runtime defaults (`search_gitignored
 
 ```bash
 cd /Users/diego/Dev/get-shit-done
-grep -n "config-new-project\|config\.json\|CHOICES" get-shit-done/workflows/new-project.md
+grep -n "config-new-project\|config\.json\|CHOICES" gsdt/workflows/new-project.md
 ```
 
 Expected: 2 occurrences of `config-new-project` (one per step), no more inline JSON templates for config creation.
@@ -551,7 +551,7 @@ Expected: 2 occurrences of `config-new-project` (one per step), no more inline J
 
 ```bash
 cd /Users/diego/Dev/get-shit-done
-git add get-shit-done/workflows/new-project.md
+git add gsdt/workflows/new-project.md
 git commit -m "feat: use config-new-project in new-project workflow for full config materialization"
 ```
 
@@ -578,10 +578,10 @@ TMP=$(mktemp -d)
 cd "$TMP"
 
 # Step 1 simulation: what init new-project returns
-node /Users/diego/Dev/get-shit-done/get-shit-done/bin/gsd-tools.cjs init new-project --cwd "$TMP"
+node /Users/diego/Dev/gsdt/gsdt/bin/gsdt-tools.cjs init new-project --cwd "$TMP"
 
 # Step 5 simulation: create full config
-node /Users/diego/Dev/get-shit-done/get-shit-done/bin/gsd-tools.cjs config-new-project '{
+node /Users/diego/Dev/gsdt/gsdt/bin/gsdt-tools.cjs config-new-project '{
   "mode": "interactive",
   "granularity": "standard",
   "parallelization": true,
@@ -611,11 +611,11 @@ Expected output: a config.json with `mode`, `granularity`, `model_profile`, `com
 TMP=$(mktemp -d)
 CHOICES='{"mode":"yolo","granularity":"coarse"}'
 
-node /Users/diego/Dev/get-shit-done/get-shit-done/bin/gsd-tools.cjs config-new-project "$CHOICES" --cwd "$TMP"
+node /Users/diego/Dev/gsdt/gsdt/bin/gsdt-tools.cjs config-new-project "$CHOICES" --cwd "$TMP"
 FIRST=$(cat "$TMP/.planning/config.json")
 
 # Second call should be no-op
-node /Users/diego/Dev/get-shit-done/get-shit-done/bin/gsd-tools.cjs config-new-project "$CHOICES" --cwd "$TMP"
+node /Users/diego/Dev/gsdt/gsdt/bin/gsdt-tools.cjs config-new-project "$CHOICES" --cwd "$TMP"
 SECOND=$(cat "$TMP/.planning/config.json")
 
 [ "$FIRST" = "$SECOND" ] && echo "IDEMPOTENT: OK" || echo "IDEMPOTENT: FAIL"
@@ -628,17 +628,17 @@ Expected: `IDEMPOTENT: OK`
 
 ```bash
 TMP=$(mktemp -d)
-node /Users/diego/Dev/get-shit-done/get-shit-done/bin/gsd-tools.cjs config-new-project '{
+node /Users/diego/Dev/gsdt/gsdt/bin/gsdt-tools.cjs config-new-project '{
   "mode":"yolo","granularity":"standard","parallelization":true,"commit_docs":true,
   "model_profile":"balanced",
   "workflow":{"research":true,"plan_check":false,"verifier":true,"nyquist_validation":true}
 }' --cwd "$TMP"
 
 # loadConfig should correctly read plan_check (nested as workflow.plan_check)
-node /Users/diego/Dev/get-shit-done/get-shit-done/bin/gsd-tools.cjs config-get workflow.plan_check --cwd "$TMP"
+node /Users/diego/Dev/gsdt/gsdt/bin/gsdt-tools.cjs config-get workflow.plan_check --cwd "$TMP"
 # Expected: false
 
-node /Users/diego/Dev/get-shit-done/get-shit-done/bin/gsd-tools.cjs config-get git.branching_strategy --cwd "$TMP"
+node /Users/diego/Dev/gsdt/gsdt/bin/gsdt-tools.cjs config-get git.branching_strategy --cwd "$TMP"
 # Expected: "none"
 
 rm -rf "$TMP"
@@ -661,7 +661,7 @@ Expected: All pass, 0 failures.
 feat: materialize all config defaults at new-project initialization
 
 **Problem:**
-`/gsd:new-project` creates `.planning/config.json` with only the 6 keys
+`/gsdt:new-project` creates `.planning/config.json` with only the 6 keys
 the user explicitly chose during onboarding. Five additional keys
 (`search_gitignored`, `brave_search`, `git.branching_strategy`,
 `git.phase_branch_template`, `git.milestone_branch_template`) are resolved
@@ -670,12 +670,12 @@ silently by `loadConfig()` at runtime but never written to disk.
 This creates two problems:
 1. **Discoverability**: users can't see or understand `git.branching_strategy`
    without reading source code — it doesn't appear in their config.
-2. **Implicit expansion**: the first time `/gsd:settings` or `config-set`
+2. **Implicit expansion**: the first time `/gsdt:settings` or `config-set`
    writes to the config, those keys still aren't added. The config only
    reflects a fraction of the effective configuration.
 
 **Solution:**
-Add `config-new-project` CLI command to `gsd-tools.cjs`. The command:
+Add `config-new-project` CLI command to `gsdt-tools.cjs`. The command:
 - Accepts user-chosen values as JSON
 - Merges them with all runtime defaults (including env-detected `brave_search`)
 - Writes the fully-materialized config in one shot

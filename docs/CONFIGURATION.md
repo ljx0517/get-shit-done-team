@@ -6,7 +6,7 @@
 
 ## Configuration File
 
-GSD stores project settings in `.planning/config.json`. Created during `/gsd:new-project`, updated via `/gsd:settings`.
+GSD stores project settings in `.planning/config.json`. Created during `/gsdt:new-project`, updated via `/gsdt:settings`.
 
 ### Full Schema
 
@@ -97,12 +97,12 @@ All workflow toggles follow the **absent = enabled** pattern. If a key is missin
 | `workflow.auto_advance` | boolean | `false` | Auto-chain discuss → plan → execute without stopping |
 | `workflow.nyquist_validation` | boolean | `true` | Test coverage mapping during plan-phase research |
 | `workflow.ui_phase` | boolean | `true` | Generate UI design contracts for frontend phases |
-| `workflow.ui_safety_gate` | boolean | `true` | Prompt to run /gsd:ui-phase for frontend phases during plan-phase |
+| `workflow.ui_safety_gate` | boolean | `true` | Prompt to run /gsdt:ui-phase for frontend phases during plan-phase |
 | `workflow.node_repair` | boolean | `true` | Autonomous task repair on verification failure |
 | `workflow.node_repair_budget` | number | `2` | Max repair attempts per failed task |
 | `workflow.research_before_questions` | boolean | `false` | Run research before discussion questions instead of after |
-| `workflow.discuss_mode` | string | `'discuss'` | Controls how `/gsd:discuss-phase` gathers context. `'discuss'` (default) asks questions one-by-one. `'assumptions'` reads the codebase first, generates structured assumptions with confidence levels, and only asks you to correct what's wrong. Added in v1.28 |
-| `workflow.skip_discuss` | boolean | `false` | When `true`, `/gsd:autonomous` bypasses the discuss-phase entirely, writing minimal CONTEXT.md from the ROADMAP phase goal. Useful for projects where developer preferences are fully captured in PROJECT.md/REQUIREMENTS.md. Added in v1.28 |
+| `workflow.discuss_mode` | string | `'discuss'` | Controls how `/gsdt:discuss-phase` gathers context. `'discuss'` (default) asks questions one-by-one. `'assumptions'` reads the codebase first, generates structured assumptions with confidence levels, and only asks you to correct what's wrong. Added in v1.28 |
+| `workflow.skip_discuss` | boolean | `false` | When `true`, `/gsdt:autonomous` bypasses the discuss-phase entirely, writing minimal CONTEXT.md from the ROADMAP phase goal. Useful for projects where developer preferences are fully captured in PROJECT.md/REQUIREMENTS.md. Added in v1.28 |
 | `workflow.text_mode` | boolean | `false` | Replaces AskUserQuestion TUI menus with plain-text numbered lists. Required for Claude Code remote sessions (`/rc` mode) where TUI menus don't render. Can also be set per-session with `--text` flag on discuss-phase. Added in v1.28 |
 
 ### Recommended Presets
@@ -133,9 +133,9 @@ If `.planning/` is in `.gitignore`, `commit_docs` is automatically `false` regar
 | Setting | Type | Default | Description |
 |---------|------|---------|-------------|
 | `hooks.context_warnings` | boolean | `true` | Show context window usage warnings via context monitor hook |
-| `hooks.workflow_guard` | boolean | `false` | Warn when file edits happen outside GSD workflow context (advises using `/gsd:quick` or `/gsd:fast`) |
+| `hooks.workflow_guard` | boolean | `false` | Warn when file edits happen outside GSD workflow context (advises using `/gsdt:quick` or `/gsdt:fast`) |
 
-The prompt injection guard hook (`gsd-prompt-guard.js`) is always active and cannot be disabled — it's a security feature, not a workflow toggle.
+The prompt injection guard hook (`gsdt-prompt-guard.js`) is always active and cannot be disabled — it's a security feature, not a workflow toggle.
 
 ### Private Planning Setup
 
@@ -162,9 +162,9 @@ Add an `agent_skills` section to `.planning/config.json` mapping agent types to 
 ```json
 {
   "agent_skills": {
-    "gsd-executor": ["skills/testing-standards", "skills/api-conventions"],
-    "gsd-planner": ["skills/architecture-rules"],
-    "gsd-verifier": ["skills/acceptance-criteria"]
+    "gsdt-executor": ["skills/testing-standards", "skills/api-conventions"],
+    "gsdt-planner": ["skills/architecture-rules"],
+    "gsdt-verifier": ["skills/acceptance-criteria"]
   }
 }
 ```
@@ -175,23 +175,23 @@ Each path must be a directory containing a `SKILL.md` file. Paths are validated 
 
 Any GSD agent type can receive skills. Common types:
 
-- `gsd-executor` -- executes implementation plans
-- `gsd-planner` -- creates phase plans
-- `gsd-checker` -- verifies plan quality
-- `gsd-verifier` -- post-execution verification
-- `gsd-researcher` -- phase research
-- `gsd-project-researcher` -- new-project research
-- `gsd-debugger` -- diagnostic agents
-- `gsd-codebase-mapper` -- codebase analysis
-- `gsd-advisor` -- discuss-phase advisors
-- `gsd-ui-researcher` -- UI design contract creation
-- `gsd-ui-checker` -- UI spec verification
-- `gsd-roadmapper` -- roadmap creation
+- `gsdt-executor` -- executes implementation plans
+- `gsdt-planner` -- creates phase plans
+- `gsdt-plan-checker` -- verifies plan quality
+- `gsdt-verifier` -- post-execution verification
+- `gsdt-phase-researcher` -- phase research
+- `gsdt-project-researcher` -- new-project research
+- `gsdt-debugger` -- diagnostic agents
+- `gsdt-codebase-mapper` -- codebase analysis
+- `gsdt-advisor` -- discuss-phase advisors
+- `gsdt-ui-researcher` -- UI design contract creation
+- `gsdt-ui-checker` -- UI spec verification
+- `gsdt-roadmapper` -- roadmap creation
 - `gsd-synthesizer` -- research synthesis
 
 ### How It Works
 
-At spawn time, workflows call `node gsd-tools.cjs agent-skills <type>` to load configured skills. If skills exist for the agent type, they are injected as an `<agent_skills>` block in the Task() prompt:
+At spawn time, workflows call `node gsdt-tools.cjs agent-skills <type>` to load configured skills. If skills exist for the agent type, they are injected as an `<agent_skills>` block in the Task() prompt:
 
 ```xml
 <agent_skills>
@@ -208,7 +208,7 @@ If no skills are configured, the block is omitted (zero overhead).
 Set skills via the CLI:
 
 ```bash
-node gsd-tools.cjs config-set agent_skills.gsd-executor '["skills/my-skill"]'
+node gsdt-tools.cjs config-set agent_skills.gsdt-executor '["skills/my-skill"]'
 ```
 
 ---
@@ -235,7 +235,7 @@ node gsd-tools.cjs config-set agent_skills.gsd-executor '["skills/my-skill"]'
 | `git.branching_strategy` | enum | `none` | `none`, `phase`, or `milestone` |
 | `git.phase_branch_template` | string | `gsd/phase-{phase}-{slug}` | Branch name template for phase strategy |
 | `git.milestone_branch_template` | string | `gsd/{milestone}-{slug}` | Branch name template for milestone strategy |
-| `git.quick_branch_template` | string or null | `null` | Optional branch name template for `/gsd:quick` tasks |
+| `git.quick_branch_template` | string or null | `null` | Optional branch name template for `/gsdt:quick` tasks |
 
 ### Strategy Comparison
 
@@ -313,18 +313,18 @@ Control confirmation prompts during workflows.
 
 | Agent | `quality` | `balanced` | `budget` | `inherit` |
 |-------|-----------|------------|----------|-----------|
-| gsd-planner | Opus | Opus | Sonnet | Inherit |
-| gsd-roadmapper | Opus | Sonnet | Sonnet | Inherit |
-| gsd-executor | Opus | Sonnet | Sonnet | Inherit |
-| gsd-phase-researcher | Opus | Sonnet | Haiku | Inherit |
-| gsd-project-researcher | Opus | Sonnet | Haiku | Inherit |
-| gsd-research-synthesizer | Sonnet | Sonnet | Haiku | Inherit |
-| gsd-debugger | Opus | Sonnet | Sonnet | Inherit |
-| gsd-codebase-mapper | Sonnet | Haiku | Haiku | Inherit |
-| gsd-verifier | Sonnet | Sonnet | Haiku | Inherit |
-| gsd-plan-checker | Sonnet | Sonnet | Haiku | Inherit |
-| gsd-integration-checker | Sonnet | Sonnet | Haiku | Inherit |
-| gsd-nyquist-auditor | Sonnet | Sonnet | Haiku | Inherit |
+| gsdt-planner | Opus | Opus | Sonnet | Inherit |
+| gsdt-roadmapper | Opus | Sonnet | Sonnet | Inherit |
+| gsdt-executor | Opus | Sonnet | Sonnet | Inherit |
+| gsdt-phase-researcher | Opus | Sonnet | Haiku | Inherit |
+| gsdt-project-researcher | Opus | Sonnet | Haiku | Inherit |
+| gsdt-research-synthesizer | Sonnet | Sonnet | Haiku | Inherit |
+| gsdt-debugger | Opus | Sonnet | Sonnet | Inherit |
+| gsdt-codebase-mapper | Sonnet | Haiku | Haiku | Inherit |
+| gsdt-verifier | Sonnet | Sonnet | Haiku | Inherit |
+| gsdt-plan-checker | Sonnet | Sonnet | Haiku | Inherit |
+| gsdt-integration-checker | Sonnet | Sonnet | Haiku | Inherit |
+| gsdt-nyquist-auditor | Sonnet | Sonnet | Haiku | Inherit |
 
 ### Per-Agent Overrides
 
@@ -334,8 +334,8 @@ Override specific agents without changing the entire profile:
 {
   "model_profile": "balanced",
   "model_overrides": {
-    "gsd-executor": "opus",
-    "gsd-planner": "haiku"
+    "gsdt-executor": "opus",
+    "gsdt-planner": "haiku"
   }
 }
 ```
@@ -344,7 +344,7 @@ Valid override values: `opus`, `sonnet`, `haiku`, `inherit`, or any fully-qualif
 
 ### Non-Claude Runtimes (Codex, OpenCode, Gemini CLI)
 
-When GSD is installed for a non-Claude runtime, the installer automatically sets `resolve_model_ids: "omit"` in `~/.gsd/defaults.json`. This causes GSD to return an empty model parameter for all agents, so each agent uses whatever model the runtime is configured with. No additional setup is needed for the default case.
+When GSD is installed for a non-Claude runtime, the installer automatically sets `resolve_model_ids: "omit"` in `~/.gsdt/defaults.json`. This causes GSD to return an empty model parameter for all agents, so each agent uses whatever model the runtime is configured with. No additional setup is needed for the default case.
 
 If you want different agents to use different models, use `model_overrides` with fully-qualified model IDs that your runtime recognizes:
 
@@ -352,10 +352,10 @@ If you want different agents to use different models, use `model_overrides` with
 {
   "resolve_model_ids": "omit",
   "model_overrides": {
-    "gsd-planner": "o3",
-    "gsd-executor": "o4-mini",
-    "gsd-debugger": "o3",
-    "gsd-codebase-mapper": "o4-mini"
+    "gsdt-planner": "o3",
+    "gsdt-executor": "o4-mini",
+    "gsdt-debugger": "o3",
+    "gsdt-codebase-mapper": "o4-mini"
   }
 }
 ```
@@ -404,6 +404,6 @@ The intent is the same as the Claude profile tiers -- use a stronger model for p
 
 Save settings as global defaults for future projects:
 
-**Location:** `~/.gsd/defaults.json`
+**Location:** `~/.gsdt/defaults.json`
 
-When `/gsd:new-project` creates a new `config.json`, it reads global defaults and merges them as the starting configuration. Per-project settings always override globals.
+When `/gsdt:new-project` creates a new `config.json`, it reads global defaults and merges them as the starting configuration. Per-project settings always override globals.

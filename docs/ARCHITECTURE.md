@@ -31,18 +31,18 @@ GSD is a **meta-prompting framework** that sits between the user and AI coding a
 ```
 ┌──────────────────────────────────────────────────────┐
 │                      USER                            │
-│            /gsd:command [args]                        │
+│            /gsdt:command [args]                        │
 └─────────────────────┬────────────────────────────────┘
                       │
 ┌─────────────────────▼────────────────────────────────┐
 │              COMMAND LAYER                            │
-│   commands/gsd/*.md — Prompt-based command files      │
+│   commands/gsdt/*.md — Prompt-based command files      │
 │   (Claude Code custom commands / Codex skills)        │
 └─────────────────────┬────────────────────────────────┘
                       │
 ┌─────────────────────▼────────────────────────────────┐
 │              WORKFLOW LAYER                           │
-│   get-shit-done/workflows/*.md — Orchestration logic  │
+│   gsdt/workflows/*.md — Orchestration logic  │
 │   (Reads references, spawns agents, manages state)    │
 └──────┬──────────────┬─────────────────┬──────────────┘
        │              │                 │
@@ -54,7 +54,7 @@ GSD is a **meta-prompting framework** that sits between the user and AI coding a
        │              │                 │
 ┌──────▼──────────────▼─────────────────▼──────────────┐
 │              CLI TOOLS LAYER                          │
-│   get-shit-done/bin/gsd-tools.cjs                     │
+│   gsdt/bin/gsdt-tools.cjs                     │
 │   (State, config, phase, roadmap, verify, templates)  │
 └──────────────────────┬───────────────────────────────┘
                        │
@@ -75,8 +75,8 @@ Every agent spawned by an orchestrator gets a clean context window (up to 200K t
 
 ### 2. Thin Orchestrators
 
-Workflow files (`get-shit-done/workflows/*.md`) never do heavy lifting. They:
-- Load context via `gsd-tools.cjs init <workflow>`
+Workflow files (`gsdt/workflows/*.md`) never do heavy lifting. They:
+- Load context via `gsdt-tools.cjs init <workflow>`
 - Spawn specialized agents with focused prompts
 - Collect results and route to the next step
 - Update state between steps
@@ -104,21 +104,21 @@ Multiple layers prevent common failure modes:
 
 ## Component Architecture
 
-### Commands (`commands/gsd/*.md`)
+### Commands (`commands/gsdt/*.md`)
 
 User-facing entry points. Each file contains YAML frontmatter (name, description, allowed-tools) and a prompt body that bootstraps the workflow. Commands are installed as:
-- **Claude Code:** Custom slash commands (`/gsd:command-name`)
+- **Claude Code:** Custom slash commands (`/gsdt:command-name`)
 - **OpenCode:** Slash commands (`/gsd-command-name`)
 - **Codex:** Skills (`$gsd-command-name`)
-- **Copilot:** Slash commands (`/gsd:command-name`)
+- **Copilot:** Slash commands (`/gsdt:command-name`)
 - **Antigravity:** Skills
 
 **Total commands:** 44
 
-### Workflows (`get-shit-done/workflows/*.md`)
+### Workflows (`gsdt/workflows/*.md`)
 
 Orchestration logic that commands reference. Contains the step-by-step process including:
-- Context loading via `gsd-tools.cjs init`
+- Context loading via `gsdt-tools.cjs init`
 - Agent spawn instructions with model resolution
 - Gate/checkpoint definitions
 - State update patterns
@@ -136,7 +136,7 @@ Specialized agent definitions with frontmatter specifying:
 
 **Total agents:** 16
 
-### References (`get-shit-done/references/*.md`)
+### References (`gsdt/references/*.md`)
 
 Shared knowledge documents that workflows and agents `@-reference`:
 - `checkpoints.md` — Checkpoint type definitions and interaction patterns
@@ -148,9 +148,9 @@ Shared knowledge documents that workflows and agents `@-reference`:
 - `tdd.md` — Test-driven development integration patterns
 - `ui-brand.md` — Visual output formatting patterns
 
-### Templates (`get-shit-done/templates/`)
+### Templates (`gsdt/templates/`)
 
-Markdown templates for all planning artifacts. Used by `gsd-tools.cjs template fill` and `scaffold` commands to create pre-structured files:
+Markdown templates for all planning artifacts. Used by `gsdt-tools.cjs template fill` and `scaffold` commands to create pre-structured files:
 - `project.md`, `requirements.md`, `roadmap.md`, `state.md` — Core project files
 - `phase-prompt.md` — Phase execution prompt template
 - `summary.md` (+ `summary-minimal.md`, `summary-standard.md`, `summary-complex.md`) — Granularity-aware summary templates
@@ -166,15 +166,15 @@ Runtime hooks that integrate with the host AI agent:
 
 | Hook | Event | Purpose |
 |------|-------|---------|
-| `gsd-statusline.js` | `statusLine` | Displays model, task, directory, and context usage bar |
-| `gsd-context-monitor.js` | `PostToolUse` / `AfterTool` | Injects agent-facing context warnings at 35%/25% remaining |
-| `gsd-check-update.js` | `SessionStart` | Background check for new GSD versions |
-| `gsd-prompt-guard.js` | `PreToolUse` | Scans `.planning/` writes for prompt injection patterns (advisory) |
-| `gsd-workflow-guard.js` | `PreToolUse` | Detects file edits outside GSD workflow context (advisory, opt-in via `hooks.workflow_guard`) |
+| `gsdt-statusline.js` | `statusLine` | Displays model, task, directory, and context usage bar |
+| `gsdt-context-monitor.js` | `PostToolUse` / `AfterTool` | Injects agent-facing context warnings at 35%/25% remaining |
+| `gsdt-check-update.js` | `SessionStart` | Background check for new GSD versions |
+| `gsdt-prompt-guard.js` | `PreToolUse` | Scans `.planning/` writes for prompt injection patterns (advisory) |
+| `gsdt-workflow-guard.js` | `PreToolUse` | Detects file edits outside GSD workflow context (advisory, opt-in via `hooks.workflow_guard`) |
 
-### CLI Tools (`get-shit-done/bin/`)
+### CLI Tools (`gsdt/bin/`)
 
-Node.js CLI utility (`gsd-tools.cjs`) with 17 domain modules:
+Node.js CLI utility (`gsdt-tools.cjs`) with 17 domain modules:
 
 | Module | Responsibility |
 |--------|---------------|
@@ -202,10 +202,10 @@ Node.js CLI utility (`gsd-tools.cjs`) with 17 domain modules:
 ```
 Orchestrator (workflow .md)
     │
-    ├── Load context: gsd-tools.cjs init <workflow> <phase>
+    ├── Load context: gsdt-tools.cjs init <workflow> <phase>
     │   Returns JSON with: project info, config, state, phase details
     │
-    ├── Resolve model: gsd-tools.cjs resolve-model <agent-name>
+    ├── Resolve model: gsdt-tools.cjs resolve-model <agent-name>
     │   Returns: opus | sonnet | haiku | inherit
     │
     ├── Spawn Agent (Task/SubAgent call)
@@ -216,22 +216,22 @@ Orchestrator (workflow .md)
     │
     ├── Collect result
     │
-    └── Update state: gsd-tools.cjs state update/patch/advance-plan
+    └── Update state: gsdt-tools.cjs state update/patch/advance-plan
 ```
 
 ### Agent Spawn Categories
 
 | Category | Agents | Parallelism |
 |----------|--------|-------------|
-| **Researchers** | gsd-project-researcher, gsd-phase-researcher, gsd-ui-researcher, gsd-advisor-researcher | 4 parallel (stack, features, architecture, pitfalls); advisor spawns during discuss-phase |
-| **Synthesizers** | gsd-research-synthesizer | Sequential (after researchers complete) |
-| **Planners** | gsd-planner, gsd-roadmapper | Sequential |
-| **Checkers** | gsd-plan-checker, gsd-integration-checker, gsd-ui-checker, gsd-nyquist-auditor | Sequential (verification loop, max 3 iterations) |
-| **Executors** | gsd-executor | Parallel within waves, sequential across waves |
-| **Verifiers** | gsd-verifier | Sequential (after all executors complete) |
-| **Mappers** | gsd-codebase-mapper | 4 parallel (tech, arch, quality, concerns) |
-| **Debuggers** | gsd-debugger | Sequential (interactive) |
-| **Auditors** | gsd-ui-auditor | Sequential |
+| **Researchers** | gsdt-project-researcher, gsdt-phase-researcher, gsdt-ui-researcher, gsdt-advisor-researcher | 4 parallel (stack, features, architecture, pitfalls); advisor spawns during discuss-phase |
+| **Synthesizers** | gsdt-research-synthesizer | Sequential (after researchers complete) |
+| **Planners** | gsdt-planner, gsdt-roadmapper | Sequential |
+| **Checkers** | gsdt-plan-checker, gsdt-integration-checker, gsdt-ui-checker, gsdt-nyquist-auditor | Sequential (verification loop, max 3 iterations) |
+| **Executors** | gsdt-executor | Parallel within waves, sequential across waves |
+| **Verifiers** | gsdt-verifier | Sequential (after all executors complete) |
+| **Mappers** | gsdt-codebase-mapper | 4 parallel (tech, arch, quality, concerns) |
+| **Debuggers** | gsdt-debugger | Sequential (interactive) |
+| **Auditors** | gsdt-ui-auditor | Sequential |
 
 ### Wave Execution Model
 
@@ -344,18 +344,18 @@ UI-SPEC.md (per phase) ───────────────────
 
 ```
 ~/.claude/                          # Claude Code (global install)
-├── commands/gsd/*.md               # 37 slash commands
-├── get-shit-done/
-│   ├── bin/gsd-tools.cjs           # CLI utility
+├── commands/gsdt/*.md               # 37 slash commands
+├── gsdt/
+│   ├── bin/gsdt-tools.cjs           # CLI utility
 │   ├── bin/lib/*.cjs               # 15 domain modules
 │   ├── workflows/*.md              # 42 workflow definitions
 │   ├── references/*.md             # 13 shared reference docs
 │   └── templates/                  # Planning artifact templates
 ├── agents/*.md                     # 15 agent definitions
 ├── hooks/
-│   ├── gsd-statusline.js           # Statusline hook
-│   ├── gsd-context-monitor.js      # Context warning hook
-│   └── gsd-check-update.js         # Update check hook
+│   ├── gsdt-statusline.js           # Statusline hook
+│   ├── gsdt-context-monitor.js      # Context warning hook
+│   └── gsdt-check-update.js         # Update check hook
 ├── settings.json                   # Hook registrations
 └── VERSION                         # Installed version number
 ```
@@ -377,13 +377,13 @@ Equivalent paths for other runtimes:
 ├── STATE.md                # Living memory: position, decisions, blockers, metrics
 ├── config.json             # Workflow configuration
 ├── MILESTONES.md           # Completed milestone archive
-├── research/               # Domain research from /gsd:new-project
+├── research/               # Domain research from /gsdt:new-project
 │   ├── SUMMARY.md
 │   ├── STACK.md
 │   ├── FEATURES.md
 │   ├── ARCHITECTURE.md
 │   └── PITFALLS.md
-├── codebase/               # Brownfield mapping (from /gsd:map-codebase)
+├── codebase/               # Brownfield mapping (from /gsdt:map-codebase)
 │   ├── STACK.md
 │   ├── ARCHITECTURE.md
 │   ├── CONVENTIONS.md
@@ -409,13 +409,13 @@ Equivalent paths for other runtimes:
 ├── todos/
 │   ├── pending/            # Captured ideas
 │   └── done/               # Completed todos
-├── threads/               # Persistent context threads (from /gsd:thread)
-├── seeds/                 # Forward-looking ideas (from /gsd:plant-seed)
+├── threads/               # Persistent context threads (from /gsdt:thread)
+├── seeds/                 # Forward-looking ideas (from /gsdt:plant-seed)
 ├── debug/                  # Active debug sessions
 │   ├── *.md                # Active sessions
 │   ├── resolved/           # Archived sessions
 │   └── knowledge-base.md   # Persistent debug learnings
-├── ui-reviews/             # Screenshots from /gsd:ui-review (gitignored)
+├── ui-reviews/             # Screenshots from /gsdt:ui-review (gitignored)
 └── continue-here.md        # Context handoff (from pause-work)
 ```
 
@@ -437,8 +437,8 @@ The installer (`bin/install.js`, ~3,000 lines) handles:
    - Antigravity: Skills-first with Google model equivalents
 5. **Path normalization** — Replaces `~/.claude/` paths with runtime-specific paths
 6. **Settings integration** — Registers hooks in runtime's `settings.json`
-7. **Patch backup** — Since v1.17, backs up locally modified files to `gsd-local-patches/` for `/gsd:reapply-patches`
-8. **Manifest tracking** — Writes `gsd-file-manifest.json` for clean uninstall
+7. **Patch backup** — Since v1.17, backs up locally modified files to `gsdt-local-patches/` for `/gsdt:reapply-patches`
+8. **Manifest tracking** — Writes `gsdt-file-manifest.json` for clean uninstall
 9. **Uninstall mode** — `--uninstall` removes all GSD files, hooks, and settings
 
 ### Platform Handling
@@ -456,15 +456,15 @@ The installer (`bin/install.js`, ~3,000 lines) handles:
 ```
 Runtime Engine (Claude Code / Gemini CLI)
     │
-    ├── statusLine event ──► gsd-statusline.js
+    ├── statusLine event ──► gsdt-statusline.js
     │   Reads: stdin (session JSON)
     │   Writes: stdout (formatted status), /tmp/claude-ctx-{session}.json (bridge)
     │
-    ├── PostToolUse/AfterTool event ──► gsd-context-monitor.js
+    ├── PostToolUse/AfterTool event ──► gsdt-context-monitor.js
     │   Reads: stdin (tool event JSON), /tmp/claude-ctx-{session}.json (bridge)
     │   Writes: stdout (hookSpecificOutput with additionalContext warning)
     │
-    └── SessionStart event ──► gsd-check-update.js
+    └── SessionStart event ──► gsdt-check-update.js
         Reads: VERSION file
         Writes: ~/.claude/cache/gsd-update-check.json (spawns background process)
 ```
@@ -489,16 +489,16 @@ Debounce: 5 tool uses between repeated warnings. Severity escalation (WARNING→
 
 ### Security Hooks (v1.27)
 
-**Prompt Guard** (`gsd-prompt-guard.js`):
+**Prompt Guard** (`gsdt-prompt-guard.js`):
 - Triggers on Write/Edit to `.planning/` files
 - Scans content for prompt injection patterns (role override, instruction bypass, system tag injection)
 - Advisory-only — logs detection, does not block
 - Patterns are inlined (subset of `security.cjs`) for hook independence
 
-**Workflow Guard** (`gsd-workflow-guard.js`):
+**Workflow Guard** (`gsdt-workflow-guard.js`):
 - Triggers on Write/Edit to non-`.planning/` files
-- Detects edits outside GSD workflow context (no active `/gsd:` command or Task subagent)
-- Advises using `/gsd:quick` or `/gsd:fast` for state-tracked changes
+- Detects edits outside GSD workflow context (no active `/gsdt:` command or Task subagent)
+- Advises using `/gsdt:quick` or `/gsdt:fast` for state-tracked changes
 - Opt-in via `hooks.workflow_guard: true` (default: false)
 
 ---
@@ -509,11 +509,11 @@ GSD supports 6 AI coding runtimes through a unified command/workflow architectur
 
 | Runtime | Command Format | Agent System | Config Location |
 |---------|---------------|--------------|-----------------|
-| Claude Code | `/gsd:command` | Task spawning | `~/.claude/` |
+| Claude Code | `/gsdt:command` | Task spawning | `~/.claude/` |
 | OpenCode | `/gsd-command` | Subagent mode | `~/.config/opencode/` |
-| Gemini CLI | `/gsd:command` | Task spawning | `~/.gemini/` |
+| Gemini CLI | `/gsdt:command` | Task spawning | `~/.gemini/` |
 | Codex | `$gsd-command` | Skills | `~/.codex/` |
-| Copilot | `/gsd:command` | Agent delegation | `~/.github/` |
+| Copilot | `/gsdt:command` | Agent delegation | `~/.github/` |
 | Antigravity | Skills | Skills | `~/.gemini/antigravity/` |
 
 ### Abstraction Points
