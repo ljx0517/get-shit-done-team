@@ -1,6 +1,6 @@
 /**
  * E2E integration test — proves InitRunner.run() drives real Agent SDK
- * sessions for the gsd-sdk init workflow.
+ * sessions for the gsdt-sdk init workflow.
  *
  * Requires Claude Code CLI (`claude`) installed and authenticated.
  * Skips gracefully if CLI is unavailable.
@@ -19,7 +19,7 @@ import { fileURLToPath } from 'node:url';
 import { homedir } from 'node:os';
 
 import { InitRunner } from './init-runner.js';
-import { GSDTools } from './gsd-tools.js';
+import { GSDTools } from './gsdt-tools.js';
 import { GSDEventStream } from './event-stream.js';
 import { GSDEventType } from './types.js';
 import type { GSDEvent } from './types.js';
@@ -36,7 +36,7 @@ try {
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const sdkPromptsDir = join(__dirname, '..', 'prompts');
-const GSD_TOOLS_PATH = join(homedir(), '.claude', 'get-shit-done', 'bin', 'gsd-tools.cjs');
+const GSD_TOOLS_PATH = join(homedir(), '.claude', 'gsdt', 'bin', 'gsdt-tools.cjs');
 
 // ─── Test suite ──────────────────────────────────────────────────────────────
 
@@ -45,7 +45,7 @@ describe.skipIf(!cliAvailable)('E2E: InitRunner.run() full workflow', () => {
   let events: GSDEvent[];
 
   beforeAll(async () => {
-    tmpDir = await mkdtemp(join(tmpdir(), 'gsd-sdk-init-e2e-'));
+    tmpDir = await mkdtemp(join(tmpdir(), 'gsdt-sdk-init-e2e-'));
 
     // Initialize git in the temp dir (required by InitRunner)
     execSync('git init', { cwd: tmpDir, stdio: 'ignore' });

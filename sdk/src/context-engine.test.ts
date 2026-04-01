@@ -185,8 +185,12 @@ describe('ContextEngine', () => {
   });
 
   describe('PHASE_FILE_MANIFEST', () => {
-    it('covers all phase types', () => {
-      for (const phase of Object.values(PhaseType)) {
+    it('covers all static phase types (Classify uses dynamic manifest)', () => {
+      // Classify phase uses dynamic manifest via ClassifyContextLoader skill
+      const staticPhases = Object.values(PhaseType).filter(
+        p => p !== PhaseType.Classify && p !== PhaseType.DesignMilestone
+      );
+      for (const phase of staticPhases) {
         expect(PHASE_FILE_MANIFEST[phase]).toBeDefined();
         expect(PHASE_FILE_MANIFEST[phase].length).toBeGreaterThan(0);
       }

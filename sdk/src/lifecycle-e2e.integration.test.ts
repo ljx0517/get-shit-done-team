@@ -3,7 +3,7 @@
  * the full phase lifecycle: discuss → research → plan → execute → verify → advance
  * after bootstrapping a real project via InitRunner.
  *
- * This is the capstone proof that `gsd-sdk auto` works end-to-end
+ * This is the capstone proof that `gsdt-sdk auto` works end-to-end
  * without human intervention. InitRunner bootstraps the project,
  * then GSD.runPhase() drives Phase 1 through the complete lifecycle.
  *
@@ -21,7 +21,7 @@ import { homedir } from 'node:os';
 
 import { GSD } from './index.js';
 import { InitRunner } from './init-runner.js';
-import { GSDTools } from './gsd-tools.js';
+import { GSDTools } from './gsdt-tools.js';
 import { GSDEventStream } from './event-stream.js';
 import { GSDEventType, PhaseStepType } from './types.js';
 import type { GSDEvent, PhaseRunnerResult, RoadmapAnalysis } from './types.js';
@@ -38,7 +38,7 @@ try {
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const sdkPromptsDir = join(__dirname, '..', 'prompts');
-const GSD_TOOLS_PATH = join(homedir(), '.claude', 'get-shit-done', 'bin', 'gsd-tools.cjs');
+const GSD_TOOLS_PATH = join(homedir(), '.claude', 'gsdt', 'bin', 'gsdt-tools.cjs');
 
 // ─── Lifecycle step ordering for monotonicity check ──────────────────────────
 
@@ -62,7 +62,7 @@ describe.skipIf(!cliAvailable)('E2E Lifecycle: InitRunner → GSD.runPhase() ful
 
   // ── Bootstrap: create temp dir, git init, run InitRunner ──────────────
   beforeAll(async () => {
-    tmpDir = await mkdtemp(join(tmpdir(), 'gsd-sdk-lifecycle-e2e-'));
+    tmpDir = await mkdtemp(join(tmpdir(), 'gsdt-sdk-lifecycle-e2e-'));
 
     // Git init (required by InitRunner and phase lifecycle)
     execSync('git init', { cwd: tmpDir, stdio: 'ignore' });

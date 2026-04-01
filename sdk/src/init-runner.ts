@@ -8,10 +8,10 @@
  * prompts derived from GSD-1 workflow/agent/template files on disk.
  */
 
-import { readFile, writeFile, mkdir } from 'node:fs/promises';
+import { readFile, writeFile, mkdir, access, constants } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { homedir } from 'node:os';
 import { execFile } from 'node:child_process';
 
 import type {
@@ -28,16 +28,19 @@ import type {
   PlanResult,
 } from './types.js';
 import { GSDEventType, PhaseStepType } from './types.js';
-import type { GSDTools } from './gsd-tools.js';
+import type { GSDTools } from './gsdt-tools.js';
 import type { GSDEventStream } from './event-stream.js';
 import { loadConfig } from './config.js';
 import { runPhaseStepSession } from './session-runner.js';
 import { sanitizePrompt } from './prompt-sanitizer.js';
+import {
+  resolveTemplatesDir,
+  resolveAgentsDir,
+  resolvePlanningDir,
+  resolvePath,
+} from './path-config.js';
 
 // ─── Constants ───────────────────────────────────────────────────────────────
-
-const GSD_TEMPLATES_DIR = join(homedir(), '.claude', 'get-shit-done', 'templates');
-const GSD_AGENTS_DIR = join(homedir(), '.claude', 'agents');
 
 const RESEARCH_TYPES = ['STACK', 'FEATURES', 'ARCHITECTURE', 'PITFALLS'] as const;
 type ResearchType = (typeof RESEARCH_TYPES)[number];
@@ -72,6 +75,10 @@ export interface InitRunnerDeps {
   config?: Partial<InitConfig>;
   /** Override for SDK prompts directory. Defaults to package-relative sdk/prompts/. */
   sdkPromptsDir?: string;
+  /** Installation directory relative to projectDir. Default: '.claude/gsdt' */
+  installDir?: string;
+  /** Planning directory name. Default: '.planning' */
+  planningDir?: string;
 }
 
 export class InitRunner {
@@ -81,6 +88,8 @@ export class InitRunner {
   private readonly config: InitConfig;
   private readonly sessionId: string;
   private readonly sdkPromptsDir: string;
+  private readonly installDir: string;
+  private readonly planningDir: string;
 
   constructor(deps: InitRunnerDeps) {
     this.projectDir = deps.projectDir;
@@ -97,6 +106,32 @@ export class InitRunner {
     this.sdkPromptsDir =
       deps.sdkPromptsDir ??
       join(fileURLToPath(new URL('.', import.meta.url)), '..', 'prompts');
+    // Path config: explicit override → defaults
+    this.installDir = deps.installDir ?? '.claude/gsdt';
+    this.planningDir = deps.planningDir ?? '.planning';
+  }
+
+  /**
+   * Resolve GSD templates directory with project-local-first priority.
+   * Priority: projectDir/install_dir/templates → sdk/prompts → global ~/.gsdt/templates
+   */
+  private getTemplatesDir(): string {
+    return resolveTemplatesDir(this.projectDir, this.installDir);
+  }
+
+  /**
+   * Resolve GSD agents directory with project-local-first priority.
+   * Priority: projectDir/install_dir/agents → sdk/prompts/agents → global ~/.gsdt/agents
+   */
+  private getAgentsDir(): string {
+    return resolveAgentsDir(this.projectDir, this.installDir);
+  }
+
+  /**
+   * Resolve .planning directory path.
+   */
+  private getPlanningDir(): string {
+    return resolvePlanningDir(this.projectDir, this.planningDir);
   }
 
   /**
@@ -121,7 +156,7 @@ export class InitRunner {
       const setupResult = await this.runStep('setup', async () => {
         const info = await this.tools.initNewProject();
         if (info.project_exists) {
-          throw new Error('Project already exists (.planning/PROJECT.md found). Use a fresh directory or delete .planning/ first.');
+          throw new Error(`Project already exists (${this.getPlanningDir()}/PROJECT.md found). Use a fresh directory or delete ${this.getPlanningDir()}/ first.`);
         }
         return info;
       });
@@ -138,21 +173,21 @@ export class InitRunner {
           await this.execGit(['init']);
         }
 
-        // Ensure .planning/ directory exists
-        const planningDir = join(this.projectDir, '.planning');
+        // Ensure planning directory exists
+        const planningDir = this.getPlanningDir();
         await mkdir(planningDir, { recursive: true });
 
         // Write config.json
         const configPath = join(planningDir, 'config.json');
         await writeFile(configPath, JSON.stringify(AUTO_MODE_CONFIG, null, 2) + '\n', 'utf-8');
-        artifacts.push('.planning/config.json');
+        artifacts.push(`${this.planningDir}/config.json`);
 
-        // Persist auto_advance via gsd-tools (validates & updates state)
+        // Persist auto_advance via gsdt-tools (validates & updates state)
         await this.tools.configSet('workflow.auto_advance', 'true');
 
         // Commit config
         if (projectInfo.commit_docs) {
-          await this.tools.commit('chore: add project config', ['.planning/config.json']);
+          await this.tools.commit('chore: add project config', [`${this.planningDir}/config.json`]);
         }
       });
       steps.push(configResult.stepResult);
@@ -167,9 +202,9 @@ export class InitRunner {
         if (!result.success) {
           throw new Error(`PROJECT.md synthesis failed: ${result.error?.messages.join(', ') ?? 'unknown error'}`);
         }
-        artifacts.push('.planning/PROJECT.md');
+        artifacts.push(`${this.planningDir}/PROJECT.md`);
         if (projectInfo.commit_docs) {
-          await this.tools.commit('docs: add PROJECT.md', ['.planning/PROJECT.md']);
+          await this.tools.commit('docs: add PROJECT.md', [`${this.planningDir}/PROJECT.md`]);
         }
         return result;
       });
@@ -202,9 +237,9 @@ export class InitRunner {
         if (!result.success) {
           throw new Error(`Research synthesis failed: ${result.error?.messages.join(', ') ?? 'unknown error'}`);
         }
-        artifacts.push('.planning/research/SUMMARY.md');
+        artifacts.push(`${this.planningDir}/research/SUMMARY.md`);
         if (projectInfo.commit_docs) {
-          await this.tools.commit('docs: add research files', ['.planning/research/']);
+          await this.tools.commit('docs: add research files', [`${this.planningDir}/research/`]);
         }
         return result;
       });
@@ -220,9 +255,9 @@ export class InitRunner {
         if (!result.success) {
           throw new Error(`Requirements generation failed: ${result.error?.messages.join(', ') ?? 'unknown error'}`);
         }
-        artifacts.push('.planning/REQUIREMENTS.md');
+        artifacts.push(`${this.planningDir}/REQUIREMENTS.md`);
         if (projectInfo.commit_docs) {
-          await this.tools.commit('docs: add REQUIREMENTS.md', ['.planning/REQUIREMENTS.md']);
+          await this.tools.commit('docs: add REQUIREMENTS.md', [`${this.planningDir}/REQUIREMENTS.md`]);
         }
         return result;
       });
@@ -238,11 +273,11 @@ export class InitRunner {
         if (!result.success) {
           throw new Error(`Roadmap generation failed: ${result.error?.messages.join(', ') ?? 'unknown error'}`);
         }
-        artifacts.push('.planning/ROADMAP.md', '.planning/STATE.md');
+        artifacts.push(`${this.planningDir}/ROADMAP.md`, `${this.planningDir}/STATE.md`);
         if (projectInfo.commit_docs) {
           await this.tools.commit('docs: add ROADMAP.md and STATE.md', [
-            '.planning/ROADMAP.md',
-            '.planning/STATE.md',
+            `${this.planningDir}/ROADMAP.md`,
+            `${this.planningDir}/STATE.md`,
           ]);
         }
         return result;
@@ -352,7 +387,7 @@ export class InitRunner {
       });
       // Attach artifact path on success
       if (result.stepResult.success) {
-        result.stepResult.artifacts = [`.planning/research/${researchType}.md`];
+        result.stepResult.artifacts = [`${this.planningDir}/research/${researchType}.md`];
       }
       return result.stepResult;
     });
@@ -386,7 +421,7 @@ export class InitRunner {
 
     return sanitizePrompt([
       'You are creating the PROJECT.md for a new software project.',
-      'Write .planning/PROJECT.md based on the template structure below and the user\'s project description.',
+      `Write ${this.planningDir}/PROJECT.md based on the template structure below and the user\'s project description.`,
       '',
       '<project_template>',
       template,
@@ -396,7 +431,7 @@ export class InitRunner {
       input,
       '</user_input>',
       '',
-      'Write the file to .planning/PROJECT.md. Follow the template structure but fill in with real content derived from the user input.',
+      `Write the file to ${this.planningDir}/PROJECT.md. Follow the template structure but fill in with real content derived from the user input.`,
       'Be specific and opinionated — make decisions, don\'t list options.',
     ].join('\n'));
   }
@@ -409,14 +444,14 @@ export class InitRunner {
     researchType: ResearchType,
     input: string,
   ): Promise<string> {
-    const agentDef = await this.readAgentFile('gsd-project-researcher.md');
+    const agentDef = await this.readAgentFile('gsdt-project-researcher.md');
     const template = await this.readGSDFile(`templates/research-project/${researchType}.md`);
 
     // Read PROJECT.md if it exists (it should by now)
     let projectContent = '';
     try {
       projectContent = await readFile(
-        join(this.projectDir, '.planning', 'PROJECT.md'),
+        join(this.getPlanningDir(), 'PROJECT.md'),
         'utf-8',
       );
     } catch {
@@ -430,10 +465,10 @@ export class InitRunner {
       '</agent_definition>',
       '',
       `You are researching the ${researchType} aspect of this project.`,
-      `Write your findings to .planning/research/${researchType}.md`,
+      `Write your findings to ${this.planningDir}/research/${researchType}.md`,
       '',
       '<files_to_read>',
-      '.planning/PROJECT.md',
+      `${this.planningDir}/PROJECT.md`,
       '</files_to_read>',
       '',
       '<project_context>',
@@ -444,7 +479,7 @@ export class InitRunner {
       template,
       '</research_template>',
       '',
-      `Write .planning/research/${researchType}.md following the template structure.`,
+      `Write ${this.planningDir}/research/${researchType}.md following the template structure.`,
       'Be comprehensive but opinionated. "Use X because Y" not "Options are X, Y, Z."',
     ].join('\n'));
   }
@@ -454,9 +489,9 @@ export class InitRunner {
    * Reads synthesizer agent def and all 4 research outputs.
    */
   private async buildSynthesisPrompt(): Promise<string> {
-    const agentDef = await this.readAgentFile('gsd-research-synthesizer.md');
+    const agentDef = await this.readAgentFile('gsdt-research-synthesizer.md');
     const summaryTemplate = await this.readGSDFile('templates/research-project/SUMMARY.md');
-    const researchDir = join(this.projectDir, '.planning', 'research');
+    const researchDir = join(this.getPlanningDir(), 'research');
 
     // Read whatever research files exist
     const researchContent: string[] = [];
@@ -475,13 +510,13 @@ export class InitRunner {
       '</agent_definition>',
       '',
       '<files_to_read>',
-      '.planning/research/STACK.md',
-      '.planning/research/FEATURES.md',
-      '.planning/research/ARCHITECTURE.md',
-      '.planning/research/PITFALLS.md',
+      `${this.planningDir}/research/STACK.md`,
+      `${this.planningDir}/research/FEATURES.md`,
+      `${this.planningDir}/research/ARCHITECTURE.md`,
+      `${this.planningDir}/research/PITFALLS.md`,
       '</files_to_read>',
       '',
-      'Synthesize the research files below into .planning/research/SUMMARY.md',
+      `Synthesize the research files below into ${this.planningDir}/research/SUMMARY.md`,
       '',
       ...researchContent,
       '',
@@ -489,8 +524,8 @@ export class InitRunner {
       summaryTemplate,
       '</summary_template>',
       '',
-      'Write .planning/research/SUMMARY.md synthesizing all research findings.',
-      'Also commit all research files: git add .planning/research/ && git commit.',
+      `Write ${this.planningDir}/research/SUMMARY.md synthesizing all research findings.`,
+      `Also commit all research files: git add ${this.planningDir}/research/ && git commit.`,
     ].join('\n'));
   }
 
@@ -505,7 +540,7 @@ export class InitRunner {
     let featuresContent = '';
     try {
       projectContent = await readFile(
-        join(this.projectDir, '.planning', 'PROJECT.md'),
+        join(this.getPlanningDir(), 'PROJECT.md'),
         'utf-8',
       );
     } catch {
@@ -513,7 +548,7 @@ export class InitRunner {
     }
     try {
       featuresContent = await readFile(
-        join(this.projectDir, '.planning', 'research', 'FEATURES.md'),
+        join(this.getPlanningDir(), 'research', 'FEATURES.md'),
         'utf-8',
       );
     } catch {
@@ -537,7 +572,7 @@ export class InitRunner {
       reqTemplate,
       '</requirements_template>',
       '',
-      'Write .planning/REQUIREMENTS.md following the template structure.',
+      `Write ${this.planningDir}/REQUIREMENTS.md following the template structure.`,
       'Every requirement must be testable and specific. No vague aspirations.',
     ].join('\n'));
   }
@@ -547,15 +582,15 @@ export class InitRunner {
    * Reads PROJECT.md + REQUIREMENTS.md + research/SUMMARY.md + config.json.
    */
   private async buildRoadmapPrompt(): Promise<string> {
-    const agentDef = await this.readAgentFile('gsd-roadmapper.md');
+    const agentDef = await this.readAgentFile('gsdt-roadmapper.md');
     const roadmapTemplate = await this.readGSDFile('templates/roadmap.md');
     const stateTemplate = await this.readGSDFile('templates/state.md');
 
     const filesToRead = [
-      '.planning/PROJECT.md',
-      '.planning/REQUIREMENTS.md',
-      '.planning/research/SUMMARY.md',
-      '.planning/config.json',
+      `${this.planningDir}/PROJECT.md`,
+      `${this.planningDir}/REQUIREMENTS.md`,
+      `${this.planningDir}/research/SUMMARY.md`,
+      `${this.planningDir}/config.json`,
     ];
 
     const fileContents: string[] = [];
@@ -587,7 +622,7 @@ export class InitRunner {
       stateTemplate,
       '</state_template>',
       '',
-      'Create .planning/ROADMAP.md and .planning/STATE.md.',
+      `Create ${this.planningDir}/ROADMAP.md and ${this.planningDir}/STATE.md.`,
       'ROADMAP.md: Transform requirements into phases. Every v1 requirement maps to exactly one phase.',
       'STATE.md: Initialize project state tracking.',
     ].join('\n'));
@@ -620,49 +655,41 @@ export class InitRunner {
 
   /**
    * Read a file from the GSD templates directory.
-   * Tries sdk/prompts/{relativePath} first (headless versions), then
-   * falls back to GSD-1 originals (~/.claude/get-shit-done/).
+   * Priority: project-local → sdk/prompts → global fallback
    */
   private async readGSDFile(relativePath: string): Promise<string> {
-    // Try SDK prompts dir first (headless versions)
-    const sdkPath = join(this.sdkPromptsDir, relativePath);
+    const resolved = resolvePath(this.projectDir, this.installDir, relativePath);
     try {
-      return await readFile(sdkPath, 'utf-8');
+      return await readFile(resolved, 'utf-8');
     } catch {
-      // Not in sdk/prompts/, fall through to GSD-1 originals
-    }
-
-    // Fall back to GSD-1 originals
-    const fullPath = join(GSD_TEMPLATES_DIR, '..', relativePath);
-    try {
-      return await readFile(fullPath, 'utf-8');
-    } catch {
-      // If the template doesn't exist, return a placeholder
       return `(Template not found: ${relativePath})`;
     }
   }
 
   /**
    * Read an agent definition.
-   * Tries sdk/prompts/agents/{filename} first (headless versions), then
-   * falls back to GSD-1 originals (~/.claude/agents/).
+   * Priority: project-local → sdk/prompts/agents → global fallback
    */
   private async readAgentFile(filename: string): Promise<string> {
-    // Try SDK prompts dir first (headless versions)
+    // Try project-local first
+    const localPath = join(this.getAgentsDir(), filename);
+    if (existsSync(localPath)) {
+      try {
+        return await readFile(localPath, 'utf-8');
+      } catch {
+        // Fall through
+      }
+    }
+    // Try SDK prompts
     const sdkPath = join(this.sdkPromptsDir, 'agents', filename);
-    try {
-      return await readFile(sdkPath, 'utf-8');
-    } catch {
-      // Not in sdk/prompts/, fall through to GSD-1 originals
+    if (existsSync(sdkPath)) {
+      try {
+        return await readFile(sdkPath, 'utf-8');
+      } catch {
+        // Fall through
+      }
     }
-
-    // Fall back to GSD-1 originals
-    const fullPath = join(GSD_AGENTS_DIR, filename);
-    try {
-      return await readFile(fullPath, 'utf-8');
-    } catch {
-      return `(Agent definition not found: ${filename})`;
-    }
+    return `(Agent definition not found: ${filename})`;
   }
 
   // ─── Git helper ────────────────────────────────────────────────────────────

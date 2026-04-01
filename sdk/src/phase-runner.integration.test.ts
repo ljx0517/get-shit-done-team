@@ -1,5 +1,5 @@
 /**
- * Integration test — proves PhaseRunner state machine works against real gsd-tools.cjs.
+ * Integration test — proves PhaseRunner state machine works against real gsdt-tools.cjs.
  *
  * Creates a temp `.planning/` directory structure, instantiates real GSDTools,
  * and exercises the state machine. Sessions will fail (no Claude CLI in CI) but
@@ -12,7 +12,7 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { homedir } from 'node:os';
 
-import { GSDTools } from './gsd-tools.js';
+import { GSDTools } from './gsdt-tools.js';
 import { PhaseRunner } from './phase-runner.js';
 import type { PhaseRunnerDeps } from './phase-runner.js';
 import { ContextEngine } from './context-engine.js';
@@ -24,10 +24,10 @@ import { GSDEventType, PhaseStepType } from './types.js';
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-const GSD_TOOLS_PATH = join(homedir(), '.claude', 'get-shit-done', 'bin', 'gsd-tools.cjs');
+const GSD_TOOLS_PATH = join(homedir(), '.claude', 'gsdt', 'bin', 'gsdt-tools.cjs');
 
 async function createTempPlanningDir(): Promise<string> {
-  const tmpDir = await mkdtemp(join(tmpdir(), 'gsd-sdk-phase-int-'));
+  const tmpDir = await mkdtemp(join(tmpdir(), 'gsdt-sdk-phase-int-'));
 
   // Create .planning structure
   const planningDir = join(tmpDir, '.planning');
@@ -65,7 +65,7 @@ async function createTempPlanningDir(): Promise<string> {
 
 // ─── Test suite ──────────────────────────────────────────────────────────────
 
-describe('Integration: PhaseRunner against real gsd-tools.cjs', () => {
+describe('Integration: PhaseRunner against real gsdt-tools.cjs', () => {
   let tmpDir: string;
   let tools: GSDTools;
 
@@ -213,7 +213,7 @@ describe('Integration: PhaseRunner against real gsd-tools.cjs', () => {
       maxBudgetPerStep: 0.10,
     });
 
-    // Proves the full wiring works: GSD → PhaseRunner → GSDTools → gsd-tools.cjs
+    // Proves the full wiring works: GSD → PhaseRunner → GSDTools → gsdt-tools.cjs
     expect(result.phaseNumber).toBe('01');
     expect(result.phaseName).toBe('integration-test');
     expect(result.steps.length).toBeGreaterThanOrEqual(1);
@@ -231,7 +231,7 @@ describe('Integration: PhaseRunner against real gsd-tools.cjs', () => {
  * - Plan 01 has a SUMMARY.md (marks it as completed)
  */
 async function createMultiWavePlanningDir(): Promise<string> {
-  const tmpDir = await mkdtemp(join(tmpdir(), 'gsd-sdk-wave-int-'));
+  const tmpDir = await mkdtemp(join(tmpdir(), 'gsdt-sdk-wave-int-'));
 
   const planningDir = join(tmpDir, '.planning');
   const phaseDir = join(planningDir, 'phases', '01-wave-test');

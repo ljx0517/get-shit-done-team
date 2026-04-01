@@ -38,28 +38,28 @@ describe('sanitizePrompt', () => {
         '@file:simple.md',
         '@file:./relative/path.md',
         '@file:/absolute/path/to/file.md',
-        '@file:~/.claude/get-shit-done/workflows/execute-plan.md',
+        '@file:~/.claude/gsdt/workflows/execute-plan.md',
       ].join('\n');
       expect(sanitizePrompt(input)).toBe('');
     });
   });
 
-  // ─── /gsd: slash commands ────────────────────────────────────────────────
+  // ─── /gsdt: slash commands ────────────────────────────────────────────────
 
-  describe('/gsd: slash commands', () => {
-    it('strips lines containing /gsd: commands', () => {
-      const input = 'Before\nRun /gsd:execute-plan to proceed\nAfter';
+  describe('/gsdt: slash commands', () => {
+    it('strips lines containing /gsdt: commands', () => {
+      const input = 'Before\nRun /gsdt:execute-plan to proceed\nAfter';
       const result = sanitizePrompt(input);
-      expect(result).not.toContain('/gsd:');
+      expect(result).not.toContain('/gsdt:');
       expect(result).toContain('Before');
       expect(result).toContain('After');
     });
 
-    it('strips various /gsd: command formats', () => {
+    it('strips various /gsdt: command formats', () => {
       const input = [
-        'Use /gsd:research-phase',
-        'Then /gsd:plan-phase --auto',
-        'Finally /gsd:verify-phase',
+        'Use /gsdt:research-phase',
+        'Then /gsdt:plan-phase --auto',
+        'Finally /gsdt:verify-phase',
       ].join('\n');
       expect(sanitizePrompt(input)).toBe('');
     });
@@ -91,7 +91,7 @@ describe('sanitizePrompt', () => {
 
   describe('SlashCommand() calls', () => {
     it('strips SlashCommand lines', () => {
-      const input = 'Before\nSlashCommand("/gsd:execute")\nAfter';
+      const input = 'Before\nSlashCommand("/gsdt:execute")\nAfter';
       const result = sanitizePrompt(input);
       expect(result).not.toContain('SlashCommand');
       expect(result).toContain('Before');
@@ -190,7 +190,7 @@ describe('sanitizePrompt', () => {
         '',
         'Investigate the codebase using @file:context.md for context.',
         '',
-        'When done, run /gsd:plan-phase to proceed.',
+        'When done, run /gsdt:plan-phase to proceed.',
         '',
         'If unclear, AskUserQuestion("What should I focus on?")',
         '',
@@ -205,7 +205,7 @@ describe('sanitizePrompt', () => {
 
       const result = sanitizePrompt(input);
       expect(result).not.toContain('@file:');
-      expect(result).not.toContain('/gsd:');
+      expect(result).not.toContain('/gsdt:');
       expect(result).not.toContain('AskUserQuestion');
       expect(result).not.toContain('SlashCommand');
       expect(result).not.toMatch(/\bSTOP\b/);

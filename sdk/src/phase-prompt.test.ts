@@ -132,8 +132,8 @@ describe('PromptFactory', () => {
         makeWorkflowContent('Research the phase.', ['Gather info', 'Analyze findings']),
       );
       await writeFile(
-        join(agentsDir, 'gsd-phase-researcher.md'),
-        makeAgentDef('gsd-phase-researcher', 'Read, Grep, Bash', 'You are a researcher.'),
+        join(agentsDir, 'gsdt-phase-researcher.md'),
+        makeAgentDef('gsdt-phase-researcher', 'Read, Grep, Bash', 'You are a researcher.'),
       );
 
       const factory = makeFactory();
@@ -162,8 +162,8 @@ describe('PromptFactory', () => {
         makeWorkflowContent('Plan the implementation.', ['Break down tasks']),
       );
       await writeFile(
-        join(agentsDir, 'gsd-planner.md'),
-        makeAgentDef('gsd-planner', 'Read, Write, Bash', 'You are a planner.'),
+        join(agentsDir, 'gsdt-planner.md'),
+        makeAgentDef('gsdt-planner', 'Read, Write, Bash', 'You are a planner.'),
       );
 
       const factory = makeFactory();
@@ -187,8 +187,8 @@ describe('PromptFactory', () => {
 
     it('delegates execute phase with plan to buildExecutorPrompt', async () => {
       await writeFile(
-        join(agentsDir, 'gsd-executor.md'),
-        makeAgentDef('gsd-executor', 'Read, Write, Edit, Bash', 'You are an executor.'),
+        join(agentsDir, 'gsdt-executor.md'),
+        makeAgentDef('gsdt-executor', 'Read, Write, Edit, Bash', 'You are an executor.'),
       );
 
       const factory = makeFactory();
@@ -210,8 +210,8 @@ describe('PromptFactory', () => {
         makeWorkflowContent('Execute the plan.', ['Run tasks']),
       );
       await writeFile(
-        join(agentsDir, 'gsd-executor.md'),
-        makeAgentDef('gsd-executor', 'Read, Write, Edit, Bash', 'You are an executor.'),
+        join(agentsDir, 'gsdt-executor.md'),
+        makeAgentDef('gsdt-executor', 'Read, Write, Edit, Bash', 'You are an executor.'),
       );
 
       const factory = makeFactory();
@@ -232,8 +232,8 @@ describe('PromptFactory', () => {
         makeWorkflowContent('Verify phase goals.', ['Check artifacts', 'Run tests']),
       );
       await writeFile(
-        join(agentsDir, 'gsd-verifier.md'),
-        makeAgentDef('gsd-verifier', 'Read, Bash, Grep', 'You are a verifier.'),
+        join(agentsDir, 'gsdt-verifier.md'),
+        makeAgentDef('gsdt-verifier', 'Read, Bash, Grep', 'You are a verifier.'),
       );
 
       const factory = makeFactory();
@@ -272,8 +272,8 @@ describe('PromptFactory', () => {
     it('handles missing workflow file gracefully', async () => {
       // No workflow files on disk
       await writeFile(
-        join(agentsDir, 'gsd-phase-researcher.md'),
-        makeAgentDef('gsd-phase-researcher', 'Read, Bash', 'You are a researcher.'),
+        join(agentsDir, 'gsdt-phase-researcher.md'),
+        makeAgentDef('gsdt-phase-researcher', 'Read, Bash', 'You are a researcher.'),
       );
 
       const factory = makeFactory();
@@ -341,7 +341,7 @@ describe('PromptFactory', () => {
   describe('loadAgentDef', () => {
     it('loads agent def from agents dir', async () => {
       await writeFile(
-        join(agentsDir, 'gsd-executor.md'),
+        join(agentsDir, 'gsdt-executor.md'),
         'agent content',
       );
 
@@ -360,7 +360,7 @@ describe('PromptFactory', () => {
       const projectAgentsDir = join(tempDir, 'project-agents');
       await mkdir(projectAgentsDir, { recursive: true });
       await writeFile(
-        join(projectAgentsDir, 'gsd-executor.md'),
+        join(projectAgentsDir, 'gsdt-executor.md'),
         'project agent content',
       );
 
@@ -378,8 +378,8 @@ describe('PromptFactory', () => {
     it('prefers user agents dir over project agents dir', async () => {
       const projectAgentsDir = join(tempDir, 'project-agents');
       await mkdir(projectAgentsDir, { recursive: true });
-      await writeFile(join(agentsDir, 'gsd-executor.md'), 'user agent');
-      await writeFile(join(projectAgentsDir, 'gsd-executor.md'), 'project agent');
+      await writeFile(join(agentsDir, 'gsdt-executor.md'), 'user agent');
+      await writeFile(join(projectAgentsDir, 'gsdt-executor.md'), 'project agent');
 
       const factory = new PromptFactory({
         gsdInstallDir: tempDir,
@@ -436,8 +436,8 @@ describe('PromptFactory', () => {
       await mkdir(join(sdkDir, 'agents'), { recursive: true });
 
       // Write both: user agent and SDK headless agent
-      await writeFile(join(agentsDir, 'gsd-executor.md'), 'user agent');
-      await writeFile(join(sdkDir, 'agents', 'gsd-executor.md'), 'SDK headless agent');
+      await writeFile(join(agentsDir, 'gsdt-executor.md'), 'user agent');
+      await writeFile(join(sdkDir, 'agents', 'gsdt-executor.md'), 'SDK headless agent');
 
       const factory = new PromptFactory({
         gsdInstallDir: tempDir,
@@ -454,7 +454,7 @@ describe('PromptFactory', () => {
       await mkdir(join(sdkDir, 'agents'), { recursive: true });
 
       // Only user agent exists, no SDK version
-      await writeFile(join(agentsDir, 'gsd-executor.md'), 'user agent');
+      await writeFile(join(agentsDir, 'gsdt-executor.md'), 'user agent');
 
       const factory = new PromptFactory({
         gsdInstallDir: tempDir,
@@ -472,12 +472,12 @@ describe('PromptFactory', () => {
         join(workflowsDir, 'research-phase.md'),
         makeWorkflowContent('Research the codebase thoroughly.', [
           'Gather data from the project.\nAskUserQuestion("what?")\nAnalyze findings.',
-          'Run the analysis.\n/gsd:analyze --deep\nDocument results.',
+          'Run the analysis.\n/gsdt:analyze --deep\nDocument results.',
         ]),
       );
       await writeFile(
-        join(agentsDir, 'gsd-phase-researcher.md'),
-        makeAgentDef('gsd-phase-researcher', 'Read, Bash', 'You are a researcher.\nSTOP and wait for user input.\nBe thorough.'),
+        join(agentsDir, 'gsdt-phase-researcher.md'),
+        makeAgentDef('gsdt-phase-researcher', 'Read, Bash', 'You are a researcher.\nSTOP and wait for user input.\nBe thorough.'),
       );
 
       const factory = makeFactory();
@@ -487,7 +487,7 @@ describe('PromptFactory', () => {
 
       // Interactive patterns should be stripped by sanitizePrompt()
       expect(prompt).not.toContain('AskUserQuestion');
-      expect(prompt).not.toContain('/gsd:');
+      expect(prompt).not.toContain('/gsdt:');
       expect(prompt).not.toMatch(/\bSTOP\s+and\s+wait/);
 
       // Non-interactive content on separate lines should remain
@@ -499,8 +499,8 @@ describe('PromptFactory', () => {
 
     it('buildPrompt with execute+plan sanitizes output from buildExecutorPrompt', async () => {
       await writeFile(
-        join(agentsDir, 'gsd-executor.md'),
-        makeAgentDef('gsd-executor', 'Read, Write, Edit, Bash', 'You are an executor.\nSTOP and wait for user.\nExecute thoroughly.'),
+        join(agentsDir, 'gsdt-executor.md'),
+        makeAgentDef('gsdt-executor', 'Read, Write, Edit, Bash', 'You are an executor.\nSTOP and wait for user.\nExecute thoroughly.'),
       );
 
       const factory = makeFactory();

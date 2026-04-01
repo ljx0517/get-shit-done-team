@@ -26,6 +26,7 @@ import type { PromptFactory } from './phase-prompt.js';
 import type { ContextEngine } from './context-engine.js';
 import type { GSDLogger } from './logger.js';
 import { runPhaseStepSession, runPlanSession } from './session-runner.js';
+import { StepSkipDecider } from './step-skip-decider.js';
 
 // ─── Error type ──────────────────────────────────────────────────────────────
 
@@ -55,6 +56,8 @@ export interface PhaseRunnerDeps {
   eventStream: GSDEventStream;
   config: GSDConfig;
   logger?: GSDLogger;
+  /** Optional layered context manager for cross-phase context aggregation */
+  contextManager?: any;
 }
 
 // ─── PhaseRunner ─────────────────────────────────────────────────────────────
@@ -67,6 +70,7 @@ export class PhaseRunner {
   private readonly eventStream: GSDEventStream;
   private readonly config: GSDConfig;
   private readonly logger?: GSDLogger;
+  private readonly contextManager?: any;
 
   constructor(deps: PhaseRunnerDeps) {
     this.projectDir = deps.projectDir;
@@ -76,6 +80,7 @@ export class PhaseRunner {
     this.eventStream = deps.eventStream;
     this.config = deps.config;
     this.logger = deps.logger;
+    this.contextManager = deps.contextManager;
   }
 
   /**
@@ -133,43 +138,66 @@ export class PhaseRunner {
 
     // ── Step 1: Discuss ──
     if (!halted) {
-      const shouldSkip = phaseOp.has_context || this.config.workflow.skip_discuss;
-      if (shouldSkip && !(this.config.workflow.auto_advance && !phaseOp.has_context && !this.config.workflow.skip_discuss)) {
-        this.logger?.debug(`Skipping discuss: has_context=${phaseOp.has_context}, skip_discuss=${this.config.workflow.skip_discuss}`);
-      } else if (!phaseOp.has_context && !this.config.workflow.skip_discuss && this.config.workflow.auto_advance) {
-        // AI self-discuss: auto-mode with no context — run a self-discuss session
+      const discussDecision = StepSkipDecider.decide({
+        phaseOp,
+        config: this.config.workflow,
+        previousStepResults: [],
+        currentStep: 'discuss',
+      });
+
+      if (discussDecision.action === 'skip') {
+        this.logger?.debug(`Skipping discuss: ${discussDecision.reason}`);
+      } else if (discussDecision.action === 'self_discuss') {
         const result = await this.retryOnce('self-discuss', () => this.runSelfDiscussStep(phaseNumber, sessionOpts));
         steps.push(result);
 
-        // Re-query phase state to check if context was created
-        try {
-          phaseOp = await this.tools.initPhaseOp(phaseNumber);
-        } catch {
-          // If re-query fails, proceed with original state
-        }
+        if (discussDecision.reEvaluate) {
+          try {
+            phaseOp = await this.tools.initPhaseOp(phaseNumber);
+          } catch {
+            // If re-query fails, proceed with original state
+          }
 
-        if (!phaseOp.has_context) {
-          const decision = await this.invokeBlockerCallback(callbacks, phaseNumber, PhaseStepType.Discuss, 'No context after self-discuss step');
-          if (decision === 'stop') {
-            halted = true;
+          if (!phaseOp.has_context) {
+            if (callbacks.onBlockerDecision) {
+              const decision = await this.invokeBlockerCallback(
+                callbacks,
+                phaseNumber,
+                PhaseStepType.Discuss,
+                'Context not created after self-discuss step'
+              );
+              if (decision === 'stop') {
+                halted = true;
+              }
+            }
           }
         }
-      } else if (!shouldSkip) {
+      } else if (discussDecision.action === 'run') {
         const result = await this.retryOnce('discuss', () => this.runStep(PhaseStepType.Discuss, phaseNumber, sessionOpts));
         steps.push(result);
 
-        // Re-query phase state to check if context was created
-        try {
-          phaseOp = await this.tools.initPhaseOp(phaseNumber);
-        } catch {
-          // If re-query fails, proceed with original state
-        }
+        if (discussDecision.reEvaluate) {
+          try {
+            phaseOp = await this.tools.initPhaseOp(phaseNumber);
+          } catch {
+            // If re-query fails, proceed with original state
+          }
 
-        if (!phaseOp.has_context) {
-          // No context after discuss — invoke blocker callback
-          const decision = await this.invokeBlockerCallback(callbacks, phaseNumber, PhaseStepType.Discuss, 'No context after discuss step');
-          if (decision === 'stop') {
-            halted = true;
+          if (!phaseOp.has_context) {
+            if (callbacks.onBlockerDecision) {
+              // Invoke callback for human decision
+              const decision = await this.invokeBlockerCallback(
+                callbacks,
+                phaseNumber,
+                PhaseStepType.Discuss,
+                'Context not created after discuss step'
+              );
+              if (decision === 'stop') {
+                halted = true;
+              }
+            } else {
+              // No callback: auto-approve (skip) and continue
+            }
           }
         }
       }
@@ -177,8 +205,15 @@ export class PhaseRunner {
 
     // ── Step 2: Research ──
     if (!halted) {
-      if (!this.config.workflow.research) {
-        this.logger?.debug('Skipping research: config.workflow.research=false');
+      const researchDecision = StepSkipDecider.decide({
+        phaseOp,
+        config: this.config.workflow,
+        previousStepResults: [],
+        currentStep: 'research',
+      });
+
+      if (researchDecision.action === 'skip') {
+        this.logger?.debug(`Skipping research: ${researchDecision.reason}`);
       } else {
         const result = await this.retryOnce('research', () => this.runStep(PhaseStepType.Research, phaseNumber, sessionOpts));
         steps.push(result);
@@ -198,32 +233,52 @@ export class PhaseRunner {
       }
 
       if (!phaseOp.has_plans || phaseOp.plan_count === 0) {
-        const decision = await this.invokeBlockerCallback(callbacks, phaseNumber, PhaseStepType.Plan, 'No plans created after plan step');
-        if (decision === 'stop') {
-          halted = true;
+        if (callbacks.onBlockerDecision) {
+          const decision = await this.invokeBlockerCallback(
+            callbacks,
+            phaseNumber,
+            PhaseStepType.Plan,
+            `No plans found (plan_count: ${phaseOp.plan_count})`
+          );
+          if (decision === 'stop') {
+            halted = true;
+          }
+        } else {
+          // No callback: auto-approve and continue
         }
       }
     }
 
     // ── Step 3.5: Plan Check ──
-    if (!halted && this.config.workflow.plan_check) {
-      const planCheckResult = await this.retryOnce('plan-check', () => this.runPlanCheckStep(phaseNumber, sessionOpts));
-      steps.push(planCheckResult);
+    if (!halted) {
+      const planCheckDecision = StepSkipDecider.decide({
+        phaseOp,
+        config: this.config.workflow,
+        previousStepResults: [],
+        currentStep: 'plan_check',
+      });
 
-      // If plan-check failed, re-plan once then re-check once (D023)
-      if (!planCheckResult.success) {
-        this.logger?.info(`Plan check failed for phase ${phaseNumber}, re-planning once (D023)`);
+      if (planCheckDecision.action === 'skip') {
+        this.logger?.debug(`Skipping plan check: ${planCheckDecision.reason}`);
+      } else {
+        const planCheckResult = await this.retryOnce('plan-check', () => this.runPlanCheckStep(phaseNumber, sessionOpts));
+        steps.push(planCheckResult);
 
-        // Re-run plan step with feedback
-        const replanResult = await this.runStep(PhaseStepType.Plan, phaseNumber, sessionOpts);
-        steps.push(replanResult);
+        // If plan-check failed, re-plan once then re-check once (D023)
+        if (!planCheckResult.success) {
+          this.logger?.info(`Plan check failed for phase ${phaseNumber}, re-planning once (D023)`);
 
-        // Re-check once
-        const recheckResult = await this.runPlanCheckStep(phaseNumber, sessionOpts);
-        steps.push(recheckResult);
+          // Re-run plan step with feedback
+          const replanResult = await this.runStep(PhaseStepType.Plan, phaseNumber, sessionOpts);
+          steps.push(replanResult);
 
-        if (!recheckResult.success) {
-          this.logger?.warn(`Plan check failed again after re-plan for phase ${phaseNumber}. Proceeding with warning (D023).`);
+          // Re-check once
+          const recheckResult = await this.runPlanCheckStep(phaseNumber, sessionOpts);
+          steps.push(recheckResult);
+
+          if (!recheckResult.success) {
+            this.logger?.warn(`Plan check failed again after re-plan for phase ${phaseNumber}. Proceeding with warning (D023).`);
+          }
         }
       }
     }
@@ -236,8 +291,15 @@ export class PhaseRunner {
 
     // ── Step 5: Verify ──
     if (!halted) {
-      if (!this.config.workflow.verifier) {
-        this.logger?.debug('Skipping verify: config.workflow.verifier=false');
+      const verifyDecision = StepSkipDecider.decide({
+        phaseOp,
+        config: this.config.workflow,
+        previousStepResults: [],
+        currentStep: 'verify',
+      });
+
+      if (verifyDecision.action === 'skip') {
+        this.logger?.debug(`Skipping verify: ${verifyDecision.reason}`);
       } else {
         const verifyResult = await this.retryOnce('verify', () => this.runVerifyStep(phaseNumber, sessionOpts, callbacks, options));
         steps.push(verifyResult);
@@ -251,8 +313,19 @@ export class PhaseRunner {
 
     // ── Step 6: Advance ──
     if (!halted) {
-      const advanceResult = await this.runAdvanceStep(phaseNumber, sessionOpts, callbacks);
-      steps.push(advanceResult);
+      const advanceDecision = StepSkipDecider.decide({
+        phaseOp,
+        config: this.config.workflow,
+        previousStepResults: [],
+        currentStep: 'advance',
+      });
+
+      if (advanceDecision.action === 'run') {
+        const advanceResult = await this.runAdvanceStep(phaseNumber, sessionOpts, callbacks);
+        steps.push(advanceResult);
+      } else {
+        this.logger?.debug(`Skipping advance: ${advanceDecision.reason}`);
+      }
     }
 
     const totalDurationMs = Date.now() - startTime;
@@ -487,14 +560,46 @@ export class PhaseRunner {
     });
 
     let planResult: PlanResult;
+    let builtPrompt = '';
     try {
       // Map step to PhaseType for prompt/context resolution
       const phaseType = this.stepToPhaseType(step);
       const contextFiles = await this.contextEngine.resolveContextFiles(phaseType);
-      const prompt = await this.promptFactory.buildPrompt(phaseType, null, contextFiles);
+      builtPrompt = await this.promptFactory.buildPrompt(phaseType, null, contextFiles);
+
+      // Append layered context if contextManager is available
+      if (this.contextManager) {
+        try {
+          const { ContextKind, ContextImportance } = await import('./layered-context/index.js');
+
+          // Get relevant historical context for this phase
+          const layeredContext = this.contextManager.getLLMContext({
+            kinds: [ContextKind.Decision, ContextKind.Research, ContextKind.PlanOutcome],
+            minImportance: ContextImportance.High,
+            limit: 20,
+            sortBy: 'recency',
+          });
+
+          if (layeredContext) {
+            builtPrompt += '\n\n## Historical Context\n' + layeredContext;
+          }
+
+          // Get open gaps from verification
+          const openGaps = this.contextManager.getOpenGaps();
+          if (openGaps.length > 0) {
+            builtPrompt += '\n\n### Open Gaps to Address\n';
+            for (const gap of openGaps) {
+              builtPrompt += `- ${gap.summary}\n`;
+            }
+          }
+        } catch (e) {
+          // Don't let context manager errors affect the main flow
+          this.logger?.warn(`Failed to append layered context: ${e}`);
+        }
+      }
 
       planResult = await runPhaseStepSession(
-        prompt,
+        builtPrompt,
         step,
         this.config,
         sessionOpts,
@@ -522,6 +627,32 @@ export class PhaseRunner {
         durationMs,
         error: errorMsg,
       };
+    }
+
+    // Push result to context manager if available
+    if (this.contextManager && planResult) {
+      try {
+        const { ContextKind } = await import('./layered-context/index.js');
+        const tokensUsed = planResult.usage.inputTokens + planResult.usage.outputTokens;
+
+        this.contextManager.pushPlanOutcome(
+          `phase-${phaseNumber}-${step}`,
+          planResult.success,
+          planResult.success ? 'Step completed successfully' : `Step failed: ${planResult.error?.messages.join('; ')}`,
+          phaseNumber,
+          step,
+          tokensUsed
+        );
+
+        // Push gaps found during verify step
+        if (step === PhaseStepType.Verify && !planResult.success) {
+          const errorMsg = planResult.error?.messages.join('; ') ?? 'Verification failed';
+          this.contextManager.pushGapFound(errorMsg, phaseNumber, []);
+        }
+      } catch (e) {
+        // Don't let context manager errors affect the main flow
+        this.logger?.warn(`Failed to push to context manager: ${e}`);
+      }
     }
 
     const durationMs = Date.now() - stepStart;

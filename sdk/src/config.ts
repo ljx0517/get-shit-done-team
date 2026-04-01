@@ -1,7 +1,7 @@
 /**
  * Config reader — loads `.planning/config.json` and merges with defaults.
  *
- * Mirrors the default structure from `get-shit-done/bin/lib/config.cjs`
+ * Mirrors the default structure from `gsdt/bin/lib/config.cjs`
  * `buildNewProjectConfig()`.
  */
 
@@ -37,6 +37,13 @@ export interface HooksConfig {
   context_warnings: boolean;
 }
 
+export interface PathSettings {
+  /** Base installation directory relative to projectDir. Default: '.claude/gsdt' */
+  install_dir: string;
+  /** Planning directory name. Default: '.planning' */
+  planning_dir: string;
+}
+
 export interface GSDConfig {
   model_profile: string;
   commit_docs: boolean;
@@ -49,6 +56,7 @@ export interface GSDConfig {
   workflow: WorkflowConfig;
   hooks: HooksConfig;
   agent_skills: Record<string, unknown>;
+  paths: PathSettings;
   [key: string]: unknown;
 }
 
@@ -87,6 +95,10 @@ export const CONFIG_DEFAULTS: GSDConfig = {
     context_warnings: true,
   },
   agent_skills: {},
+  paths: {
+    install_dir: '.claude/gsdt',
+    planning_dir: '.planning',
+  },
 };
 
 // ─── Loader ──────────────────────────────────────────────────────────────────
@@ -143,6 +155,10 @@ export async function loadConfig(projectDir: string): Promise<GSDConfig> {
     agent_skills: {
       ...CONFIG_DEFAULTS.agent_skills,
       ...(parsed.agent_skills as Record<string, unknown> ?? {}),
+    },
+    paths: {
+      ...CONFIG_DEFAULTS.paths,
+      ...(parsed.paths as Partial<PathSettings> ?? {}),
     },
   };
 }

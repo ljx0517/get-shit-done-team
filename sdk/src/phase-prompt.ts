@@ -9,13 +9,14 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { homedir } from 'node:os';
 
 import type { ContextFiles, ParsedPlan } from './types.js';
 import { PhaseType } from './types.js';
 import { buildExecutorPrompt, parseAgentRole } from './prompt-builder.js';
 import { PHASE_AGENT_MAP } from './tool-scoping.js';
 import { sanitizePrompt } from './prompt-sanitizer.js';
+import { getPhaseInstructions } from './phase-instructions.js';
+import { resolveWorkflowsDir, resolveAgentsDir, SDK_PROMPTS_DIR } from './path-config.js';
 
 // ─── Workflow file mapping ───────────────────────────────────────────────────
 
@@ -23,6 +24,8 @@ import { sanitizePrompt } from './prompt-sanitizer.js';
  * Maps phase types to their workflow file names.
  */
 const PHASE_WORKFLOW_MAP: Record<PhaseType, string> = {
+  [PhaseType.Classify]: 'classify-phase.md',
+  [PhaseType.DesignMilestone]: 'design-milestone-phase.md',
   [PhaseType.Execute]: 'execute-plan.md',
   [PhaseType.Research]: 'research-phase.md',
   [PhaseType.Plan]: 'plan-phase.md',
@@ -63,26 +66,37 @@ export function extractSteps(processContent: string): Array<{ name: string; cont
 
 // ─── PromptFactory class ─────────────────────────────────────────────────────
 
+export interface PromptFactoryOptions {
+  /** Project root directory. Required for path resolution. */
+  projectDir?: string;
+  /** Installation directory relative to projectDir. Default: '.claude/gsdt' */
+  installDir?: string;
+  /** Explicit agents directory override. */
+  agentsDir?: string;
+  /** Explicit workflows directory override. */
+  workflowsDir?: string;
+  /** Explicit SDK prompts directory override. */
+  sdkPromptsDir?: string;
+}
+
 export class PromptFactory {
   private readonly workflowsDir: string;
   private readonly agentsDir: string;
-  private readonly projectAgentsDir?: string;
   private readonly sdkPromptsDir: string;
 
-  constructor(options?: {
-    gsdInstallDir?: string;
-    agentsDir?: string;
-    projectAgentsDir?: string;
-    sdkPromptsDir?: string;
-  }) {
-    const gsdInstallDir = options?.gsdInstallDir ?? join(homedir(), '.claude', 'get-shit-done');
-    this.workflowsDir = join(gsdInstallDir, 'workflows');
-    this.agentsDir = options?.agentsDir ?? join(homedir(), '.claude', 'agents');
-    this.projectAgentsDir = options?.projectAgentsDir;
-    // SDK prompts dir: explicit override → package-relative default via import.meta.url
+  constructor(options?: PromptFactoryOptions) {
+    const projectDir = options?.projectDir ?? process.cwd();
+    const installDir = options?.installDir ?? '.claude/gsdt';
+    // SDK prompts dir: explicit override → SDK package-relative
     this.sdkPromptsDir =
       options?.sdkPromptsDir ??
       join(fileURLToPath(new URL('.', import.meta.url)), '..', 'prompts');
+    this.workflowsDir =
+      options?.workflowsDir ??
+      resolveWorkflowsDir(projectDir, installDir);
+    this.agentsDir =
+      options?.agentsDir ??
+      resolveAgentsDir(projectDir, installDir);
   }
 
   /**
@@ -138,7 +152,7 @@ export class PromptFactory {
     }
 
     // ── Phase-specific instructions ──
-    const phaseInstructions = this.getPhaseInstructions(phaseType);
+    const { instruction: phaseInstructions } = getPhaseInstructions(phaseType);
     if (phaseInstructions) {
       sections.push(`## Phase Instructions\n\n${phaseInstructions}`);
     }
@@ -174,24 +188,18 @@ export class PromptFactory {
 
   /**
    * Load the agent definition for a phase type.
-   * Tries sdk/prompts/agents/ first (headless versions), then
-   * user-level agents dir, then project-level.
+   * Priority: SDK prompts (headless) → install_dir/agents
    * Returns undefined if no agent is mapped or file not found.
    */
   async loadAgentDef(phaseType: PhaseType): Promise<string | undefined> {
     const agentFilename = PHASE_AGENT_MAP[phaseType];
     if (!agentFilename) return undefined;
 
-    // Try SDK prompts dir first (headless versions)
+    // Try SDK prompts dir first (headless versions), then install_dir
     const paths = [
       join(this.sdkPromptsDir, 'agents', agentFilename),
       join(this.agentsDir, agentFilename),
     ];
-
-    // Then project-level if configured
-    if (this.projectAgentsDir) {
-      paths.push(join(this.projectAgentsDir, agentFilename));
-    }
 
     for (const p of paths) {
       try {
@@ -230,26 +238,6 @@ export class PromptFactory {
 
     if (entries.length === 0) return null;
     return `## Context\n\n${entries.join('\n\n')}`;
-  }
-
-  /**
-   * Get phase-specific instructions that aren't covered by the workflow file.
-   */
-  private getPhaseInstructions(phaseType: PhaseType): string | null {
-    switch (phaseType) {
-      case PhaseType.Research:
-        return 'Focus on technical investigation. Do not modify source files. Produce RESEARCH.md with findings organized by topic, confidence levels (HIGH/MEDIUM/LOW), and specific recommendations.';
-      case PhaseType.Plan:
-        return 'Create executable plans with task breakdown, dependency analysis, and verification criteria. Each task must have clear acceptance criteria and a done condition.';
-      case PhaseType.Verify:
-        return 'Verify goal achievement, not just task completion. Start from what the phase SHOULD deliver, then verify it actually exists and works. Produce VERIFICATION.md with pass/fail for each criterion.';
-      case PhaseType.Discuss:
-        return 'Extract implementation decisions that downstream agents need. Identify gray areas, capture decisions that guide research and planning.';
-      case PhaseType.Execute:
-        return null;
-      default:
-        return null;
-    }
   }
 }
 

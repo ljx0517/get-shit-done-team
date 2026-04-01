@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { GSDTools, GSDToolsError, resolveGsdToolsPath } from './gsd-tools.js';
+import { GSDTools, GSDToolsError, resolveGsdToolsPath } from './gsdt-tools.js';
 import { mkdir, writeFile, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir, homedir } from 'node:os';
@@ -9,7 +9,7 @@ describe('GSDTools', () => {
   let fixtureDir: string;
 
   beforeEach(async () => {
-    tmpDir = join(tmpdir(), `gsd-tools-test-${Date.now()}-${Math.random().toString(36).slice(2)}`);
+    tmpDir = join(tmpdir(), `gsdt-tools-test-${Date.now()}-${Math.random().toString(36).slice(2)}`);
     fixtureDir = join(tmpDir, 'fixtures');
     await mkdir(fixtureDir, { recursive: true });
     await mkdir(join(tmpDir, '.planning'), { recursive: true });
@@ -94,10 +94,10 @@ describe('GSDTools', () => {
       }
     });
 
-    it('throws GSDToolsError with context when gsd-tools.cjs not found', async () => {
+    it('throws GSDToolsError with context when gsdt-tools.cjs not found', async () => {
       const tools = new GSDTools({
         projectDir: tmpDir,
-        gsdToolsPath: '/nonexistent/path/gsd-tools.cjs',
+        gsdToolsPath: '/nonexistent/path/gsdt-tools.cjs',
       });
 
       await expect(tools.exec('state', ['load'])).rejects.toThrow(GSDToolsError);
@@ -306,7 +306,7 @@ describe('GSDTools', () => {
       expect(result.project_path).toBe('.planning/PROJECT.md');
     });
 
-    it('propagates errors from gsd-tools', async () => {
+    it('propagates errors from gsdt-tools', async () => {
       const scriptPath = await createScript(
         'init-fail.cjs',
         `process.stderr.write('init failed\\n'); process.exit(1);`,
@@ -322,25 +322,25 @@ describe('GSDTools', () => {
 
   describe('resolveGsdToolsPath()', () => {
     it('returns repo-local path when it exists', async () => {
-      const localBinDir = join(tmpDir, '.claude', 'get-shit-done', 'bin');
+      const localBinDir = join(tmpDir, '.claude', 'gsdt', 'bin');
       await mkdir(localBinDir, { recursive: true });
-      await writeFile(join(localBinDir, 'gsd-tools.cjs'), '// stub');
+      await writeFile(join(localBinDir, 'gsdt-tools.cjs'), '// stub');
 
       const result = resolveGsdToolsPath(tmpDir);
-      expect(result).toBe(join(localBinDir, 'gsd-tools.cjs'));
+      expect(result).toBe(join(localBinDir, 'gsdt-tools.cjs'));
     });
 
     it('falls back to global path when repo-local does not exist', () => {
       const result = resolveGsdToolsPath(tmpDir);
       expect(result).toBe(
-        join(homedir(), '.claude', 'get-shit-done', 'bin', 'gsd-tools.cjs'),
+        join(homedir(), '.claude', 'gsdt', 'bin', 'gsdt-tools.cjs'),
       );
     });
 
     it('constructor uses repo-local path when available', async () => {
-      const localBinDir = join(tmpDir, '.claude', 'get-shit-done', 'bin');
+      const localBinDir = join(tmpDir, '.claude', 'gsdt', 'bin');
       await mkdir(localBinDir, { recursive: true });
-      const scriptPath = join(localBinDir, 'gsd-tools.cjs');
+      const scriptPath = join(localBinDir, 'gsdt-tools.cjs');
       await writeFile(
         scriptPath,
         `process.stdout.write(JSON.stringify({ source: "local" }));`,

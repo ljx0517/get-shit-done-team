@@ -64,18 +64,18 @@ vi.mock('./phase-prompt.js', () => ({
   PHASE_WORKFLOW_MAP: {},
 }));
 
-vi.mock('./gsd-tools.js', () => ({
+vi.mock('./gsdt-tools.js', () => ({
   GSDTools: vi.fn().mockImplementation(() => ({
     roadmapAnalyze: vi.fn(),
   })),
   GSDToolsError: class extends Error {
     name = 'GSDToolsError';
   },
-  resolveGsdToolsPath: vi.fn().mockReturnValue('/mock/gsd-tools.cjs'),
+  resolveGsdToolsPath: vi.fn().mockReturnValue('/mock/gsdt-tools.cjs'),
 }));
 
 import { GSD } from './index.js';
-import { GSDTools } from './gsd-tools.js';
+import { GSDTools } from './gsdt-tools.js';
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 

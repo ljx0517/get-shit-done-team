@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { GSDTools, GSDToolsError } from './gsd-tools.js';
+import { GSDTools, GSDToolsError } from './gsdt-tools.js';
 import {
   PhaseStepType,
   GSDEventType,
@@ -87,7 +87,7 @@ describe('Phase lifecycle types', () => {
     });
 
     it('matches the documented init phase-op JSON shape', () => {
-      // Simulate parsing JSON from gsd-tools.cjs
+      // Simulate parsing JSON from gsdt-tools.cjs
       const raw = JSON.parse(JSON.stringify({
         phase_found: true,
         phase_dir: '.planning/phases/03-Auth',
@@ -274,7 +274,7 @@ describe('GSDTools typed methods', () => {
   let fixtureDir: string;
 
   beforeEach(async () => {
-    tmpDir = join(tmpdir(), `gsd-tools-phase-test-${Date.now()}-${Math.random().toString(36).slice(2)}`);
+    tmpDir = join(tmpdir(), `gsdt-tools-phase-test-${Date.now()}-${Math.random().toString(36).slice(2)}`);
     fixtureDir = join(tmpDir, 'fixtures');
     await mkdir(fixtureDir, { recursive: true });
     await mkdir(join(tmpDir, '.planning'), { recursive: true });
@@ -291,7 +291,7 @@ describe('GSDTools typed methods', () => {
   }
 
   describe('initPhaseOp()', () => {
-    it('returns typed PhaseOpInfo from gsd-tools output', async () => {
+    it('returns typed PhaseOpInfo from gsdt-tools output', async () => {
       const mockOutput: PhaseOpInfo = {
         phase_found: true,
         phase_dir: '.planning/phases/05-Skill-Scaffolding',
@@ -358,7 +358,7 @@ describe('GSDTools typed methods', () => {
   });
 
   describe('configGet()', () => {
-    it('returns string value from gsd-tools config', async () => {
+    it('returns string value from gsdt-tools config', async () => {
       const scriptPath = await createScript(
         'config-get.cjs',
         `

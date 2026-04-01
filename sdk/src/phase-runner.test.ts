@@ -871,7 +871,7 @@ describe('PhaseRunner', () => {
     it('throws PhaseRunnerError when initPhaseOp fails', async () => {
       const deps = makeDeps();
       (deps.tools.initPhaseOp as ReturnType<typeof vi.fn>).mockRejectedValue(
-        new Error('gsd-tools crashed'),
+        new Error('gsdt-tools crashed'),
       );
 
       const runner = new PhaseRunner(deps);
@@ -979,7 +979,7 @@ describe('PhaseRunner', () => {
       const deps = makeDeps({ config });
       (deps.tools.initPhaseOp as ReturnType<typeof vi.fn>).mockResolvedValue(phaseOp);
       (deps.tools.phaseComplete as ReturnType<typeof vi.fn>).mockRejectedValue(
-        new Error('gsd-tools commit failed'),
+        new Error('gsdt-tools commit failed'),
       );
 
       const runner = new PhaseRunner(deps);

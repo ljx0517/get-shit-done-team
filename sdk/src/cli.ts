@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
- * CLI entry point for gsd-sdk.
+ * CLI entry point for gsdt-sdk.
  *
- * Usage: gsd-sdk run "<prompt>" [--project-dir <dir>] [--ws-port <port>]
+ * Usage: gsdt-sdk run "<prompt>" [--project-dir <dir>] [--ws-port <port>]
  *                                [--model <model>] [--max-budget <n>]
  */
 
@@ -15,6 +15,7 @@ import { GSD } from './index.js';
 import { CLITransport } from './cli-transport.js';
 import { WSTransport } from './ws-transport.js';
 import { InitRunner } from './init-runner.js';
+import { Orchestrator } from './orchestrator.js';
 
 // ─── Parsed CLI args ─────────────────────────────────────────────────────────
 
@@ -77,7 +78,7 @@ export function parseCliArgs(argv: string[]): ParsedCliArgs {
 // ─── Usage ───────────────────────────────────────────────────────────────────
 
 export const USAGE = `
-Usage: gsd-sdk <command> [args] [options]
+Usage: gsdt-sdk <command> [args] [options]
 
 Commands:
   run <prompt>          Run a full milestone from a text prompt
@@ -87,6 +88,8 @@ Commands:
                           @path/to/prd.md   Read input from a file
                           "description"     Use text directly
                           (empty)           Read from stdin
+  start <idea>          Simplified orchestration: classify → design → execute
+                        Just provide your idea, let the system handle the rest
 
 Options:
   --init <input>        Bootstrap from a PRD before running (auto only)
@@ -155,9 +158,9 @@ async function readStdin(): Promise<string> {
   if (stdin.isTTY) {
     throw new Error(
       'No input provided. Usage:\n' +
-      '  gsd-sdk init @path/to/prd.md\n' +
-      '  gsd-sdk init "build a todo app"\n' +
-      '  cat prd.md | gsd-sdk init'
+      '  gsdt-sdk init @path/to/prd.md\n' +
+      '  gsdt-sdk init "build a todo app"\n' +
+      '  cat prd.md | gsdt-sdk init'
     );
   }
 
@@ -190,19 +193,26 @@ export async function main(argv: string[] = process.argv.slice(2)): Promise<void
 
   if (args.version) {
     const ver = await getVersion();
-    console.log(`gsd-sdk v${ver}`);
+    console.log(`gsdt-sdk v${ver}`);
     return;
   }
 
-  if (args.command !== 'run' && args.command !== 'init' && args.command !== 'auto') {
-    console.error('Error: Expected "gsd-sdk run <prompt>", "gsd-sdk auto", or "gsd-sdk init [input]"');
+  if (args.command !== 'run' && args.command !== 'init' && args.command !== 'auto' && args.command !== 'start') {
+    console.error('Error: Expected "gsdt-sdk run <prompt>", "gsdt-sdk auto", "gsdt-sdk init [input]", or "gsdt-sdk start <idea>"');
+    console.error(USAGE);
+    process.exitCode = 1;
+    return;
+  }
+
+  if (args.command === 'start' && !args.prompt) {
+    console.error('Error: "gsdt-sdk start" requires an idea');
     console.error(USAGE);
     process.exitCode = 1;
     return;
   }
 
   if (args.command === 'run' && !args.prompt) {
-    console.error('Error: "gsd-sdk run" requires a prompt');
+    console.error('Error: "gsdt-sdk run" requires a prompt');
     console.error(USAGE);
     process.exitCode = 1;
     return;
@@ -275,6 +285,66 @@ export async function main(argv: string[] = process.argv.slice(2)): Promise<void
             console.error(`  ✗ ${step.step}: ${step.error}`);
           }
         }
+        process.exitCode = 1;
+      }
+    } catch (err) {
+      console.error(`Fatal error: ${(err as Error).message}`);
+      process.exitCode = 1;
+    } finally {
+      cliTransport.close();
+      if (wsTransport) {
+        wsTransport.close();
+      }
+    }
+    return;
+  }
+
+  // ─── Start command (simplified orchestration) ─────────────────────────────
+  if (args.command === 'start') {
+    const orchestrator = new Orchestrator({
+      projectDir: args.projectDir,
+      model: args.model,
+      maxBudgetUsd: args.maxBudget,
+      autoMode: true,
+    });
+
+    // Wire CLI transport
+    const cliTransport = new CLITransport();
+    orchestrator.addTransport(cliTransport);
+
+    // Optional WebSocket transport
+    let wsTransport: WSTransport | undefined;
+    if (args.wsPort !== undefined) {
+      wsTransport = new WSTransport({ port: args.wsPort });
+      await wsTransport.start();
+      orchestrator.addTransport(wsTransport);
+      console.log(`WebSocket transport listening on port ${args.wsPort}`);
+    }
+
+    try {
+      console.log(`[start] Orchestrating: "${args.prompt}"`);
+
+      const result = await orchestrator.start(args.prompt!);
+
+      // Print completion summary
+      const status = result.success ? 'SUCCESS' : 'FAILED';
+      const cost = result.totalCostUsd.toFixed(2);
+      const duration = (result.totalDurationMs / 1000).toFixed(1);
+
+      console.log(`\n[${status}] Total: $${cost}, ${duration}s`);
+
+      if (result.classificationResult) {
+        const cr = result.classificationResult;
+        console.log(`Classification: ${cr.projectType} / ${cr.domain} / ${cr.complexity}`);
+      }
+
+      if (result.milestoneDesignResult) {
+        console.log(`Milestone: "${result.milestoneDesignResult.milestoneName}" (${result.milestoneDesignResult.phaseCount} phases)`);
+      }
+
+      console.log(`Phases completed: ${result.phaseResults.length}`);
+
+      if (!result.success) {
         process.exitCode = 1;
       }
     } catch (err) {

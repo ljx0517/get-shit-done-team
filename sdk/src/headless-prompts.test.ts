@@ -27,7 +27,7 @@ const agentsDir = join(promptsDir, 'agents');
 const BLOCKED_PATTERNS: Array<[string, RegExp]> = [
   ['AskUserQuestion', /AskUserQuestion\s*\(/],
   ['SlashCommand', /SlashCommand\s*\(/],
-  ['/gsd: command', /\/gsd:\S+/],
+  ['/gsdt: command', /\/gsdt:\S+/],
   ['@file: reference', /@file:\S+/],
   ['STOP + wait directive', /\bSTOP\b\s+(?:and\s+)?(?:wait|ask)/i],
   ['bare STOP directive', /^\s*STOP\s*[.!]?\s*$/m],
@@ -38,6 +38,8 @@ const BLOCKED_PATTERNS: Array<[string, RegExp]> = [
 // ─── Expected files ──────────────────────────────────────────────────────────
 
 const EXPECTED_WORKFLOWS = [
+  'classify-phase.md',
+  'design-milestone-phase.md',
   'execute-plan.md',
   'research-phase.md',
   'plan-phase.md',
@@ -46,14 +48,15 @@ const EXPECTED_WORKFLOWS = [
 ];
 
 const EXPECTED_AGENTS = [
-  'gsd-executor.md',
-  'gsd-phase-researcher.md',
-  'gsd-planner.md',
-  'gsd-verifier.md',
-  'gsd-plan-checker.md',
-  'gsd-project-researcher.md',
-  'gsd-research-synthesizer.md',
-  'gsd-roadmapper.md',
+  'gsdt-classifier.md',
+  'gsdt-executor.md',
+  'gsdt-phase-researcher.md',
+  'gsdt-planner.md',
+  'gsdt-verifier.md',
+  'gsdt-plan-checker.md',
+  'gsdt-project-researcher.md',
+  'gsdt-research-synthesizer.md',
+  'gsdt-roadmapper.md',
 ];
 
 const templatesDir = join(promptsDir, 'templates');

@@ -6,7 +6,7 @@
  *
  * @example
  * ```typescript
- * import { GSD } from '@gsd-build/sdk';
+ * import { GSD } from '@gsdt/sdk';
  *
  * const gsd = new GSD({ projectDir: '/path/to/project' });
  * const result = await gsd.executePlan('.planning/phases/01-auth/01-auth-01-PLAN.md');
@@ -21,19 +21,19 @@
 
 import { readFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
-import { homedir } from 'node:os';
 
 import type { GSDOptions, PlanResult, SessionOptions, GSDEvent, TransportHandler, PhaseRunnerOptions, PhaseRunnerResult, MilestoneRunnerOptions, MilestoneRunnerResult, RoadmapPhaseInfo } from './types.js';
 import { GSDEventType } from './types.js';
 import { parsePlan, parsePlanFile } from './plan-parser.js';
 import { loadConfig } from './config.js';
-import { GSDTools, resolveGsdToolsPath } from './gsd-tools.js';
+import { GSDTools } from './gsdt-tools.js';
 import { runPlanSession } from './session-runner.js';
 import { buildExecutorPrompt, parseAgentTools } from './prompt-builder.js';
 import { GSDEventStream } from './event-stream.js';
 import { PhaseRunner } from './phase-runner.js';
 import { ContextEngine } from './context-engine.js';
 import { PromptFactory } from './phase-prompt.js';
+import { resolveGsdToolsPath, resolveAgentsDir, resolvePath, SDK_PROMPTS_DIR } from './path-config.js';
 
 // ─── GSD class ───────────────────────────────────────────────────────────────
 
@@ -132,7 +132,7 @@ export class GSD {
    */
   async runPhase(phaseNumber: string, options?: PhaseRunnerOptions): Promise<PhaseRunnerResult> {
     const tools = this.createTools();
-    const promptFactory = new PromptFactory();
+    const promptFactory = new PromptFactory({ projectDir: this.projectDir });
     const contextEngine = new ContextEngine(this.projectDir);
     const config = await loadConfig(this.projectDir);
 
@@ -149,6 +149,7 @@ export class GSD {
       contextEngine,
       eventStream: this.eventStream,
       config,
+      contextManager: options?.contextManager,
     });
 
     return runner.run(phaseNumber, options);
@@ -188,7 +189,10 @@ export class GSD {
       const phase = currentPhases[0];
 
       try {
-        const result = await this.runPhase(phase.number, options);
+        const runOptions = options
+          ? { ...options, ...(options.contextManager !== undefined ? { contextManager: options.contextManager } : {}) }
+          : undefined;
+        const result = await this.runPhase(phase.number, runOptions);
         phaseResults.push(result);
 
         if (!result.success) {
@@ -255,29 +259,17 @@ export class GSD {
   }
 
   /**
-   * Load the gsd-executor agent definition if available.
+   * Load the gsdt-executor agent definition if available.
    * Falls back gracefully — returns undefined if not found.
    */
   private async loadAgentDefinition(): Promise<string | undefined> {
-    const paths = [
-      // Repo-local GSD installation
-      join(this.projectDir, '.claude', 'get-shit-done', 'agents', 'gsd-executor.md'),
-      // Repo-local agents directory
-      join(this.projectDir, '.claude', 'agents', 'gsd-executor.md'),
-      // Global home directory
-      join(homedir(), '.claude', 'agents', 'gsd-executor.md'),
-      join(this.projectDir, 'agents', 'gsd-executor.md'),
-    ];
-
-    for (const p of paths) {
-      try {
-        return await readFile(p, 'utf-8');
-      } catch {
-        // Not found at this path, try next
-      }
+    const resolved = resolveAgentsDir(this.projectDir, '.claude/gsdt');
+    const agentPath = join(resolved, 'gsdt-executor.md');
+    try {
+      return await readFile(agentPath, 'utf-8');
+    } catch {
+      return undefined;
     }
-
-    return undefined;
   }
 }
 
@@ -286,7 +278,10 @@ export class GSD {
 export { parsePlan, parsePlanFile } from './plan-parser.js';
 export { loadConfig } from './config.js';
 export type { GSDConfig } from './config.js';
-export { GSDTools, GSDToolsError, resolveGsdToolsPath } from './gsd-tools.js';
+export { GSDTools, GSDToolsError } from './gsdt-tools.js';
+export { resolveGsdToolsPath } from './path-config.js';
+export { resolveTemplatesDir, resolveAgentsDir, resolveWorkflowsDir, resolvePlanningDir, resolvePath, getPathCandidates } from './path-config.js';
+export type { PathConfig } from './path-config.js';
 export { runPlanSession, runPhaseStepSession } from './session-runner.js';
 export { buildExecutorPrompt, parseAgentTools } from './prompt-builder.js';
 export * from './types.js';
@@ -298,6 +293,7 @@ export { ContextEngine, PHASE_FILE_MANIFEST } from './context-engine.js';
 export type { FileSpec } from './context-engine.js';
 export { getToolsForPhase, PHASE_AGENT_MAP, PHASE_DEFAULT_TOOLS } from './tool-scoping.js';
 export { PromptFactory, extractBlock, extractSteps, PHASE_WORKFLOW_MAP } from './phase-prompt.js';
+export type { PromptFactoryOptions } from './phase-prompt.js';
 export { GSDLogger } from './logger.js';
 export type { LogLevel, LogEntry, GSDLoggerOptions } from './logger.js';
 
@@ -314,3 +310,7 @@ export type { WSTransportOptions } from './ws-transport.js';
 export { InitRunner } from './init-runner.js';
 export type { InitRunnerDeps } from './init-runner.js';
 export type { InitConfig, InitResult, InitStepResult, InitStepName } from './types.js';
+
+// Orchestrator - simplified entry point
+export { Orchestrator } from './orchestrator.js';
+export type { OrchestratorOptions, OrchestratorResult, ClassificationResult, MilestoneDesignResult } from './orchestrator.js';
