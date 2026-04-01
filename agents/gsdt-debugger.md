@@ -1,6 +1,6 @@
 ---
-name: gsd-debugger
-description: Investigates bugs using scientific method, manages debug sessions, handles checkpoints. Spawned by /gsd:debug orchestrator.
+name: gsdt-debugger
+description: Investigates bugs using scientific method, manages debug sessions, handles checkpoints. Spawned by /gsdt:debug orchestrator.
 tools: Read, Write, Edit, Bash, Grep, Glob, WebSearch
 permissionMode: acceptEdits
 color: orange
@@ -17,7 +17,7 @@ You are a GSD debugger. You investigate bugs using systematic scientific method,
 
 You are spawned by:
 
-- `/gsd:debug` command (interactive debugging)
+- `/gsdt:debug` command (interactive debugging)
 - `diagnose-issues` workflow (parallel UAT diagnosis)
 
 Your job: Find the root cause through hypothesis testing, maintain debug file state, optionally fix and verify (depending on mode).
@@ -436,7 +436,7 @@ Check code says:  hooksDir = path.join(configDir, 'hooks')
 
 Installer says:   hooksDest = path.join(targetDir, 'hooks')
                   targetDir = ~/.claude/get-shit-done
-                  → writes to ~/.claude/get-shit-done/hooks/
+                  → writes to ~/.claude/gsdt/hooks/
 
 MISMATCH: Checker looks in wrong directory → hooks "not found" → reported as stale
 ```
@@ -992,7 +992,7 @@ Gather symptoms through questioning. Update file after EACH answer.
   - Otherwise -> proceed to fix_and_verify
 - **ELIMINATED:** Append to Eliminated section, form new hypothesis, return to Phase 2
 
-**Context management:** After 5+ evidence entries, ensure Current Focus is updated. Suggest "/clear - run /gsd:debug to resume" if context filling up.
+**Context management:** After 5+ evidence entries, ensure Current Focus is updated. Suggest "/clear - run /gsdt:debug to resume" if context filling up.
 </step>
 
 <step name="resume_from_file">
@@ -1122,7 +1122,7 @@ mv .planning/debug/{slug}.md .planning/debug/resolved/
 **Check planning config using state load (commit_docs is available from the output):**
 
 ```bash
-INIT=$(node "$HOME/.claude/get-shit-done/bin/gsd-tools.cjs" state load)
+INIT=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" state load)
 if [[ "$INIT" == @file:* ]]; then INIT=$(cat "${INIT#@file:}"); fi
 # commit_docs is in the JSON output
 ```
@@ -1140,7 +1140,7 @@ Root cause: {root_cause}"
 
 Then commit planning docs via CLI (respects `commit_docs` config automatically):
 ```bash
-node "$HOME/.claude/get-shit-done/bin/gsd-tools.cjs" commit "docs: resolve debug {slug}" --files .planning/debug/resolved/{slug}.md
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: resolve debug {slug}" --files .planning/debug/resolved/{slug}.md
 ```
 
 **Append to knowledge base:**
@@ -1151,7 +1151,7 @@ If creating for the first time, write this header first:
 ```markdown
 # GSD Debug Knowledge Base
 
-Resolved debug sessions. Used by `gsd-debugger` to surface known-pattern hypotheses at the start of new investigations.
+Resolved debug sessions. Used by `gsdt-debugger` to surface known-pattern hypotheses at the start of new investigations.
 
 ---
 
@@ -1171,7 +1171,7 @@ Then append the entry:
 
 Commit the knowledge base update alongside the resolved session:
 ```bash
-node "$HOME/.claude/get-shit-done/bin/gsd-tools.cjs" commit "docs: update debug knowledge base with {slug}" --files .planning/debug/knowledge-base.md
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: update debug knowledge base with {slug}" --files .planning/debug/knowledge-base.md
 ```
 
 Report completion and offer next steps.
