@@ -15,6 +15,11 @@ node ~/.claude/gsdt/bin/gsdt-tools.cjs verify-path-exists "$(pwd)/.planning/ROAD
 - 存在 → 已初始化项目，跳至 Step 1（正常流程）
 - 不存在 → 冷启动模式，跳至 Step 0b
 
+**硬门禁规则（必须遵守）：**
+- `ROADMAP.md` 不存在时，**禁止**直接调用 `discuss-phase`
+- 冷启动只允许两种结果：继续收集碎片，或自动触发 `new-project`
+- 只有 `new-project` 成功生成 `ROADMAP.md` 后，才允许自动进入 `discuss-phase`
+
 ---
 
 ## Step 0b — 冷启动：先保存碎片，再判断是否足够
@@ -22,19 +27,21 @@ node ~/.claude/gsdt/bin/gsdt-tools.cjs verify-path-exists "$(pwd)/.planning/ROAD
 先执行 Step 1-4 完成本次碎片的保存，然后继续：
 
 ```bash
-node ~/.claude/gsdt/bin/gsdt-tools.cjs capture graph
+node ~/.claude/gsdt/bin/gsdt-tools.cjs capture decide
 ```
 
-读取图谱统计，判断是否满足 new-project 触发条件：
+`capture decide` 作为唯一判定源，返回 `decision.next_action`：
+- `collect_more` — 继续收集
+- `trigger_new_project` — 自动触发初始化
 
-**触发 new-project 的条件（需同时满足）：**
-- `nodeCount >= 5` — 至少 5 个功能节点
-- `edgeCount >= 2` — 至少 2 条关系边
-- 碎片总数 >= 5
+判定采用双通道（防卡死）：
+- 语义通道：`nodeCount>=5 && edgeCount>=2 && (crossFragmentSimilarity>=0.15 || multiEvidenceCount>=1)`
+- 结构通道：`fragmentCount>=4 && nodeCount>=12 && edgeCount>=10 && connectedNodeRatio>=0.75`
 
-若不满足：显示当前 `nodeCount`、`edgeCount`、碎片总数，提示继续输入。停止。
+若 `next_action=collect_more`：显示一行状态并停止：
+`收集中 | next=collect_more`
 
-若满足：继续 Step 0c。
+若 `next_action=trigger_new_project`：继续 Step 0c。
 
 ---
 
@@ -51,7 +58,7 @@ node ~/.claude/gsdt/bin/gsdt-tools.cjs config-set workflow._auto_chain_active tr
 
 ---
 
-## Step 0d — 合并碎片，执行 new-project 后续步骤
+## Step 0d — 合并碎片并自动触发 new-project
 
 将所有碎片原始文本合并为 idea document：
 ```
@@ -60,12 +67,18 @@ node ~/.claude/gsdt/bin/gsdt-tools.cjs config-set workflow._auto_chain_active tr
 ...
 ```
 
-作为 AI，代入 `/gsdt:new-project --auto` 工作流的 Step 4 开始执行（已有 config.json，跳过 Step 2a）：
+将合并后的内容写入：
+`.planning/captures/idea.md`
 
-- **Step 4：** 从 idea document 生成 PROJECT.md（不询问用户，AI 自行推断缺失信息）
-- **Step 6：** 并行启动 4 个研究 agent（STACK / FEATURES / ARCHITECTURE / PITFALLS）
-- **Step 7：** 自动生成 REQUIREMENTS.md（auto-include 所有 table stakes）
-- **Step 8：** 启动 gsdt-roadmapper 生成 ROADMAP.md（auto-approve）
+然后**必须**直接触发：
+```
+Skill(skill="gsdt:new-project", args="--auto @.planning/captures/idea.md")
+```
+
+失败自愈（自动重试）：
+- 同一步最多重试 3 次（2s, 4s, 8s）
+- 3 次仍失败：仅输出一行状态并停止
+  `初始化中 | next=blocked (new-project failed after 3 retries)`
 
 任何信息 gap 由 AI research 填补，不询问用户。
 
@@ -73,10 +86,19 @@ node ~/.claude/gsdt/bin/gsdt-tools.cjs config-set workflow._auto_chain_active tr
 
 ## Step 0e — 自动进入 discuss-phase 1
 
-new-project 完成后，立即使用 Skill 工具调用 discuss-phase：
+new-project 返回后，先验证 ROADMAP 是否已生成：
+
+```bash
+node ~/.claude/gsdt/bin/gsdt-tools.cjs verify-path-exists "$(pwd)/.planning/ROADMAP.md"
+```
+
+- 若不存在：报告 `new-project 未完成或失败`，停止（禁止进入 discuss-phase）
+- 若存在：立即进入 discuss-phase
+
+调用：
 
 ```
-Skill(skill="gsd:discuss-phase", args="1 --auto")
+Skill(skill="gsdt:discuss-phase", args="1 --auto")
 ```
 
 这会触发 discuss-phase 的 `auto_advance` 步骤，在完成后自动进入 `plan-phase`。
@@ -100,28 +122,55 @@ node ~/.claude/gsdt/bin/gsdt-tools.cjs capture graph
 
 This shows current nodes and edges. Use this as context for inference.
 
-## Step 3 — AI inference
+## Step 3 — Intent splitting
 
-Given the fragment text and the existing graph, determine:
+Given the fragment text, determine if it contains **multiple independent intents**.
 
-**A. Intent** — one of: `add` / `modify` / `unknown`
+**Core principle**: Judge purely by the input text itself. Do NOT reference project context (e.g., "this is a multi-agent project"). The user's original words are the only source of truth.
 
-**B. Entities** — noun phrases or concepts that represent functional units in THIS project. Do not use generic pre-set terms. Extract from the fragment itself. Examples:
-- Fragment: "我想做用户登录" → entities: `user-login`
-- Fragment: "需要一个数据导出功能" → entities: `data-export`
-- Fragment: "支持多语言" → entities: `i18n`
+### Split test
 
-**C. New nodes** — entities not yet present in the graph (subset of entities above)
+Apply the **independent-demand test** to each candidate split:
 
-**D. New edges** — inferred relationships between nodes (existing + new) that are implied by the fragment or logically follow. Format: `src:dst`. Only add edges that are clearly implied — do not over-infer.
+1. Can the candidate block form a complete, standalone demand on its own?
+2. If you remove this block, does the remaining text still constitute a valid, meaningful user demand?
 
-## Step 4 — Save fragment
+If both answers are **yes** for multiple blocks → split them.
 
-Run the save command with your inference results:
+### Practical split signals
+
+- User explicitly separates ideas with "而且"、"并且"、"还有"、"另外"
+- Each block can be prefixed with "我想要..." and still make sense
+- One block answers "what to build", another answers a different "what to build" (not a sub-step of the first)
+- Removing one block leaves a complete thought with no dangling reference from the removed part
+
+### Practical merge signals
+
+- Each block refers back to something in the other block ("需要X来实现Y" — Y is incomplete without X)
+- They describe a single user's single workflow step-by-step
+- They share the same subject noun and one only makes sense as a modifier of the other
+- The intent is a single feature with multiple facets, none of which stand alone
+
+### Split result
+
+If multiple intents detected, split into separate fragments. For each independent intent `i`:
+- `text_i` — the exact text snippet for this intent (preserve original wording)
+- `intent_i` — the intent of this specific fragment
+- `entities_i` — entities belonging to this intent only (no cross-fragment sharing)
+- `nodes_i` — new nodes for this intent only
+- `edges_i` — edges connecting nodes within this intent only
+
+If single intent: proceed with the full text as one fragment.
+
+**Important**: Split conservatively. If in doubt, prefer fewer fragments — you can always add more later, but merging incorrectly distorts the graph.
+
+## Step 4 — Save fragments
+
+For each split fragment (or the single fragment), run the save command:
 
 ```bash
 node ~/.claude/gsdt/bin/gsdt-tools.cjs capture save \
-  --text "<EXACT_FRAGMENT_TEXT>" \
+  --text "<FRAGMENT_TEXT>" \
   --intent "<intent>" \
   --entities "<e1,e2,...>" \
   --nodes "<new_node1,new_node2,...>" \
@@ -130,44 +179,54 @@ node ~/.claude/gsdt/bin/gsdt-tools.cjs capture save \
 
 If entities/nodes/edges are empty, pass empty string `""`.
 
+Run the save command **once per fragment**. If 3 intents were split, run 3 save commands sequentially.
+
 ## Step 5 — Present results
 
-Parse the command output and display:
+Parse each save command output and display:
 
+For each fragment captured:
 ```
 碎片已捕获: <fragment_id>
 意图: <intent>
 实体: <entities or "未识别">
 新增节点: <new_nodes or "无">
-新增关系: <new_edges or "无">
-
-图谱状态: <nodeCount> 节点 / <edgeCount> 边
+新增关系: <new_edges or "无"
 ```
+
+After all fragments:
+```
+---（分隔线）
+图谱状态: <total_nodeCount> 节点 / <total_edgeCount> 边 / <total_fragment_count> 碎片
+```
+
+**注意**：如果输入被拆分为多个碎片，显示顺序按 intent 优先级排列（add > modify > unknown）。
+
+**碎片进度仅作参考，不等同于 milestone 进度。**
+Milestone 形成的前提是 nodeCount >= 3（至少 3 个功能节点），而非碎片数量。
 
 ## Step 6 — 触发判断（仅已初始化项目）
 
-读取图谱统计：
+**前置硬校验（必须先做）：**
 ```bash
-node ~/.claude/gsdt/bin/gsdt-tools.cjs capture graph
+node ~/.claude/gsdt/bin/gsdt-tools.cjs verify-path-exists "$(pwd)/.planning/ROADMAP.md"
 ```
 
-**触发 discuss-phase 的条件（需同时满足）：**
-- `nodeCount >= 3` — 至少 3 个功能节点
-- `edgeCount >= 1` 或 `multiEvidenceCount >= 1` — 至少 1 条边或有节点被多个碎片引用
-- 碎片总数 >= 3
+如果 `ROADMAP.md` 不存在：说明仍处于冷启动路径。**禁止**执行 discuss-phase，返回 Step 0b 逻辑（继续收集或触发 new-project）。
 
-**判断流程：**
-1. 读取图谱统计和碎片内容
-2. 检查是否满足上述条件
-3. 若满足 → 调用 discuss-phase
-4. 若不满足 → 显示当前统计，提示继续输入
-
-**若不满足：** 显示 `nodeCount`、`edgeCount`、碎片总数，说明还需要哪些条件。停止。
-
-**若满足：** 立即使用 Skill 工具调用 discuss-phase：
-
-```
-Skill(skill="gsd:discuss-phase", args="<phase_number> --auto")
+读取确定性判定：
+```bash
+node ~/.claude/gsdt/bin/gsdt-tools.cjs capture decide
 ```
 
+若 `decision.next_action=collect_more`：
+- 仅输出一行状态并停止：`收集中 | next=collect_more`
+
+若 `decision.next_action=trigger_discuss_phase`：立即使用 Skill 工具调用 discuss-phase：
+
+```
+Skill(skill="gsdt:discuss-phase", args="<phase_number> --auto")
+```
+
+调用前输出一行状态：`规划中 | next=trigger_discuss_phase`
 这会触发 discuss-phase 的 `auto_advance` 步骤，在完成后自动进入 `plan-phase`。

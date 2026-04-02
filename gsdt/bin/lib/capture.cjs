@@ -123,14 +123,109 @@ function updateGraph(graphPath, graph, newNodes, newEdges, entities, fragmentId)
  * Return raw graph statistics for AI judgment.
  * ready is always null — AI decides whether to trigger discuss-phase.
  * @param {{ nodes, edges, evidence }} graph
- * @returns {{ ready: null, nodeCount, edgeCount, multiEvidenceCount }}
+ * @param {string[][]} fragEntities  — entities per fragment, e.g. [["a","b"], ["c"]]
+ * @returns {{ ready: null, nodeCount, edgeCount, multiEvidenceCount, connectedNodeRatio, crossFragmentSimilarity }}
  */
-function checkMilestoneTrigger(graph) {
+function checkMilestoneTrigger(graph, fragEntities) {
   const nodeCount = graph.nodes.length;
   const edgeCount = graph.edges.length;
   const multiEvidenceCount = Object.values(graph.evidence)
     .filter(arr => arr.length > 1).length;
-  return { ready: null, nodeCount, edgeCount, multiEvidenceCount };
+
+  // connectedNodeRatio: 有边连接的节点占比（衡量结构连通性）
+  const connectedNodes = new Set();
+  for (const e of graph.edges) {
+    connectedNodes.add(e[0]);
+    connectedNodes.add(e[1]);
+  }
+  const connectedNodeRatio = nodeCount > 0
+    ? Math.round((connectedNodes.size / nodeCount) * 100) / 100
+    : 0;
+
+  // crossFragmentSimilarity: 碎片间实体 Jaccard 相似度均值（衡量语义相关性）
+  let crossFragmentSimilarity = 0;
+  if (fragEntities && fragEntities.length >= 2) {
+    let totalSim = 0;
+    let pairCount = 0;
+    for (let i = 0; i < fragEntities.length; i++) {
+      for (let j = i + 1; j < fragEntities.length; j++) {
+        const setI = new Set(fragEntities[i]);
+        const setJ = new Set(fragEntities[j]);
+        const intersection = [...setI].filter(x => setJ.has(x)).length;
+        const union = new Set([...setI, ...setJ]).size;
+        totalSim += union > 0 ? intersection / union : 0;
+        pairCount++;
+      }
+    }
+    crossFragmentSimilarity = Math.round((totalSim / pairCount) * 100) / 100;
+  }
+
+  return { ready: null, nodeCount, edgeCount, multiEvidenceCount, connectedNodeRatio, crossFragmentSimilarity };
+}
+
+/**
+ * Deterministic capture decision engine.
+ * Returns next action for autopilot routing.
+ *
+ * Cold start (no ROADMAP):
+ * - semantic channel OR structural channel => trigger_new_project
+ * - otherwise => collect_more
+ *
+ * Initialized project (ROADMAP exists):
+ * - discuss-ready => trigger_discuss_phase
+ * - otherwise => collect_more
+ */
+function decideCaptureNextAction(roadmapExists, trigger, fragmentCount) {
+  const semanticReady =
+    trigger.nodeCount >= 5 &&
+    trigger.edgeCount >= 2 &&
+    (trigger.crossFragmentSimilarity >= 0.15 || trigger.multiEvidenceCount >= 1);
+
+  // Structural fallback prevents cold-start deadlock when wording differs
+  // across fragments but graph structure is already rich.
+  const structuralReady =
+    fragmentCount >= 4 &&
+    trigger.nodeCount >= 12 &&
+    trigger.edgeCount >= 10 &&
+    trigger.connectedNodeRatio >= 0.75;
+
+  const discussReady =
+    trigger.nodeCount >= 3 &&
+    (trigger.edgeCount >= 1 || trigger.multiEvidenceCount >= 1) &&
+    fragmentCount >= 3;
+
+  let nextAction = 'collect_more';
+  let stage = 'collecting';
+  let reason = 'Need more capture evidence before auto-advance.';
+
+  if (!roadmapExists) {
+    if (semanticReady || structuralReady) {
+      nextAction = 'trigger_new_project';
+      stage = 'initializing';
+      reason = semanticReady
+        ? 'Cold start semantic threshold met.'
+        : 'Cold start structural fallback threshold met.';
+    } else {
+      nextAction = 'collect_more';
+      stage = 'collecting';
+      reason = 'Cold start: collecting more fragments before new-project.';
+    }
+  } else if (discussReady) {
+    nextAction = 'trigger_discuss_phase';
+    stage = 'planning';
+    reason = 'ROADMAP exists and discuss-phase threshold met.';
+  }
+
+  return {
+    next_action: nextAction,
+    stage,
+    reason,
+    channels: {
+      semantic_ready: semanticReady,
+      structural_ready: structuralReady,
+      discuss_ready: discussReady,
+    },
+  };
 }
 
 // ─── Subcommands ──────────────────────────────────────────────────────────────
@@ -172,18 +267,29 @@ function cmdCaptureSave(cwd, args, raw) {
     const graph = loadGraph(graphPath);
     updateGraph(graphPath, graph, nodes, edges, entities, fragmentId);
 
-    const trigger = checkMilestoneTrigger(graph);
+    // 读取已有的 fragEntities，追加本碎片的实体
+    let fragEntities = [];
+    if (fs.existsSync(statePath)) {
+      try {
+        const oldState = JSON.parse(fs.readFileSync(statePath, 'utf-8'));
+        fragEntities = oldState.fragEntities || [];
+      } catch {}
+    }
+    fragEntities.push(entities);
+
+    const trigger = checkMilestoneTrigger(graph, fragEntities);
 
     fs.mkdirSync(capturesDir, { recursive: true });
     fs.writeFileSync(statePath, JSON.stringify({
-      nodeCount:    trigger.nodeCount,
-      edgeCount:    trigger.edgeCount,
-      last_fragment: fragmentId,
-      updated:      new Date().toISOString(),
+      nodeCount:      trigger.nodeCount,
+      edgeCount:      trigger.edgeCount,
+      last_fragment:  fragmentId,
+      updated:        new Date().toISOString(),
+      fragEntities,
     }, null, 2), 'utf-8');
 
     output({ fragment: fragmentId, entities, new_nodes: nodes, new_edges: edgesRaw, trigger }, raw,
-      `fragment=${fragmentId}\nnodes=${trigger.nodeCount}\nedges=${trigger.edgeCount}\nmultiEvidence=${trigger.multiEvidenceCount}`
+      `fragment=${fragmentId}\nnodes=${trigger.nodeCount}\nedges=${trigger.edgeCount}\nmultiEvidence=${trigger.multiEvidenceCount}\nconnected=${trigger.connectedNodeRatio}\nsimilarity=${trigger.crossFragmentSimilarity}`
     );
   });
 }
@@ -194,11 +300,64 @@ function cmdCaptureSave(cwd, args, raw) {
 function cmdCaptureGraph(cwd, raw) {
   const paths      = planningPaths(cwd);
   const graphPath  = path.join(paths.planning, 'captures', 'graph.md');
+  const statePath  = path.join(paths.planning, 'captures', 'state.json');
+  const fragmentsDir = path.join(paths.planning, 'captures', 'fragments');
   const graph      = loadGraph(graphPath);
-  const trigger    = checkMilestoneTrigger(graph);
-  output({ graph, trigger }, raw,
+
+  let fragEntities = [];
+  if (fs.existsSync(statePath)) {
+    try {
+      const state = JSON.parse(fs.readFileSync(statePath, 'utf-8'));
+      fragEntities = state.fragEntities || [];
+    } catch {}
+  }
+
+  const trigger    = checkMilestoneTrigger(graph, fragEntities);
+  const fragmentCount = fs.existsSync(fragmentsDir)
+    ? fs.readdirSync(fragmentsDir).filter(f => f.endsWith('.md')).length
+    : 0;
+  const roadmapExists = fs.existsSync(paths.roadmap);
+  const decision = decideCaptureNextAction(roadmapExists, trigger, fragmentCount);
+
+  output({ graph, trigger, fragment_count: fragmentCount, roadmap_exists: roadmapExists, decision }, raw,
     `节点: ${graph.nodes.join(', ') || '(无)'}\n边: ${graph.edges.map(e => e.join('→')).join(', ') || '(无)'}\n${trigger.message}`
   );
+}
+
+/**
+ * `capture decide` — deterministic next action for auto-flow routing.
+ */
+function cmdCaptureDecide(cwd, raw) {
+  const paths = planningPaths(cwd);
+  const graphPath = path.join(paths.planning, 'captures', 'graph.md');
+  const statePath = path.join(paths.planning, 'captures', 'state.json');
+  const fragmentsDir = path.join(paths.planning, 'captures', 'fragments');
+  const graph = loadGraph(graphPath);
+
+  let fragEntities = [];
+  if (fs.existsSync(statePath)) {
+    try {
+      const state = JSON.parse(fs.readFileSync(statePath, 'utf-8'));
+      fragEntities = state.fragEntities || [];
+    } catch { /* intentionally empty */ }
+  }
+
+  const trigger = checkMilestoneTrigger(graph, fragEntities);
+  const fragmentCount = fs.existsSync(fragmentsDir)
+    ? fs.readdirSync(fragmentsDir).filter(f => f.endsWith('.md')).length
+    : 0;
+  const roadmapExists = fs.existsSync(paths.roadmap);
+  const decision = decideCaptureNextAction(roadmapExists, trigger, fragmentCount);
+
+  const result = {
+    roadmap_exists: roadmapExists,
+    fragment_count: fragmentCount,
+    trigger,
+    decision,
+    one_line_status: `${decision.stage} | next=${decision.next_action}`,
+  };
+
+  output(result, raw, decision.next_action);
 }
 
 /**
@@ -227,7 +386,9 @@ module.exports = {
   loadGraph,
   updateGraph,
   checkMilestoneTrigger,
+  decideCaptureNextAction,
   cmdCaptureSave,
   cmdCaptureGraph,
+  cmdCaptureDecide,
   cmdCaptureFragments,
 };

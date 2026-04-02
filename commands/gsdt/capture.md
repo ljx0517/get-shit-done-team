@@ -1,5 +1,5 @@
 ---
-name: gsd:capture
+name: gsdt:capture
 description: Capture freeform project ideas and infer functionality graph
 argument-hint: "<text>"
 allowed-tools:
