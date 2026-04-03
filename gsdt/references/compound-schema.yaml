@@ -1,0 +1,90 @@
+version: 1
+name: gsdt-compound-solution
+description: GSDT compound solution contract for automated bug learnings
+
+tracks:
+  bug:
+    required:
+      - title
+      - date
+      - problem_type
+      - severity
+      - track
+      - source
+      - dedupe_key
+      - symptoms
+      - root_cause
+      - resolution_type
+    optional:
+      - phase
+      - files
+      - tags
+      - related
+  knowledge:
+    required:
+      - title
+      - date
+      - problem_type
+      - severity
+      - track
+      - source
+      - dedupe_key
+    optional:
+      - phase
+      - files
+      - tags
+      - related
+
+enums:
+  problem_type:
+    - logic_error
+    - build_error
+    - test_failure
+    - runtime_error
+    - performance_issue
+    - database_issue
+    - security_issue
+    - ui_bug
+    - integration_issue
+    - best_practice
+    - workflow_issue
+    - documentation_gap
+    - developer_experience
+  severity:
+    - critical
+    - high
+    - medium
+    - low
+  track:
+    - bug
+    - knowledge
+  resolution_type:
+    - code_fix
+    - config_fix
+    - test_fix
+    - dependency_fix
+    - data_fix
+
+categories:
+  logic_error: logic-errors
+  build_error: build-errors
+  test_failure: test-failures
+  runtime_error: runtime-errors
+  performance_issue: performance-issues
+  database_issue: database-issues
+  security_issue: security-issues
+  ui_bug: ui-bugs
+  integration_issue: integration-issues
+  best_practice: best-practices
+  workflow_issue: workflow-issues
+  documentation_gap: documentation-gaps
+  developer_experience: developer-experience
+
+automatic_mode:
+  default: background
+  rules:
+    - candidate events are recorded but do not write solution docs
+    - diagnosed and resolved events can write docs automatically
+    - high-overlap matches update the existing solution doc
+    - moderate-overlap matches create a new doc and record the related doc
+    - failures never block the parent workflow
