@@ -206,7 +206,7 @@ claude --dangerously-skip-permissions
 
 你批准路线图。现在准备好构建了。
 
-**创建：** `PROJECT.md`、`REQUIREMENTS.md`、`ROADMAP.md`、`STATE.md`、`.planning/research/`
+**创建：** `PROJECT.md`、`REQUIREMENTS.md`、`ROADMAP.md`、`STATE.md`、`.claude/.gsdt-planning/research/`
 
 ---
 
@@ -366,7 +366,7 @@ claude --dangerously-skip-permissions
 
 - **相同代理** —— 规划者 + 执行者，相同质量
 - **跳过可选步骤** —— 无研究、无计划检查器、无验证器
-- **独立跟踪** —— 存放在 `.planning/quick/`，不是阶段
+- **独立跟踪** —— 存放在 `.claude/.gsdt-planning/quick/`，不是阶段
 
 用于：bug 修复、小功能、配置更改、一次性任务。
 
@@ -375,7 +375,7 @@ claude --dangerously-skip-permissions
 > 你想做什么？"在设置中添加深色模式切换"
 ```
 
-**创建：** `.planning/quick/001-add-dark-mode-toggle/PLAN.md`、`SUMMARY.md`
+**创建：** `.claude/.gsdt-planning/quick/001-add-dark-mode-toggle/PLAN.md`、`SUMMARY.md`
 
 ---
 
@@ -519,7 +519,7 @@ lmn012o feat(08-02): 创建注册端点
 | `/gsdt:check-todos` | 列出待处理事项 |
 | `/gsdt:debug [desc]` | 带持久状态的系统化调试 |
 | `/gsdt:quick [--full] [--discuss]` | 用 GSD 保证执行临时任务（`--full` 添加计划检查和验证，`--discuss` 先收集上下文） |
-| `/gsdt:health [--repair]` | 验证 `.planning/` 目录完整性，用 `--repair` 自动修复 |
+| `/gsdt:health [--repair]` | 验证 `.claude/.gsdt-planning/` 目录完整性，用 `--repair` 自动修复 |
 
 <sup>¹ 由 Reddit 用户 OracleGreyBeard 贡献</sup>
 
@@ -527,7 +527,7 @@ lmn012o feat(08-02): 创建注册端点
 
 ## 配置
 
-GSD 在 `.planning/config.json` 中存储项目设置。在 `/gsdt:new-project` 期间配置或稍后用 `/gsdt:settings` 更新。完整配置模式、工作流开关、git 分支选项和每个代理的模型分解，请参阅[用户指南](USER-GUIDE.md#配置参考)。
+GSD 在 `.claude/.gsdt-planning/config.json` 中存储项目设置。在 `/gsdt:new-project` 期间配置或稍后用 `/gsdt:settings` 更新。完整配置模式、工作流开关、git 分支选项和每个代理的模型分解，请参阅[用户指南](USER-GUIDE.md#配置参考)。
 
 ### 核心设置
 
@@ -573,7 +573,7 @@ GSD 在 `.planning/config.json` 中存储项目设置。在 `/gsdt:new-project` 
 | 设置 | 默认值 | 控制内容 |
 |---------|---------|------------------|
 | `parallelization.enabled` | `true` | 同时运行独立计划 |
-| `planning.commit_docs` | `true` | 在 git 中跟踪 `.planning/` |
+| `planning.commit_docs` | `true` | 在 git 中跟踪 `.claude/.gsdt-planning/` |
 
 ### Git 分支
 

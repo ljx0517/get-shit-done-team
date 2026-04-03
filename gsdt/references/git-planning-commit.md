@@ -4,20 +4,20 @@ Commit planning artifacts using the gsdt-tools CLI, which automatically checks `
 
 ## Commit via CLI
 
-Always use `gsdt-tools.cjs commit` for `.planning/` files — it handles `commit_docs` and gitignore checks automatically:
+Always use `gsdt-tools.cjs commit` for `.claude/.gsdt-planning/` files — it handles `commit_docs` and gitignore checks automatically:
 
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs({scope}): {description}" --files .planning/STATE.md .planning/ROADMAP.md
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs({scope}): {description}" --files .claude/.gsdt-planning/STATE.md .claude/.gsdt-planning/ROADMAP.md
 ```
 
-The CLI will return `skipped` (with reason) if `commit_docs` is `false` or `.planning/` is gitignored. No manual conditional checks needed.
+The CLI will return `skipped` (with reason) if `commit_docs` is `false` or `.claude/.gsdt-planning/` is gitignored. No manual conditional checks needed.
 
 ## Amend previous commit
 
-To fold `.planning/` file changes into the previous commit:
+To fold `.claude/.gsdt-planning/` file changes into the previous commit:
 
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "" --files .planning/codebase/*.md --amend
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "" --files .claude/.gsdt-planning/codebase/*.md --amend
 ```
 
 ## Commit Message Patterns
@@ -34,5 +34,5 @@ node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "" --files .planning/codebas
 ## When to Skip
 
 - `commit_docs: false` in config
-- `.planning/` is gitignored
-- No changes to commit (check with `git status --porcelain .planning/`)
+- `.claude/.gsdt-planning/` is gitignored
+- No changes to commit (check with `git status --porcelain .claude/.gsdt-planning/`)

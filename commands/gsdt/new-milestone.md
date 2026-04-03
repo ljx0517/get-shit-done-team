@@ -1,5 +1,5 @@
 ---
-name: gsd:new-milestone
+name: gsdt:new-milestone
 description: Start a new milestone cycle — update PROJECT.md and route to requirements
 argument-hint: "[milestone name, e.g., 'v1.1 Notifications']"
 allowed-tools:
@@ -15,11 +15,11 @@ Start a new milestone: questioning → research (optional) → requirements → 
 Brownfield equivalent of new-project. Project exists, PROJECT.md has history. Gathers "what's next", updates PROJECT.md, then runs requirements → roadmap cycle.
 
 **Creates/Updates:**
-- `.planning/PROJECT.md` — updated with new milestone goals
-- `.planning/research/` — domain research (optional, NEW features only)
-- `.planning/REQUIREMENTS.md` — scoped requirements for this milestone
-- `.planning/ROADMAP.md` — phase structure (continues numbering)
-- `.planning/STATE.md` — reset for new milestone
+- `.claude/.gsdt-planning/PROJECT.md` — updated with new milestone goals
+- `.claude/.gsdt-planning/research/` — domain research (optional, NEW features only)
+- `.claude/.gsdt-planning/REQUIREMENTS.md` — scoped requirements for this milestone
+- `.claude/.gsdt-planning/ROADMAP.md` — phase structure (continues numbering)
+- `.claude/.gsdt-planning/STATE.md` — reset for new milestone
 
 **After:** `/gsdt:plan-phase [N]` to start execution.
 </objective>

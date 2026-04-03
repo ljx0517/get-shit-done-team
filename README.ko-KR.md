@@ -222,7 +222,7 @@ claude --dangerously-skip-permissions
 
 로드맵을 승인하면 이제 만들 준비가 됩니다.
 
-**생성 파일:** `PROJECT.md`, `REQUIREMENTS.md`, `ROADMAP.md`, `STATE.md`, `.planning/research/`
+**생성 파일:** `PROJECT.md`, `REQUIREMENTS.md`, `ROADMAP.md`, `STATE.md`, `.claude/.gsdt-planning/research/`
 
 ---
 
@@ -391,7 +391,7 @@ claude --dangerously-skip-permissions
 
 - **같은 에이전트** — 플래너 + 실행기, 같은 품질
 - **선택적 단계 건너뛰기** — 기본적으로 리서치, 계획 확인기, 검증기 없음
-- **별도 추적** — `.planning/quick/`에 위치, 단계와 별개
+- **별도 추적** — `.claude/.gsdt-planning/quick/`에 위치, 단계와 별개
 
 **`--discuss` 플래그:** 기획 전 회색 지대를 파악하기 위한 가벼운 논의.
 
@@ -406,7 +406,7 @@ claude --dangerously-skip-permissions
 > 뭘 하고 싶으신가요? "설정에 다크 모드 토글 추가"
 ```
 
-**생성 파일:** `.planning/quick/001-add-dark-mode-toggle/PLAN.md`, `SUMMARY.md`
+**생성 파일:** `.claude/.gsdt-planning/quick/001-add-dark-mode-toggle/PLAN.md`, `SUMMARY.md`
 
 ---
 
@@ -579,7 +579,7 @@ lmn012o feat(08-02): create registration endpoint
 | 명령어 | 역할 |
 |---------|------------|
 | `/gsdt:review` | 현재 단계 또는 브랜치의 Cross-AI 피어 리뷰 |
-| `/gsdt:pr-branch` | `.planning/` 커밋을 필터링한 깔끔한 PR 브랜치 생성 |
+| `/gsdt:pr-branch` | `.claude/.gsdt-planning/` 커밋을 필터링한 깔끔한 PR 브랜치 생성 |
 | `/gsdt:audit-uat` | 검증 부채 감사 — UAT가 누락된 단계 찾기 |
 
 ### 백로그 및 스레드
@@ -603,7 +603,7 @@ lmn012o feat(08-02): create registration endpoint
 | `/gsdt:do <text>` | 자유 형식 텍스트를 적절한 GSD 명령어로 자동 라우팅 |
 | `/gsdt:note <text>` | 마찰 없는 아이디어 캡처 — 추가, 목록, 또는 할 일로 승격 |
 | `/gsdt:quick [--full] [--discuss] [--research]` | GSD 보장과 함께 임시 작업 실행 (`--full`은 계획 확인 및 검증 추가, `--discuss`는 먼저 컨텍스트 수집, `--research`는 기획 전 접근법 조사) |
-| `/gsdt:health [--repair]` | `.planning/` 디렉터리 무결성 검증, `--repair`로 자동 복구 |
+| `/gsdt:health [--repair]` | `.claude/.gsdt-planning/` 디렉터리 무결성 검증, `--repair`로 자동 복구 |
 | `/gsdt:stats` | 프로젝트 통계 표시 — 단계, 계획, 요구사항, git 지표 |
 | `/gsdt:profile-user [--questionnaire] [--refresh]` | 개인화된 응답을 위해 세션 분석에서 개발자 행동 프로필 생성 |
 
@@ -613,7 +613,7 @@ lmn012o feat(08-02): create registration endpoint
 
 ## 설정
 
-GSD는 프로젝트 설정을 `.planning/config.json`에 저장합니다. `/gsdt:new-project` 중에 설정하거나 나중에 `/gsdt:settings`로 업데이트할 수 있습니다. 전체 config 스키마, 워크플로우 토글, git 브랜칭 옵션, 에이전트별 모델 분석은 [사용자 가이드](docs/ko-KR/USER-GUIDE.md#configuration-reference)를 참조하세요.
+GSD는 프로젝트 설정을 `.claude/.gsdt-planning/config.json`에 저장합니다. `/gsdt:new-project` 중에 설정하거나 나중에 `/gsdt:settings`로 업데이트할 수 있습니다. 전체 config 스키마, 워크플로우 토글, git 브랜칭 옵션, 에이전트별 모델 분석은 [사용자 가이드](docs/ko-KR/USER-GUIDE.md#configuration-reference)를 참조하세요.
 
 ### 핵심 설정
 
@@ -666,7 +666,7 @@ GSD는 프로젝트 설정을 `.planning/config.json`에 저장합니다. `/gsdt
 | 설정 | 기본값 | 역할 |
 |---------|---------|------------------|
 | `parallelization.enabled` | `true` | 독립 계획 동시 실행 |
-| `planning.commit_docs` | `true` | git에서 `.planning/` 추적 |
+| `planning.commit_docs` | `true` | git에서 `.claude/.gsdt-planning/` 추적 |
 | `hooks.context_warnings` | `true` | 컨텍스트 창 사용 경고 표시 |
 
 ### Git 브랜칭
@@ -696,7 +696,7 @@ GSD는 v1.27부터 심층 방어 보안을 포함합니다:
 
 - **경로 순회 방지** — 모든 사용자 제공 파일 경로(`--text-file`, `--prd`)가 프로젝트 디렉터리 내에서 해석되도록 검증
 - **프롬프트 인젝션 감지** — 중앙화된 `security.cjs` 모듈이 사용자 제공 텍스트가 기획 아티팩트에 들어가기 전 인젝션 패턴 스캔
-- **PreToolUse 프롬프트 가드 훅** — `gsdt-prompt-guard`가 `.planning/`에 대한 쓰기에서 내장된 인젝션 벡터 스캔 (권고적, 차단하지 않음)
+- **PreToolUse 프롬프트 가드 훅** — `gsdt-prompt-guard`가 `.claude/.gsdt-planning/`에 대한 쓰기에서 내장된 인젝션 벡터 스캔 (권고적, 차단하지 않음)
 - **안전한 JSON 파싱** — 잘못된 형식의 `--fields` 인수가 상태를 손상시키기 전에 캐치
 - **셸 인수 검증** — 사용자 텍스트가 셸 보간 전에 살균됨
 - **CI 준비 인젝션 스캐너** — `prompt-injection-scan.test.cjs`가 모든 에이전트/워크플로우/명령어 파일에서 내장된 인젝션 벡터 스캔

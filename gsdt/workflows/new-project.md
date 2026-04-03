@@ -23,7 +23,7 @@ Check if `--auto` flag is present in $ARGUMENTS.
 
 - Skip brownfield mapping offer (assume greenfield)
 - Skip deep questioning (extract context from provided document)
-- Config: YOLO mode is implicit (skip that question), but ask granularity/git/agents FIRST (Step 2a)
+- Config: YOLO mode is implicit (skip that question). If `.claude/.gsdt-planning/config.json` already exists, reuse it and skip Step 2a questions. Otherwise ask granularity/git/agents in Step 2a.
 - After config: run Steps 6-9 automatically with smart defaults:
   - Research: Always yes
   - Requirements: Include all table stakes + features from provided document
@@ -76,7 +76,7 @@ git init
 
 ## 2. Brownfield Offer
 
-**If auto mode:** Skip to Step 4 (assume greenfield, synthesize PROJECT.md from provided document).
+**If auto mode:** Skip to Step 2a (auto config handling), then continue to Step 4.
 
 **If `needs_codebase_map` is true** (from init — existing code detected but no codebase map):
 
@@ -100,7 +100,23 @@ Exit command.
 
 ## 2a. Auto Mode Config (auto mode only)
 
-**If auto mode:** Collect config settings upfront before processing the idea document.
+**If auto mode:** Handle config before processing the idea document.
+
+**Fast path (no questions):**
+
+If `.claude/.gsdt-planning/config.json` already exists (for example, created by `/gsdt:capture` cold-start chain):
+
+- Reuse the existing config
+- Do not ask Step 2a config questions
+- Persist auto-chain flag, then continue:
+
+```bash
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" config-set workflow._auto_chain_active true
+```
+
+Proceed directly to Step 4.
+
+**Question path (only when config does not exist):**
 
 YOLO mode is implicit (auto = YOLO). Ask remaining config questions:
 
@@ -133,7 +149,7 @@ AskUserQuestion([
     multiSelect: false,
     options: [
       { label: "Yes (Recommended)", description: "Planning docs tracked in version control" },
-      { label: "No", description: "Keep .planning/ local-only (add to .gitignore)" }
+      { label: "No", description: "Keep .claude/.gsdt-planning/ local-only (add to .gitignore)" }
     ]
   }
 ])
@@ -184,20 +200,20 @@ AskUserQuestion([
 ])
 ```
 
-Create `.planning/config.json` with all settings (CLI fills in remaining defaults automatically):
+Create `.claude/.gsdt-planning/config.json` with all settings (CLI fills in remaining defaults automatically):
 
 ```bash
-mkdir -p .planning
+mkdir -p .claude/.gsdt-planning
 node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" config-new-project '{"mode":"yolo","granularity":"[selected]","parallelization":true|false,"commit_docs":true|false,"model_profile":"quality|balanced|budget|inherit","workflow":{"research":true|false,"plan_check":true|false,"verifier":true|false,"nyquist_validation":true|false,"auto_advance":true}}'
 ```
 
-**If commit_docs = No:** Add `.planning/` to `.gitignore`.
+**If commit_docs = No:** Add `.claude/.gsdt-planning/` to `.gitignore`.
 
 **Commit config.json:**
 
 ```bash
-mkdir -p .planning
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "chore: add project config" --files .planning/config.json
+mkdir -p .claude/.gsdt-planning
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "chore: add project config" --files .claude/.gsdt-planning/config.json
 ```
 
 **Persist auto-advance chain flag to config (survives context compaction):**
@@ -228,7 +244,7 @@ Ask inline (freeform, NOT AskUserQuestion):
 
 Wait for their response. This gives you the context needed to ask intelligent follow-up questions.
 
-**Research-before-questions mode:** Check if `workflow.research_before_questions` is enabled in `.planning/config.json` (or the config from init context). When enabled, before asking follow-up questions about a topic area:
+**Research-before-questions mode:** Check if `workflow.research_before_questions` is enabled in `.claude/.gsdt-planning/config.json` (or the config from init context). When enabled, before asking follow-up questions about a topic area:
 
 1. Do a brief web search for best practices related to what the user described
 2. Mention key findings naturally as you ask questions (e.g., "Most projects like this use X — is that what you're thinking, or something different?")
@@ -278,7 +294,7 @@ Loop until "Create PROJECT.md" selected.
 
 **If auto mode:** Synthesize from provided document. No "Ready?" gate was shown — proceed directly to commit.
 
-Synthesize all context into `.planning/PROJECT.md` using the template from `templates/project.md`.
+Synthesize all context into `.claude/.gsdt-planning/PROJECT.md` using the template from `templates/project.md`.
 
 **For greenfield projects:**
 
@@ -309,7 +325,7 @@ All Active requirements are hypotheses until shipped and validated.
 
 Infer Validated requirements from existing code:
 
-1. Read `.planning/codebase/ARCHITECTURE.md` and `STACK.md`
+1. Read `.claude/.gsdt-planning/codebase/ARCHITECTURE.md` and `STACK.md`
 2. Identify what the codebase already does
 3. These become the initial Validated set
 
@@ -377,8 +393,8 @@ Do not compress. Capture everything gathered.
 **Commit PROJECT.md:**
 
 ```bash
-mkdir -p .planning
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: initialize project" --files .planning/PROJECT.md
+mkdir -p .claude/.gsdt-planning
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: initialize project" --files .claude/.gsdt-planning/PROJECT.md
 ```
 
 ## 5. Workflow Preferences
@@ -443,7 +459,7 @@ questions: [
     multiSelect: false,
     options: [
       { label: "Yes (Recommended)", description: "Planning docs tracked in version control" },
-      { label: "No", description: "Keep .planning/ local-only (add to .gitignore)" }
+      { label: "No", description: "Keep .claude/.gsdt-planning/ local-only (add to .gitignore)" }
     ]
   }
 ]
@@ -504,10 +520,10 @@ questions: [
 ]
 ```
 
-Create `.planning/config.json` with all settings (CLI fills in remaining defaults automatically):
+Create `.claude/.gsdt-planning/config.json` with all settings (CLI fills in remaining defaults automatically):
 
 ```bash
-mkdir -p .planning
+mkdir -p .claude/.gsdt-planning
 node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" config-new-project '{"mode":"[yolo|interactive]","granularity":"[selected]","parallelization":true|false,"commit_docs":true|false,"model_profile":"quality|balanced|budget|inherit","workflow":{"research":true|false,"plan_check":true|false,"verifier":true|false,"nyquist_validation":[false if granularity=coarse, true otherwise]}}'
 ```
 
@@ -516,7 +532,7 @@ node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" config-new-project '{"mode":"[yolo|
 **If commit_docs = No:**
 
 - Set `commit_docs: false` in config.json
-- Add `.planning/` to `.gitignore` (create if needed)
+- Add `.claude/.gsdt-planning/` to `.gitignore` (create if needed)
 
 **If commit_docs = Yes:**
 
@@ -525,7 +541,7 @@ node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" config-new-project '{"mode":"[yolo|
 **Commit config.json:**
 
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "chore: add project config" --files .planning/config.json
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "chore: add project config" --files .claude/.gsdt-planning/config.json
 ```
 
 ## 5.1. Sub-Repo Detection
@@ -554,7 +570,7 @@ Use AskUserQuestion:
 
 - Set `planning.sub_repos` in config.json to the selected directory names array (e.g., `["backend", "frontend"]`)
 - Auto-set `planning.commit_docs` to `false` (planning docs stay local in multi-repo workspaces)
-- Add `.planning/` to `.gitignore` if not already present
+- Add `.claude/.gsdt-planning/` to `.gitignore` if not already present
 
 Config changes are saved locally — no commit needed since `commit_docs` is `false` in multi-repo mode.
 
@@ -591,7 +607,7 @@ Researching [domain] ecosystem...
 Create research directory:
 
 ```bash
-mkdir -p .planning/research
+mkdir -p .claude/.gsdt-planning/research
 ```
 
 **Determine milestone context:**
@@ -649,7 +665,7 @@ Your STACK.md feeds into roadmap creation. Be prescriptive:
 </quality_gate>
 
 <output>
-Write to: .planning/research/STACK.md
+Write to: .claude/.gsdt-planning/research/STACK.md
 Use template: ~/.claude/gsdt/templates/research-project/STACK.md
 </output>
 ", subagent_type="gsdt-project-researcher", model="{researcher_model}", description="Stack research")
@@ -689,7 +705,7 @@ Your FEATURES.md feeds into requirements definition. Categorize clearly:
 </quality_gate>
 
 <output>
-Write to: .planning/research/FEATURES.md
+Write to: .claude/.gsdt-planning/research/FEATURES.md
 Use template: ~/.claude/gsdt/templates/research-project/FEATURES.md
 </output>
 ", subagent_type="gsdt-project-researcher", model="{researcher_model}", description="Features research")
@@ -729,7 +745,7 @@ Your ARCHITECTURE.md informs phase structure in roadmap. Include:
 </quality_gate>
 
 <output>
-Write to: .planning/research/ARCHITECTURE.md
+Write to: .claude/.gsdt-planning/research/ARCHITECTURE.md
 Use template: ~/.claude/gsdt/templates/research-project/ARCHITECTURE.md
 </output>
 ", subagent_type="gsdt-project-researcher", model="{researcher_model}", description="Architecture research")
@@ -769,7 +785,7 @@ Your PITFALLS.md prevents mistakes in roadmap/planning. For each pitfall:
 </quality_gate>
 
 <output>
-Write to: .planning/research/PITFALLS.md
+Write to: .claude/.gsdt-planning/research/PITFALLS.md
 Use template: ~/.claude/gsdt/templates/research-project/PITFALLS.md
 </output>
 ", subagent_type="gsdt-project-researcher", model="{researcher_model}", description="Pitfalls research")
@@ -784,16 +800,16 @@ Synthesize research outputs into SUMMARY.md.
 </task>
 
 <files_to_read>
-- .planning/research/STACK.md
-- .planning/research/FEATURES.md
-- .planning/research/ARCHITECTURE.md
-- .planning/research/PITFALLS.md
+- .claude/.gsdt-planning/research/STACK.md
+- .claude/.gsdt-planning/research/FEATURES.md
+- .claude/.gsdt-planning/research/ARCHITECTURE.md
+- .claude/.gsdt-planning/research/PITFALLS.md
 </files_to_read>
 
 ${AGENT_SKILLS_SYNTHESIZER}
 
 <output>
-Write to: .planning/research/SUMMARY.md
+Write to: .claude/.gsdt-planning/research/SUMMARY.md
 Use template: ~/.claude/gsdt/templates/research-project/SUMMARY.md
 Commit after writing.
 </output>
@@ -813,7 +829,7 @@ Display research complete banner and key findings:
 **Table Stakes:** [from SUMMARY.md]
 **Watch Out For:** [from SUMMARY.md]
 
-Files: `.planning/research/`
+Files: `.claude/.gsdt-planning/research/`
 ```
 
 **If "Skip research":** Continue to Step 7.
@@ -918,7 +934,7 @@ Cross-check requirements against Core Value from PROJECT.md. If gaps detected, s
 
 **Generate REQUIREMENTS.md:**
 
-Create `.planning/REQUIREMENTS.md` with:
+Create `.claude/.gsdt-planning/REQUIREMENTS.md` with:
 
 - v1 Requirements grouped by category (checkboxes, REQ-IDs)
 - v2 Requirements (deferred)
@@ -969,7 +985,7 @@ If "adjust": Return to scoping.
 **Commit requirements:**
 
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: define v1 requirements" --files .planning/REQUIREMENTS.md
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: define v1 requirements" --files .claude/.gsdt-planning/REQUIREMENTS.md
 ```
 
 ## 8. Create Roadmap
@@ -991,10 +1007,10 @@ Task(prompt="
 <planning_context>
 
 <files_to_read>
-- .planning/PROJECT.md (Project context)
-- .planning/REQUIREMENTS.md (v1 Requirements)
-- .planning/research/SUMMARY.md (Research findings - if exists)
-- .planning/config.json (Granularity and mode settings)
+- .claude/.gsdt-planning/PROJECT.md (Project context)
+- .claude/.gsdt-planning/REQUIREMENTS.md (v1 Requirements)
+- .claude/.gsdt-planning/research/SUMMARY.md (Research findings - if exists)
+- .claude/.gsdt-planning/config.json (Granularity and mode settings)
 </files_to_read>
 
 ${AGENT_SKILLS_ROADMAPPER}
@@ -1090,7 +1106,7 @@ Use AskUserQuestion:
   [user's notes]
 
   <files_to_read>
-  - .planning/ROADMAP.md (Current roadmap to revise)
+  - .claude/.gsdt-planning/ROADMAP.md (Current roadmap to revise)
   </files_to_read>
 
   ${AGENT_SKILLS_ROADMAPPER}
@@ -1104,7 +1120,7 @@ Use AskUserQuestion:
 - Present revised roadmap
 - Loop until user approves
 
-**If "Review full file":** Display raw `cat .planning/ROADMAP.md`, then re-ask.
+**If "Review full file":** Display raw `cat .claude/.gsdt-planning/ROADMAP.md`, then re-ask.
 
 **Generate or refresh project CLAUDE.md before final commit:**
 
@@ -1117,7 +1133,7 @@ This ensures new projects get the default GSD workflow-enforcement guidance and 
 **Commit roadmap (after approval or auto mode):**
 
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: create roadmap ([N] phases)" --files .planning/ROADMAP.md .planning/STATE.md .planning/REQUIREMENTS.md CLAUDE.md
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: create roadmap ([N] phases)" --files .claude/.gsdt-planning/ROADMAP.md .claude/.gsdt-planning/STATE.md .claude/.gsdt-planning/REQUIREMENTS.md CLAUDE.md
 ```
 
 ## 9. Done
@@ -1133,11 +1149,11 @@ Present completion summary:
 
 | Artifact       | Location                    |
 |----------------|-----------------------------|
-| Project        | `.planning/PROJECT.md`      |
-| Config         | `.planning/config.json`     |
-| Research       | `.planning/research/`       |
-| Requirements   | `.planning/REQUIREMENTS.md` |
-| Roadmap        | `.planning/ROADMAP.md`      |
+| Project        | `.claude/.gsdt-planning/PROJECT.md`      |
+| Config         | `.claude/.gsdt-planning/config.json`     |
+| Research       | `.claude/.gsdt-planning/research/`       |
+| Requirements   | `.claude/.gsdt-planning/REQUIREMENTS.md` |
+| Roadmap        | `.claude/.gsdt-planning/ROADMAP.md`      |
 | Project guide  | `CLAUDE.md`                 |
 
 **[N] phases** | **[X] requirements** | Ready to build ✓
@@ -1209,24 +1225,24 @@ PHASE1_HAS_UI=$(echo "$PHASE1_SECTION" | grep -qi "UI hint.*yes" && echo "true" 
 
 <output>
 
-- `.planning/PROJECT.md`
-- `.planning/config.json`
-- `.planning/research/` (if research selected)
+- `.claude/.gsdt-planning/PROJECT.md`
+- `.claude/.gsdt-planning/config.json`
+- `.claude/.gsdt-planning/research/` (if research selected)
   - `STACK.md`
   - `FEATURES.md`
   - `ARCHITECTURE.md`
   - `PITFALLS.md`
   - `SUMMARY.md`
-- `.planning/REQUIREMENTS.md`
-- `.planning/ROADMAP.md`
-- `.planning/STATE.md`
+- `.claude/.gsdt-planning/REQUIREMENTS.md`
+- `.claude/.gsdt-planning/ROADMAP.md`
+- `.claude/.gsdt-planning/STATE.md`
 - `CLAUDE.md`
 
 </output>
 
 <success_criteria>
 
-- [ ] .planning/ directory created
+- [ ] .claude/.gsdt-planning/ directory created
 - [ ] Git repo initialized
 - [ ] Brownfield detection completed
 - [ ] Deep questioning completed (threads followed, not rushed)

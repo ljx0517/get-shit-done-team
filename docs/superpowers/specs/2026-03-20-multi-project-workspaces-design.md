@@ -6,11 +6,11 @@
 
 ## Problem
 
-GSD is tied to one `.planning/` directory per working directory. Users with multiple independent projects (monorepo-style setups with 20+ child repos) or users needing feature branch isolation in the same repo cannot run parallel GSD sessions without manual cloning and state management.
+GSD is tied to one `.claude/.gsdt-planning/` directory per working directory. Users with multiple independent projects (monorepo-style setups with 20+ child repos) or users needing feature branch isolation in the same repo cannot run parallel GSD sessions without manual cloning and state management.
 
 ## Solution
 
-Three new commands that create, list, and remove **physical workspace directories** — each containing repo copies (git worktrees or clones) and an independent `.planning/` directory.
+Three new commands that create, list, and remove **physical workspace directories** — each containing repo copies (git worktrees or clones) and an independent `.claude/.gsdt-planning/` directory.
 
 This covers two use cases:
 - **Multi-repo orchestration (A):** Workspace spanning multiple repos from a parent directory
@@ -20,7 +20,7 @@ This covers two use cases:
 
 ### `/gsdt:new-workspace`
 
-Creates a workspace directory with repo copies and its own `.planning/`.
+Creates a workspace directory with repo copies and its own `.claude/.gsdt-planning/`.
 
 ```
 /gsdt:new-workspace --name feature-b --repos hr-ui,ZeymoAPI --path ~/workspaces/feature-b
@@ -51,7 +51,7 @@ Removes a workspace directory after confirmation. For worktree strategy, runs `g
 ```
 ~/gsdt-workspaces/feature-b/          # workspace root
 ├── WORKSPACE.md                      # manifest
-├── .planning/                        # independent GSD planning directory
+├── .claude/.gsdt-planning/                        # independent GSD planning directory
 │   ├── PROJECT.md                    # (if user ran /gsdt:new-project)
 │   ├── STATE.md
 │   └── config.json
@@ -62,9 +62,9 @@ Removes a workspace directory after confirmation. For worktree strategy, runs `g
 ```
 
 Key properties:
-- `.planning/` is at the workspace root, not inside any individual repo
+- `.claude/.gsdt-planning/` is at the workspace root, not inside any individual repo
 - Each repo is a peer directory under the workspace root
-- `WORKSPACE.md` is the only GSD-specific file at the root (besides `.planning/`)
+- `WORKSPACE.md` is the only GSD-specific file at the root (besides `.claude/.gsdt-planning/`)
 - For `--strategy clone`, same structure but repos are full clones
 
 ## WORKSPACE.md Format
@@ -99,7 +99,7 @@ Strategy: worktree
    - Worktree: `git worktree add <workspace>/<repo-name> -b workspace/<name>`
    - Clone: `git clone <source> <workspace>/<repo-name>`
 6. **Write WORKSPACE.md** — Manifest with source paths, strategy, branch
-7. **Initialize .planning/** — `mkdir -p <workspace>/.planning`
+7. **Initialize .claude/.gsdt-planning/** — `mkdir -p <workspace>/.claude/.gsdt-planning`
 8. **Offer /gsdt:new-project** — Ask if user wants to run project initialization in the new workspace
 9. **Commit** — If commit_docs enabled, atomic commit of WORKSPACE.md
 10. **Done** — Print workspace path and next steps
@@ -179,7 +179,7 @@ All tests use temp directories and clean up after themselves. Follow existing `n
 |----------|-----------|
 | Physical directories over logical registry | Filesystem is source of truth — matches GSD's existing cwd-based detection pattern |
 | Worktree as default strategy | Lightweight (shared .git objects), fast to create, easy to clean up |
-| `.planning/` at workspace root | Gives full isolation from individual repo planning. Each workspace is an independent GSD project |
+| `.claude/.gsdt-planning/` at workspace root | Gives full isolation from individual repo planning. Each workspace is an independent GSD project |
 | No central registry | Avoids state drift. `list-workspaces` scans the filesystem directly |
 | Case B as special case of A | `--repos .` reuses the same machinery, no special feature-branch code needed |
 | Default path `~/gsdt-workspaces/<name>` | Predictable location for `list-workspaces` to scan, keeps workspaces out of source repos |

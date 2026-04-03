@@ -2,10 +2,10 @@
  * Workstream — CRUD operations for workstream namespacing
  *
  * Workstreams enable parallel milestones by scoping ROADMAP.md, STATE.md,
- * REQUIREMENTS.md, and phases/ into .planning/workstreams/{name}/ directories.
+ * REQUIREMENTS.md, and phases/ into .claude/.gsdt-planning/workstreams/{name}/ directories.
  *
  * When no workstreams/ directory exists, GSD operates in "flat mode" with
- * everything at .planning/ — backward compatible with pre-workstream installs.
+ * everything at .claude/.gsdt-planning/ — backward compatible with pre-workstream installs.
  */
 
 const fs = require('fs');
@@ -16,9 +16,9 @@ const { stateExtractField } = require('./state.cjs');
 // ─── Migration ──────────────────────────────────────────────────────────────
 
 /**
- * Migrate flat .planning/ layout to workstream mode.
+ * Migrate flat .claude/.gsdt-planning/ layout to workstream mode.
  * Moves per-workstream files (ROADMAP.md, STATE.md, REQUIREMENTS.md, phases/)
- * into .planning/workstreams/{name}/. Shared files (PROJECT.md, config.json,
+ * into .claude/.gsdt-planning/workstreams/{name}/. Shared files (PROJECT.md, config.json,
  * milestones/, research/, codebase/, todos/) stay in place.
  */
 function migrateToWorkstreams(cwd, workstreamName) {
@@ -30,7 +30,7 @@ function migrateToWorkstreams(cwd, workstreamName) {
   const wsDir = path.join(baseDir, 'workstreams', workstreamName);
 
   if (fs.existsSync(path.join(baseDir, 'workstreams'))) {
-    throw new Error('Already in workstream mode — .planning/workstreams/ exists');
+    throw new Error('Already in workstream mode — .claude/.gsdt-planning/workstreams/ exists');
   }
 
   const toMove = [
@@ -78,7 +78,7 @@ function cmdWorkstreamCreate(cwd, name, options, raw) {
 
   const baseDir = planningRoot(cwd);
   if (!fs.existsSync(baseDir)) {
-    error('.planning/ directory not found — run /gsdt:new-project first');
+    error('.claude/.gsdt-planning/ directory not found — run /gsdt:new-project first');
   }
 
   const wsRoot = path.join(baseDir, 'workstreams');

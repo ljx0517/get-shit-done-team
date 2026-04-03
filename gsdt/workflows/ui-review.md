@@ -1,9 +1,16 @@
 <purpose>
 Retroactive 6-pillar visual audit of implemented frontend code. Standalone command that works on any project — GSD-managed or not. Produces scored UI-REVIEW.md with actionable findings.
+
+**Enhanced with:**
+- Session management with checkpoint/resume
+- Structured JSON output (machine-readable)
+- Confidence scoring for findings
+- Integration with unified review system
 </purpose>
 
 <required_reading>
 @~/.claude/gsdt/references/ui-brand.md
+@~/.claude/gsdt/references/ui-review-calibration.md
 </required_reading>
 
 <available_agent_types>
@@ -23,6 +30,11 @@ AGENT_SKILLS_UI_REVIEWER=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" agent-sk
 
 Parse: `phase_dir`, `phase_number`, `phase_name`, `phase_slug`, `padded_phase`, `commit_docs`.
 
+**Parse flags from `$ARGUMENTS`:**
+- `--json` → Request JSON output from auditor
+- `--session ID` → Resume existing session
+- `--threshold N` → Confidence threshold (default 0.6)
+
 ```bash
 UI_AUDITOR_MODEL=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" resolve-model gsdt-ui-auditor --raw)
 ```
@@ -34,7 +46,30 @@ Display banner:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-## 1. Detect Input State
+## 1. Session Management
+
+Check for existing session or create new:
+
+```bash
+# Check for --session flag
+if [[ "$ARGUMENTS" == *"--session"* ]]; then
+  SESSION_ID=$(echo "$ARGUMENTS" | grep -oP '(?<=--session )[^\s]+')
+  SESSION=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" review get "$SESSION_ID")
+  if [[ -z "$SESSION" ]]; then
+    echo "Session not found: $SESSION_ID"
+    exit 1
+  fi
+  echo "Resuming session: $SESSION_ID"
+else
+  # Create new session
+  SESSION=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" review create-session \
+    --type ui-audit --phase "${PHASE_ARG}" \
+    --reviewers ui-auditor 2>/dev/null)
+  SESSION_ID=$(echo "$SESSION" | grep -oP '"session_id":"[^"]+' | cut -d'"' -f4)
+fi
+```
+
+## 2. Detect Input State
 
 ```bash
 SUMMARY_FILES=$(ls "${PHASE_DIR}"/*-SUMMARY.md 2>/dev/null)
@@ -54,7 +89,7 @@ UI_REVIEW_FILE=$(ls "${PHASE_DIR}"/*-UI-REVIEW.md 2>/dev/null | head -1)
 If "View": display file, exit.
 If "Re-audit": continue.
 
-## 2. Gather Context Paths
+## 3. Gather Context Paths
 
 Build file list for auditor:
 - All SUMMARY.md files in phase dir
@@ -62,7 +97,7 @@ Build file list for auditor:
 - UI-SPEC.md (if exists — audit baseline)
 - CONTEXT.md (if exists — locked decisions)
 
-## 3. Spawn gsdt-ui-auditor
+## 4. Spawn gsdt-ui-auditor
 
 ```
 ◆ Spawning UI auditor...
@@ -91,7 +126,16 @@ ${AGENT_SKILLS_UI_REVIEWER}
 <config>
 phase_dir: {phase_dir}
 padded_phase: {padded_phase}
+{If --json flag: --json}
 </config>
+```
+
+**If `--json` flag passed:** Add to prompt:
+```
+<json_output>
+Output findings as structured JSON alongside the Markdown report.
+Write to: $PHASE_DIR/$PADDED_PHASE-UI-REVIEW.json
+</json_output>
 ```
 
 Omit null file paths.
@@ -105,7 +149,7 @@ Task(
 )
 ```
 
-## 4. Handle Return
+## 5. Handle Return
 
 **If `## UI REVIEW COMPLETE`:**
 
@@ -127,12 +171,15 @@ Display score summary:
 | Spacing | {N}/4 |
 | Experience Design | {N}/4 |
 
+Session: {SESSION_ID}
+
 Top fixes:
 1. {fix}
 2. {fix}
 3. {fix}
 
 Full review: {path to UI-REVIEW.md}
+{If --json: JSON data: {path to UI-REVIEW.json}}
 
 ───────────────────────────────────────────────────────────────
 
@@ -146,10 +193,27 @@ Full review: {path to UI-REVIEW.md}
 ───────────────────────────────────────────────────────────────
 ```
 
-## 5. Commit (if configured)
+## 6. Complete Session
+
+Update session with findings:
+
+```bash
+# If JSON was generated, update session with findings
+if [[ -f "${PHASE_DIR}/${PADDED_PHASE}-UI-REVIEW.json" ]]; then
+  node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" review add-findings \
+    --session "$SESSION_ID" \
+    --findings "${PHASE_DIR}/${PADDED_PHASE}-UI-REVIEW.json"
+fi
+
+# Complete the session
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" review complete-session "$SESSION_ID"
+```
+
+## 7. Commit (if configured)
 
 ```bash
 node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs(${padded_phase}): UI audit review" --files "${PHASE_DIR}/${PADDED_PHASE}-UI-REVIEW.md"
+{If --json: --files "${PHASE_DIR}/${PADDED_PHASE}-UI-REVIEW.json"}
 ```
 
 </process>
@@ -157,9 +221,11 @@ node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs(${padded_phase}): UI a
 <success_criteria>
 - [ ] Phase validated
 - [ ] SUMMARY.md files found (execution completed)
+- [ ] Session created/managed
 - [ ] Existing review handled (re-audit/view)
 - [ ] gsdt-ui-auditor spawned with correct context
 - [ ] UI-REVIEW.md created in phase directory
+- [ ] {If --json: UI-REVIEW.json created with structured findings}
 - [ ] Score summary displayed to user
 - [ ] Next steps presented
 </success_criteria>

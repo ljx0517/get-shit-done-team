@@ -47,7 +47,7 @@ process.stdin.on('end', () => {
 
     // Check if context warnings are disabled via config
     const cwd = data.cwd || process.cwd();
-    const configPath = path.join(cwd, '.planning', 'config.json');
+    const configPath = path.join(cwd, '.gsdt-planning', 'config.json');
     if (fs.existsSync(configPath)) {
       try {
         const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
@@ -116,8 +116,8 @@ process.stdin.on('end', () => {
     warnData.lastLevel = currentLevel;
     fs.writeFileSync(warnPath, JSON.stringify(warnData));
 
-    // Detect if GSD is active (has .planning/STATE.md in working directory)
-    const isGsdActive = fs.existsSync(path.join(cwd, '.planning', 'STATE.md'));
+    // Detect if GSD is active (has .gsdt-planning/STATE.md in working directory)
+    const isGsdActive = fs.existsSync(path.join(cwd, '.gsdt-planning', 'STATE.md'));
 
     // Build advisory warning message (never use imperative commands that
     // override user preferences — see #884)

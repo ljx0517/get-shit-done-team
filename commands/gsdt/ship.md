@@ -1,7 +1,7 @@
 ---
-name: gsd:ship
+name: gsdt:ship
 description: Create PR, run review, and prepare for merge after verification passes
-argument-hint: "[phase number or milestone, e.g., '4' or 'v1.0']"
+argument-hint: "[phase number or milestone, e.g., '4' or 'v1.0'] [--review] [--draft]"
 allowed-tools:
   - Read
   - Bash
@@ -15,6 +15,12 @@ Bridge local completion → merged PR. After /gsdt:verify-work passes, ship the 
 
 Closes the plan → execute → verify → ship loop.
 </objective>
+
+<context>
+**Flags:**
+- `--review` — Run automated ship review before creating PR
+- `--draft` — Create PR as draft
+</context>
 
 <execution_context>
 @~/.claude/gsdt/workflows/ship.md

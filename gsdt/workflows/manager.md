@@ -115,8 +115,8 @@ Ask user via AskUserQuestion:
 - **options:** "Verify work" / "Complete milestone" / "Exit manager"
 
 Handle responses:
-- "Verify work": `Skill(skill="gsd:verify-work")`  then loop to dashboard.
-- "Complete milestone": `Skill(skill="gsd:complete-milestone")` then exit.
+- "Verify work": `Skill(skill="gsdt:verify-work")`  then loop to dashboard.
+- "Complete milestone": `Skill(skill="gsdt:complete-milestone")` then exit.
 - "Exit manager": Go to exit step.
 
 **If NOT all_complete**, build compound options from `recommended_actions`:
@@ -193,7 +193,7 @@ When the user selects a compound option:
 2. **Then run the inline discuss:**
 
 ```
-Skill(skill="gsd:discuss-phase", args="{PHASE_NUM}")
+Skill(skill="gsdt:discuss-phase", args="{PHASE_NUM}")
 ```
 
 After discuss completes, loop back to dashboard step (background agents continue running).
@@ -203,7 +203,7 @@ After discuss completes, loop back to dashboard step (background agents continue
 Discussion is interactive — needs user input. Run inline:
 
 ```
-Skill(skill="gsd:discuss-phase", args="{PHASE_NUM}")
+Skill(skill="gsdt:discuss-phase", args="{PHASE_NUM}")
 ```
 
 After discuss completes, loop back to dashboard step.

@@ -1,5 +1,5 @@
 ---
-name: gsd:audit-milestone
+name: gsdt:audit-milestone
 description: Audit milestone completion against original intent before archiving
 argument-hint: "[version]"
 allowed-tools:
@@ -26,8 +26,8 @@ Version: $ARGUMENTS (optional — defaults to current milestone)
 Core planning files are resolved in-workflow (`init milestone-op`) and loaded only as needed.
 
 **Completed Work:**
-Glob: .planning/phases/*/*-SUMMARY.md
-Glob: .planning/phases/*/*-VERIFICATION.md
+Glob: .claude/.gsdt-planning/phases/*/*-SUMMARY.md
+Glob: .claude/.gsdt-planning/phases/*/*-VERIFICATION.md
 </context>
 
 <process>

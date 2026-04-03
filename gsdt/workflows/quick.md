@@ -1,5 +1,5 @@
 <purpose>
-Execute small, ad-hoc tasks with GSD guarantees (atomic commits, STATE.md tracking). Quick mode spawns gsdt-planner (quick mode) + gsdt-executor(s), tracks tasks in `.planning/quick/`, and updates STATE.md's "Quick Tasks Completed" table.
+Execute small, ad-hoc tasks with GSD guarantees (atomic commits, STATE.md tracking). Quick mode spawns gsdt-planner (quick mode) + gsdt-executor(s), tracks tasks in `.claude/.gsdt-planning/quick/`, and updates STATE.md's "Quick Tasks Completed" table.
 
 With `--discuss` flag: lightweight discussion phase before planning. Surfaces assumptions, clarifies gray areas, captures decisions in CONTEXT.md so the planner treats them as locked.
 
@@ -159,7 +159,7 @@ mkdir -p "${task_dir}"
 Create the directory for this quick task:
 
 ```bash
-QUICK_DIR=".planning/quick/${quick_id}-${slug}"
+QUICK_DIR=".claude/.gsdt-planning/quick/${quick_id}-${slug}"
 mkdir -p "$QUICK_DIR"
 ```
 
@@ -325,8 +325,8 @@ Task(
 **Output:** ${QUICK_DIR}/${quick_id}-RESEARCH.md
 
 <files_to_read>
-- .planning/STATE.md (Project state — what's already built)
-- .planning/PROJECT.md (Project context)
+- .claude/.gsdt-planning/STATE.md (Project state — what's already built)
+- .claude/.gsdt-planning/PROJECT.md (Project context)
 - ./CLAUDE.md (if exists — project-specific guidelines)
 ${DISCUSS_MODE ? '- ' + QUICK_DIR + '/' + quick_id + '-CONTEXT.md (User decisions — research should align with these)' : ''}
 </files_to_read>
@@ -381,7 +381,7 @@ Task(
 **Description:** ${DESCRIPTION}
 
 <files_to_read>
-- .planning/STATE.md (Project State)
+- .claude/.gsdt-planning/STATE.md (Project State)
 - ./CLAUDE.md (if exists — follow project-specific guidelines)
 ${DISCUSS_MODE ? '- ' + QUICK_DIR + '/' + quick_id + '-CONTEXT.md (User decisions — locked, do not revisit)' : ''}
 ${RESEARCH_MODE ? '- ' + QUICK_DIR + '/' + quick_id + '-RESEARCH.md (Research findings — use to inform implementation choices)' : ''}
@@ -543,7 +543,7 @@ Execute quick task ${quick_id}.
 
 <files_to_read>
 - ${QUICK_DIR}/${quick_id}-PLAN.md (Plan)
-- .planning/STATE.md (Project state)
+- .claude/.gsdt-planning/STATE.md (Project state)
 - ./CLAUDE.md (Project instructions, if exists)
 - .claude/skills/ or .agents/skills/ (Project skills, if either exists — list skills, read SKILL.md for each, follow relevant rules during implementation)
 </files_to_read>
@@ -686,7 +686,7 @@ Stage and commit quick task artifacts:
 Build file list:
 - `${QUICK_DIR}/${quick_id}-PLAN.md`
 - `${QUICK_DIR}/${quick_id}-SUMMARY.md`
-- `.planning/STATE.md`
+- `.claude/.gsdt-planning/STATE.md`
 - If `$DISCUSS_MODE` and context file exists: `${QUICK_DIR}/${quick_id}-CONTEXT.md`
 - If `$RESEARCH_MODE` and research file exists: `${QUICK_DIR}/${quick_id}-RESEARCH.md`
 - If `$FULL_MODE` and verification file exists: `${QUICK_DIR}/${quick_id}-VERIFICATION.md`
@@ -745,7 +745,7 @@ Ready for next task: /gsdt:quick ${GSD_WS}
 - [ ] `--full`, `--discuss`, and `--research` flags parsed from arguments when present
 - [ ] Slug generated (lowercase, hyphens, max 40 chars)
 - [ ] Quick ID generated (YYMMDD-xxx format, 2s Base36 precision)
-- [ ] Directory created at `.planning/quick/YYMMDD-xxx-slug/`
+- [ ] Directory created at `.claude/.gsdt-planning/quick/YYMMDD-xxx-slug/`
 - [ ] (--discuss) Gray areas identified and presented, decisions captured in `${quick_id}-CONTEXT.md`
 - [ ] (--research) Research agent spawned, `${quick_id}-RESEARCH.md` created
 - [ ] `${quick_id}-PLAN.md` created by planner (honors CONTEXT.md decisions when --discuss, uses RESEARCH.md findings when --research)

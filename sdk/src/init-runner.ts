@@ -34,6 +34,7 @@ import { loadConfig } from './config.js';
 import { runPhaseStepSession } from './session-runner.js';
 import { sanitizePrompt } from './prompt-sanitizer.js';
 import {
+  DEFAULT_PLANNING_DIR,
   resolveTemplatesDir,
   resolveAgentsDir,
   resolvePlanningDir,
@@ -77,7 +78,7 @@ export interface InitRunnerDeps {
   sdkPromptsDir?: string;
   /** Installation directory relative to projectDir. Default: '.claude/gsdt' */
   installDir?: string;
-  /** Planning directory name. Default: '.planning' */
+  /** Planning directory name. Default: '.claude/.gsdt-planning' */
   planningDir?: string;
 }
 
@@ -108,7 +109,7 @@ export class InitRunner {
       join(fileURLToPath(new URL('.', import.meta.url)), '..', 'prompts');
     // Path config: explicit override → defaults
     this.installDir = deps.installDir ?? '.claude/gsdt';
-    this.planningDir = deps.planningDir ?? '.planning';
+    this.planningDir = deps.planningDir ?? DEFAULT_PLANNING_DIR;
   }
 
   /**
@@ -128,7 +129,7 @@ export class InitRunner {
   }
 
   /**
-   * Resolve .planning directory path.
+   * Resolve .claude/.gsdt-planning directory path.
    */
   private getPlanningDir(): string {
     return resolvePlanningDir(this.projectDir, this.planningDir);

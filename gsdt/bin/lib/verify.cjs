@@ -525,7 +525,7 @@ function cmdValidateHealth(cwd, options, raw) {
   if (resolved === os.homedir()) {
     output({
       status: 'error',
-      errors: [{ code: 'E010', message: `CWD is home directory (${resolved}) — health check would read the wrong .planning/ directory. Run from your project root instead.`, fix: 'cd into your project directory and retry' }],
+      errors: [{ code: 'E010', message: `CWD is home directory (${resolved}) — health check would read the wrong .claude/.gsdt-planning/ directory. Run from your project root instead.`, fix: 'cd into your project directory and retry' }],
       warnings: [],
       info: [{ code: 'I010', message: `Resolved CWD: ${resolved}` }],
       repairable_count: 0,
@@ -554,9 +554,9 @@ function cmdValidateHealth(cwd, options, raw) {
     else info.push(issue);
   };
 
-  // ─── Check 1: .planning/ exists ───────────────────────────────────────────
+  // ─── Check 1: .claude/.gsdt-planning/ exists ───────────────────────────────────────────
   if (!fs.existsSync(planBase)) {
-    addIssue('error', 'E001', '.planning/ directory not found', 'Run /gsdt:new-project to initialize');
+    addIssue('error', 'E001', '.claude/.gsdt-planning/ directory not found', 'Run /gsdt:new-project to initialize');
     output({
       status: 'broken',
       errors,
@@ -798,7 +798,7 @@ function cmdValidateHealth(cwd, options, raw) {
             const milestone = getMilestoneInfo(cwd);
             let stateContent = `# Session State\n\n`;
             stateContent += `## Project Reference\n\n`;
-            stateContent += `See: .planning/PROJECT.md\n\n`;
+            stateContent += `See: .claude/.gsdt-planning/PROJECT.md\n\n`;
             stateContent += `## Position\n\n`;
             stateContent += `**Milestone:** ${milestone.version} ${milestone.name}\n`;
             stateContent += `**Current phase:** (determining...)\n`;

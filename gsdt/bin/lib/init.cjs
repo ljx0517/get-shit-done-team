@@ -26,7 +26,7 @@ function getLatestCompletedMilestone(cwd) {
 
 /**
  * Inject `project_root` into an init result object.
- * Workflows use this to prefix `.planning/` paths correctly when Claude's CWD
+ * Workflows use this to prefix `.claude/.gsdt-planning/` paths correctly when Claude's CWD
  * differs from the project root (e.g., inside a sub-repo).
  */
 function withProjectRoot(cwd, result) {
@@ -275,7 +275,7 @@ function cmdInitNewProject(cwd, raw) {
       '.ex', '.exs',           // Elixir
       '.clj',                  // Clojure
     ]);
-    const skipDirs = new Set(['node_modules', '.git', '.planning', '.claude', '__pycache__', 'target', 'dist', 'build']);
+    const skipDirs = new Set(['node_modules', '.git', '.claude', '__pycache__', 'target', 'dist', 'build']);
     function findCodeFiles(dir, depth) {
       if (depth > 3) return false;
       let entries;
@@ -318,15 +318,15 @@ function cmdInitNewProject(cwd, raw) {
     commit_docs: config.commit_docs,
 
     // Existing state
-    project_exists: pathExistsInternal(cwd, '.planning/PROJECT.md'),
-    has_codebase_map: pathExistsInternal(cwd, '.planning/codebase'),
-    planning_exists: pathExistsInternal(cwd, '.planning'),
+    project_exists: pathExistsInternal(cwd, '.claude/.gsdt-planning/PROJECT.md'),
+    has_codebase_map: pathExistsInternal(cwd, '.claude/.gsdt-planning/codebase'),
+    planning_exists: pathExistsInternal(cwd, '.claude/.gsdt-planning'),
 
     // Brownfield detection
     has_existing_code: hasCode,
     has_package_file: hasPackageFile,
     is_brownfield: hasCode || hasPackageFile,
-    needs_codebase_map: (hasCode || hasPackageFile) && !pathExistsInternal(cwd, '.planning/codebase'),
+    needs_codebase_map: (hasCode || hasPackageFile) && !pathExistsInternal(cwd, '.claude/.gsdt-planning/codebase'),
 
     // Git state
     has_git: pathExistsInternal(cwd, '.git'),
@@ -337,7 +337,7 @@ function cmdInitNewProject(cwd, raw) {
     exa_search_available: hasExaSearch,
 
     // File paths
-    project_path: '.planning/PROJECT.md',
+    project_path: '.claude/.gsdt-planning/PROJECT.md',
   };
 
   output(withProjectRoot(cwd, result), raw);
@@ -377,12 +377,12 @@ function cmdInitNewMilestone(cwd, raw) {
     phase_archive_path: latestCompleted ? toPosixPath(path.relative(cwd, path.join(planningRoot(cwd), 'milestones', `${latestCompleted.version}-phases`))) : null,
 
     // File existence
-    project_exists: pathExistsInternal(cwd, '.planning/PROJECT.md'),
+    project_exists: pathExistsInternal(cwd, '.claude/.gsdt-planning/PROJECT.md'),
     roadmap_exists: fs.existsSync(path.join(planningDir(cwd), 'ROADMAP.md')),
     state_exists: fs.existsSync(path.join(planningDir(cwd), 'STATE.md')),
 
     // File paths
-    project_path: '.planning/PROJECT.md',
+    project_path: '.claude/.gsdt-planning/PROJECT.md',
     roadmap_path: toPosixPath(path.relative(cwd, path.join(planningDir(cwd), 'ROADMAP.md'))),
     state_path: toPosixPath(path.relative(cwd, path.join(planningDir(cwd), 'STATE.md'))),
   };
@@ -436,8 +436,8 @@ function cmdInitQuick(cwd, description, raw) {
     timestamp: now.toISOString(),
 
     // Paths
-    quick_dir: '.planning/quick',
-    task_dir: slug ? `.planning/quick/${quickId}-${slug}` : null,
+    quick_dir: '.claude/.gsdt-planning/quick',
+    task_dir: slug ? `.claude/.gsdt-planning/quick/${quickId}-${slug}` : null,
 
     // File existence
     roadmap_exists: fs.existsSync(path.join(planningDir(cwd), 'ROADMAP.md')),
@@ -461,13 +461,13 @@ function cmdInitResume(cwd, raw) {
     // File existence
     state_exists: fs.existsSync(path.join(planningDir(cwd), 'STATE.md')),
     roadmap_exists: fs.existsSync(path.join(planningDir(cwd), 'ROADMAP.md')),
-    project_exists: pathExistsInternal(cwd, '.planning/PROJECT.md'),
+    project_exists: pathExistsInternal(cwd, '.claude/.gsdt-planning/PROJECT.md'),
     planning_exists: fs.existsSync(planningRoot(cwd)),
 
     // File paths
     state_path: toPosixPath(path.relative(cwd, path.join(planningDir(cwd), 'STATE.md'))),
     roadmap_path: toPosixPath(path.relative(cwd, path.join(planningDir(cwd), 'ROADMAP.md'))),
-    project_path: '.planning/PROJECT.md',
+    project_path: '.claude/.gsdt-planning/PROJECT.md',
 
     // Agent state
     has_interrupted_agent: !!interruptedAgentId,
@@ -751,7 +751,7 @@ function cmdInitMilestoneOp(cwd, raw) {
     archive_count: archivedMilestones.length,
 
     // File existence
-    project_exists: pathExistsInternal(cwd, '.planning/PROJECT.md'),
+    project_exists: pathExistsInternal(cwd, '.claude/.gsdt-planning/PROJECT.md'),
     roadmap_exists: fs.existsSync(path.join(planningDir(cwd), 'ROADMAP.md')),
     state_exists: fs.existsSync(path.join(planningDir(cwd), 'STATE.md')),
     archive_exists: fs.existsSync(path.join(planningRoot(cwd), 'archive')),
@@ -781,15 +781,15 @@ function cmdInitMapCodebase(cwd, raw) {
     parallelization: config.parallelization,
 
     // Paths
-    codebase_dir: '.planning/codebase',
+    codebase_dir: '.claude/.gsdt-planning/codebase',
 
     // Existing maps
     existing_maps: existingMaps,
     has_maps: existingMaps.length > 0,
 
     // File existence
-    planning_exists: pathExistsInternal(cwd, '.planning'),
-    codebase_dir_exists: pathExistsInternal(cwd, '.planning/codebase'),
+    planning_exists: pathExistsInternal(cwd, '.claude/.gsdt-planning'),
+    codebase_dir_exists: pathExistsInternal(cwd, '.claude/.gsdt-planning/codebase'),
   };
 
   output(withProjectRoot(cwd, result), raw);
@@ -947,7 +947,7 @@ function cmdInitManager(cwd, raw) {
   // Check for WAITING.json signal
   let waitingSignal = null;
   try {
-    const waitingPath = path.join(cwd, '.planning', 'WAITING.json');
+    const waitingPath = path.join(cwd, '.claude/.gsdt-planning', 'WAITING.json');
     if (fs.existsSync(waitingPath)) {
       waitingSignal = JSON.parse(fs.readFileSync(waitingPath, 'utf-8'));
     }
@@ -1034,7 +1034,7 @@ function cmdInitManager(cwd, raw) {
     recommended_actions: filteredActions,
     waiting_signal: waitingSignal,
     all_complete: completedCount === phases.length && phases.length > 0,
-    project_exists: pathExistsInternal(cwd, '.planning/PROJECT.md'),
+    project_exists: pathExistsInternal(cwd, '.claude/.gsdt-planning/PROJECT.md'),
     roadmap_exists: true,
     state_exists: true,
   };
@@ -1176,13 +1176,13 @@ function cmdInitProgress(cwd, raw) {
     has_work_in_progress: !!currentPhase,
 
     // File existence
-    project_exists: pathExistsInternal(cwd, '.planning/PROJECT.md'),
+    project_exists: pathExistsInternal(cwd, '.claude/.gsdt-planning/PROJECT.md'),
     roadmap_exists: fs.existsSync(path.join(planningDir(cwd), 'ROADMAP.md')),
     state_exists: fs.existsSync(path.join(planningDir(cwd), 'STATE.md')),
     // File paths
     state_path: toPosixPath(path.relative(cwd, path.join(planningDir(cwd), 'STATE.md'))),
     roadmap_path: toPosixPath(path.relative(cwd, path.join(planningDir(cwd), 'ROADMAP.md'))),
-    project_path: '.planning/PROJECT.md',
+    project_path: '.claude/.gsdt-planning/PROJECT.md',
     config_path: toPosixPath(path.relative(cwd, path.join(planningDir(cwd), 'config.json'))),
   };
 
@@ -1265,7 +1265,7 @@ function cmdInitListWorkspaces(cwd, raw) {
         const tableRows = manifest.split('\n').filter(l => l.match(/^\|\s*\w/) && !l.includes('Repo') && !l.includes('---'));
         repoCount = tableRows.length;
       } catch { /* best-effort */ }
-      hasProject = fs.existsSync(path.join(wsPath, '.planning', 'PROJECT.md'));
+      hasProject = fs.existsSync(path.join(wsPath, '.claude/.gsdt-planning', 'PROJECT.md'));
 
       workspaces.push({
         name: entry.name,

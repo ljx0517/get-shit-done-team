@@ -1,5 +1,5 @@
 ---
-name: gsd:stats
+name: gsdt:stats
 description: Display project statistics — phases, plans, requirements, git metrics, and timeline
 allowed-tools:
   - Read

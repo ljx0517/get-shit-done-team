@@ -1,5 +1,5 @@
 ---
-name: gsd:debug
+name: gsdt:debug
 description: Systematic debugging with persistent state across context resets
 argument-hint: [issue description]
 allowed-tools:
@@ -27,7 +27,7 @@ User's issue: $ARGUMENTS
 
 Check for active sessions:
 ```bash
-ls .planning/debug/*.md 2>/dev/null | grep -v resolved | head -5
+ls .claude/.gsdt-planning/debug/*.md 2>/dev/null | grep -v resolved | head -5
 ```
 </context>
 
@@ -91,7 +91,7 @@ goal: find_and_fix
 </mode>
 
 <debug_file>
-Create: .planning/debug/{slug}.md
+Create: .claude/.gsdt-planning/debug/{slug}.md
 </debug_file>
 ```
 
@@ -107,11 +107,38 @@ Task(
 ## 4. Handle Agent Return
 
 **If `## ROOT CAUSE FOUND`:**
+- 立即在后台写入一个 `diagnosed` compound event，并调用 `compound dispatch`
+- `compound dispatch` 不等待完成，不改变当前 debug 对话节奏
+- 自动模式只做知识沉淀，不新增用户选项，不询问用户
 - Display root cause and evidence summary
 - Offer options:
   - "Fix now" - spawn fix subagent
   - "Plan fix" - suggest /gsdt:plan-phase --gaps
   - "Manual fix" - done
+
+后台 sidecar 事件至少包含:
+
+```json
+{
+  "source": "debug",
+  "status": "diagnosed",
+  "problem": "debug session summary",
+  "symptoms": ["observed symptom"],
+  "root_cause": "confirmed root cause",
+  "severity": "major",
+  "files": ["affected/file.ts"],
+  "debug_session": "debug-session-slug",
+  "tags": ["debug", "auto-compound"]
+}
+```
+
+Dispatch command:
+
+```bash
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" compound dispatch \
+  --event-file "$EVENT_FILE" \
+  >/tmp/gsdt-debug-compound.log 2>&1 &
+```
 
 **If `## CHECKPOINT REACHED`:**
 - Present checkpoint details to user
@@ -139,7 +166,7 @@ Continue debugging {slug}. Evidence is in the debug file.
 
 <prior_state>
 <files_to_read>
-- .planning/debug/{slug}.md (Debug session state)
+- .claude/.gsdt-planning/debug/{slug}.md (Debug session state)
 </files_to_read>
 </prior_state>
 

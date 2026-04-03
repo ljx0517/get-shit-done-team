@@ -1,11 +1,14 @@
 ---
-name: gsd:do
+name: gsdt:do
 description: Route freeform text to the right GSD command automatically
 argument-hint: "<description of what you want to do>"
 allowed-tools:
   - Read
   - Bash
+  - Grep
+  - Glob
   - AskUserQuestion
+  - SlashCommand
 ---
 <objective>
 Analyze freeform natural language input and dispatch to the most appropriate GSD command.
@@ -13,6 +16,9 @@ Analyze freeform natural language input and dispatch to the most appropriate GSD
 Acts as a smart dispatcher — never does the work itself. Matches intent to the best GSD command using routing rules, confirms the match, then hands off.
 
 Use when you know what you want but don't know which `/gsdt:*` command to run.
+
+Routing preference:
+- Prefer `/gsdt:auto` for open-ended or startup requests to minimize manual steps.
 </objective>
 
 <execution_context>

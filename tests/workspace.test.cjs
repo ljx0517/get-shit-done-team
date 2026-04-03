@@ -143,7 +143,7 @@ describe('init list-workspaces', () => {
   test('finds workspaces with WORKSPACE.md', () => {
     const wsBase = path.join(tmpDir, 'gsdt-workspaces');
     const ws1 = path.join(wsBase, 'feature-a');
-    fs.mkdirSync(path.join(ws1, '.planning'), { recursive: true });
+    fs.mkdirSync(path.join(ws1, '.claude/.gsdt-planning'), { recursive: true });
     fs.writeFileSync(path.join(ws1, 'WORKSPACE.md'), [
       '# Workspace: feature-a',
       '',
@@ -247,7 +247,7 @@ describe('workspace worktree integration', () => {
   test('creates workspace with git worktree', () => {
     const wsPath = path.join(tmpDir, 'my-workspace');
     fs.mkdirSync(wsPath);
-    fs.mkdirSync(path.join(wsPath, '.planning'));
+    fs.mkdirSync(path.join(wsPath, '.claude', '.gsdt-planning'), { recursive: true });
 
     // Create worktree
     execSync(`git worktree add "${path.join(wsPath, 'source-repo')}" -b workspace/test`, {
@@ -317,7 +317,7 @@ describe('workspace command files', () => {
 
   test('new-workspace command exists with correct frontmatter', () => {
     const content = fs.readFileSync(path.join(baseDir, 'commands/gsdt/new-workspace.md'), 'utf8');
-    assert.ok(content.includes('name: gsd:new-workspace'));
+    assert.ok(content.includes('name: gsdt:new-workspace'));
     assert.ok(content.includes('--name'));
     assert.ok(content.includes('--repos'));
     assert.ok(content.includes('--strategy'));
@@ -326,13 +326,13 @@ describe('workspace command files', () => {
 
   test('list-workspaces command exists with correct frontmatter', () => {
     const content = fs.readFileSync(path.join(baseDir, 'commands/gsdt/list-workspaces.md'), 'utf8');
-    assert.ok(content.includes('name: gsd:list-workspaces'));
+    assert.ok(content.includes('name: gsdt:list-workspaces'));
     assert.ok(content.includes('workflows/list-workspaces.md'));
   });
 
   test('remove-workspace command exists with correct frontmatter', () => {
     const content = fs.readFileSync(path.join(baseDir, 'commands/gsdt/remove-workspace.md'), 'utf8');
-    assert.ok(content.includes('name: gsd:remove-workspace'));
+    assert.ok(content.includes('name: gsdt:remove-workspace'));
     assert.ok(content.includes('workflows/remove-workspace.md'));
   });
 
@@ -361,7 +361,7 @@ describe('workspace command files', () => {
 describe('workspace routing in gsdt-tools', () => {
   test('init new-workspace is routed correctly', () => {
     const toolsContent = fs.readFileSync(
-      path.join(__dirname, '..', 'get-shit-done', 'bin', 'gsdt-tools.cjs'),
+      path.join(__dirname, '..', 'gsdt', 'bin', 'gsdt-tools.cjs'),
       'utf8'
     );
     assert.ok(toolsContent.includes("case 'new-workspace'"));
@@ -370,7 +370,7 @@ describe('workspace routing in gsdt-tools', () => {
 
   test('init list-workspaces is routed correctly', () => {
     const toolsContent = fs.readFileSync(
-      path.join(__dirname, '..', 'get-shit-done', 'bin', 'gsdt-tools.cjs'),
+      path.join(__dirname, '..', 'gsdt', 'bin', 'gsdt-tools.cjs'),
       'utf8'
     );
     assert.ok(toolsContent.includes("case 'list-workspaces'"));
@@ -379,7 +379,7 @@ describe('workspace routing in gsdt-tools', () => {
 
   test('init remove-workspace is routed correctly', () => {
     const toolsContent = fs.readFileSync(
-      path.join(__dirname, '..', 'get-shit-done', 'bin', 'gsdt-tools.cjs'),
+      path.join(__dirname, '..', 'gsdt', 'bin', 'gsdt-tools.cjs'),
       'utf8'
     );
     assert.ok(toolsContent.includes("case 'remove-workspace'"));

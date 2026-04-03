@@ -6,7 +6,7 @@
 
 ## 설정 파일
 
-GSD는 프로젝트 설정을 `.planning/config.json`에 저장합니다. `/gsdt:new-project` 실행 시 생성되며 `/gsdt:settings`를 통해 업데이트할 수 있습니다.
+GSD는 프로젝트 설정을 `.claude/.gsdt-planning/config.json`에 저장합니다. `/gsdt:new-project` 실행 시 생성되며 `/gsdt:settings`를 통해 업데이트할 수 있습니다.
 
 ### 전체 스키마
 
@@ -118,12 +118,12 @@ GSD는 프로젝트 설정을 `.planning/config.json`에 저장합니다. `/gsdt
 
 | 설정 | 타입 | 기본값 | 설명 |
 |------|------|--------|------|
-| `planning.commit_docs` | boolean | `true` | `.planning/` 파일을 git에 커밋할지 여부 |
-| `planning.search_gitignored` | boolean | `false` | 광범위한 검색에 `--no-ignore`를 추가하여 `.planning/`을 포함 |
+| `planning.commit_docs` | boolean | `true` | `.claude/.gsdt-planning/` 파일을 git에 커밋할지 여부 |
+| `planning.search_gitignored` | boolean | `false` | 광범위한 검색에 `--no-ignore`를 추가하여 `.claude/.gsdt-planning/`을 포함 |
 
 ### 자동 감지
 
-`.planning/`이 `.gitignore`에 포함되어 있으면 config.json 설정과 무관하게 `commit_docs`가 자동으로 `false`로 설정됩니다. 이는 git 오류를 방지합니다.
+`.claude/.gsdt-planning/`이 `.gitignore`에 포함되어 있으면 config.json 설정과 무관하게 `commit_docs`가 자동으로 `false`로 설정됩니다. 이는 git 오류를 방지합니다.
 
 ---
 
@@ -141,8 +141,8 @@ GSD는 프로젝트 설정을 `.planning/config.json`에 저장합니다. `/gsdt
 플래닝 아티팩트를 git에서 제외하려면 다음과 같이 설정합니다.
 
 1. `planning.commit_docs: false` 및 `planning.search_gitignored: true` 설정
-2. `.planning/`을 `.gitignore`에 추가
-3. 이미 추적 중인 경우: `git rm -r --cached .planning/ && git commit -m "chore: stop tracking planning docs"`
+2. `.claude/.gsdt-planning/`을 `.gitignore`에 추가
+3. 이미 추적 중인 경우: `git rm -r --cached .claude/.gsdt-planning/ && git commit -m "chore: stop tracking planning docs"`
 
 ---
 

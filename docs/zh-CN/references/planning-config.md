@@ -1,6 +1,6 @@
 <planning_config>
 
-`.planning/` 目录行为的配置选项。
+`.claude/.gsdt-planning/` 目录行为的配置选项。
 
 <config_schema>
 ```json
@@ -32,15 +32,15 @@
 - 规划决策的完整历史保留
 
 **当 `commit_docs: false`：**
-- 跳过 `.planning/` 文件的所有 `git add`/`git commit`
-- 用户必须将 `.planning/` 添加到 `.gitignore`
+- 跳过 `.claude/.gsdt-planning/` 文件的所有 `git add`/`git commit`
+- 用户必须将 `.claude/.gsdt-planning/` 添加到 `.gitignore`
 - 适用于：OSS 贡献、客户项目、保持规划私有
 
 **使用 gsdt-tools.cjs（推荐）：**
 
 ```bash
 # 提交时自动检查 commit_docs + gitignore：
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: update state" --files .planning/STATE.md
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: update state" --files .claude/.gsdt-planning/STATE.md
 
 # 通过 state load 加载配置（返回 JSON）：
 INIT=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" state load)
@@ -53,12 +53,12 @@ if [[ "$INIT" == @file:* ]]; then INIT=$(cat "${INIT#@file:}"); fi
 # commit_docs 包含在所有 init 命令输出中
 ```
 
-**自动检测：** 如果 `.planning/` 被 gitignore，无论 config.json 如何，`commit_docs` 自动为 `false`。这防止用户在 `.gitignore` 中有 `.planning/` 时出现 git 错误。
+**自动检测：** 如果 `.claude/.gsdt-planning/` 被 gitignore，无论 config.json 如何，`commit_docs` 自动为 `false`。这防止用户在 `.gitignore` 中有 `.claude/.gsdt-planning/` 时出现 git 错误。
 
 **通过 CLI 提交（自动处理检查）：**
 
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: update state" --files .planning/STATE.md
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: update state" --files .claude/.gsdt-planning/STATE.md
 ```
 
 CLI 在内部检查 `commit_docs` 配置和 gitignore 状态 —— 无需手动条件判断。
@@ -69,12 +69,12 @@ CLI 在内部检查 `commit_docs` 配置和 gitignore 状态 —— 无需手动
 
 **当 `search_gitignored: false`（默认）：**
 - 标准 rg 行为（尊重 .gitignore）
-- 直接路径搜索有效：`rg "pattern" .planning/` 找到文件
-- 广泛搜索跳过 gitignored：`rg "pattern"` 跳过 `.planning/`
+- 直接路径搜索有效：`rg "pattern" .claude/.gsdt-planning/` 找到文件
+- 广泛搜索跳过 gitignored：`rg "pattern"` 跳过 `.claude/.gsdt-planning/`
 
 **当 `search_gitignored: true`:**
-- 在应该包含 `.planning/` 的广泛 rg 搜索中添加 `--no-ignore`
-- 仅在搜索整个仓库并期望 `.planning/` 匹配时需要
+- 在应该包含 `.claude/.gsdt-planning/` 的广泛 rg 搜索中添加 `--no-ignore`
+- 仅在搜索整个仓库并期望 `.claude/.gsdt-planning/` 匹配时需要
 
 **注意：** 大多数 GSD 操作使用直接文件读取或显式路径，无论 gitignore 状态如何都有效。
 
@@ -94,16 +94,16 @@ CLI 在内部检查 `commit_docs` 配置和 gitignore 状态 —— 无需手动
 
 2. **添加到 .gitignore：**
    ```
-   .planning/
+   .claude/.gsdt-planning/
    ```
 
-3. **已存在的跟踪文件：** 如果 `.planning/` 之前被跟踪：
+3. **已存在的跟踪文件：** 如果 `.claude/.gsdt-planning/` 之前被跟踪：
    ```bash
-   git rm -r --cached .planning/
+   git rm -r --cached .claude/.gsdt-planning/
    git commit -m "chore: stop tracking planning docs"
    ```
 
-4. **分支合并：** 当使用 `branching_strategy: phase` 或 `milestone` 时，`complete-milestone` 工作流在 `commit_docs: false` 时自动从暂存区移除 `.planning/` 文件，然后才进行合并提交。
+4. **分支合并：** 当使用 `branching_strategy: phase` 或 `milestone` 时，`complete-milestone` 工作流在 `commit_docs: false` 时自动从暂存区移除 `.claude/.gsdt-planning/` 文件，然后才进行合并提交。
 
 </setup_uncommitted_mode>
 

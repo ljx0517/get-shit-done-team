@@ -6,7 +6,7 @@
 
 ## 設定ファイル
 
-GSD はプロジェクト設定を `.planning/config.json` に保存します。`/gsdt:new-project` 実行時に作成され、`/gsdt:settings` で更新できます。
+GSD はプロジェクト設定を `.claude/.gsdt-planning/config.json` に保存します。`/gsdt:new-project` 実行時に作成され、`/gsdt:settings` で更新できます。
 
 ### 完全スキーマ
 
@@ -118,12 +118,12 @@ GSD はプロジェクト設定を `.planning/config.json` に保存します。
 
 | 設定 | 型 | デフォルト | 説明 |
 |------|-----|-----------|------|
-| `planning.commit_docs` | boolean | `true` | `.planning/` ファイルを git にコミットするかどうか |
-| `planning.search_gitignored` | boolean | `false` | `.planning/` を含めるために広範な検索に `--no-ignore` を追加 |
+| `planning.commit_docs` | boolean | `true` | `.claude/.gsdt-planning/` ファイルを git にコミットするかどうか |
+| `planning.search_gitignored` | boolean | `false` | `.claude/.gsdt-planning/` を含めるために広範な検索に `--no-ignore` を追加 |
 
 ### 自動検出
 
-`.planning/` が `.gitignore` に含まれている場合、config.json の設定に関係なく `commit_docs` は自動的に `false` になります。これにより git エラーが防止されます。
+`.claude/.gsdt-planning/` が `.gitignore` に含まれている場合、config.json の設定に関係なく `commit_docs` は自動的に `false` になります。これにより git エラーが防止されます。
 
 ---
 
@@ -141,8 +141,8 @@ GSD はプロジェクト設定を `.planning/config.json` に保存します。
 プランニング成果物を git から除外するには：
 
 1. `planning.commit_docs: false` と `planning.search_gitignored: true` を設定
-2. `.planning/` を `.gitignore` に追加
-3. 既にトラッキング済みの場合: `git rm -r --cached .planning/ && git commit -m "chore: stop tracking planning docs"`
+2. `.claude/.gsdt-planning/` を `.gitignore` に追加
+3. 既にトラッキング済みの場合: `git rm -r --cached .claude/.gsdt-planning/ && git commit -m "chore: stop tracking planning docs"`
 
 ---
 

@@ -33,7 +33,7 @@ import { GSD } from './index.js';
 import { PromptFactory } from './phase-prompt.js';
 import { ContextEngine } from './context-engine.js';
 import { LayeredContextManager } from './layered-context/index.js';
-import { resolveGsdToolsPath, resolvePlanningDir } from './path-config.js';
+import { DEFAULT_PLANNING_DIR, resolveGsdToolsPath } from './path-config.js';
 
 // ─── Orchestrator interfaces ───────────────────────────────────────────────────
 
@@ -44,7 +44,7 @@ export interface OrchestratorOptions extends GSDOptions {
   onClassificationComplete?: (result: ClassificationResult) => Promise<void>;
   /** Called when milestone design completes. */
   onMilestoneDesignComplete?: (result: MilestoneDesignResult) => Promise<void>;
-  /** Planning directory name. Default: '.planning' */
+  /** Planning directory name. Default: '.claude/.gsdt-planning' */
   planningDir?: string;
 }
 
@@ -100,7 +100,7 @@ export class Orchestrator {
     this.defaultMaxBudgetUsd = options.maxBudgetUsd ?? 5.0;
     this.defaultMaxTurns = options.maxTurns ?? 50;
     this.autoMode = options.autoMode ?? true;
-    this.planningDir = options.planningDir ?? '.planning';
+    this.planningDir = options.planningDir ?? DEFAULT_PLANNING_DIR;
     this.eventStream = new GSDEventStream();
     this.gsd = new GSD({
       projectDir: this.projectDir,

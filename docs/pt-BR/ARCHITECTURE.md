@@ -9,7 +9,7 @@ Para detalhes de implementação linha a linha, consulte [ARCHITECTURE.md em ing
 
 - **Orquestração leve** no contexto principal
 - **Trabalho pesado em subagentes**
-- **Artefatos persistentes** em `.planning/`
+- **Artefatos persistentes** em `.claude/.gsdt-planning/`
 - **Validação contínua** por fase
 - **Rastreabilidade** por commits atômicos
 
@@ -36,7 +36,7 @@ Para detalhes de implementação linha a linha, consulte [ARCHITECTURE.md em ing
 Entrada (/gsdt:comando)
   -> Orquestrador
   -> Subagentes especializados
-  -> Artefatos em .planning/
+  -> Artefatos em .claude/.gsdt-planning/
   -> Execução em ondas
   -> Verificação/UAT
   -> Atualização de estado + commits

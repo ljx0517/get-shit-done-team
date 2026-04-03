@@ -6,7 +6,7 @@
 
 ## Configuration File
 
-GSD stores project settings in `.planning/config.json`. Created during `/gsdt:new-project`, updated via `/gsdt:settings`.
+GSD stores project settings in `.claude/.gsdt-planning/config.json`. Created during `/gsdt:new-project`, updated via `/gsdt:settings`.
 
 ### Full Schema
 
@@ -119,12 +119,12 @@ All workflow toggles follow the **absent = enabled** pattern. If a key is missin
 
 | Setting | Type | Default | Description |
 |---------|------|---------|-------------|
-| `planning.commit_docs` | boolean | `true` | Whether `.planning/` files are committed to git |
-| `planning.search_gitignored` | boolean | `false` | Add `--no-ignore` to broad searches to include `.planning/` |
+| `planning.commit_docs` | boolean | `true` | Whether `.claude/.gsdt-planning/` files are committed to git |
+| `planning.search_gitignored` | boolean | `false` | Add `--no-ignore` to broad searches to include `.claude/.gsdt-planning/` |
 
 ### Auto-Detection
 
-If `.planning/` is in `.gitignore`, `commit_docs` is automatically `false` regardless of config.json. This prevents git errors.
+If `.claude/.gsdt-planning/` is in `.gitignore`, `commit_docs` is automatically `false` regardless of config.json. This prevents git errors.
 
 ---
 
@@ -142,8 +142,8 @@ The prompt injection guard hook (`gsdt-prompt-guard.js`) is always active and ca
 To keep planning artifacts out of git:
 
 1. Set `planning.commit_docs: false` and `planning.search_gitignored: true`
-2. Add `.planning/` to `.gitignore`
-3. If previously tracked: `git rm -r --cached .planning/ && git commit -m "chore: stop tracking planning docs"`
+2. Add `.claude/.gsdt-planning/` to `.gitignore`
+3. If previously tracked: `git rm -r --cached .claude/.gsdt-planning/ && git commit -m "chore: stop tracking planning docs"`
 
 ---
 
@@ -157,7 +157,7 @@ Inject custom skill files into GSD subagent prompts. Skills are read by agents a
 
 ### Configuration
 
-Add an `agent_skills` section to `.planning/config.json` mapping agent types to arrays of skill directory paths (relative to project root):
+Add an `agent_skills` section to `.claude/.gsdt-planning/config.json` mapping agent types to arrays of skill directory paths (relative to project root):
 
 ```json
 {

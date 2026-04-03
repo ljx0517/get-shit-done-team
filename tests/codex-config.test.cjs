@@ -271,7 +271,7 @@ describe('generateCodexConfigBlock', () => {
     assert.ok(!result.includes('[features]'), 'no features table');
     assert.ok(!result.includes('multi_agent'), 'no multi_agent');
     assert.ok(!result.includes('default_mode_request_user_input'), 'no request_user_input');
-    // Should not have bare [agents] table header (only [agents.gsd-*] sections)
+    // Should not have bare [agents] table header (only [agents.gsdt-*] sections)
     assert.ok(!result.match(/^\[agents\]\s*$/m), 'no bare [agents] table');
     assert.ok(!result.includes('max_threads'), 'no max_threads');
     assert.ok(!result.includes('max_depth'), 'no max_depth');
@@ -337,7 +337,7 @@ describe('stripGsdFromCodexConfig', () => {
     assert.ok(!result.includes(GSDT_CODEX_MARKER), 'strips marker');
   });
 
-  test('removes [agents.gsd-*] sections', () => {
+  test('removes [agents.gsdt-*] sections', () => {
     const content = `[agents.gsdt-executor]\ndescription = "test"\nconfig_file = "agents/gsdt-executor.toml"\n\n[agents.custom-agent]\ndescription = "user agent"\n`;
     const result = stripGsdFromCodexConfig(content);
     assert.ok(!result.includes('[agents.gsdt-executor]'), 'removes GSD agent section');
@@ -421,7 +421,7 @@ describe('mergeCodexConfig', () => {
     assert.ok(content.includes('[agents.gsdt-executor]'), 'has agent');
   });
 
-  test('case 3 strips existing [agents.gsd-*] sections before appending fresh block', () => {
+  test('case 3 strips existing [agents.gsdt-*] sections before appending fresh block', () => {
     const configPath = path.join(tmpDir, 'config.toml');
     const existing = [
       '[model]',
@@ -493,7 +493,7 @@ describe('mergeCodexConfig', () => {
     assert.ok(content.includes('[agents.gsdt-executor]'), 'has agent from fresh block');
   });
 
-  test('case 2 strips leaked [agents] and [agents.gsd-*] from before content', () => {
+  test('case 2 strips leaked [agents] and [agents.gsdt-*] from before content', () => {
     const configPath = path.join(tmpDir, 'config.toml');
     const brokenContent = [
       '[features]',
@@ -525,7 +525,7 @@ describe('mergeCodexConfig', () => {
     const markerIndex = content.indexOf(GSDT_CODEX_MARKER);
     const beforeMarker = content.substring(0, markerIndex);
     assert.ok(!beforeMarker.match(/^\[agents\]\s*$/m), 'no leaked [agents] above marker');
-    assert.ok(!beforeMarker.includes('[agents.gsd-'), 'no leaked [agents.gsd-*] above marker');
+    assert.ok(!beforeMarker.includes('[agents.gsdt-'), 'no leaked [agents.gsdt-*] above marker');
   });
 
   test('case 2 strips leaked GSD-managed sections above marker in CRLF files', () => {
@@ -741,7 +741,7 @@ describe('Codex install hook configuration (e2e)', () => {
     assert.ok(content.includes('[features]\ncodex_hooks = true\n'), 'writes codex_hooks feature');
     assert.ok(content.includes('# GSD Hooks\n[[hooks]]\nevent = "SessionStart"\n'), 'writes GSD SessionStart hook block');
     assert.strictEqual(countMatches(content, /^codex_hooks = true$/gm), 1, 'writes one codex_hooks key');
-    assert.strictEqual(countMatches(content, /gsd-update-check\.js/g), 1, 'writes one GSD update hook');
+    assert.strictEqual(countMatches(content, /gsdt-check-update\.js/g), 1, 'writes one GSD update hook');
     assertNoDraftRootKeys(content);
     assertUsesOnlyEol(content, '\n');
   });
@@ -823,7 +823,7 @@ describe('Codex install hook configuration (e2e)', () => {
     assert.ok(content.includes('# user comment'), 'preserves user comment');
     assert.ok(content.includes('[model]\nname = "o3"'), 'preserves model section');
     assert.ok(content.includes('command = "echo custom"'), 'preserves custom hook');
-    assert.strictEqual(countMatches(content, /gsd-update-check\.js/g), 1, 'adds one GSD update hook');
+    assert.strictEqual(countMatches(content, /gsdt-check-update\.js/g), 1, 'adds one GSD update hook');
     assertNoDraftRootKeys(content);
   });
 
@@ -960,7 +960,7 @@ describe('Codex install hook configuration (e2e)', () => {
     assert.ok(!content.includes('codex_hooks = false'), 'removes false codex_hooks value');
     assert.ok(content.includes('other_feature = true'), 'preserves other feature keys');
     assert.ok(content.includes('command = "echo custom"'), 'preserves custom hook');
-    assert.strictEqual(countMatches(content, /gsd-update-check\.js/g), 1, 'does not duplicate GSD update hook');
+    assert.strictEqual(countMatches(content, /gsdt-check-update\.js/g), 1, 'does not duplicate GSD update hook');
     assertNoDraftRootKeys(content);
   });
 
@@ -1002,7 +1002,7 @@ describe('Codex install hook configuration (e2e)', () => {
     assert.strictEqual(countMatches(content, /^"codex_hooks" = true$/gm), 1, 'normalizes the quoted codex_hooks key to true');
     assert.strictEqual(countMatches(content, /^\[features\]\s*$/gm), 0, 'does not prepend a second bare features table');
     assert.ok(content.includes('other_feature = true'), 'preserves existing feature keys');
-    assert.strictEqual(countMatches(content, /gsd-update-check\.js/g), 1, 'keeps one GSD update hook');
+    assert.strictEqual(countMatches(content, /gsdt-check-update\.js/g), 1, 'keeps one GSD update hook');
     assertNoDraftRootKeys(content);
   });
 
@@ -1023,7 +1023,7 @@ describe('Codex install hook configuration (e2e)', () => {
     assert.ok(content.includes('[features."a#b"]\nenabled = true'), 'preserves the quoted nested features table');
     assert.strictEqual(countMatches(content, /^\[features\]\s*$/gm), 1, 'adds one real top-level features table');
     assert.strictEqual(countMatches(content, /^codex_hooks = true$/gm), 1, 'adds one codex_hooks key');
-    assert.strictEqual(countMatches(content, /gsd-update-check\.js/g), 1, 'remains idempotent for the GSD hook block');
+    assert.strictEqual(countMatches(content, /gsdt-check-update\.js/g), 1, 'remains idempotent for the GSD hook block');
     assertNoDraftRootKeys(content);
   });
 
@@ -1043,7 +1043,7 @@ describe('Codex install hook configuration (e2e)', () => {
     assert.strictEqual(countMatches(content, /^\[features\]\s*$/gm), 0, 'does not add a [features] table');
     assert.strictEqual(countMatches(content, /^features\.codex_hooks = true$/gm), 1, 'adds one dotted codex_hooks key');
     assert.ok(content.includes('features.other_feature = true'), 'preserves existing dotted features key');
-    assert.strictEqual(countMatches(content, /gsd-update-check\.js/g), 1, 'adds one GSD update hook for dotted codex_hooks and remains idempotent');
+    assert.strictEqual(countMatches(content, /gsdt-check-update\.js/g), 1, 'adds one GSD update hook for dotted codex_hooks and remains idempotent');
     assertNoDraftRootKeys(content);
   });
 
@@ -1063,7 +1063,7 @@ describe('Codex install hook configuration (e2e)', () => {
     assert.ok(content.includes('features = { other_feature = true }'), 'preserves the root inline-table assignment');
     assert.strictEqual(countMatches(content, /^features\.codex_hooks = true$/gm), 0, 'does not append an invalid dotted codex_hooks key');
     assert.strictEqual(countMatches(content, /^\[features\]\s*$/gm), 0, 'does not prepend a features table');
-    assert.strictEqual(countMatches(content, /gsd-update-check\.js/g), 0, 'does not add the GSD hook block when codex_hooks cannot be enabled safely');
+    assert.strictEqual(countMatches(content, /gsdt-check-update\.js/g), 0, 'does not add the GSD hook block when codex_hooks cannot be enabled safely');
     assert.ok(content.includes('[agents.gsdt-executor]'), 'still installs the managed agent block');
     assertNoDraftRootKeys(content);
   });
@@ -1084,7 +1084,7 @@ describe('Codex install hook configuration (e2e)', () => {
     assert.ok(content.includes('features = "disabled"'), 'preserves the root scalar assignment');
     assert.strictEqual(countMatches(content, /^features\.codex_hooks = true$/gm), 0, 'does not append an invalid dotted codex_hooks key');
     assert.strictEqual(countMatches(content, /^\[features\]\s*$/gm), 0, 'does not prepend a features table');
-    assert.strictEqual(countMatches(content, /gsd-update-check\.js/g), 0, 'does not add the GSD hook block when codex_hooks cannot be enabled safely');
+    assert.strictEqual(countMatches(content, /gsdt-check-update\.js/g), 0, 'does not add the GSD hook block when codex_hooks cannot be enabled safely');
     assert.ok(content.includes('[agents.gsdt-executor]'), 'still installs the managed agent block');
     assertNoDraftRootKeys(content);
   });
@@ -1107,7 +1107,7 @@ describe('Codex install hook configuration (e2e)', () => {
     assert.strictEqual(countMatches(content, /^features\."codex_hooks" = true$/gm), 1, 'normalizes the quoted dotted key to true');
     assert.strictEqual(countMatches(content, /^features\.codex_hooks = true$/gm), 0, 'does not append a bare dotted duplicate');
     assert.ok(content.includes('features.other_feature = true'), 'preserves other dotted features keys');
-    assert.strictEqual(countMatches(content, /gsd-update-check\.js/g), 1, 'adds one GSD update hook for quoted dotted codex_hooks and remains idempotent');
+    assert.strictEqual(countMatches(content, /gsdt-check-update\.js/g), 1, 'adds one GSD update hook for quoted dotted codex_hooks and remains idempotent');
     assertNoDraftRootKeys(content);
   });
 
@@ -1215,7 +1215,7 @@ describe('Codex install hook configuration (e2e)', () => {
     assert.strictEqual(countMatches(content, /^codex_hooks = true$/gm), 1, 'replaces the multiline basic-string assignment with one true value');
     assert.ok(!content.includes('multiline-basic-sentinel'), 'removes multiline basic-string continuation lines');
     assert.ok(content.includes('other_feature = true'), 'preserves following feature keys');
-    assert.strictEqual(countMatches(content, /gsd-update-check\.js/g), 1, 'remains idempotent for the GSD hook block');
+    assert.strictEqual(countMatches(content, /gsdt-check-update\.js/g), 1, 'remains idempotent for the GSD hook block');
     assertNoDraftRootKeys(content);
   });
 
@@ -1240,7 +1240,7 @@ describe('Codex install hook configuration (e2e)', () => {
     assert.strictEqual(countMatches(content, /^codex_hooks = true$/gm), 1, 'replaces the multiline literal-string assignment with one true value');
     assert.ok(!content.includes('multiline-literal-sentinel'), 'removes multiline literal-string continuation lines');
     assert.ok(content.includes('other_feature = true'), 'preserves following feature keys');
-    assert.strictEqual(countMatches(content, /gsd-update-check\.js/g), 1, 'remains idempotent for the GSD hook block');
+    assert.strictEqual(countMatches(content, /gsdt-check-update\.js/g), 1, 'remains idempotent for the GSD hook block');
     assertNoDraftRootKeys(content);
   });
 
@@ -1266,7 +1266,7 @@ describe('Codex install hook configuration (e2e)', () => {
     assert.ok(!content.includes('array-sentinel-1'), 'removes multiline array continuation lines');
     assert.ok(!content.includes('array-sentinel-2'), 'removes multiline array continuation lines');
     assert.ok(content.includes('other_feature = true'), 'preserves following feature keys');
-    assert.strictEqual(countMatches(content, /gsd-update-check\.js/g), 1, 'remains idempotent for the GSD hook block');
+    assert.strictEqual(countMatches(content, /gsdt-check-update\.js/g), 1, 'remains idempotent for the GSD hook block');
     assertNoDraftRootKeys(content);
   });
 
@@ -1311,7 +1311,7 @@ describe('Codex install hook configuration (e2e)', () => {
     assert.strictEqual(countMatches(content, /^codex_hooks = true$/gm), 1, 'keeps one codex_hooks = true');
     assert.ok(content.includes('other_feature = true'), 'preserves other feature keys');
     assert.strictEqual(countMatches(content, /echo custom-after-command/g), 1, 'preserves non-GSD hook exactly once');
-    assert.strictEqual(countMatches(content, /gsd-update-check\.js/g), 1, 'keeps one GSD update hook');
+    assert.strictEqual(countMatches(content, /gsdt-check-update\.js/g), 1, 'keeps one GSD update hook');
     assertUsesOnlyEol(content, '\r\n');
     assertNoDraftRootKeys(content);
   });
@@ -1334,7 +1334,7 @@ describe('Codex install hook configuration (e2e)', () => {
     assert.strictEqual(countMatches(content, /^\[features\]\s*$/gm), 1, 'keeps one [features] section');
     assert.strictEqual(countMatches(content, /^codex_hooks = true # keep me$/gm), 1, 'preserves the commented true value');
     assert.ok(content.includes('other_feature = true'), 'preserves other feature keys');
-    assert.strictEqual(countMatches(content, /gsd-update-check\.js/g), 1, 'adds the GSD update hook once');
+    assert.strictEqual(countMatches(content, /gsdt-check-update\.js/g), 1, 'adds the GSD update hook once');
     assertNoDraftRootKeys(content);
   });
 
@@ -1351,7 +1351,7 @@ describe('Codex install hook configuration (e2e)', () => {
     assert.ok(content.includes('# GSD Hooks\n[[hooks]]\nevent = "SessionStart"\n'), 'writes the GSD hook block using the first newline style');
     assert.ok(content.includes('[model]\r\nname = "o3"'), 'preserves the existing CRLF model lines');
     assert.strictEqual(countMatches(content, /^codex_hooks = true$/gm), 1, 'remains idempotent on repeated installs');
-    assert.strictEqual(countMatches(content, /gsd-update-check\.js/g), 1, 'does not duplicate the GSD hook block');
+    assert.strictEqual(countMatches(content, /gsdt-check-update\.js/g), 1, 'does not duplicate the GSD hook block');
     assertNoDraftRootKeys(content);
   });
 });
@@ -1400,8 +1400,8 @@ describe('Codex uninstall symmetry for hook-enabled configs', () => {
     assert.ok(cleaned.includes('# keep me'), 'preserves user comments in [features]');
     assert.ok(cleaned.includes('other_feature = true'), 'preserves other feature keys');
     assert.strictEqual(countMatches(cleaned, /echo custom-after-command/g), 1, 'preserves non-GSD hooks');
-    assert.strictEqual(countMatches(cleaned, /gsd-update-check\.js/g), 0, 'removes only the GSD update hook');
-    assert.strictEqual(countMatches(cleaned, /\[agents\.gsd-/g), 0, 'removes managed GSD agent sections');
+    assert.strictEqual(countMatches(cleaned, /gsdt-check-update\.js/g), 0, 'removes only the GSD update hook');
+    assert.strictEqual(countMatches(cleaned, /\[agents\.gsdt-/g), 0, 'removes managed GSD agent sections');
     assertUsesOnlyEol(cleaned, '\r\n');
   });
 
@@ -1425,7 +1425,7 @@ describe('Codex uninstall symmetry for hook-enabled configs', () => {
     assert.strictEqual(countMatches(cleaned, /^features\.codex_hooks = true$/gm), 0, 'removes the dotted GSD codex_hooks key');
     assert.strictEqual(countMatches(cleaned, /^\[features\]\s*$/gm), 0, 'does not leave behind a [features] table');
     assert.strictEqual(countMatches(cleaned, /echo custom-after-command/g), 1, 'preserves non-GSD hooks');
-    assert.strictEqual(countMatches(cleaned, /gsd-update-check\.js/g), 0, 'removes the GSD update hook');
+    assert.strictEqual(countMatches(cleaned, /gsdt-check-update\.js/g), 0, 'removes the GSD update hook');
   });
 
   test('install then uninstall preserves a pre-existing [features].codex_hooks = true', () => {
@@ -1444,8 +1444,8 @@ describe('Codex uninstall symmetry for hook-enabled configs', () => {
     const cleaned = stripGsdFromCodexConfig(readCodexConfig(codexHome));
     assert.ok(cleaned.includes('[features]\ncodex_hooks = true\nother_feature = true'), 'preserves the user-authored codex_hooks assignment');
     assert.strictEqual(countMatches(cleaned, /^codex_hooks = true$/gm), 1, 'keeps the pre-existing codex_hooks key');
-    assert.strictEqual(countMatches(cleaned, /gsd-update-check\.js/g), 0, 'removes the GSD update hook');
-    assert.strictEqual(countMatches(cleaned, /\[agents\.gsd-/g), 0, 'removes managed GSD agent sections');
+    assert.strictEqual(countMatches(cleaned, /gsdt-check-update\.js/g), 0, 'removes the GSD update hook');
+    assert.strictEqual(countMatches(cleaned, /\[agents\.gsdt-/g), 0, 'removes managed GSD agent sections');
   });
 
   test('install then uninstall preserves a pre-existing quoted [features].\"codex_hooks\" = true', () => {
@@ -1464,8 +1464,8 @@ describe('Codex uninstall symmetry for hook-enabled configs', () => {
     const cleaned = stripGsdFromCodexConfig(readCodexConfig(codexHome));
     assert.ok(cleaned.includes('[features]\n"codex_hooks" = true\nother_feature = true'), 'preserves the user-authored quoted codex_hooks assignment');
     assert.strictEqual(countMatches(cleaned, /^"codex_hooks" = true$/gm), 1, 'keeps the pre-existing quoted codex_hooks key');
-    assert.strictEqual(countMatches(cleaned, /gsd-update-check\.js/g), 0, 'removes the GSD update hook');
-    assert.strictEqual(countMatches(cleaned, /\[agents\.gsd-/g), 0, 'removes managed GSD agent sections');
+    assert.strictEqual(countMatches(cleaned, /gsdt-check-update\.js/g), 0, 'removes the GSD update hook');
+    assert.strictEqual(countMatches(cleaned, /\[agents\.gsdt-/g), 0, 'removes managed GSD agent sections');
   });
 
   test('install then uninstall preserves a pre-existing root dotted features.codex_hooks = true', () => {
@@ -1483,8 +1483,8 @@ describe('Codex uninstall symmetry for hook-enabled configs', () => {
     const cleaned = stripGsdFromCodexConfig(readCodexConfig(codexHome));
     assert.ok(cleaned.includes('features.codex_hooks = true\nfeatures.other_feature = true'), 'preserves the user-authored dotted codex_hooks assignment');
     assert.strictEqual(countMatches(cleaned, /^features\.codex_hooks = true$/gm), 1, 'keeps the pre-existing dotted codex_hooks key');
-    assert.strictEqual(countMatches(cleaned, /gsd-update-check\.js/g), 0, 'removes the GSD update hook');
-    assert.strictEqual(countMatches(cleaned, /\[agents\.gsd-/g), 0, 'removes managed GSD agent sections');
+    assert.strictEqual(countMatches(cleaned, /gsdt-check-update\.js/g), 0, 'removes the GSD update hook');
+    assert.strictEqual(countMatches(cleaned, /\[agents\.gsdt-/g), 0, 'removes managed GSD agent sections');
   });
 
   test('install then uninstall leaves short-circuited root features assignments untouched', () => {
@@ -1522,7 +1522,7 @@ describe('Codex uninstall symmetry for hook-enabled configs', () => {
     const cleaned = stripGsdFromCodexConfig(readCodexConfig(codexHome));
     assert.ok(cleaned.includes('# first line wins\n[features]\r\nother_feature = true\r\n\r\n[model]\r\nname = "o3"'), 'preserves the original mixed-EOL user content');
     assert.strictEqual(countMatches(cleaned, /^codex_hooks = true$/gm), 0, 'removes the injected codex_hooks key');
-    assert.strictEqual(countMatches(cleaned, /gsd-update-check\.js/g), 0, 'removes the GSD update hook');
-    assert.strictEqual(countMatches(cleaned, /\[agents\.gsd-/g), 0, 'removes managed GSD agent sections');
+    assert.strictEqual(countMatches(cleaned, /gsdt-check-update\.js/g), 0, 'removes the GSD update hook');
+    assert.strictEqual(countMatches(cleaned, /\[agents\.gsdt-/g), 0, 'removes managed GSD agent sections');
   });
 });

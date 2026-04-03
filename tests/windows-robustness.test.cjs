@@ -7,7 +7,7 @@
  * 1. Workflow shell robustness: informational commands guarded with || true
  * 2. Glob loops guarded with [ -e "$var" ] || continue
  * 3. Hook stdin timeout patterns present in all JS hooks
- * 4. findProjectRoot detects .git at same level as .planning/
+ * 4. findProjectRoot detects .git at same level as .claude/.gsdt-planning/
  * 5. @file: handoff present in all workflows that call init
  *
  * Regression tests for: https://github.com/gsd-build/gsdt/issues/1343
@@ -18,7 +18,7 @@ const assert = require('node:assert');
 const fs = require('fs');
 const path = require('path');
 
-const WORKFLOWS_DIR = path.join(__dirname, '..', 'get-shit-done', 'workflows');
+const WORKFLOWS_DIR = path.join(__dirname, '..', 'gsdt', 'workflows');
 const HOOKS_DIR = path.join(__dirname, '..', 'hooks');
 
 /**
@@ -124,8 +124,8 @@ describe('workflow shell robustness', () => {
     const blocks = extractBashBlocks(content);
 
     for (const block of blocks) {
-      // Look for `for ... in .planning/` glob loops
-      const forLoopMatch = block.code.match(/for\s+\w+\s+in\s+\.planning\/[^;]+;\s*do/);
+      // Look for `for ... in .claude/.gsdt-planning/` glob loops
+      const forLoopMatch = block.code.match(/for\s+\w+\s+in\s+\.claude\/\.gsdt-planning\/[^;]+;\s*do/);
       if (forLoopMatch) {
         // The loop body should contain [ -e "$var" ] || continue
         assert.ok(

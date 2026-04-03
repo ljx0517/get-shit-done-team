@@ -13,7 +13,7 @@ Times e desenvolvedores frequentemente precisam trabalhar em múltiplos reposit�
 
 Introduzir workspaces multi-projeto com:
 
-- isolamento de `.planning/` por workspace
+- isolamento de `.claude/.gsdt-planning/` por workspace
 - suporte a múltiplos repositórios (worktree/clone)
 - comandos para criação, listagem e remoção
 

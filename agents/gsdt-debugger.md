@@ -777,7 +777,7 @@ The knowledge base is a persistent, append-only record of resolved debug session
 ## File Location
 
 ```
-.planning/debug/knowledge-base.md
+.claude/.gsdt-planning/debug/knowledge-base.md
 ```
 
 ## Entry Format
@@ -815,8 +815,8 @@ Matching is keyword overlap, not semantic similarity. Extract nouns and error su
 ## File Location
 
 ```
-DEBUG_DIR=.planning/debug
-DEBUG_RESOLVED_DIR=.planning/debug/resolved
+DEBUG_DIR=.claude/.gsdt-planning/debug
+DEBUG_RESOLVED_DIR=.claude/.gsdt-planning/debug/resolved
 ```
 
 ## File Structure
@@ -912,7 +912,7 @@ The file IS the debugging brain.
 **First:** Check for active debug sessions.
 
 ```bash
-ls .planning/debug/*.md 2>/dev/null | grep -v resolved
+ls .claude/.gsdt-planning/debug/*.md 2>/dev/null | grep -v resolved
 ```
 
 **If active sessions exist AND no $ARGUMENTS:**
@@ -935,7 +935,7 @@ ls .planning/debug/*.md 2>/dev/null | grep -v resolved
 **ALWAYS use the Write tool to create files** — never use `Bash(cat << 'EOF')` or heredoc commands for file creation.
 
 1. Generate slug from user input (lowercase, hyphens, max 30 chars)
-2. `mkdir -p .planning/debug`
+2. `mkdir -p .claude/.gsdt-planning/debug`
 3. Create file with initial state:
    - status: gathering
    - trigger: verbatim $ARGUMENTS
@@ -961,7 +961,7 @@ Gather symptoms through questioning. Update file after EACH answer.
 **Autonomous investigation. Update file continuously.**
 
 **Phase 0: Check knowledge base**
-- If `.planning/debug/knowledge-base.md` exists, read it
+- If `.claude/.gsdt-planning/debug/knowledge-base.md` exists, read it
 - Extract keywords from `Symptoms.errors` and `Symptoms.actual` (nouns, error substrings, identifiers)
 - Scan knowledge base entries for 2+ keyword overlap (case-insensitive)
 - If match found:
@@ -1018,7 +1018,7 @@ Return structured diagnosis:
 ```markdown
 ## ROOT CAUSE FOUND
 
-**Debug Session:** .planning/debug/{slug}.md
+**Debug Session:** .claude/.gsdt-planning/debug/{slug}.md
 
 **Root Cause:** {from Resolution.root_cause}
 
@@ -1037,7 +1037,7 @@ If inconclusive:
 ```markdown
 ## INVESTIGATION INCONCLUSIVE
 
-**Debug Session:** .planning/debug/{slug}.md
+**Debug Session:** .claude/.gsdt-planning/debug/{slug}.md
 
 **What Was Checked:**
 - {area}: {finding}
@@ -1079,7 +1079,7 @@ Return:
 ## CHECKPOINT REACHED
 
 **Type:** human-verify
-**Debug Session:** .planning/debug/{slug}.md
+**Debug Session:** .claude/.gsdt-planning/debug/{slug}.md
 **Progress:** {evidence_count} evidence entries, {eliminated_count} hypotheses eliminated
 
 ### Investigation State
@@ -1115,8 +1115,8 @@ Only run this step when checkpoint response confirms the fix works end-to-end.
 Update status to "resolved".
 
 ```bash
-mkdir -p .planning/debug/resolved
-mv .planning/debug/{slug}.md .planning/debug/resolved/
+mkdir -p .claude/.gsdt-planning/debug/resolved
+mv .claude/.gsdt-planning/debug/{slug}.md .claude/.gsdt-planning/debug/resolved/
 ```
 
 **Check planning config using state load (commit_docs is available from the output):**
@@ -1140,12 +1140,12 @@ Root cause: {root_cause}"
 
 Then commit planning docs via CLI (respects `commit_docs` config automatically):
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: resolve debug {slug}" --files .planning/debug/resolved/{slug}.md
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: resolve debug {slug}" --files .claude/.gsdt-planning/debug/resolved/{slug}.md
 ```
 
 **Append to knowledge base:**
 
-Read `.planning/debug/resolved/{slug}.md` to extract final `Resolution` values. Then append to `.planning/debug/knowledge-base.md` (create file with header if it doesn't exist):
+Read `.claude/.gsdt-planning/debug/resolved/{slug}.md` to extract final `Resolution` values. Then append to `.claude/.gsdt-planning/debug/knowledge-base.md` (create file with header if it doesn't exist):
 
 If creating for the first time, write this header first:
 ```markdown
@@ -1171,7 +1171,7 @@ Then append the entry:
 
 Commit the knowledge base update alongside the resolved session:
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: update debug knowledge base with {slug}" --files .planning/debug/knowledge-base.md
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: update debug knowledge base with {slug}" --files .claude/.gsdt-planning/debug/knowledge-base.md
 ```
 
 Report completion and offer next steps.
@@ -1194,7 +1194,7 @@ Return a checkpoint when:
 ## CHECKPOINT REACHED
 
 **Type:** [human-verify | human-action | decision]
-**Debug Session:** .planning/debug/{slug}.md
+**Debug Session:** .claude/.gsdt-planning/debug/{slug}.md
 **Progress:** {evidence_count} evidence entries, {eliminated_count} hypotheses eliminated
 
 ### Investigation State
@@ -1265,7 +1265,7 @@ Orchestrator presents checkpoint to user, gets response, spawns fresh continuati
 ```markdown
 ## ROOT CAUSE FOUND
 
-**Debug Session:** .planning/debug/{slug}.md
+**Debug Session:** .claude/.gsdt-planning/debug/{slug}.md
 
 **Root Cause:** {specific cause with evidence}
 
@@ -1286,7 +1286,7 @@ Orchestrator presents checkpoint to user, gets response, spawns fresh continuati
 ```markdown
 ## DEBUG COMPLETE
 
-**Debug Session:** .planning/debug/resolved/{slug}.md
+**Debug Session:** .claude/.gsdt-planning/debug/resolved/{slug}.md
 
 **Root Cause:** {what was wrong}
 **Fix Applied:** {what was changed}
@@ -1306,7 +1306,7 @@ Only return this after human verification confirms the fix.
 ```markdown
 ## INVESTIGATION INCONCLUSIVE
 
-**Debug Session:** .planning/debug/{slug}.md
+**Debug Session:** .claude/.gsdt-planning/debug/{slug}.md
 
 **What Was Checked:**
 - {area 1}: {finding}

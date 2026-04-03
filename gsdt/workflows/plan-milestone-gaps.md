@@ -12,7 +12,7 @@ Read all files referenced by the invoking prompt's execution_context before star
 
 ```bash
 # Find the most recent audit file
-(ls -t .planning/v*-MILESTONE-AUDIT.md 2>/dev/null || true) | head -1
+(ls -t .claude/.gsdt-planning/v*-MILESTONE-AUDIT.md 2>/dev/null || true) | head -1
 ```
 
 Parse YAML frontmatter to extract structured gaps:
@@ -134,19 +134,19 @@ Reset checked-off requirements the audit found unsatisfied:
 
 ```bash
 # Verify traceability table reflects gap closure assignments
-grep -c "Pending" .planning/REQUIREMENTS.md
+grep -c "Pending" .claude/.gsdt-planning/REQUIREMENTS.md
 ```
 
 ## 8. Create Phase Directories
 
 ```bash
-mkdir -p ".planning/phases/{NN}-{name}"
+mkdir -p ".claude/.gsdt-planning/phases/{NN}-{name}"
 ```
 
 ## 9. Commit Roadmap and Requirements Update
 
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs(roadmap): add gap closure phases {N}-{M}" --files .planning/ROADMAP.md .planning/REQUIREMENTS.md
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs(roadmap): add gap closure phases {N}-{M}" --files .claude/.gsdt-planning/ROADMAP.md .claude/.gsdt-planning/REQUIREMENTS.md
 ```
 
 ## 10. Offer Next Steps
@@ -171,7 +171,7 @@ node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs(roadmap): add gap clos
 
 **Also available:**
 - `/gsdt:execute-phase {N}` — if plans already exist
-- `cat .planning/ROADMAP.md` — see updated roadmap
+- `cat .claude/.gsdt-planning/ROADMAP.md` — see updated roadmap
 
 ---
 

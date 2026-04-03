@@ -1,5 +1,5 @@
 ---
-name: gsd:manager
+name: gsdt:manager
 description: Interactive command center for managing multiple phases from one terminal
 allowed-tools:
   - Read
@@ -17,7 +17,7 @@ Designed for power users who want to parallelize work across phases from one ter
 
 **Creates/Updates:**
 - No files created directly — dispatches to existing GSD commands via Skill() and background Task agents.
-- Reads `.planning/STATE.md`, `.planning/ROADMAP.md`, phase directories for status.
+- Reads `.claude/.gsdt-planning/STATE.md`, `.claude/.gsdt-planning/ROADMAP.md`, phase directories for status.
 
 **After:** User exits when done managing, or all phases complete and milestone lifecycle is suggested.
 </objective>

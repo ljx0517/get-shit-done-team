@@ -33,6 +33,7 @@ import {
   ContextKind,
   ContextImportance,
 } from './types.js';
+import { resolvePlanningDir } from '../path-config.js';
 
 // ─── LayeredContextManager ────────────────────────────────────────────────────
 
@@ -44,7 +45,7 @@ export class LayeredContextManager {
 
   constructor(projectDir: string, config?: Partial<LayeredContextManagerConfig>) {
     this.projectDir = projectDir;
-    this.contextDir = join(projectDir, '.planning', 'context');
+    this.contextDir = join(resolvePlanningDir(projectDir), 'context');
     this.config = { ...config } as LayeredContextManagerConfig;
 
     this.layers = new Map();
@@ -522,7 +523,7 @@ export class LayeredContextManager {
   }
 
   /**
-   * Serialize recent_history to markdown for .planning/ persistence.
+   * Serialize recent_history to markdown for .claude/.gsdt-planning/ persistence.
    * Produces a human-readable audit trail.
    */
   toMarkdown(): string {

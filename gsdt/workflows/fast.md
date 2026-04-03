@@ -63,14 +63,14 @@ Use conventional commit format: `fix:`, `feat:`, `docs:`, `chore:`, `refactor:` 
 </step>
 
 <step name="log_to_state">
-If `.planning/STATE.md` exists, append to the "Quick Tasks Completed" table.
+If `.claude/.gsdt-planning/STATE.md` exists, append to the "Quick Tasks Completed" table.
 If the table doesn't exist, skip this step silently.
 
 ```bash
 # Check if STATE.md has quick tasks table
-if grep -q "Quick Tasks Completed" .planning/STATE.md 2>/dev/null; then
+if grep -q "Quick Tasks Completed" .claude/.gsdt-planning/STATE.md 2>/dev/null; then
   # Append entry — workflow handles the format
-  echo "| $(date +%Y-%m-%d) | fast | $TASK | ✅ |" >> .planning/STATE.md
+  echo "| $(date +%Y-%m-%d) | fast | $TASK | ✅ |" >> .claude/.gsdt-planning/STATE.md
 fi
 ```
 </step>

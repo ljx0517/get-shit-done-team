@@ -59,7 +59,7 @@ GSDは、ユーザーとAIコーディングエージェント（Claude Code、G
 └──────────────────────┬───────────────────────────────┘
                        │
 ┌──────────────────────▼───────────────────────────────┐
-│              FILE SYSTEM (.planning/)                 │
+│              FILE SYSTEM (.claude/.gsdt-planning/)                 │
 │   PROJECT.md | REQUIREMENTS.md | ROADMAP.md          │
 │   STATE.md | config.json | phases/ | research/       │
 └──────────────────────────────────────────────────────┘
@@ -83,7 +83,7 @@ GSDは、ユーザーとAIコーディングエージェント（Claude Code、G
 
 ### 3. ファイルベースの状態管理
 
-すべての状態は `.planning/` 内に人間が読めるMarkdownとJSONとして保存されます。データベースもサーバーも外部依存もありません。これにより：
+すべての状態は `.claude/.gsdt-planning/` 内に人間が読めるMarkdownとJSONとして保存されます。データベースもサーバーも外部依存もありません。これにより：
 - コンテキストリセット（`/clear`）後も状態が維持される
 - 人間とエージェントの両方が状態を確認できる
 - チームでの可視性のためにgitにコミットできる
@@ -169,7 +169,7 @@ GSDは、ユーザーとAIコーディングエージェント（Claude Code、G
 | `gsdt-statusline.js` | `statusLine` | モデル、タスク、ディレクトリ、コンテキスト使用量バーを表示 |
 | `gsdt-context-monitor.js` | `PostToolUse` / `AfterTool` | コンテキスト残量35%/25%でエージェント向け警告を注入 |
 | `gsdt-check-update.js` | `SessionStart` | GSDの新バージョンをバックグラウンドで確認 |
-| `gsdt-prompt-guard.js` | `PreToolUse` | `.planning/` への書き込みにプロンプトインジェクションパターンがないかスキャン（アドバイザリー） |
+| `gsdt-prompt-guard.js` | `PreToolUse` | `.claude/.gsdt-planning/` への書き込みにプロンプトインジェクションパターンがないかスキャン（アドバイザリー） |
 | `gsdt-workflow-guard.js` | `PreToolUse` | GSDワークフローコンテキスト外でのファイル編集を検出（アドバイザリー、`hooks.workflow_guard` によるオプトイン） |
 
 ### CLIツール（`gsdt/bin/`）
@@ -367,10 +367,10 @@ UI-SPEC.md (per phase) ───────────────────
 - **Copilot:** `~/.github/`
 - **Antigravity:** `~/.gemini/antigravity/`（グローバル）または `./.agent/`（ローカル）
 
-### プロジェクトファイル（`.planning/`）
+### プロジェクトファイル（`.claude/.gsdt-planning/`）
 
 ```
-.planning/
+.claude/.gsdt-planning/
 ├── PROJECT.md              # プロジェクトビジョン、制約、決定事項、発展ルール
 ├── REQUIREMENTS.md         # スコープ付き要件（v1/v2/スコープ外）
 ├── ROADMAP.md              # ステータス追跡付きフェーズ分解
@@ -490,13 +490,13 @@ Runtime Engine (Claude Code / Gemini CLI)
 ### セキュリティフック（v1.27）
 
 **Prompt Guard**（`gsdt-prompt-guard.js`）：
-- `.planning/` ファイルへのWrite/Edit時にトリガー
+- `.claude/.gsdt-planning/` ファイルへのWrite/Edit時にトリガー
 - プロンプトインジェクションパターン（ロールオーバーライド、指示バイパス、systemタグインジェクション）をスキャン
 - アドバイザリーのみ — 検出をログに記録するが、ブロックはしない
 - フックの独立性のため、パターンはインライン化（`security.cjs` のサブセット）
 
 **Workflow Guard**（`gsdt-workflow-guard.js`）：
-- `.planning/` 以外のファイルへのWrite/Edit時にトリガー
+- `.claude/.gsdt-planning/` 以外のファイルへのWrite/Edit時にトリガー
 - GSDワークフローコンテキスト外での編集を検出（アクティブな `/gsdt:` コマンドやTaskサブエージェントがない場合）
 - 状態追跡される変更には `/gsdt:quick` や `/gsdt:fast` の使用をアドバイス
 - `hooks.workflow_guard: true` によるオプトイン（デフォルト: false）

@@ -13,10 +13,10 @@ const assert = require('node:assert');
 const fs = require('fs');
 const path = require('path');
 
-const COMMAND_PATH = path.join(__dirname, '..', 'commands', 'gsd', 'execute-phase.md');
-const WORKFLOW_PATH = path.join(__dirname, '..', 'get-shit-done', 'workflows', 'execute-phase.md');
+const COMMAND_PATH = path.join(__dirname, '..', 'commands', 'gsdt', 'execute-phase.md');
+const WORKFLOW_PATH = path.join(__dirname, '..', 'gsdt', 'workflows', 'execute-phase.md');
 const COMMANDS_DOC_PATH = path.join(__dirname, '..', 'docs', 'COMMANDS.md');
-const HELP_PATH = path.join(__dirname, '..', 'get-shit-done', 'workflows', 'help.md');
+const HELP_PATH = path.join(__dirname, '..', 'gsdt', 'workflows', 'help.md');
 
 describe('execute-phase command: --wave flag', () => {
   test('command file exists', () => {

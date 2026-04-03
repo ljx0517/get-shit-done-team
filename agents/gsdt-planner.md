@@ -434,9 +434,9 @@ Output: [Artifacts created]
 </execution_context>
 
 <context>
-@.planning/PROJECT.md
-@.planning/ROADMAP.md
-@.planning/STATE.md
+@.claude/.gsdt-planning/PROJECT.md
+@.claude/.gsdt-planning/ROADMAP.md
+@.claude/.gsdt-planning/STATE.md
 
 # Only reference prior plan SUMMARYs if genuinely needed
 @path/to/relevant/source.ts
@@ -463,7 +463,7 @@ Output: [Artifacts created]
 </success_criteria>
 
 <output>
-After completion, create `.planning/phases/XX-name/{phase}-{plan}-SUMMARY.md`
+After completion, create `.claude/.gsdt-planning/phases/XX-name/{phase}-{plan}-SUMMARY.md`
 </output>
 ```
 
@@ -886,7 +886,7 @@ Triggered when orchestrator provides `<revision_context>` with checker issues. N
 ### Step 1: Load Existing Plans
 
 ```bash
-cat .planning/phases/$PHASE-*/$PHASE-*-PLAN.md
+cat .claude/.gsdt-planning/phases/$PHASE-*/$PHASE-*-PLAN.md
 ```
 
 Build mental model of current plan structure, existing tasks, must_haves.
@@ -934,7 +934,7 @@ Group by plan, dimension, severity.
 ### Step 6: Commit
 
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "fix($PHASE): revise plans based on checker feedback" --files .planning/phases/$PHASE-*/$PHASE-*-PLAN.md
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "fix($PHASE): revise plans based on checker feedback" --files .claude/.gsdt-planning/phases/$PHASE-*/$PHASE-*-PLAN.md
 ```
 
 ### Step 7: Return Revision Summary
@@ -953,8 +953,8 @@ node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "fix($PHASE): revise plans b
 
 ### Files Updated
 
-- .planning/phases/16-xxx/16-01-PLAN.md
-- .planning/phases/16-xxx/16-02-PLAN.md
+- .claude/.gsdt-planning/phases/16-xxx/16-01-PLAN.md
+- .claude/.gsdt-planning/phases/16-xxx/16-02-PLAN.md
 
 {If any issues NOT addressed:}
 
@@ -1025,17 +1025,17 @@ Extract from init JSON: `planner_model`, `researcher_model`, `checker_model`, `c
 
 Also read STATE.md for position, decisions, blockers:
 ```bash
-cat .planning/STATE.md 2>/dev/null
+cat .claude/.gsdt-planning/STATE.md 2>/dev/null
 ```
 
-If STATE.md missing but .planning/ exists, offer to reconstruct or continue without.
+If STATE.md missing but .claude/.gsdt-planning/ exists, offer to reconstruct or continue without.
 </step>
 
 <step name="load_codebase_context">
 Check for codebase map:
 
 ```bash
-ls .planning/codebase/*.md 2>/dev/null
+ls .claude/.gsdt-planning/codebase/*.md 2>/dev/null
 ```
 
 If exists, load relevant documents by phase type:
@@ -1054,8 +1054,8 @@ If exists, load relevant documents by phase type:
 
 <step name="identify_phase">
 ```bash
-cat .planning/ROADMAP.md
-ls .planning/phases/
+cat .claude/.gsdt-planning/ROADMAP.md
+ls .claude/.gsdt-planning/phases/
 ```
 
 If multiple phases available, ask which to plan. If obvious (first incomplete), proceed.
@@ -1089,7 +1089,7 @@ Select top 2-4 phases. Skip phases with no relevance signal.
 
 **Step 3 — Read full SUMMARYs for selected phases:**
 ```bash
-cat .planning/phases/{selected-phase}/*-SUMMARY.md
+cat .claude/.gsdt-planning/phases/{selected-phase}/*-SUMMARY.md
 ```
 
 From full SUMMARYs extract:
@@ -1109,7 +1109,7 @@ For phases not selected, retain from digest:
 
 **From RETROSPECTIVE.md (if exists):**
 ```bash
-cat .planning/RETROSPECTIVE.md 2>/dev/null | tail -100
+cat .claude/.gsdt-planning/RETROSPECTIVE.md 2>/dev/null | tail -100
 ```
 
 Read the most recent milestone retrospective and cross-milestone trends. Extract:
@@ -1193,7 +1193,7 @@ Use template structure for each PLAN.md.
 
 **ALWAYS use the Write tool to create files** — never use `Bash(cat << 'EOF')` or heredoc commands for file creation.
 
-Write to `.planning/phases/XX-name/{phase}-{NN}-PLAN.md`
+Write to `.claude/.gsdt-planning/phases/XX-name/{phase}-{NN}-PLAN.md`
 
 Include all frontmatter fields.
 </step>
@@ -1229,7 +1229,7 @@ Returns JSON: `{ valid, errors, warnings, task_count, tasks }`
 <step name="update_roadmap">
 Update ROADMAP.md to finalize phase placeholders:
 
-1. Read `.planning/ROADMAP.md`
+1. Read `.claude/.gsdt-planning/ROADMAP.md`
 2. Find phase entry (`### Phase {N}:`)
 3. Update placeholders:
 
@@ -1252,7 +1252,7 @@ Plans:
 
 <step name="git_commit">
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs($PHASE): create phase plan" --files .planning/phases/$PHASE-*/$PHASE-*-PLAN.md .planning/ROADMAP.md
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs($PHASE): create phase plan" --files .claude/.gsdt-planning/phases/$PHASE-*/$PHASE-*-PLAN.md .claude/.gsdt-planning/ROADMAP.md
 ```
 </step>
 

@@ -51,7 +51,7 @@ Phases:
 What to commit:
 
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: initialize [project-name] ([N] phases)" --files .planning/
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: initialize [project-name] ([N] phases)" --files .claude/.gsdt-planning/
 ```
 
 </format>
@@ -127,13 +127,13 @@ Tasks completed: [N]/[N]
 - [Task 2 name]
 - [Task 3 name]
 
-SUMMARY: .planning/phases/XX-name/{phase}-{plan}-SUMMARY.md
+SUMMARY: .claude/.gsdt-planning/phases/XX-name/{phase}-{plan}-SUMMARY.md
 ```
 
 What to commit:
 
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs({phase}-{plan}): complete [plan-name] plan" --files .planning/phases/XX-name/{phase}-{plan}-PLAN.md .planning/phases/XX-name/{phase}-{plan}-SUMMARY.md .planning/STATE.md .planning/ROADMAP.md
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs({phase}-{plan}): complete [plan-name] plan" --files .claude/.gsdt-planning/phases/XX-name/{phase}-{plan}-PLAN.md .claude/.gsdt-planning/phases/XX-name/{phase}-{plan}-SUMMARY.md .claude/.gsdt-planning/STATE.md .claude/.gsdt-planning/ROADMAP.md
 ```
 
 **Note:** Code files NOT included - already committed per-task.
@@ -153,7 +153,7 @@ Current: [task name]
 What to commit:
 
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "wip: [phase-name] paused at task [X]/[Y]" --files .planning/
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "wip: [phase-name] paused at task [X]/[Y]" --files .claude/.gsdt-planning/
 ```
 
 </format>
@@ -259,7 +259,7 @@ For workspaces with separate git repos (e.g., `backend/`, `frontend/`, `shared/`
 
 ### Configuration
 
-In `.planning/config.json`, list sub-repo directories under `planning.sub_repos`:
+In `.claude/.gsdt-planning/config.json`, list sub-repo directories under `planning.sub_repos`:
 
 ```json
 {
@@ -277,7 +277,7 @@ Set `commit_docs: false` so planning docs stay local and are not committed to an
 1. **Auto-detection:** During `/gsdt:new-project`, directories with their own `.git` folder are detected and offered for selection as sub-repos. On subsequent runs, `loadConfig` auto-syncs the `sub_repos` list with the filesystem — adding newly created repos and removing deleted ones. This means `config.json` may be rewritten automatically when repos change on disk.
 2. **File grouping:** Code files are grouped by their sub-repo prefix (e.g., `backend/src/api/users.ts` belongs to the `backend/` repo).
 3. **Independent commits:** Each sub-repo receives its own atomic commit via `gsdt-tools.cjs commit-to-subrepo`. File paths are made relative to the sub-repo root before staging.
-4. **Planning stays local:** The `.planning/` directory is not committed; it acts as cross-repo coordination.
+4. **Planning stays local:** The `.claude/.gsdt-planning/` directory is not committed; it acts as cross-repo coordination.
 
 ### Commit Routing
 

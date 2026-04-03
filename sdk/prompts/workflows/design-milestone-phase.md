@@ -7,9 +7,9 @@ Headless SDK variant — runs autonomously without human confirmation.
 <context_handling>
 **DESIGN_MILESTONE phase requires CLASSIFICATION.md as primary input:**
 
-1. Read .planning/CLASSIFICATION.md — the classification analysis
-2. If existing project, read .planning/PROJECT.md — project context
-3. If existing project, read .planning/ROADMAP.md — existing roadmap structure
+1. Read .claude/.gsdt-planning/CLASSIFICATION.md — the classification analysis
+2. If existing project, read .claude/.gsdt-planning/PROJECT.md — project context
+3. If existing project, read .claude/.gsdt-planning/ROADMAP.md — existing roadmap structure
 
 The design phase builds on classification to create an actionable roadmap.
 </context_handling>
@@ -54,7 +54,7 @@ The milestone designer takes the classification output and creates a roadmap tha
 <process>
 
 <step name="load_classification">
-Read .planning/CLASSIFICATION.md to understand:
+Read .claude/.gsdt-planning/CLASSIFICATION.md to understand:
 - Project type (new_project, feature, refactor, bugfix)
 - Domain (web, api, cli, etc.)
 - Complexity (simple, standard, complex)
@@ -139,6 +139,6 @@ created: [ISO timestamp]
 - Milestone structure designed based on project type
 - Phases ordered with dependencies
 - Parallel opportunities identified
-- ROADMAP.md written to .planning/
+- ROADMAP.md written to .claude/.gsdt-planning/
 - Roadmap result returned to orchestrator
 </success_criteria>

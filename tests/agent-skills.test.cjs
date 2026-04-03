@@ -2,7 +2,7 @@
  * GSD Tools Tests - Agent Skills Injection
  *
  * CLI integration tests for the `agent-skills` command that reads
- * `agent_skills` from .planning/config.json and returns a formatted
+ * `agent_skills` from .claude/.gsdt-planning/config.json and returns a formatted
  * skills block for injection into Task() prompts.
  */
 
@@ -15,12 +15,12 @@ const { runGsdTools, createTempProject, cleanup } = require('./helpers.cjs');
 // ─── helpers ──────────────────────────────────────────────────────────────────
 
 function writeConfig(tmpDir, obj) {
-  const configPath = path.join(tmpDir, '.planning', 'config.json');
+  const configPath = path.join(tmpDir, '.claude/.gsdt-planning', 'config.json');
   fs.writeFileSync(configPath, JSON.stringify(obj, null, 2), 'utf-8');
 }
 
 function readConfig(tmpDir) {
-  const configPath = path.join(tmpDir, '.planning', 'config.json');
+  const configPath = path.join(tmpDir, '.claude/.gsdt-planning', 'config.json');
   return JSON.parse(fs.readFileSync(configPath, 'utf-8'));
 }
 

@@ -1,5 +1,5 @@
 ---
-name: gsd:research-phase
+name: gsdt:research-phase
 description: Research how to implement a phase (standalone - usually use /gsdt:plan-phase instead)
 argument-hint: "[phase]"
 allowed-tools:
@@ -61,7 +61,7 @@ PHASE_INFO=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" roadmap get-phase "${p
 ## 2. Check Existing Research
 
 ```bash
-ls .planning/phases/${PHASE}-*/RESEARCH.md 2>/dev/null
+ls .claude/.gsdt-planning/phases/${PHASE}-*/RESEARCH.md 2>/dev/null
 ```
 
 **If exists:** Offer: 1) Update research, 2) View existing, 3) Skip. Wait for response.
@@ -135,7 +135,7 @@ Before declaring complete, verify:
 </quality_gate>
 
 <output>
-Write to: .planning/phases/${PHASE}-{slug}/${PHASE}-RESEARCH.md
+Write to: .claude/.gsdt-planning/phases/${PHASE}-{slug}/${PHASE}-RESEARCH.md
 </output>
 ```
 
@@ -165,7 +165,7 @@ Continue research for Phase {phase_number}: {phase_name}
 
 <prior_state>
 <files_to_read>
-- .planning/phases/${PHASE}-{slug}/${PHASE}-RESEARCH.md (Existing research)
+- .claude/.gsdt-planning/phases/${PHASE}-{slug}/${PHASE}-RESEARCH.md (Existing research)
 </files_to_read>
 </prior_state>
 

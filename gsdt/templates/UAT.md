@@ -1,6 +1,6 @@
 # UAT Template
 
-Template for `.planning/phases/XX-name/{phase_num}-UAT.md` — persistent UAT session tracking.
+Template for `.claude/.gsdt-planning/phases/XX-name/{phase_num}-UAT.md` — persistent UAT session tracking.
 
 ---
 
@@ -137,7 +137,7 @@ blocked: [N]
       issue: "useEffect missing dependency"
   missing:
     - "Add commentCount to useEffect dependency array"
-  debug_session: ".planning/debug/comment-not-refreshing.md"
+  debug_session: ".claude/.gsdt-planning/debug/comment-not-refreshing.md"
 ```
 
 </diagnosis_lifecycle>
@@ -260,6 +260,6 @@ skipped: 0
       issue: "useEffect missing dependency"
   missing:
     - "Add commentCount to useEffect dependency array"
-  debug_session: ".planning/debug/comment-not-refreshing.md"
+  debug_session: ".claude/.gsdt-planning/debug/comment-not-refreshing.md"
 ```
 </good_example>

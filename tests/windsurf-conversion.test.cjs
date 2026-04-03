@@ -46,14 +46,14 @@ description: Plan a phase
 Next:
 /gsdt:execute-phase 17
 /gsdt-help
-gsd:progress
+gsdt:progress
 `;
 
     const result = convertClaudeCommandToWindsurfSkill(input, 'gsd-plan-phase');
     // Slash commands: /gsdt:execute-phase -> /gsd-execute-phase
     assert.ok(result.includes('/gsd-execute-phase 17'), 'slash command gsd: -> gsd-');
     assert.ok(result.includes('/gsdt-help'), '/gsdt-help preserved');
-    assert.ok(result.includes('gsd-progress'), 'bare gsd: -> gsd-');
+    assert.ok(result.includes('gsd-progress'), 'bare gsdt: -> gsd-');
   });
 
   test('includes windsurf_skill_adapter block', () => {

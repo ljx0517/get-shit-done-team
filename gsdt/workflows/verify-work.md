@@ -43,7 +43,7 @@ Parse JSON for: `planner_model`, `checker_model`, `commit_docs`, `phase_found`, 
 **First: Check for active UAT sessions**
 
 ```bash
-(find .planning/phases -name "*-UAT.md" -type f 2>/dev/null || true) | head -5
+(find .claude/.gsdt-planning/phases -name "*-UAT.md" -type f 2>/dev/null || true) | head -5
 ```
 
 **If active sessions exist AND no $ARGUMENTS provided:**
@@ -186,7 +186,7 @@ skipped: 0
 [none yet]
 ```
 
-Write to `.planning/phases/XX-name/{phase_num}-UAT.md`
+Write to `.claude/.gsdt-planning/phases/XX-name/{phase_num}-UAT.md`
 
 Proceed to `present_test`.
 </step>
@@ -353,7 +353,7 @@ Clear Current Test section:
 
 Commit the UAT file:
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "test({phase_num}): complete UAT - {passed} passed, {issues} issues" --files ".planning/phases/XX-name/{phase_num}-UAT.md"
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "test({phase_num}): complete UAT - {passed} passed, {issues} issues" --files ".claude/.gsdt-planning/phases/XX-name/{phase_num}-UAT.md"
 ```
 
 Present summary:
@@ -373,6 +373,28 @@ Present summary:
 ```
 
 **If issues > 0:** Proceed to `diagnose_issues`
+
+Before handing off to diagnosis, emit a `compound candidate event` for each issue:
+
+```bash
+# Candidate only: record symptoms now, let diagnose-issues upgrade with root cause later.
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" compound dispatch \
+  --event-file "$EVENT_FILE" \
+  >/tmp/gsdt-verify-compound.log 2>&1 &
+```
+
+Candidate event fields should include:
+
+- `source: verify-work`
+- `status: candidate`
+- `problem: issue truth`
+- `symptoms: [observed failures]`
+- `severity: issue severity`
+- `files: affected files if known`
+- `phase: current phase`
+- `tags: [uat, verify-work, compound-candidate]`
+
+These candidate events only persist to `.claude/.gsdt-planning/compound-events.json`; they do not write solution docs yet.
 
 **If issues == 0:**
 ```
@@ -429,8 +451,8 @@ Task(
 
 <files_to_read>
 - {phase_dir}/{phase_num}-UAT.md (UAT with diagnoses)
-- .planning/STATE.md (Project State)
-- .planning/ROADMAP.md (Roadmap)
+- .claude/.gsdt-planning/STATE.md (Project State)
+- .claude/.gsdt-planning/ROADMAP.md (Roadmap)
 </files_to_read>
 
 ${AGENT_SKILLS_PLANNER}

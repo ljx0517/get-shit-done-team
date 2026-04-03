@@ -245,7 +245,7 @@ Phase ${PHASE_NUM}: Frontend phase detected — generating UI design contract...
 ```
 
 ```
-Skill(skill="gsd:ui-phase", args="${PHASE_NUM}")
+Skill(skill="gsdt:ui-phase", args="${PHASE_NUM}")
 ```
 
 Verify UI-SPEC was created:
@@ -261,7 +261,7 @@ UI_SPEC_FILE=$(ls "${PHASE_DIR}"/*-UI-SPEC.md 2>/dev/null | head -1)
 **3b. Plan**
 
 ```
-Skill(skill="gsd:plan-phase", args="${PHASE_NUM}")
+Skill(skill="gsdt:plan-phase", args="${PHASE_NUM}")
 ```
 
 Verify plan produced output — re-run `init phase-op` and check `has_plans`. If false → go to handle_blocker: "Plan phase ${PHASE_NUM} did not produce any plans."
@@ -269,7 +269,7 @@ Verify plan produced output — re-run `init phase-op` and check `has_plans`. If
 **3c. Execute**
 
 ```
-Skill(skill="gsd:execute-phase", args="${PHASE_NUM} --no-transition")
+Skill(skill="gsdt:execute-phase", args="${PHASE_NUM} --no-transition")
 ```
 
 **3d. Post-Execution Routing**
@@ -334,14 +334,14 @@ Ask user via AskUserQuestion:
 On **"Run gap closure"**: Execute gap closure cycle (limit: 1 attempt):
 
 ```
-Skill(skill="gsd:plan-phase", args="${PHASE_NUM} --gaps")
+Skill(skill="gsdt:plan-phase", args="${PHASE_NUM} --gaps")
 ```
 
 Verify gap plans were created — re-run `init phase-op ${PHASE_NUM}` and check `has_plans`. If no new gap plans → go to handle_blocker: "Gap closure planning for phase ${PHASE_NUM} did not produce plans."
 
 Re-execute:
 ```
-Skill(skill="gsd:execute-phase", args="${PHASE_NUM} --no-transition")
+Skill(skill="gsdt:execute-phase", args="${PHASE_NUM} --no-transition")
 ```
 
 Re-read verification status:
@@ -389,7 +389,7 @@ Phase ${PHASE_NUM}: Frontend phase with UI-SPEC — running UI review audit...
 ```
 
 ```
-Skill(skill="gsd:ui-review", args="${PHASE_NUM}")
+Skill(skill="gsdt:ui-review", args="${PHASE_NUM}")
 ```
 
 Display the review result summary (score from UI-REVIEW.md if produced). Continue to iterate step regardless of score — UI review is advisory, not blocking.
@@ -423,9 +423,9 @@ Read project-level and prior phase context to avoid re-asking decided questions.
 **Read project files:**
 
 ```bash
-cat .planning/PROJECT.md 2>/dev/null || true
-cat .planning/REQUIREMENTS.md 2>/dev/null || true
-cat .planning/STATE.md 2>/dev/null || true
+cat .claude/.gsdt-planning/PROJECT.md 2>/dev/null || true
+cat .claude/.gsdt-planning/REQUIREMENTS.md 2>/dev/null || true
+cat .claude/.gsdt-planning/STATE.md 2>/dev/null || true
 ```
 
 Extract from these:
@@ -436,7 +436,7 @@ Extract from these:
 **Read all prior CONTEXT.md files:**
 
 ```bash
-(find .planning/phases -name "*-CONTEXT.md" 2>/dev/null || true) | sort
+(find .claude/.gsdt-planning/phases -name "*-CONTEXT.md" 2>/dev/null || true) | sort
 ```
 
 For each CONTEXT.md where phase number < current phase:
@@ -470,7 +470,7 @@ Lightweight codebase scan to inform grey area identification and proposals. Keep
 **Check for existing codebase maps:**
 
 ```bash
-ls .planning/codebase/*.md 2>/dev/null || true
+ls .claude/.gsdt-planning/codebase/*.md 2>/dev/null || true
 ```
 
 **If codebase maps exist:** Read the most relevant ones (CONVENTIONS.md, STRUCTURE.md, STACK.md based on phase type). Extract reusable components, established patterns, integration points. Skip to building context below.
@@ -700,7 +700,7 @@ Re-filter incomplete phases using the same logic as discover_phases:
 Read STATE.md fresh:
 
 ```bash
-cat .planning/STATE.md
+cat .claude/.gsdt-planning/STATE.md
 ```
 
 Check for blockers in the Blockers/Concerns section. If blockers are found, go to handle_blocker with the blocker description.
@@ -731,13 +731,13 @@ Display lifecycle transition banner:
 **5a. Audit**
 
 ```
-Skill(skill="gsd:audit-milestone")
+Skill(skill="gsdt:audit-milestone")
 ```
 
 After audit completes, detect the result:
 
 ```bash
-AUDIT_FILE=".planning/v${milestone_version}-MILESTONE-AUDIT.md"
+AUDIT_FILE=".claude/.gsdt-planning/v${milestone_version}-MILESTONE-AUDIT.md"
 AUDIT_STATUS=$(grep "^status:" "${AUDIT_FILE}" 2>/dev/null | head -1 | cut -d: -f2 | tr -d ' ')
 ```
 
@@ -787,13 +787,13 @@ On **"Stop"**: Go to handle_blocker with "User stopped — tech debt to address.
 **5b. Complete Milestone**
 
 ```
-Skill(skill="gsd:complete-milestone", args="${milestone_version}")
+Skill(skill="gsdt:complete-milestone", args="${milestone_version}")
 ```
 
 After complete-milestone returns, verify it produced output:
 
 ```bash
-ls .planning/milestones/v${milestone_version}-ROADMAP.md 2>/dev/null || true
+ls .claude/.gsdt-planning/milestones/v${milestone_version}-ROADMAP.md 2>/dev/null || true
 ```
 
 If the archive file does not exist, go to handle_blocker: "Complete milestone did not produce expected archive files."
@@ -801,7 +801,7 @@ If the archive file does not exist, go to handle_blocker: "Complete milestone di
 **5c. Cleanup**
 
 ```
-Skill(skill="gsd:cleanup")
+Skill(skill="gsdt:cleanup")
 ```
 
 Cleanup shows its own dry-run and asks user for approval internally — this is an acceptable pause per CTRL-01 since it's an explicit decision about file deletion.
@@ -876,7 +876,7 @@ When any phase operation fails or a blocker is detected, present 3 options via A
 - [ ] Final completion or stop summary displayed
 - [ ] After all phases complete, lifecycle step is invoked (not manual suggestion)
 - [ ] Lifecycle transition banner displayed before audit
-- [ ] Audit invoked via Skill(skill="gsd:audit-milestone")
+- [ ] Audit invoked via Skill(skill="gsdt:audit-milestone")
 - [ ] Audit result routing: passed → auto-continue, gaps_found → user decides, tech_debt → user decides
 - [ ] Audit technical failure (no file/no status) routes to handle_blocker
 - [ ] Complete-milestone invoked via Skill() with ${milestone_version} arg

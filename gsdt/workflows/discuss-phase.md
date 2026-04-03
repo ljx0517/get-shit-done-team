@@ -139,6 +139,16 @@ AGENT_SKILLS_ADVISOR=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" agent-skills
 
 Parse JSON for: `commit_docs`, `phase_found`, `phase_dir`, `phase_number`, `phase_name`, `phase_slug`, `padded_phase`, `has_research`, `has_context`, `has_plans`, `has_verification`, `plan_count`, `roadmap_exists`, `planning_exists`.
 
+**If `roadmap_exists` is false:**
+```
+ROADMAP.md not found.
+
+Cold start must run new-project before discuss-phase.
+Use /gsdt:capture to continue auto collection and auto-trigger /gsdt:new-project,
+or run /gsdt:new-project --auto directly.
+```
+Exit workflow.
+
 **If `phase_found` is false:**
 ```
 Phase [X] not found in roadmap.
@@ -207,9 +217,9 @@ Read project-level and prior phase context to avoid re-asking decided questions 
 **Step 1: Read project-level files**
 ```bash
 # Core project files
-cat .planning/PROJECT.md 2>/dev/null || true
-cat .planning/REQUIREMENTS.md 2>/dev/null || true
-cat .planning/STATE.md 2>/dev/null || true
+cat .claude/.gsdt-planning/PROJECT.md 2>/dev/null || true
+cat .claude/.gsdt-planning/REQUIREMENTS.md 2>/dev/null || true
+cat .claude/.gsdt-planning/STATE.md 2>/dev/null || true
 ```
 
 Extract from these:
@@ -220,7 +230,7 @@ Extract from these:
 **Step 2: Read all prior CONTEXT.md files**
 ```bash
 # Find all CONTEXT.md files from phases before current
-(find .planning/phases -name "*-CONTEXT.md" 2>/dev/null || true) | sort
+(find .claude/.gsdt-planning/phases -name "*-CONTEXT.md" 2>/dev/null || true) | sort
 ```
 
 For each CONTEXT.md where phase number < current phase:
@@ -301,7 +311,7 @@ Lightweight scan of existing code to inform gray area identification and discuss
 
 **Step 1: Check for existing codebase maps**
 ```bash
-ls .planning/codebase/*.md 2>/dev/null || true
+ls .claude/.gsdt-planning/codebase/*.md 2>/dev/null || true
 ```
 
 **If codebase maps exist:** Read the most relevant ones (CONVENTIONS.md, STRUCTURE.md, STACK.md based on phase type). Extract:
@@ -572,7 +582,7 @@ Track deferred ideas internally.
 
 For each selected area, conduct a focused discussion loop.
 
-**Research-before-questions mode:** Check if `workflow.research_before_questions` is enabled in config (from init context or `.planning/config.json`). When enabled, before presenting questions for each area:
+**Research-before-questions mode:** Check if `workflow.research_before_questions` is enabled in config (from init context or `.claude/.gsdt-planning/config.json`). When enabled, before presenting questions for each area:
 1. Do a brief web search for best practices related to the area topic
 2. Summarize the top findings in 2-3 bullet points
 3. Present the research alongside the question so the user can make a more informed decision
@@ -741,7 +751,7 @@ Use values from init: `phase_dir`, `phase_slug`, `padded_phase`.
 
 If `phase_dir` is null (phase exists in roadmap but no directory):
 ```bash
-mkdir -p ".planning/phases/${padded_phase}-${phase_slug}"
+mkdir -p ".claude/.gsdt-planning/phases/${padded_phase}-${phase_slug}"
 ```
 
 **File location:** `${phase_dir}/${padded_phase}-CONTEXT.md`
@@ -853,7 +863,7 @@ Write file.
 Present summary and next steps:
 
 ```
-Created: .planning/phases/${PADDED_PHASE}-${SLUG}/${PADDED_PHASE}-CONTEXT.md
+Created: .claude/.gsdt-planning/phases/${PADDED_PHASE}-${SLUG}/${PADDED_PHASE}-CONTEXT.md
 
 ## Decisions Captured
 
@@ -954,7 +964,7 @@ node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" state record-session \
 Commit STATE.md:
 
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs(state): record phase ${PHASE} context session" --files .planning/STATE.md
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs(state): record phase ${PHASE} context session" --files .claude/.gsdt-planning/STATE.md
 ```
 </step>
 
@@ -992,7 +1002,7 @@ Context captured. Launching plan-phase...
 
 Launch plan-phase using the Skill tool to avoid nested Task sessions (which cause runtime freezes due to deep agent nesting — see #686):
 ```
-Skill(skill="gsd:plan-phase", args="${PHASE} --auto ${GSD_WS}")
+Skill(skill="gsdt:plan-phase", args="${PHASE} --auto ${GSD_WS}")
 ```
 
 This keeps the auto-advance chain flat — discuss, plan, and execute all run at the same nesting level rather than spawning increasingly deep Task agents.

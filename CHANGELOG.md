@@ -6,6 +6,58 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+- Added `/gsdt:intake` command and `gsdt/workflows/intake.md` for weakly-interrupting, semantic-first intake of freeform ideas, constraints, preferences, technical enablers, and open questions.
+- Added dedicated `gsdt:intake-*` command skills and workflow prompts for semantic normalization, unit resolution, readiness assessment, and brief drafting: `intake-normalize`, `intake-resolve-units`, `intake-assess-readiness`, and `intake-write-brief`.
+- Added deterministic `intake` CLI support in `intake.cjs` and `gsdt-tools.cjs` for `state`, `save-raw`, `merge`, and `decide`, including cold-start readiness, phase targeting, and existing-plan guards.
+- Added deterministic `intake render` / `intake materialize` subcommands to write `.claude/.gsdt-intake/cards.md`, `.claude/.gsdt-intake/brief.md`, and phase-scoped `*-INTAKE.md` artifacts from the ledger and readiness state.
+- Added intake regression coverage with command/workflow contract tests and CLI behavior tests for cold start, initialized project routing, and duplicate semantic unit merging.
+- Added intake schema tests, rendered-artifact tests, fixture-driven prompt-behavior tests, and reusable fixture harness utilities under `tests/helpers/` and `tests/fixtures/intake/`.
+- Added live-model intake verification harness (`run-live-model`, `intake-live-harness`, `intake-assertions`) plus skipped-by-default integration/stability tests gated by `GSDT_INTAKE_LIVE_MODEL_COMMAND`.
+- Added adversarial intake fixtures covering prompt-injection-style input, technical-note-only input, and conflicting constraints to ensure conservative semantic routing under dirty inputs.
+- Added mixed-layer intake regression coverage for `--resolution-file`, `--assessment-file`, and `--artifacts-file` so AI semantic outputs can be applied behind deterministic CLI boundaries.
+- Added GSDT Compound automation contract files: `gsdt/references/compound-schema.yaml`, `compound-yaml-schema.md`, and `compound-resolution-template.md` for bug-track knowledge capture.
+- Added structured Compound event normalization, dedupe, event store, and background `compound dispatch` / `compound emit` pipeline in `compound.cjs`.
+- Added Compound contract tests covering schema files, dispatch behavior, candidate-to-diagnosed upgrades, dedupe, and workflow automation guardrails.
+- Added Assess contract files: `gsdt/references/assess-findings-schema.json`, `assess-output-template.md`, and `gsdt/workflows/assess.md` for phase-scoped quality closure.
+- Added `review assess` support in `assess.cjs` / `review/index.cjs` to merge reviewer outputs, route safe-auto vs blocking findings, write `*-ASSESS.{md,json}` artifacts, and bridge resolved learnings into Compound.
+- Added Assess tests covering merge behavior, routing, CLI artifact generation, compound emission, and execute-phase workflow contracts.
+- Added Assess prompt assets mirroring the plugin's control bones in a GSDT-native way: `assess-subagent-template.md`, `assess-persona-catalog.md`, `assess-diff-scope.md`, `assess-review-output-template.md`, and `assess-reviewers.md`.
+- Added Assess prompt contract tests covering reviewer prompt assets, automation rules, and richer schema metadata.
+- Added prompt-driven Assess reviewer agents under `agents/` for correctness, testing, maintainability, project standards, learnings, security, performance, reliability, CLI readiness, UI regression, agent surface, and bounded safe-auto fixing.
+
+### Changed
+- Updated `README.md`, `docs/COMMANDS.md`, and `docs/FEATURES.md` to document `/gsdt:intake` as a quiet semantic intake entrypoint alongside `/gsdt:do` and `/gsdt:note`.
+- Updated `intake materialize` output to include the exact downstream slash command that would be dispatched for cold-start and phase-ready handoffs, making brief consumption boundaries directly testable.
+- Refactored `/gsdt:intake` into a mixed-layered flow: AI now owns semantic resolution/readiness/artifact drafting in `gsdt/workflows/intake.md`, while `intake.cjs` applies deterministic guards, writes artifacts, and preserves safe dispatch boundaries.
+- Updated `gsdt/workflows/intake.md` to explicitly invoke the new `gsdt:intake-*` subskills via `Skill(...)`, while preserving deterministic `intake merge`, `intake decide`, and `intake materialize` boundaries.
+- Extended `intake merge`, `intake decide`, and `intake materialize` to accept `--resolution-file`, `--assessment-file`, and `--artifacts-file`, allowing semantic AI outputs to plug into the existing ledger/readiness pipeline without removing deterministic fallbacks.
+- Default planning artifacts now resolve to `.claude/.gsdt-planning` across the CLI, SDK, runtime workflow/prompt assets, and regression tests, replacing `.gsdt-planning` as the default project planning directory.
+- Updated user-facing documentation and repo guidance to reference `.claude/.gsdt-planning` consistently, including READMEs, localized docs, contributing guidance, bug report prompts, security scan rules, and related regression checks.
+- Cleaned remaining stale test fixtures that still referenced legacy repo paths like `get-shit-done/...`, `commands/gsd`, and old `gsd:*` workflow assertions, aligning regression coverage with the current `gsdt/` layout and `gsdt:*` source prompts.
+- Repaired runtime install bookkeeping drift so non-Claude runtimes continue installing `gsd-*` skills/commands while correctly copying, manifesting, and uninstalling `gsdt-*` agent artifacts and `gsdt` engine files.
+- Added the missing `gsdt-review-fixer` write-agent safeguards and filled missing `<available_agent_types>` listings for Assess / execute-phase workflow spawning contracts.
+- Completed the cross-runtime prefix cleanup for Codex, Cursor, Windsurf, and Antigravity regression coverage by aligning source prompt conversions to `gsdt:*`, fixing Codex managed-agent stripping for both legacy/current prefixes, and normalizing the Codex update hook path to `gsdt-check-update.js`.
+- Completed the `compound hook` pipeline: added `post-commit` event support, heuristic candidate/diagnosed routing from commit metadata, canonical template-based hook installation, and regression tests for hook dispatch/install behavior.
+- Removed the unused duplicate `gsdt/commands/gsdt/workstreams.md`; `commands/gsdt/workstreams.md` remains the canonical slash-command source used by installation manifests.
+- Enforced cold-start capture gate: when `ROADMAP.md` is missing, workflows no longer allow direct `discuss-phase`; they must auto-trigger `new-project` first, then auto-enter `discuss-phase` only after roadmap creation.
+- Updated capture workflow automation to explicitly trigger `/gsdt:new-project --auto` from merged idea fragments and verify roadmap existence before auto-advancing.
+- Added deterministic `capture decide` routing with dual thresholds (semantic + structural fallback) to prevent cold-start deadlocks and enable auto-advance decisions.
+- Added `/gsdt:auto` command/workflow as one-click entrypoint for automatic capture -> decision -> routing with one-line status updates and retry policy guidance.
+- Added capture decision tests covering cold-start collect-more, auto new-project trigger, and discuss trigger only after roadmap exists.
+- Updated `/gsdt:do` routing preference to prioritize `/gsdt:auto` for startup/open-ended intents, reducing manual command selection.
+- Updated `/gsdt:help` reference to present `/gsdt:auto` as the default quick-start and core workflow entrypoint.
+- Updated `/gsdt:new-project --auto` workflow to reuse existing `.gsdt-planning/config.json` (such as from `/gsdt:capture`) and skip repeated config questions in that path.
+- Updated `diagnose-issues`, `debug`, `verify-work`, `execute-phase`, and `compound-learning` so Compound runs as a non-blocking sidecar through the unified dispatch pipeline without changing existing `/gsdt:*` entrypoints.
+- Updated `execute-phase` so passed verification now enters an internal Assess step before roadmap completion, and assess blockers route back into the existing gap-closure loop.
+- Extended the Compound event contract to recognize `assess` as a first-class event source for resolved learnings.
+- Refined Assess into a three-layer prompt architecture with automatic reviewer selection, no interactive question steps, and richer findings metadata (`why_it_matters`, `scope_tier`, `fix_risk`, `verification_hint`) preserved through `assess.cjs`.
+- Expanded Assess defaults and markdown artifacts to emphasize maintainability/project-standards review, coverage reporting, and reusable learnings links while keeping the flow fully automatic.
+- Updated Assess references and workflow orchestration so reviewer selection now maps to concrete `gsdt-*-reviewer` agents, standards paths are passed lazily, and review/fix tasks are described as real `Task()`-based prompt-driven steps instead of static reference-only text.
+
+### Author
+- Jaxon
+
 ## [1.30.0] - 2026-03-26
 
 ### Added
@@ -29,7 +81,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 - Frontmatter `must_haves` parser handles any YAML indentation width
-- `findProjectRoot` returns startDir when it already contains `.planning/`
+- `findProjectRoot` returns startDir when it already contains `.gsdt-planning/`
 - Agent workflows include `<available_agent_types>` for named agent spawning
 - Begin-phase preserves Status/LastActivity/Progress in Current Position
 - Missing GSD agents detected with warning when `subagent_type` falls back to general-purpose
@@ -69,7 +121,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Fixed
 - Windows 8.3 short path failures in worktree tests
 - Worktree isolation enforced for code-writing agents
-- Linked worktrees respect `.planning/` before resolving to main repo
+- Linked worktrees respect `.gsdt-planning/` before resolving to main repo
 - Path traversal prevention via workstream name sanitization
 - Strategy branch created before first commit (not at execute-phase)
 - `ProviderModelNotFoundError` on non-Claude runtimes
@@ -92,12 +144,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **`/gsdt:fast` command** — Trivial inline tasks that skip planning entirely
 - **`/gsdt:review` command** — Cross-AI peer review of current phase or branch
 - **`/gsdt:plant-seed` command** — Backlog parking lot for ideas and persistent context threads
-- **`/gsdt:pr-branch` command** — Clean PR branches filtering `.planning/` commits
+- **`/gsdt:pr-branch` command** — Clean PR branches filtering `.gsdt-planning/` commits
 - **`/gsdt:audit-uat` command** — Verification debt tracking across phases
 - **`--analyze` flag for discuss-phase** — Trade-off analysis during discussion
 - **`research_before_questions` config option** — Run research before discussion questions instead of after
 - **Ticket-based phase identifiers** — Support for team workflows using ticket IDs
-- **Worktree-aware `.planning/` resolution** — File locking for safe parallel access
+- **Worktree-aware `.gsdt-planning/` resolution** — File locking for safe parallel access
 - **Discussion audit trail** — Auto-generated `DISCUSSION-LOG.md` during discuss-phase
 - **Context window size awareness** — Optimized behavior for 1M+ context models
 - **Exa and Firecrawl MCP support** — Additional research tools for research agents
@@ -105,7 +157,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **Quick-task branch support** — Isolated branches for quick-mode tasks
 - **Decision IDs** — Discuss-to-plan traceability via decision identifiers
 - **Stub detection** — Verifier and executor detect incomplete implementations
-- **Security hardening** — Centralized `security.cjs` module with path traversal prevention, prompt injection detection/sanitization, safe JSON parsing, field name validation, and shell argument validation. PreToolUse `gsdt-prompt-guard` hook scans writes to `.planning/` for injection patterns
+- **Security hardening** — Centralized `security.cjs` module with path traversal prevention, prompt injection detection/sanitization, safe JSON parsing, field name validation, and shell argument validation. PreToolUse `gsdt-prompt-guard` hook scans writes to `.gsdt-planning/` for injection patterns
 
 ### Changed
 - CI matrix updated to Node 20, 22, 24 — dropped EOL Node 18
@@ -143,7 +195,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **`/gsdt:next` command** — Automatic workflow advancement to the next logical step (#927)
 - **Cross-phase regression gate** — Execute-phase runs prior phases' test suites after execution, catching regressions before they compound (#945)
 - **Requirements coverage gate** — Plan-phase verifies all phase requirements are covered by at least one plan before proceeding (#984)
-- **Structured session handoff artifact** — `/gsdt:pause-work` writes `.planning/HANDOFF.json` for machine-readable cross-session continuity (#940)
+- **Structured session handoff artifact** — `/gsdt:pause-work` writes `.gsdt-planning/HANDOFF.json` for machine-readable cross-session continuity (#940)
 - **WAITING.json signal file** — Machine-readable signal for decision points requiring user input (#1034)
 - **Interactive executor mode** — Pair-programming style execution with step-by-step user involvement (#963)
 - **MCP tool awareness** — GSD subagents can discover and use MCP server tools (#973)
@@ -212,7 +264,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Added
 - **`/gsdt:quick --research` flag** — Spawns focused research agent before planning, composable with `--discuss` and `--full` (#317)
 - **`inherit` model profile** for OpenCode — agents inherit the user's selected runtime model via `/model`
-- **Persistent debug knowledge base** — resolved debug sessions append to `.planning/debug/knowledge-base.md`, eliminating cold-start investigation on recurring issues
+- **Persistent debug knowledge base** — resolved debug sessions append to `.gsdt-planning/debug/knowledge-base.md`, eliminating cold-start investigation on recurring issues
 - **Programmatic `/gsdt:set-profile`** — runs as a script instead of LLM-driven workflow, executes in seconds instead of 30-40s
 
 ### Fixed
@@ -246,7 +298,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `--auto` flag correctly skips interactive discussion questions (closes #1025)
 - Decimal phase numbers correctly padded in init.cjs (closes #915)
 - Empty-answer validation guards added to discuss-phase (closes #912)
-- Tilde paths in templates prevent PII leak in `.planning/` files (closes #987)
+- Tilde paths in templates prevent PII leak in `.gsdt-planning/` files (closes #987)
 - Invalid `commit-docs` command replaced with `commit` in workflows (closes #968)
 - Uninstall mode indicator shown in banner output (closes #1024)
 - WSL + Windows Node.js mismatch detected with user warning (closes #1021)
@@ -440,7 +492,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.20.0] - 2026-02-15
 
 ### Added
-- `/gsdt:health` command — validates `.planning/` directory integrity with `--repair` flag for auto-fixing config.json and STATE.md
+- `/gsdt:health` command — validates `.gsdt-planning/` directory integrity with `--repair` flag for auto-fixing config.json and STATE.md
 - `--full` flag for `/gsdt:quick` — enables plan-checking (max 2 iterations) and post-execution verification on quick tasks
 - `--auto` flag wired from `/gsdt:new-project` through the full phase chain (discuss → plan → execute)
 - Auto-advance chains phase execution across full milestones when `workflow.auto_advance` is enabled
@@ -554,7 +606,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 - Execute-phase now correctly spawns `gsdt-executor` subagents instead of generic task agents
-- `commit_docs=false` setting now respected in all `.planning/` commit paths (execute-plan, debugger, reference docs all route through gsdt-tools CLI)
+- `commit_docs=false` setting now respected in all `.gsdt-planning/` commit paths (execute-plan, debugger, reference docs all route through gsdt-tools CLI)
 - Execute-phase orchestrator no longer bloats context by embedding file content — passes paths instead, letting subagents read in their fresh context
 - Windows: Normalized backslash paths in gsdt-tools invocations (contributed by @rmindel)
 
@@ -754,7 +806,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.8.0] - 2026-01-19
 
 ### Added
-- Uncommitted planning mode: Keep `.planning/` local-only (not committed to git) via `planning.commit_docs: false` in config.json. Useful for OSS contributions, client work, or privacy preferences.
+- Uncommitted planning mode: Keep `.gsdt-planning/` local-only (not committed to git) via `planning.commit_docs: false` in config.json. Useful for OSS contributions, client work, or privacy preferences.
 - `/gsdt:new-project` now asks about git tracking during initial setup, letting you opt out of committing planning docs from the start
 
 ## [1.7.1] - 2026-01-19
@@ -765,7 +817,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.7.0] - 2026-01-19
 
 ### Added
-- **Quick Mode** (`/gsdt:quick`) — Execute small, ad-hoc tasks with GSD guarantees but skip optional agents (researcher, checker, verifier). Quick tasks live in `.planning/quick/` with their own tracking in STATE.md.
+- **Quick Mode** (`/gsdt:quick`) — Execute small, ad-hoc tasks with GSD guarantees but skip optional agents (researcher, checker, verifier). Quick tasks live in `.gsdt-planning/quick/` with their own tracking in STATE.md.
 
 ### Changed
 - Improved progress bar calculation to clamp values within 0-100 range
@@ -1513,7 +1565,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.3.3] - 2025-12-17
 
 ### Fixed
-- Check PROJECT.md not .planning/ directory for existing project detection
+- Check PROJECT.md not .gsdt-planning/ directory for existing project detection
 
 ## [1.3.2] - 2025-12-17
 

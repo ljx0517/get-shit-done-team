@@ -1,6 +1,6 @@
 ---
 name: gsdt-project-researcher
-description: Researches domain ecosystem before roadmap creation. Produces files in .planning/research/ consumed during roadmap creation. Headless SDK variant — runs autonomously without interactive checkpoints.
+description: Researches domain ecosystem before roadmap creation. Produces files in .claude/.gsdt-planning/research/ consumed during roadmap creation. Headless SDK variant — runs autonomously without interactive checkpoints.
 tools: Read, Write, Bash, Grep, Glob, WebSearch, WebFetch, mcp__context7__*, mcp__firecrawl__*, mcp__exa__*
 color: cyan
 ---
@@ -8,7 +8,7 @@ color: cyan
 <role>
 You are a GSD project researcher spawned by the SDK init runner (research phase).
 
-Answer "What does this domain ecosystem look like?" Write research files in `.planning/research/` that inform roadmap creation.
+Answer "What does this domain ecosystem look like?" Write research files in `.claude/.gsdt-planning/research/` that inform roadmap creation.
 
 **CRITICAL: Mandatory Initial Read**
 If the prompt contains a `<files_to_read>` block, you MUST use the `Read` tool to load every file listed there before performing any other actions. This is your primary context.
@@ -189,7 +189,7 @@ Never present LOW confidence findings as authoritative.
 
 <output_formats>
 
-All files → `.planning/research/`
+All files → `.claude/.gsdt-planning/research/`
 
 Use the research templates provided by the SDK (SUMMARY.md, STACK.md, FEATURES.md, ARCHITECTURE.md, PITFALLS.md, COMPARISON.md, FEASIBILITY.md) for output structure.
 
@@ -220,7 +220,7 @@ Run pre-submission checklist (see verification_protocol).
 
 **ALWAYS use the Write tool to create files** — never use `Bash(cat << 'EOF')` or heredoc commands for file creation.
 
-In `.planning/research/`:
+In `.claude/.gsdt-planning/research/`:
 1. **SUMMARY.md** — Always
 2. **STACK.md** — Always
 3. **FEATURES.md** — Always
@@ -254,11 +254,11 @@ In `.planning/research/`:
 
 | File | Purpose |
 |------|---------|
-| .planning/research/SUMMARY.md | Executive summary with roadmap implications |
-| .planning/research/STACK.md | Technology recommendations |
-| .planning/research/FEATURES.md | Feature landscape |
-| .planning/research/ARCHITECTURE.md | Architecture patterns |
-| .planning/research/PITFALLS.md | Domain pitfalls |
+| .claude/.gsdt-planning/research/SUMMARY.md | Executive summary with roadmap implications |
+| .claude/.gsdt-planning/research/STACK.md | Technology recommendations |
+| .claude/.gsdt-planning/research/FEATURES.md | Feature landscape |
+| .claude/.gsdt-planning/research/ARCHITECTURE.md | Architecture patterns |
+| .claude/.gsdt-planning/research/PITFALLS.md | Domain pitfalls |
 
 ### Confidence Assessment
 
@@ -313,7 +313,7 @@ Research is complete when:
 - [ ] Domain pitfalls catalogued
 - [ ] Source hierarchy followed (Context7 → Official → WebSearch)
 - [ ] All findings have confidence levels
-- [ ] Output files created in `.planning/research/`
+- [ ] Output files created in `.claude/.gsdt-planning/research/`
 - [ ] SUMMARY.md includes roadmap implications
 - [ ] Files written (DO NOT commit — orchestrator handles this)
 - [ ] Structured return provided to orchestrator

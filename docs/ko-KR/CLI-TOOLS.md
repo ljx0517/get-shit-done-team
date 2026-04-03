@@ -26,7 +26,7 @@ node gsdt-tools.cjs <command> [args] [--raw] [--cwd <path>]
 
 ## State 명령어
 
-`.planning/STATE.md`를 관리합니다 — 프로젝트의 살아있는 메모리입니다.
+`.claude/.gsdt-planning/STATE.md`를 관리합니다 — 프로젝트의 살아있는 메모리입니다.
 
 ```bash
 # 전체 프로젝트 config + state를 JSON으로 로드
@@ -129,7 +129,7 @@ node gsdt-tools.cjs roadmap update-plan-progress <N>
 
 ## Config 명령어
 
-`.planning/config.json`을 읽고 씁니다.
+`.claude/.gsdt-planning/config.json`을 읽고 씁니다.
 
 ```bash
 # config.json을 기본값으로 초기화
@@ -196,7 +196,7 @@ node gsdt-tools.cjs verify key-links <plan-file>
 # 단계 번호 매기기, 디스크/로드맵 동기화 확인
 node gsdt-tools.cjs validate consistency
 
-# .planning/ 무결성 확인, 선택적으로 복구
+# .claude/.gsdt-planning/ 무결성 확인, 선택적으로 복구
 node gsdt-tools.cjs validate health [--repair]
 ```
 

@@ -1,5 +1,5 @@
 ---
-name: gsd:plant-seed
+name: gsdt:plant-seed
 description: Capture a forward-looking idea with trigger conditions — surfaces automatically at the right milestone
 argument-hint: "[idea summary]"
 allowed-tools:
@@ -15,7 +15,7 @@ Capture an idea that's too big for now but should surface automatically when the
 milestone arrives. Seeds solve context rot: instead of a one-liner in Deferred that nobody
 reads, a seed preserves the full WHY, WHEN to surface, and breadcrumbs to details.
 
-Creates: .planning/seeds/SEED-NNN-slug.md
+Creates: .claude/.gsdt-planning/seeds/SEED-NNN-slug.md
 Consumed by: /gsdt:new-milestone (scans seeds and presents matches)
 </objective>
 

@@ -150,7 +150,41 @@ Report: "PR #{number} created: {url}"
 </step>
 
 <step name="optional_review">
-Ask if user wants to trigger a code review:
+Check for --review flag in arguments:
+
+```bash
+RUN_SHIP_REVIEW=false
+if [[ "$ARGUMENTS" == *"--review"* ]]; then
+  RUN_SHIP_REVIEW=true
+fi
+```
+
+If `--review` flag present, run ship review before asking:
+
+```bash
+if [[ "$RUN_SHIP_REVIEW" == "true" ]]; then
+  echo "◆ Running ship review..."
+  REVIEW_RESULT=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" review ship \
+    --pr "${PR_NUMBER}" --json 2>/dev/null)
+
+  # Parse for critical findings
+  CRITICAL_COUNT=$(echo "$REVIEW_RESULT" | jq '.summary.by_severity.P0 // 0')
+  if [[ "$CRITICAL_COUNT" -gt 0 ]]; then
+    echo "⚠️  Warning: $CRITICAL_COUNT P0 (critical) issues found"
+    echo "$REVIEW_RESULT" | jq '.findings[] | select(.severity=="P0") | {title, file, line}'
+
+    AskUserQuestion:
+      question: "Ship review found $CRITICAL_COUNT critical issues. Continue with PR?"
+      options:
+        - label: "Abort"
+          description: "Fix issues before shipping"
+        - label: "Continue anyway"
+          description: "Ship despite critical issues"
+  fi
+fi
+```
+
+If no `--review` flag, ask user if they want a review:
 
 ```
 AskUserQuestion:
@@ -183,7 +217,7 @@ node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" state update "Status" "Phase ${PHAS
 
 If `commit_docs` is true:
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs(${padded_phase}): ship phase ${PHASE_NUMBER} — PR #${PR_NUMBER}" --files .planning/STATE.md
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs(${padded_phase}): ship phase ${PHASE_NUMBER} — PR #${PR_NUMBER}" --files .claude/.gsdt-planning/STATE.md
 ```
 </step>
 

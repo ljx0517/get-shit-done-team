@@ -93,7 +93,7 @@ describe.skipIf(!cliAvailable)('E2E: InitRunner.run() full workflow', () => {
     // so it should always exist if the config step succeeded
     const configStep = result.steps.find(s => s.step === 'config');
     if (configStep?.success) {
-      const configPath = join(tmpDir, '.planning', 'config.json');
+      const configPath = join(tmpDir, '.claude/.gsdt-planning', 'config.json');
       const configStat = await stat(configPath).catch(() => null);
       expect(configStat).not.toBeNull();
 
@@ -106,7 +106,7 @@ describe.skipIf(!cliAvailable)('E2E: InitRunner.run() full workflow', () => {
     // ── Assert: PROJECT.md created if project step succeeded ──
     const projectStep = result.steps.find(s => s.step === 'project');
     if (projectStep?.success) {
-      const projectPath = join(tmpDir, '.planning', 'PROJECT.md');
+      const projectPath = join(tmpDir, '.claude/.gsdt-planning', 'PROJECT.md');
       const projectStat = await stat(projectPath).catch(() => null);
       expect(projectStat).not.toBeNull();
     }
@@ -129,7 +129,7 @@ describe.skipIf(!cliAvailable)('E2E: InitRunner.run() full workflow', () => {
     // ── Assert: artifacts list is populated ──
     if (result.success) {
       expect(result.artifacts.length).toBeGreaterThan(0);
-      expect(result.artifacts).toContain('.planning/config.json');
+      expect(result.artifacts).toContain('.claude/.gsdt-planning/config.json');
     }
   }, 600_000); // 10 minute timeout for the full 7-session init workflow
 });

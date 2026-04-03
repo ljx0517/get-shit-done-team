@@ -165,7 +165,7 @@ O sistema:
 3. **Extrai requisitos** (v1, v2 e fora de escopo)
 4. **Monta roadmap** por fases
 
-**Cria:** `PROJECT.md`, `REQUIREMENTS.md`, `ROADMAP.md`, `STATE.md`, `.planning/research/`
+**Cria:** `PROJECT.md`, `REQUIREMENTS.md`, `ROADMAP.md`, `STATE.md`, `.claude/.gsdt-planning/research/`
 
 ### 2. Discutir fase
 
@@ -309,7 +309,7 @@ Cada tarefa gera commit próprio, facilitando `git bisect`, rollback e rastreabi
 | `/gsdt:settings` | Configura perfis e agentes |
 | `/gsdt:set-profile <profile>` | Troca perfil (quality/balanced/budget/inherit) |
 | `/gsdt:quick [--full] [--discuss] [--research]` | Execução rápida com garantias do GSD |
-| `/gsdt:health [--repair]` | Verifica e repara `.planning/` |
+| `/gsdt:health [--repair]` | Verifica e repara `.claude/.gsdt-planning/` |
 
 > Para a lista completa de comandos e opções, use `/gsdt:help`.
 
@@ -317,7 +317,7 @@ Cada tarefa gera commit próprio, facilitando `git bisect`, rollback e rastreabi
 
 ## Configuração
 
-As configurações do projeto ficam em `.planning/config.json`.
+As configurações do projeto ficam em `.claude/.gsdt-planning/config.json`.
 Você pode configurar no `/gsdt:new-project` ou ajustar depois com `/gsdt:settings`.
 
 ### Ajustes principais

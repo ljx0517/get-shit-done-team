@@ -9,11 +9,13 @@ import { access, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { constants } from 'node:fs';
 
+import { resolvePlanningDir } from './path-config.js';
+
 export interface ClassifyContext {
   needsProjectFile: boolean;  // Load PROJECT.md as 'existing_project'
   needsRoadmapFile: boolean;  // Load ROADMAP.md as 'existing_roadmap'
   needsStateFile: boolean;    // Load STATE.md as 'project_state'
-  projectExists: boolean;      // True if any .planning files exist
+  projectExists: boolean;      // True if any .claude/.gsdt-planning files exist
 }
 
 export interface LoadedClassifyContext {
@@ -48,7 +50,7 @@ async function fileExists(filePath: string): Promise<boolean> {
  * ```
  */
 export async function determineClassifyContext(projectDir: string): Promise<ClassifyContext> {
-  const planningDir = join(projectDir, '.planning');
+  const planningDir = resolvePlanningDir(projectDir);
   const projectPath = join(planningDir, 'PROJECT.md');
   const roadmapPath = join(planningDir, 'ROADMAP.md');
   const statePath = join(planningDir, 'STATE.md');
@@ -88,7 +90,7 @@ export async function loadClassifyContextFiles(
   projectDir: string,
   context: ClassifyContext
 ): Promise<LoadedClassifyContext> {
-  const planningDir = join(projectDir, '.planning');
+  const planningDir = resolvePlanningDir(projectDir);
   const files: Record<string, string> = {};
 
   // Load only the files that are needed and exist

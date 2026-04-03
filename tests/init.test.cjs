@@ -20,7 +20,7 @@ describe('init commands', () => {
   });
 
   test('init execute-phase returns file paths', () => {
-    const phaseDir = path.join(tmpDir, '.planning', 'phases', '03-api');
+    const phaseDir = path.join(tmpDir, '.claude/.gsdt-planning', 'phases', '03-api');
     fs.mkdirSync(phaseDir, { recursive: true });
     fs.writeFileSync(path.join(phaseDir, '03-01-PLAN.md'), '# Plan');
 
@@ -28,13 +28,13 @@ describe('init commands', () => {
     assert.ok(result.success, `Command failed: ${result.error}`);
 
     const output = JSON.parse(result.output);
-    assert.strictEqual(output.state_path, '.planning/STATE.md');
-    assert.strictEqual(output.roadmap_path, '.planning/ROADMAP.md');
-    assert.strictEqual(output.config_path, '.planning/config.json');
+    assert.strictEqual(output.state_path, '.claude/.gsdt-planning/STATE.md');
+    assert.strictEqual(output.roadmap_path, '.claude/.gsdt-planning/ROADMAP.md');
+    assert.strictEqual(output.config_path, '.claude/.gsdt-planning/config.json');
   });
 
   test('init plan-phase returns file paths', () => {
-    const phaseDir = path.join(tmpDir, '.planning', 'phases', '03-api');
+    const phaseDir = path.join(tmpDir, '.claude/.gsdt-planning', 'phases', '03-api');
     fs.mkdirSync(phaseDir, { recursive: true });
     fs.writeFileSync(path.join(phaseDir, '03-CONTEXT.md'), '# Phase Context');
     fs.writeFileSync(path.join(phaseDir, '03-RESEARCH.md'), '# Research Findings');
@@ -45,13 +45,13 @@ describe('init commands', () => {
     assert.ok(result.success, `Command failed: ${result.error}`);
 
     const output = JSON.parse(result.output);
-    assert.strictEqual(output.state_path, '.planning/STATE.md');
-    assert.strictEqual(output.roadmap_path, '.planning/ROADMAP.md');
-    assert.strictEqual(output.requirements_path, '.planning/REQUIREMENTS.md');
-    assert.strictEqual(output.context_path, '.planning/phases/03-api/03-CONTEXT.md');
-    assert.strictEqual(output.research_path, '.planning/phases/03-api/03-RESEARCH.md');
-    assert.strictEqual(output.verification_path, '.planning/phases/03-api/03-VERIFICATION.md');
-    assert.strictEqual(output.uat_path, '.planning/phases/03-api/03-UAT.md');
+    assert.strictEqual(output.state_path, '.claude/.gsdt-planning/STATE.md');
+    assert.strictEqual(output.roadmap_path, '.claude/.gsdt-planning/ROADMAP.md');
+    assert.strictEqual(output.requirements_path, '.claude/.gsdt-planning/REQUIREMENTS.md');
+    assert.strictEqual(output.context_path, '.claude/.gsdt-planning/phases/03-api/03-CONTEXT.md');
+    assert.strictEqual(output.research_path, '.claude/.gsdt-planning/phases/03-api/03-RESEARCH.md');
+    assert.strictEqual(output.verification_path, '.claude/.gsdt-planning/phases/03-api/03-VERIFICATION.md');
+    assert.strictEqual(output.uat_path, '.claude/.gsdt-planning/phases/03-api/03-UAT.md');
   });
 
   test('init plan-phase exposes text_mode from config (defaults false)', () => {
@@ -62,7 +62,7 @@ describe('init commands', () => {
   });
 
   test('init plan-phase exposes text_mode true when set in config', () => {
-    const configPath = path.join(tmpDir, '.planning', 'config.json');
+    const configPath = path.join(tmpDir, '.claude/.gsdt-planning', 'config.json');
     const existing = fs.existsSync(configPath)
       ? JSON.parse(fs.readFileSync(configPath, 'utf8'))
       : {};
@@ -80,14 +80,14 @@ describe('init commands', () => {
     assert.ok(result.success, `Command failed: ${result.error}`);
 
     const output = JSON.parse(result.output);
-    assert.strictEqual(output.state_path, '.planning/STATE.md');
-    assert.strictEqual(output.roadmap_path, '.planning/ROADMAP.md');
-    assert.strictEqual(output.project_path, '.planning/PROJECT.md');
-    assert.strictEqual(output.config_path, '.planning/config.json');
+    assert.strictEqual(output.state_path, '.claude/.gsdt-planning/STATE.md');
+    assert.strictEqual(output.roadmap_path, '.claude/.gsdt-planning/ROADMAP.md');
+    assert.strictEqual(output.project_path, '.claude/.gsdt-planning/PROJECT.md');
+    assert.strictEqual(output.config_path, '.claude/.gsdt-planning/config.json');
   });
 
   test('init phase-op returns core and optional phase file paths', () => {
-    const phaseDir = path.join(tmpDir, '.planning', 'phases', '03-api');
+    const phaseDir = path.join(tmpDir, '.claude/.gsdt-planning', 'phases', '03-api');
     fs.mkdirSync(phaseDir, { recursive: true });
     fs.writeFileSync(path.join(phaseDir, '03-CONTEXT.md'), '# Phase Context');
     fs.writeFileSync(path.join(phaseDir, '03-RESEARCH.md'), '# Research');
@@ -98,17 +98,17 @@ describe('init commands', () => {
     assert.ok(result.success, `Command failed: ${result.error}`);
 
     const output = JSON.parse(result.output);
-    assert.strictEqual(output.state_path, '.planning/STATE.md');
-    assert.strictEqual(output.roadmap_path, '.planning/ROADMAP.md');
-    assert.strictEqual(output.requirements_path, '.planning/REQUIREMENTS.md');
-    assert.strictEqual(output.context_path, '.planning/phases/03-api/03-CONTEXT.md');
-    assert.strictEqual(output.research_path, '.planning/phases/03-api/03-RESEARCH.md');
-    assert.strictEqual(output.verification_path, '.planning/phases/03-api/03-VERIFICATION.md');
-    assert.strictEqual(output.uat_path, '.planning/phases/03-api/03-UAT.md');
+    assert.strictEqual(output.state_path, '.claude/.gsdt-planning/STATE.md');
+    assert.strictEqual(output.roadmap_path, '.claude/.gsdt-planning/ROADMAP.md');
+    assert.strictEqual(output.requirements_path, '.claude/.gsdt-planning/REQUIREMENTS.md');
+    assert.strictEqual(output.context_path, '.claude/.gsdt-planning/phases/03-api/03-CONTEXT.md');
+    assert.strictEqual(output.research_path, '.claude/.gsdt-planning/phases/03-api/03-RESEARCH.md');
+    assert.strictEqual(output.verification_path, '.claude/.gsdt-planning/phases/03-api/03-VERIFICATION.md');
+    assert.strictEqual(output.uat_path, '.claude/.gsdt-planning/phases/03-api/03-UAT.md');
   });
 
   test('init plan-phase detects has_reviews and reviews_path when REVIEWS.md exists', () => {
-    const phaseDir = path.join(tmpDir, '.planning', 'phases', '03-api');
+    const phaseDir = path.join(tmpDir, '.claude/.gsdt-planning', 'phases', '03-api');
     fs.mkdirSync(phaseDir, { recursive: true });
     fs.writeFileSync(path.join(phaseDir, '03-REVIEWS.md'), '# Cross-AI Reviews');
 
@@ -117,11 +117,11 @@ describe('init commands', () => {
 
     const output = JSON.parse(result.output);
     assert.strictEqual(output.has_reviews, true);
-    assert.strictEqual(output.reviews_path, '.planning/phases/03-api/03-REVIEWS.md');
+    assert.strictEqual(output.reviews_path, '.claude/.gsdt-planning/phases/03-api/03-REVIEWS.md');
   });
 
   test('init plan-phase omits optional paths if files missing', () => {
-    const phaseDir = path.join(tmpDir, '.planning', 'phases', '03-api');
+    const phaseDir = path.join(tmpDir, '.claude/.gsdt-planning', 'phases', '03-api');
     fs.mkdirSync(phaseDir, { recursive: true });
 
     const result = runGsdTools('init plan-phase 03', tmpDir);
@@ -137,9 +137,9 @@ describe('init commands', () => {
   // ── phase_req_ids extraction (fix for #684) ──────────────────────────────
 
   test('init plan-phase extracts phase_req_ids from ROADMAP', () => {
-    fs.mkdirSync(path.join(tmpDir, '.planning', 'phases', '03-api'), { recursive: true });
+    fs.mkdirSync(path.join(tmpDir, '.claude/.gsdt-planning', 'phases', '03-api'), { recursive: true });
     fs.writeFileSync(
-      path.join(tmpDir, '.planning', 'ROADMAP.md'),
+      path.join(tmpDir, '.claude/.gsdt-planning', 'ROADMAP.md'),
       `# Roadmap\n\n### Phase 3: API\n**Goal:** Build API\n**Requirements**: CP-01, CP-02, CP-03\n**Plans:** 0 plans\n`
     );
 
@@ -151,9 +151,9 @@ describe('init commands', () => {
   });
 
   test('init plan-phase strips brackets from phase_req_ids', () => {
-    fs.mkdirSync(path.join(tmpDir, '.planning', 'phases', '03-api'), { recursive: true });
+    fs.mkdirSync(path.join(tmpDir, '.claude/.gsdt-planning', 'phases', '03-api'), { recursive: true });
     fs.writeFileSync(
-      path.join(tmpDir, '.planning', 'ROADMAP.md'),
+      path.join(tmpDir, '.claude/.gsdt-planning', 'ROADMAP.md'),
       `# Roadmap\n\n### Phase 3: API\n**Goal:** Build API\n**Requirements**: [CP-01, CP-02]\n**Plans:** 0 plans\n`
     );
 
@@ -165,9 +165,9 @@ describe('init commands', () => {
   });
 
   test('init plan-phase returns null phase_req_ids when Requirements line is absent', () => {
-    fs.mkdirSync(path.join(tmpDir, '.planning', 'phases', '03-api'), { recursive: true });
+    fs.mkdirSync(path.join(tmpDir, '.claude/.gsdt-planning', 'phases', '03-api'), { recursive: true });
     fs.writeFileSync(
-      path.join(tmpDir, '.planning', 'ROADMAP.md'),
+      path.join(tmpDir, '.claude/.gsdt-planning', 'ROADMAP.md'),
       `# Roadmap\n\n### Phase 3: API\n**Goal:** Build API\n**Plans:** 0 plans\n`
     );
 
@@ -179,7 +179,7 @@ describe('init commands', () => {
   });
 
   test('init plan-phase returns null phase_req_ids when ROADMAP is absent', () => {
-    fs.mkdirSync(path.join(tmpDir, '.planning', 'phases', '03-api'), { recursive: true });
+    fs.mkdirSync(path.join(tmpDir, '.claude/.gsdt-planning', 'phases', '03-api'), { recursive: true });
 
     const result = runGsdTools('init plan-phase 3', tmpDir);
     assert.ok(result.success, `Command failed: ${result.error}`);
@@ -189,11 +189,11 @@ describe('init commands', () => {
   });
 
   test('init execute-phase extracts phase_req_ids from ROADMAP', () => {
-    const phaseDir = path.join(tmpDir, '.planning', 'phases', '03-api');
+    const phaseDir = path.join(tmpDir, '.claude/.gsdt-planning', 'phases', '03-api');
     fs.mkdirSync(phaseDir, { recursive: true });
     fs.writeFileSync(path.join(phaseDir, '03-01-PLAN.md'), '# Plan');
     fs.writeFileSync(
-      path.join(tmpDir, '.planning', 'ROADMAP.md'),
+      path.join(tmpDir, '.claude/.gsdt-planning', 'ROADMAP.md'),
       `# Roadmap\n\n### Phase 3: API\n**Goal:** Build API\n**Requirements**: EX-01, EX-02\n**Plans:** 1 plans\n`
     );
 
@@ -205,9 +205,9 @@ describe('init commands', () => {
   });
 
   test('init plan-phase returns null phase_req_ids when value is TBD', () => {
-    fs.mkdirSync(path.join(tmpDir, '.planning', 'phases', '03-api'), { recursive: true });
+    fs.mkdirSync(path.join(tmpDir, '.claude/.gsdt-planning', 'phases', '03-api'), { recursive: true });
     fs.writeFileSync(
-      path.join(tmpDir, '.planning', 'ROADMAP.md'),
+      path.join(tmpDir, '.claude/.gsdt-planning', 'ROADMAP.md'),
       `# Roadmap\n\n### Phase 3: API\n**Goal:** Build API\n**Requirements**: TBD\n**Plans:** 0 plans\n`
     );
 
@@ -219,11 +219,11 @@ describe('init commands', () => {
   });
 
   test('init execute-phase returns null phase_req_ids when Requirements line is absent', () => {
-    const phaseDir = path.join(tmpDir, '.planning', 'phases', '03-api');
+    const phaseDir = path.join(tmpDir, '.claude/.gsdt-planning', 'phases', '03-api');
     fs.mkdirSync(phaseDir, { recursive: true });
     fs.writeFileSync(path.join(phaseDir, '03-01-PLAN.md'), '# Plan');
     fs.writeFileSync(
-      path.join(tmpDir, '.planning', 'ROADMAP.md'),
+      path.join(tmpDir, '.claude/.gsdt-planning', 'ROADMAP.md'),
       `# Roadmap\n\n### Phase 3: API\n**Goal:** Build API\n**Plans:** 1 plans\n`
     );
 
@@ -245,7 +245,7 @@ describe('init commands ROADMAP fallback when phase directory does not exist (#1
   beforeEach(() => {
     tmpDir = createTempProject();
     fs.writeFileSync(
-      path.join(tmpDir, '.planning', 'ROADMAP.md'),
+      path.join(tmpDir, '.claude/.gsdt-planning', 'ROADMAP.md'),
       '# Roadmap\n\n### Phase 1: Foundation Setup\n**Goal:** Bootstrap project\n**Requirements**: R-01, R-02\n**Plans:** TBD\n'
     );
   });
@@ -303,7 +303,7 @@ describe('init commands ROADMAP fallback when phase directory does not exist (#1
   });
 
   test('init plan-phase prefers disk directory over ROADMAP fallback', () => {
-    const phaseDir = path.join(tmpDir, '.planning', 'phases', '01-foundation-setup');
+    const phaseDir = path.join(tmpDir, '.claude/.gsdt-planning', 'phases', '01-foundation-setup');
     fs.mkdirSync(phaseDir, { recursive: true });
     fs.writeFileSync(path.join(phaseDir, '01-01-PLAN.md'), '# Plan');
 
@@ -334,7 +334,7 @@ describe('cmdInitTodos', () => {
   });
 
   test('empty pending dir returns zero count', () => {
-    fs.mkdirSync(path.join(tmpDir, '.planning', 'todos', 'pending'), { recursive: true });
+    fs.mkdirSync(path.join(tmpDir, '.claude/.gsdt-planning', 'todos', 'pending'), { recursive: true });
 
     const result = runGsdTools('init todos', tmpDir);
     assert.ok(result.success, `Command failed: ${result.error}`);
@@ -356,7 +356,7 @@ describe('cmdInitTodos', () => {
   });
 
   test('multiple todos with fields are read correctly', () => {
-    const pendingDir = path.join(tmpDir, '.planning', 'todos', 'pending');
+    const pendingDir = path.join(tmpDir, '.claude/.gsdt-planning', 'todos', 'pending');
     fs.mkdirSync(pendingDir, { recursive: true });
 
     fs.writeFileSync(path.join(pendingDir, 'task-1.md'), 'title: Fix bug\narea: backend\ncreated: 2026-02-25');
@@ -375,11 +375,11 @@ describe('cmdInitTodos', () => {
     assert.strictEqual(task1.title, 'Fix bug');
     assert.strictEqual(task1.area, 'backend');
     assert.strictEqual(task1.created, '2026-02-25');
-    assert.strictEqual(task1.path, '.planning/todos/pending/task-1.md');
+    assert.strictEqual(task1.path, '.claude/.gsdt-planning/todos/pending/task-1.md');
   });
 
   test('area filter returns only matching todos', () => {
-    const pendingDir = path.join(tmpDir, '.planning', 'todos', 'pending');
+    const pendingDir = path.join(tmpDir, '.claude/.gsdt-planning', 'todos', 'pending');
     fs.mkdirSync(pendingDir, { recursive: true });
 
     fs.writeFileSync(path.join(pendingDir, 'task-1.md'), 'title: Fix bug\narea: backend\ncreated: 2026-02-25');
@@ -398,7 +398,7 @@ describe('cmdInitTodos', () => {
   });
 
   test('area filter miss returns zero count', () => {
-    const pendingDir = path.join(tmpDir, '.planning', 'todos', 'pending');
+    const pendingDir = path.join(tmpDir, '.claude/.gsdt-planning', 'todos', 'pending');
     fs.mkdirSync(pendingDir, { recursive: true });
 
     fs.writeFileSync(path.join(pendingDir, 'task-1.md'), 'title: Fix bug\narea: backend\ncreated: 2026-02-25');
@@ -412,7 +412,7 @@ describe('cmdInitTodos', () => {
   });
 
   test('malformed file uses defaults', () => {
-    const pendingDir = path.join(tmpDir, '.planning', 'todos', 'pending');
+    const pendingDir = path.join(tmpDir, '.claude/.gsdt-planning', 'todos', 'pending');
     fs.mkdirSync(pendingDir, { recursive: true });
 
     fs.writeFileSync(path.join(pendingDir, 'broken.md'), 'some random content without fields');
@@ -429,7 +429,7 @@ describe('cmdInitTodos', () => {
   });
 
   test('non-md files are ignored', () => {
-    const pendingDir = path.join(tmpDir, '.planning', 'todos', 'pending');
+    const pendingDir = path.join(tmpDir, '.claude/.gsdt-planning', 'todos', 'pending');
     fs.mkdirSync(pendingDir, { recursive: true });
 
     fs.writeFileSync(path.join(pendingDir, 'task.md'), 'title: Real task\narea: dev\ncreated: 2026-01-01');
@@ -470,8 +470,8 @@ describe('cmdInitMilestoneOp', () => {
   });
 
   test('multiple phases with no summaries', () => {
-    const phase1 = path.join(tmpDir, '.planning', 'phases', '01-setup');
-    const phase2 = path.join(tmpDir, '.planning', 'phases', '02-api');
+    const phase1 = path.join(tmpDir, '.claude/.gsdt-planning', 'phases', '01-setup');
+    const phase2 = path.join(tmpDir, '.claude/.gsdt-planning', 'phases', '02-api');
     fs.mkdirSync(phase1, { recursive: true });
     fs.mkdirSync(phase2, { recursive: true });
     fs.writeFileSync(path.join(phase1, '01-01-PLAN.md'), '# Plan');
@@ -487,8 +487,8 @@ describe('cmdInitMilestoneOp', () => {
   });
 
   test('mix of complete and incomplete phases', () => {
-    const phase1 = path.join(tmpDir, '.planning', 'phases', '01-setup');
-    const phase2 = path.join(tmpDir, '.planning', 'phases', '02-api');
+    const phase1 = path.join(tmpDir, '.claude/.gsdt-planning', 'phases', '01-setup');
+    const phase2 = path.join(tmpDir, '.claude/.gsdt-planning', 'phases', '02-api');
     fs.mkdirSync(phase1, { recursive: true });
     fs.mkdirSync(phase2, { recursive: true });
     fs.writeFileSync(path.join(phase1, '01-01-PLAN.md'), '# Plan');
@@ -505,7 +505,7 @@ describe('cmdInitMilestoneOp', () => {
   });
 
   test('all phases complete', () => {
-    const phase1 = path.join(tmpDir, '.planning', 'phases', '01-setup');
+    const phase1 = path.join(tmpDir, '.claude/.gsdt-planning', 'phases', '01-setup');
     fs.mkdirSync(phase1, { recursive: true });
     fs.writeFileSync(path.join(phase1, '01-01-PLAN.md'), '# Plan');
     fs.writeFileSync(path.join(phase1, '01-01-SUMMARY.md'), '# Summary');
@@ -520,8 +520,8 @@ describe('cmdInitMilestoneOp', () => {
   });
 
   test('archive directory scanning', () => {
-    fs.mkdirSync(path.join(tmpDir, '.planning', 'archive', 'v1.0'), { recursive: true });
-    fs.mkdirSync(path.join(tmpDir, '.planning', 'archive', 'v0.9'), { recursive: true });
+    fs.mkdirSync(path.join(tmpDir, '.claude/.gsdt-planning', 'archive', 'v1.0'), { recursive: true });
+    fs.mkdirSync(path.join(tmpDir, '.claude/.gsdt-planning', 'archive', 'v0.9'), { recursive: true });
 
     const result = runGsdTools('init milestone-op', tmpDir);
     assert.ok(result.success, `Command failed: ${result.error}`);
@@ -557,12 +557,12 @@ describe('cmdInitPhaseOp fallback', () => {
   });
 
   test('normal path with existing directory', () => {
-    const phaseDir = path.join(tmpDir, '.planning', 'phases', '03-api');
+    const phaseDir = path.join(tmpDir, '.claude/.gsdt-planning', 'phases', '03-api');
     fs.mkdirSync(phaseDir, { recursive: true });
     fs.writeFileSync(path.join(phaseDir, '03-CONTEXT.md'), '# Context');
     fs.writeFileSync(path.join(phaseDir, '03-01-PLAN.md'), '# Plan');
     fs.writeFileSync(
-      path.join(tmpDir, '.planning', 'ROADMAP.md'),
+      path.join(tmpDir, '.claude/.gsdt-planning', 'ROADMAP.md'),
       '# Roadmap\n\n### Phase 3: API\n**Goal:** Build API\n**Plans:** 1 plans\n'
     );
 
@@ -578,7 +578,7 @@ describe('cmdInitPhaseOp fallback', () => {
 
   test('fallback to ROADMAP when no directory exists', () => {
     fs.writeFileSync(
-      path.join(tmpDir, '.planning', 'ROADMAP.md'),
+      path.join(tmpDir, '.claude/.gsdt-planning', 'ROADMAP.md'),
       '# Roadmap\n\n### Phase 5: Widget Builder\n**Goal:** Build widgets\n**Plans:** TBD\n'
     );
 
@@ -597,7 +597,7 @@ describe('cmdInitPhaseOp fallback', () => {
   test('prefers current milestone roadmap entry over archived phase with same number', () => {
     const archiveDir = path.join(
       tmpDir,
-      '.planning',
+      '.claude/.gsdt-planning',
       'milestones',
       'v1.2-phases',
       '02-event-parser-and-queue-schema'
@@ -608,7 +608,7 @@ describe('cmdInitPhaseOp fallback', () => {
     fs.writeFileSync(path.join(archiveDir, '02-VERIFICATION.md'), '# Archived verification');
 
     fs.writeFileSync(
-      path.join(tmpDir, '.planning', 'ROADMAP.md'),
+      path.join(tmpDir, '.claude/.gsdt-planning', 'ROADMAP.md'),
       `# Roadmap
 
 <details>
@@ -641,7 +641,7 @@ describe('cmdInitPhaseOp fallback', () => {
 
   test('neither directory nor roadmap entry returns not found', () => {
     fs.writeFileSync(
-      path.join(tmpDir, '.planning', 'ROADMAP.md'),
+      path.join(tmpDir, '.claude/.gsdt-planning', 'ROADMAP.md'),
       '# Roadmap\n\n### Phase 1: Setup\n**Goal:** Setup project\n**Plans:** TBD\n'
     );
 
@@ -683,18 +683,18 @@ describe('cmdInitProgress', () => {
 
   test('multiple phases with mixed statuses', () => {
     // Phase 01: complete (has plan + summary)
-    const phase1 = path.join(tmpDir, '.planning', 'phases', '01-setup');
+    const phase1 = path.join(tmpDir, '.claude/.gsdt-planning', 'phases', '01-setup');
     fs.mkdirSync(phase1, { recursive: true });
     fs.writeFileSync(path.join(phase1, '01-01-PLAN.md'), '# Plan');
     fs.writeFileSync(path.join(phase1, '01-01-SUMMARY.md'), '# Summary');
 
     // Phase 02: in_progress (has plan, no summary)
-    const phase2 = path.join(tmpDir, '.planning', 'phases', '02-api');
+    const phase2 = path.join(tmpDir, '.claude/.gsdt-planning', 'phases', '02-api');
     fs.mkdirSync(phase2, { recursive: true });
     fs.writeFileSync(path.join(phase2, '02-01-PLAN.md'), '# Plan');
 
     // Phase 03: pending (no plan, no research)
-    const phase3 = path.join(tmpDir, '.planning', 'phases', '03-ui');
+    const phase3 = path.join(tmpDir, '.claude/.gsdt-planning', 'phases', '03-ui');
     fs.mkdirSync(phase3, { recursive: true });
     fs.writeFileSync(path.join(phase3, '03-CONTEXT.md'), '# Context');
 
@@ -721,7 +721,7 @@ describe('cmdInitProgress', () => {
   });
 
   test('researched status detected correctly', () => {
-    const phase1 = path.join(tmpDir, '.planning', 'phases', '01-setup');
+    const phase1 = path.join(tmpDir, '.claude/.gsdt-planning', 'phases', '01-setup');
     fs.mkdirSync(phase1, { recursive: true });
     fs.writeFileSync(path.join(phase1, '01-RESEARCH.md'), '# Research');
 
@@ -736,7 +736,7 @@ describe('cmdInitProgress', () => {
   });
 
   test('all phases complete returns no current or next', () => {
-    const phase1 = path.join(tmpDir, '.planning', 'phases', '01-setup');
+    const phase1 = path.join(tmpDir, '.claude/.gsdt-planning', 'phases', '01-setup');
     fs.mkdirSync(phase1, { recursive: true });
     fs.writeFileSync(path.join(phase1, '01-01-PLAN.md'), '# Plan');
     fs.writeFileSync(path.join(phase1, '01-01-SUMMARY.md'), '# Summary');
@@ -752,7 +752,7 @@ describe('cmdInitProgress', () => {
 
   test('paused_at detected from STATE.md', () => {
     fs.writeFileSync(
-      path.join(tmpDir, '.planning', 'STATE.md'),
+      path.join(tmpDir, '.claude/.gsdt-planning', 'STATE.md'),
       '# Project State\n\n**Paused At:** Phase 2, Task 3 — implementing auth\n'
     );
 
@@ -766,7 +766,7 @@ describe('cmdInitProgress', () => {
 
   test('no paused_at when STATE.md has no pause line', () => {
     fs.writeFileSync(
-      path.join(tmpDir, '.planning', 'STATE.md'),
+      path.join(tmpDir, '.claude/.gsdt-planning', 'STATE.md'),
       '# Project State\n\nSome content without pause.\n'
     );
 
@@ -807,11 +807,11 @@ describe('cmdInitQuick', () => {
       `quick_id should match YYMMDD-xxx, got: "${output.quick_id}"`);
 
     // task_dir must use the new ID format
-    assert.ok(output.task_dir.startsWith('.planning/quick/'),
-      `task_dir should start with .planning/quick/, got: "${output.task_dir}"`);
+    assert.ok(output.task_dir.startsWith('.claude/.gsdt-planning/quick/'),
+      `task_dir should start with .claude/.gsdt-planning/quick/, got: "${output.task_dir}"`);
     assert.ok(output.task_dir.endsWith('-fix-login-bug'),
       `task_dir should end with -fix-login-bug, got: "${output.task_dir}"`);
-    assert.ok(/^\.planning\/quick\/\d{6}-[0-9a-z]{3}-fix-login-bug$/.test(output.task_dir),
+    assert.ok(/^\.claude\/\.gsdt-planning\/quick\/\d{6}-[0-9a-z]{3}-fix-login-bug$/.test(output.task_dir),
       `task_dir format wrong: "${output.task_dir}"`);
 
     // next_num must NOT be present
@@ -859,7 +859,7 @@ describe('cmdInitQuick', () => {
 
   test('returns quick branch name when quick_branch_template is configured', () => {
     fs.writeFileSync(
-      path.join(tmpDir, '.planning', 'config.json'),
+      path.join(tmpDir, '.claude/.gsdt-planning', 'config.json'),
       JSON.stringify({
         git: {
           quick_branch_template: 'gsd/quick-{num}-{slug}',
@@ -879,7 +879,7 @@ describe('cmdInitQuick', () => {
 
   test('uses fallback slug in quick branch name when description is omitted', () => {
     fs.writeFileSync(
-      path.join(tmpDir, '.planning', 'config.json'),
+      path.join(tmpDir, '.claude/.gsdt-planning', 'config.json'),
       JSON.stringify({
         git: {
           quick_branch_template: 'gsd/quick-{quick}-{slug}',
@@ -922,7 +922,7 @@ describe('cmdInitMapCodebase', () => {
   });
 
   test('with existing maps lists md files only', () => {
-    const codebaseDir = path.join(tmpDir, '.planning', 'codebase');
+    const codebaseDir = path.join(tmpDir, '.claude/.gsdt-planning', 'codebase');
     fs.mkdirSync(codebaseDir, { recursive: true });
     fs.writeFileSync(path.join(codebaseDir, 'STACK.md'), '# Stack');
     fs.writeFileSync(path.join(codebaseDir, 'ARCHITECTURE.md'), '# Architecture');
@@ -939,7 +939,7 @@ describe('cmdInitMapCodebase', () => {
   });
 
   test('empty codebase dir returns no maps', () => {
-    const codebaseDir = path.join(tmpDir, '.planning', 'codebase');
+    const codebaseDir = path.join(tmpDir, '.claude/.gsdt-planning', 'codebase');
     fs.mkdirSync(codebaseDir, { recursive: true });
 
     const result = runGsdTools('init map-codebase', tmpDir);
@@ -953,7 +953,7 @@ describe('cmdInitMapCodebase', () => {
 
   test('map-codebase workflow does not list OpenCode under runtimes without Task tool (#1316)', () => {
     const workflow = fs.readFileSync(
-      path.join(__dirname, '..', 'get-shit-done', 'workflows', 'map-codebase.md'), 'utf8'
+      path.join(__dirname, '..', 'gsdt', 'workflows', 'map-codebase.md'), 'utf8'
     );
     // OpenCode must NOT appear in the "WITHOUT Task tool" / "NOT available" condition
     const withoutLine = workflow.split('\n').find(l =>
@@ -1004,7 +1004,7 @@ describe('cmdInitNewProject', () => {
 
   test('brownfield with codebase map does not need map', () => {
     fs.writeFileSync(path.join(tmpDir, 'package.json'), '{"name":"test"}');
-    fs.mkdirSync(path.join(tmpDir, '.planning', 'codebase'), { recursive: true });
+    fs.mkdirSync(path.join(tmpDir, '.claude/.gsdt-planning', 'codebase'), { recursive: true });
 
     const result = runGsdTools('init new-project', tmpDir);
     assert.ok(result.success, `Command failed: ${result.error}`);
@@ -1131,9 +1131,9 @@ describe('cmdInitNewMilestone', () => {
     assert.ok('synthesizer_model' in output, 'Should have synthesizer_model');
     assert.ok('roadmapper_model' in output, 'Should have roadmapper_model');
     assert.ok('commit_docs' in output, 'Should have commit_docs');
-    assert.strictEqual(output.project_path, '.planning/PROJECT.md');
-    assert.strictEqual(output.roadmap_path, '.planning/ROADMAP.md');
-    assert.strictEqual(output.state_path, '.planning/STATE.md');
+    assert.strictEqual(output.project_path, '.claude/.gsdt-planning/PROJECT.md');
+    assert.strictEqual(output.roadmap_path, '.claude/.gsdt-planning/ROADMAP.md');
+    assert.strictEqual(output.state_path, '.claude/.gsdt-planning/STATE.md');
   });
 
   test('file existence flags reflect actual state', () => {
@@ -1147,9 +1147,9 @@ describe('cmdInitNewMilestone', () => {
     assert.strictEqual(output1.project_exists, false);
 
     // Create files and verify flags change
-    fs.writeFileSync(path.join(tmpDir, '.planning', 'STATE.md'), '# State');
-    fs.writeFileSync(path.join(tmpDir, '.planning', 'ROADMAP.md'), '# Roadmap');
-    fs.writeFileSync(path.join(tmpDir, '.planning', 'PROJECT.md'), '# Project');
+    fs.writeFileSync(path.join(tmpDir, '.claude/.gsdt-planning', 'STATE.md'), '# State');
+    fs.writeFileSync(path.join(tmpDir, '.claude/.gsdt-planning', 'ROADMAP.md'), '# Roadmap');
+    fs.writeFileSync(path.join(tmpDir, '.claude/.gsdt-planning', 'PROJECT.md'), '# Project');
 
     const result2 = runGsdTools('init new-milestone', tmpDir);
     assert.ok(result2.success, `Command failed: ${result2.error}`);
@@ -1162,11 +1162,11 @@ describe('cmdInitNewMilestone', () => {
 
   test('reports latest completed milestone and archive target for reset flow', () => {
     fs.writeFileSync(
-      path.join(tmpDir, '.planning', 'MILESTONES.md'),
+      path.join(tmpDir, '.claude/.gsdt-planning', 'MILESTONES.md'),
       '# Milestones\n\n## v1.2 Search Refresh (Shipped: 2026-02-18)\n\n---\n'
     );
-    fs.mkdirSync(path.join(tmpDir, '.planning', 'phases', '06-refine-search'), { recursive: true });
-    fs.mkdirSync(path.join(tmpDir, '.planning', 'phases', '07-polish'), { recursive: true });
+    fs.mkdirSync(path.join(tmpDir, '.claude/.gsdt-planning', 'phases', '06-refine-search'), { recursive: true });
+    fs.mkdirSync(path.join(tmpDir, '.claude/.gsdt-planning', 'phases', '07-polish'), { recursive: true });
 
     const result = runGsdTools('init new-milestone', tmpDir);
     assert.ok(result.success, `Command failed: ${result.error}`);
@@ -1175,7 +1175,7 @@ describe('cmdInitNewMilestone', () => {
     assert.strictEqual(output.latest_completed_milestone, 'v1.2');
     assert.strictEqual(output.latest_completed_milestone_name, 'Search Refresh');
     assert.strictEqual(output.phase_dir_count, 2);
-    assert.strictEqual(output.phase_archive_path, '.planning/milestones/v1.2-phases');
+    assert.strictEqual(output.phase_archive_path, '.claude/.gsdt-planning/milestones/v1.2-phases');
   });
 
   test('reset flow metadata is null-safe when no milestones file exists', () => {
@@ -1201,12 +1201,12 @@ describe('findProjectRoot integration via --cwd', () => {
     projectRoot = createTempProject();
     // Add ROADMAP.md so init quick doesn't error
     fs.writeFileSync(
-      path.join(projectRoot, '.planning', 'ROADMAP.md'),
+      path.join(projectRoot, '.claude/.gsdt-planning', 'ROADMAP.md'),
       '# Roadmap\n\n## Phase 1: Foundation\n**Goal:** Setup\n'
     );
     // Write sub_repos config
     fs.writeFileSync(
-      path.join(projectRoot, '.planning', 'config.json'),
+      path.join(projectRoot, '.claude/.gsdt-planning', 'config.json'),
       JSON.stringify({ sub_repos: ['backend', 'frontend'] })
     );
     // Create sub-repo directory
@@ -1239,7 +1239,7 @@ describe('findProjectRoot integration via --cwd', () => {
   test('state load from sub-repo CWD reads project root config', () => {
     // Write STATE.md at project root
     fs.writeFileSync(
-      path.join(projectRoot, '.planning', 'STATE.md'),
+      path.join(projectRoot, '.claude/.gsdt-planning', 'STATE.md'),
       '---\ncurrent_phase: 1\nphase_name: Foundation\n---\n# State\n'
     );
 

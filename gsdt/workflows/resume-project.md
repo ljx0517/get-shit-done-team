@@ -2,7 +2,7 @@
 Use this workflow when:
 - Starting a new session on an existing project
 - User says "continue", "what's next", "where were we", "resume"
-- Any planning operation when .planning/ already exists
+- Any planning operation when .claude/.gsdt-planning/ already exists
 - User returns after time away from project
 </trigger>
 
@@ -36,8 +36,8 @@ Parse JSON for: `state_exists`, `roadmap_exists`, `project_exists`, `planning_ex
 Read and parse STATE.md, then PROJECT.md:
 
 ```bash
-cat .planning/STATE.md
-cat .planning/PROJECT.md
+cat .claude/.gsdt-planning/STATE.md
+cat .claude/.gsdt-planning/PROJECT.md
 ```
 
 **From STATE.md extract:**
@@ -64,13 +64,13 @@ Look for incomplete work that needs attention:
 
 ```bash
 # Check for structured handoff (preferred — machine-readable)
-cat .planning/HANDOFF.json 2>/dev/null || true
+cat .claude/.gsdt-planning/HANDOFF.json 2>/dev/null || true
 
 # Check for continue-here files (mid-plan resumption)
-ls .planning/phases/*/.continue-here*.md 2>/dev/null || true
+ls .claude/.gsdt-planning/phases/*/.continue-here*.md 2>/dev/null || true
 
 # Check for plans without summaries (incomplete execution)
-for plan in .planning/phases/*/*-PLAN.md; do
+for plan in .claude/.gsdt-planning/phases/*/*-PLAN.md; do
   [ -e "$plan" ] || continue
   summary="${plan/PLAN/SUMMARY}"
   [ ! -f "$summary" ] && echo "Incomplete: $plan"
@@ -216,7 +216,7 @@ What would you like to do?
 **Note:** When offering phase planning, check for CONTEXT.md existence first:
 
 ```bash
-ls .planning/phases/XX-name/*-CONTEXT.md 2>/dev/null || true
+ls .claude/.gsdt-planning/phases/XX-name/*-CONTEXT.md 2>/dev/null || true
 ```
 
 If missing, suggest discuss-phase before plan. If exists, offer plan directly.
@@ -262,7 +262,7 @@ Based on user selection, route to appropriate workflow:
   ---
   ```
 - **Advance to next phase** → ./transition.md (internal workflow, invoked inline — NOT a user command)
-- **Check todos** → Read .planning/todos/pending/, present summary
+- **Check todos** → Read .claude/.gsdt-planning/todos/pending/, present summary
 - **Review alignment** → Read PROJECT.md, compare to current state
 - **Something else** → Ask what they need
 </step>
@@ -293,7 +293,7 @@ If STATE.md is missing but other artifacts exist:
 1. Read PROJECT.md → Extract "What This Is" and Core Value
 2. Read ROADMAP.md → Determine phases, find current position
 3. Scan \*-SUMMARY.md files → Extract decisions, concerns
-4. Count pending todos in .planning/todos/pending/
+4. Count pending todos in .claude/.gsdt-planning/todos/pending/
 5. Check for .continue-here files → Session continuity
 
 Reconstruct and write STATE.md, then proceed normally.
@@ -302,7 +302,7 @@ This handles cases where:
 
 - Project predates STATE.md introduction
 - File was accidentally deleted
-- Cloning repo without full .planning/ state
+- Cloning repo without full .claude/.gsdt-planning/ state
   </reconstruction>
 
 <quick_resume>

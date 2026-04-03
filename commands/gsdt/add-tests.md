@@ -1,5 +1,5 @@
 ---
-name: gsd:add-tests
+name: gsdt:add-tests
 description: Generate tests for a completed phase based on UAT criteria and implementation
 argument-hint: "<phase> [additional instructions]"
 allowed-tools:
@@ -31,8 +31,8 @@ Output: Test files committed with message `test(phase-{N}): add unit and E2E tes
 <context>
 Phase: $ARGUMENTS
 
-@.planning/STATE.md
-@.planning/ROADMAP.md
+@.claude/.gsdt-planning/STATE.md
+@.claude/.gsdt-planning/ROADMAP.md
 </context>
 
 <process>

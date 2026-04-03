@@ -57,8 +57,8 @@ Decimal phase directories use the full decimal number:
 
 ```bash
 SLUG=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" generate-slug "$DESCRIPTION" --raw)
-PHASE_DIR=".planning/phases/${DECIMAL_PHASE}-${SLUG}"
+PHASE_DIR=".claude/.gsdt-planning/phases/${DECIMAL_PHASE}-${SLUG}"
 mkdir -p "$PHASE_DIR"
 ```
 
-Example: `.planning/phases/06.1-fix-critical-auth-bug/`
+Example: `.claude/.gsdt-planning/phases/06.1-fix-critical-auth-bug/`

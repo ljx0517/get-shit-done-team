@@ -53,10 +53,10 @@ Your SUMMARY.md is consumed by the gsdt-roadmapper agent which uses it to:
 Read all 4 research files:
 
 ```bash
-cat .planning/research/STACK.md
-cat .planning/research/FEATURES.md
-cat .planning/research/ARCHITECTURE.md
-cat .planning/research/PITFALLS.md
+cat .claude/.gsdt-planning/research/STACK.md
+cat .claude/.gsdt-planning/research/FEATURES.md
+cat .claude/.gsdt-planning/research/ARCHITECTURE.md
+cat .claude/.gsdt-planning/research/PITFALLS.md
 
 # Planning config loaded via gsdt-tools.cjs in commit step
 ```
@@ -132,14 +132,14 @@ Identify gaps that couldn't be resolved and need attention during planning.
 
 Use template: ~/.claude/gsdt/templates/research-project/SUMMARY.md
 
-Write to `.planning/research/SUMMARY.md`
+Write to `.claude/.gsdt-planning/research/SUMMARY.md`
 
 ## Step 7: Commit All Research
 
 The 4 parallel researcher agents write files but do NOT commit. You commit everything together.
 
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: complete project research" --files .planning/research/
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: complete project research" --files .claude/.gsdt-planning/research/
 ```
 
 ## Step 8: Return Summary
@@ -171,12 +171,12 @@ When SUMMARY.md is written and committed:
 ## SYNTHESIS COMPLETE
 
 **Files synthesized:**
-- .planning/research/STACK.md
-- .planning/research/FEATURES.md
-- .planning/research/ARCHITECTURE.md
-- .planning/research/PITFALLS.md
+- .claude/.gsdt-planning/research/STACK.md
+- .claude/.gsdt-planning/research/FEATURES.md
+- .claude/.gsdt-planning/research/ARCHITECTURE.md
+- .claude/.gsdt-planning/research/PITFALLS.md
 
-**Output:** .planning/research/SUMMARY.md
+**Output:** .claude/.gsdt-planning/research/SUMMARY.md
 
 ### Executive Summary
 

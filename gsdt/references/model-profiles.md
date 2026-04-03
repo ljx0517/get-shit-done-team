@@ -72,7 +72,7 @@ If you're using Claude Code with OpenRouter, a local model, or any non-Anthropic
 /gsdt:settings
 # → Select "Inherit" for model profile
 
-# Or manually in .planning/config.json
+# Or manually in .claude/.gsdt-planning/config.json
 {
   "model_profile": "inherit"
 }
@@ -85,7 +85,7 @@ Without `inherit`, GSD's default `balanced` profile spawns specific Anthropic mo
 Orchestrators resolve model before spawning:
 
 ```
-1. Read .planning/config.json
+1. Read .claude/.gsdt-planning/config.json
 2. Check model_overrides for agent-specific override
 3. If no override, look up agent in profile table
 4. Pass model parameter to Task call
@@ -111,7 +111,7 @@ Overrides take precedence over the profile. Valid values: `opus`, `sonnet`, `hai
 
 Runtime: `/gsdt:set-profile <profile>`
 
-Per-project default: Set in `.planning/config.json`:
+Per-project default: Set in `.claude/.gsdt-planning/config.json`:
 ```json
 {
   "model_profile": "balanced"

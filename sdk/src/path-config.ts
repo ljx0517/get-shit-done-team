@@ -20,6 +20,9 @@ import { existsSync } from 'node:fs';
 /** Default install directory relative to project root. */
 export const DEFAULT_INSTALL_DIR = '.claude/gsdt';
 
+/** Default planning directory relative to project root. */
+export const DEFAULT_PLANNING_DIR = '.claude/.gsdt-planning';
+
 /** Global fallback base directory (not ~/.claude to avoid conflicts with GSD-1). */
 const GLOBAL_FALLBACK_BASE = '.gsdt';
 
@@ -122,10 +125,13 @@ export function resolveWorkflowsDir(projectDir: string, installDir: string = DEF
 }
 
 /**
- * Resolve .planning directory path.
+ * Resolve the planning directory path.
  * Can be overridden via config for projects that want a different directory name.
  */
-export function resolvePlanningDir(projectDir: string, planningDir: string = '.planning'): string {
+export function resolvePlanningDir(
+  projectDir: string,
+  planningDir: string = DEFAULT_PLANNING_DIR,
+): string {
   return join(projectDir, planningDir);
 }
 

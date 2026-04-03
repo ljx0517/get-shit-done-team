@@ -13,23 +13,23 @@ Template for spawning gsdt-planner agent. The agent contains all planning expert
 **Mode:** {standard | gap_closure}
 
 **Project State:**
-@.planning/STATE.md
+@.claude/.gsdt-planning/STATE.md
 
 **Roadmap:**
-@.planning/ROADMAP.md
+@.claude/.gsdt-planning/ROADMAP.md
 
 **Requirements (if exists):**
-@.planning/REQUIREMENTS.md
+@.claude/.gsdt-planning/REQUIREMENTS.md
 
 **Phase Context (if exists):**
-@.planning/phases/{phase_dir}/{phase_num}-CONTEXT.md
+@.claude/.gsdt-planning/phases/{phase_dir}/{phase_num}-CONTEXT.md
 
 **Research (if exists):**
-@.planning/phases/{phase_dir}/{phase_num}-RESEARCH.md
+@.claude/.gsdt-planning/phases/{phase_dir}/{phase_num}-RESEARCH.md
 
 **Gap Closure (if --gaps mode):**
-@.planning/phases/{phase_dir}/{phase_num}-VERIFICATION.md
-@.planning/phases/{phase_dir}/{phase_num}-UAT.md
+@.claude/.gsdt-planning/phases/{phase_dir}/{phase_num}-VERIFICATION.md
+@.claude/.gsdt-planning/phases/{phase_dir}/{phase_num}-UAT.md
 
 </planning_context>
 
@@ -98,8 +98,8 @@ Continue planning for Phase {phase_number}: {phase_name}
 </objective>
 
 <prior_state>
-Phase directory: @.planning/phases/{phase_dir}/
-Existing plans: @.planning/phases/{phase_dir}/*-PLAN.md
+Phase directory: @.claude/.gsdt-planning/phases/{phase_dir}/
+Existing plans: @.claude/.gsdt-planning/phases/{phase_dir}/*-PLAN.md
 </prior_state>
 
 <checkpoint_response>

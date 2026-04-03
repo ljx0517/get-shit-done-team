@@ -1,5 +1,5 @@
 ---
-name: gsd:quick
+name: gsdt:quick
 description: Execute a quick task with GSD guarantees (atomic commits, state tracking) but skip optional agents
 argument-hint: "[--full] [--discuss] [--research]"
 allowed-tools:
@@ -17,7 +17,7 @@ Execute small, ad-hoc tasks with GSD guarantees (atomic commits, STATE.md tracki
 
 Quick mode is the same system with a shorter path:
 - Spawns gsdt-planner (quick mode) + gsdt-executor(s)
-- Quick tasks live in `.planning/quick/` separate from planned phases
+- Quick tasks live in `.claude/.gsdt-planning/quick/` separate from planned phases
 - Updates STATE.md "Quick Tasks Completed" table (NOT ROADMAP.md)
 
 **Default:** Skips research, discussion, plan-checker, verifier. Use when you know exactly what to do.

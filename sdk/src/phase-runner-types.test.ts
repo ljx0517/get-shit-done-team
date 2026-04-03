@@ -63,7 +63,7 @@ describe('Phase lifecycle types', () => {
     it('accepts a valid phase-op output object', () => {
       const info: PhaseOpInfo = {
         phase_found: true,
-        phase_dir: '.planning/phases/05-Skill-Scaffolding',
+        phase_dir: '.claude/.gsdt-planning/phases/05-Skill-Scaffolding',
         phase_number: '5',
         phase_name: 'Skill Scaffolding',
         phase_slug: 'skill-scaffolding',
@@ -76,8 +76,8 @@ describe('Phase lifecycle types', () => {
         roadmap_exists: true,
         planning_exists: true,
         commit_docs: true,
-        context_path: '.planning/phases/05-Skill-Scaffolding/CONTEXT.md',
-        research_path: '.planning/phases/05-Skill-Scaffolding/RESEARCH.md',
+        context_path: '.claude/.gsdt-planning/phases/05-Skill-Scaffolding/CONTEXT.md',
+        research_path: '.claude/.gsdt-planning/phases/05-Skill-Scaffolding/RESEARCH.md',
       };
 
       expect(info.phase_found).toBe(true);
@@ -90,7 +90,7 @@ describe('Phase lifecycle types', () => {
       // Simulate parsing JSON from gsdt-tools.cjs
       const raw = JSON.parse(JSON.stringify({
         phase_found: true,
-        phase_dir: '.planning/phases/03-Auth',
+        phase_dir: '.claude/.gsdt-planning/phases/03-Auth',
         phase_number: '3',
         phase_name: 'Auth',
         phase_slug: 'auth',
@@ -103,8 +103,8 @@ describe('Phase lifecycle types', () => {
         roadmap_exists: true,
         planning_exists: true,
         commit_docs: true,
-        context_path: '.planning/phases/03-Auth/CONTEXT.md',
-        research_path: '.planning/phases/03-Auth/RESEARCH.md',
+        context_path: '.claude/.gsdt-planning/phases/03-Auth/CONTEXT.md',
+        research_path: '.claude/.gsdt-planning/phases/03-Auth/RESEARCH.md',
       }));
 
       const info = raw as PhaseOpInfo;
@@ -277,7 +277,7 @@ describe('GSDTools typed methods', () => {
     tmpDir = join(tmpdir(), `gsdt-tools-phase-test-${Date.now()}-${Math.random().toString(36).slice(2)}`);
     fixtureDir = join(tmpDir, 'fixtures');
     await mkdir(fixtureDir, { recursive: true });
-    await mkdir(join(tmpDir, '.planning'), { recursive: true });
+    await mkdir(join(tmpDir, '.claude/.gsdt-planning'), { recursive: true });
   });
 
   afterEach(async () => {
@@ -294,7 +294,7 @@ describe('GSDTools typed methods', () => {
     it('returns typed PhaseOpInfo from gsdt-tools output', async () => {
       const mockOutput: PhaseOpInfo = {
         phase_found: true,
-        phase_dir: '.planning/phases/05-Skill-Scaffolding',
+        phase_dir: '.claude/.gsdt-planning/phases/05-Skill-Scaffolding',
         phase_number: '5',
         phase_name: 'Skill Scaffolding',
         phase_slug: 'skill-scaffolding',
@@ -307,8 +307,8 @@ describe('GSDTools typed methods', () => {
         roadmap_exists: true,
         planning_exists: true,
         commit_docs: true,
-        context_path: '.planning/phases/05-Skill-Scaffolding/CONTEXT.md',
-        research_path: '.planning/phases/05-Skill-Scaffolding/RESEARCH.md',
+        context_path: '.claude/.gsdt-planning/phases/05-Skill-Scaffolding/CONTEXT.md',
+        research_path: '.claude/.gsdt-planning/phases/05-Skill-Scaffolding/RESEARCH.md',
       };
 
       const scriptPath = await createScript(

@@ -1155,7 +1155,7 @@ function generateCodexConfigBlock(agents, targetDir) {
 }
 
 function stripCodexGsdAgentSections(content) {
-  return content.replace(/^\[agents\.gsd-[^\]]+\]\n(?:(?!\[)[^\n]*\n?)*/gm, '');
+  return content.replace(/^\[agents\.(?:gsd|gsdt)-[^\]]+\]\n(?:(?!\[)[^\n]*\n?)*/gm, '');
 }
 
 /**
@@ -1187,7 +1187,7 @@ function stripGsdFromCodexConfig(content) {
   cleaned = cleaned.replace(/^multi_agent\s*=\s*true\s*(?:\r?\n)?/m, '');
   cleaned = cleaned.replace(/^default_mode_request_user_input\s*=\s*true\s*(?:\r?\n)?/m, '');
 
-  // Remove [agents.gsd-*] sections (from header to next section or EOF)
+  // Remove managed [agents.gsd-*] / [agents.gsdt-*] sections (from header to next section or EOF)
   cleaned = stripCodexGsdAgentSections(cleaned);
 
   // Remove [features] section if now empty (only header, no keys before next section)
@@ -1854,7 +1854,7 @@ function isLegacyGsdAgentsSection(body) {
 function stripLeakedGsdCodexSections(content) {
   const leakedSections = getTomlTableSections(content)
     .filter((section) =>
-      section.path.startsWith('agents.gsd-') ||
+      /^agents\.(?:gsd|gsdt)-/.test(section.path) ||
       (
         section.path === 'agents' &&
         isLegacyGsdAgentsSection(content.slice(section.headerEnd, section.end))
@@ -2332,7 +2332,7 @@ function installCodexConfig(targetDir, agentsSrc) {
   const agentsTomlDir = path.join(targetDir, 'agents');
   fs.mkdirSync(agentsTomlDir, { recursive: true });
 
-  const agentEntries = fs.readdirSync(agentsSrc).filter(f => f.startsWith('gsd-') && f.endsWith('.md'));
+  const agentEntries = fs.readdirSync(agentsSrc).filter(f => f.startsWith('gsdt-') && f.endsWith('.md'));
   const agents = [];
 
   // Compute the Codex GSD install path (absolute, so subagents with empty $HOME work — #820)
@@ -3354,7 +3354,7 @@ function uninstall(isGlobal, runtime = 'claude') {
       console.log(`  ${green}✓${reset} Removed GSD commands from command/`);
     }
   } else if (isCodex || isCursor || isWindsurf) {
-    // Codex/Cursor/Windsurf: remove skills/gsdt-*/SKILL.md skill directories
+    // Codex/Cursor/Windsurf: remove skills/gsd-*/SKILL.md skill directories
     const skillsDir = path.join(targetDir, 'skills');
     if (fs.existsSync(skillsDir)) {
       let skillCount = 0;
@@ -3378,7 +3378,7 @@ function uninstall(isGlobal, runtime = 'claude') {
       const tomlFiles = fs.readdirSync(codexAgentsDir);
       let tomlCount = 0;
       for (const file of tomlFiles) {
-        if (file.startsWith('gsd-') && file.endsWith('.toml')) {
+        if (file.startsWith('gsdt-') && file.endsWith('.toml')) {
           fs.unlinkSync(path.join(codexAgentsDir, file));
           tomlCount++;
         }
@@ -3407,7 +3407,7 @@ function uninstall(isGlobal, runtime = 'claude') {
     }
     }
   } else if (isCopilot) {
-    // Copilot: remove skills/gsdt-*/ directories (same layout as Codex skills)
+    // Copilot: remove skills/gsd-*/ directories (same layout as Codex skills)
     const skillsDir = path.join(targetDir, 'skills');
     if (fs.existsSync(skillsDir)) {
       let skillCount = 0;
@@ -3440,7 +3440,7 @@ function uninstall(isGlobal, runtime = 'claude') {
       }
     }
   } else if (isAntigravity) {
-    // Antigravity: remove skills/gsdt-*/ directories (same layout as Copilot skills)
+    // Antigravity: remove skills/gsd-*/ directories (same layout as Copilot skills)
     const skillsDir = path.join(targetDir, 'skills');
     if (fs.existsSync(skillsDir)) {
       let skillCount = 0;
@@ -3457,7 +3457,7 @@ function uninstall(isGlobal, runtime = 'claude') {
       }
     }
   } else if (isCursor) {
-    // Cursor: remove skills/gsdt-*/ directories (same layout as Codex skills)
+    // Cursor: remove skills/gsd-*/ directories (same layout as Codex skills)
     const skillsDir = path.join(targetDir, 'skills');
     if (fs.existsSync(skillsDir)) {
       let skillCount = 0;
@@ -3474,7 +3474,7 @@ function uninstall(isGlobal, runtime = 'claude') {
       }
     }
   } else if (isWindsurf) {
-    // Windsurf: remove skills/gsdt-*/ directories (same layout as Cursor skills)
+    // Windsurf: remove skills/gsd-*/ directories (same layout as Cursor skills)
     const skillsDir = path.join(targetDir, 'skills');
     if (fs.existsSync(skillsDir)) {
       let skillCount = 0;
@@ -3507,13 +3507,13 @@ function uninstall(isGlobal, runtime = 'claude') {
     console.log(`  ${green}✓${reset} Removed gsdt/`);
   }
 
-  // 3. Remove GSD agents (gsd-*.md files only)
+  // 3. Remove GSD agents (gsdt-*.md files only)
   const agentsDir = path.join(targetDir, 'agents');
   if (fs.existsSync(agentsDir)) {
     const files = fs.readdirSync(agentsDir);
     let agentCount = 0;
     for (const file of files) {
-      if (file.startsWith('gsd-') && file.endsWith('.md')) {
+      if (file.startsWith('gsdt-') && file.endsWith('.md')) {
         fs.unlinkSync(path.join(agentsDir, file));
         agentCount++;
       }
@@ -3958,7 +3958,7 @@ function writeManifest(configDir, runtime = 'claude') {
   }
   if (fs.existsSync(agentsDir)) {
     for (const file of fs.readdirSync(agentsDir)) {
-      if (file.startsWith('gsd-') && file.endsWith('.md')) {
+      if (file.startsWith('gsdt-') && file.endsWith('.md')) {
         manifest.files['agents/' + file] = fileHash(path.join(agentsDir, file));
       }
     }
@@ -3969,7 +3969,7 @@ function writeManifest(configDir, runtime = 'claude') {
     const hooksDir = path.join(configDir, 'hooks');
     if (fs.existsSync(hooksDir)) {
       for (const file of fs.readdirSync(hooksDir)) {
-        if (file.startsWith('gsd-') && file.endsWith('.js')) {
+        if (file.startsWith('gsdt-') && file.endsWith('.js')) {
           manifest.files['hooks/' + file] = fileHash(path.join(hooksDir, file));
         }
       }
@@ -4111,9 +4111,9 @@ function install(isGlobal, runtime = 'claude') {
     const commandDir = path.join(targetDir, 'command');
     fs.mkdirSync(commandDir, { recursive: true });
     
-    // Copy commands/gsdt/*.md as command/gsdt-*.md (flatten structure)
+    // Copy commands/gsdt/*.md as command/gsd-*.md (flatten structure)
     const gsdSrc = path.join(src, 'commands', GSDT_COMMANDS_DIR);
-    copyFlattenedCommands(gsdSrc, commandDir, 'gsdt', pathPrefix, runtime);
+    copyFlattenedCommands(gsdSrc, commandDir, 'gsd', pathPrefix, runtime);
     if (verifyInstalled(commandDir, 'command/gsd-*')) {
       const count = fs.readdirSync(commandDir).filter(f => f.startsWith('gsd-')).length;
       console.log(`  ${green}✓${reset} Installed ${count} commands to command/`);
@@ -4123,62 +4123,62 @@ function install(isGlobal, runtime = 'claude') {
   } else if (isCodex) {
     const skillsDir = path.join(targetDir, 'skills');
     const gsdSrc = path.join(src, 'commands', GSDT_COMMANDS_DIR);
-    copyCommandsAsCodexSkills(gsdSrc, skillsDir, 'gsdt', pathPrefix, runtime);
+    copyCommandsAsCodexSkills(gsdSrc, skillsDir, 'gsd', pathPrefix, runtime);
     const installedSkillNames = listCodexSkillNames(skillsDir);
     if (installedSkillNames.length > 0) {
       console.log(`  ${green}✓${reset} Installed ${installedSkillNames.length} skills to skills/`);
     } else {
-      failures.push('skills/gsdt-*');
+      failures.push('skills/gsd-*');
     }
   } else if (isCopilot) {
     const skillsDir = path.join(targetDir, 'skills');
     const gsdSrc = path.join(src, 'commands', GSDT_COMMANDS_DIR);
-    copyCommandsAsCopilotSkills(gsdSrc, skillsDir, 'gsdt', isGlobal);
+    copyCommandsAsCopilotSkills(gsdSrc, skillsDir, 'gsd', isGlobal);
     if (fs.existsSync(skillsDir)) {
       const count = fs.readdirSync(skillsDir, { withFileTypes: true })
         .filter(e => e.isDirectory() && e.name.startsWith('gsd-')).length;
       if (count > 0) {
         console.log(`  ${green}✓${reset} Installed ${count} skills to skills/`);
       } else {
-        failures.push('skills/gsdt-*');
+        failures.push('skills/gsd-*');
       }
     } else {
-      failures.push('skills/gsdt-*');
+      failures.push('skills/gsd-*');
     }
   } else if (isAntigravity) {
     const skillsDir = path.join(targetDir, 'skills');
     const gsdSrc = path.join(src, 'commands', GSDT_COMMANDS_DIR);
-    copyCommandsAsAntigravitySkills(gsdSrc, skillsDir, 'gsdt', isGlobal);
+    copyCommandsAsAntigravitySkills(gsdSrc, skillsDir, 'gsd', isGlobal);
     if (fs.existsSync(skillsDir)) {
       const count = fs.readdirSync(skillsDir, { withFileTypes: true })
         .filter(e => e.isDirectory() && e.name.startsWith('gsd-')).length;
       if (count > 0) {
         console.log(`  ${green}✓${reset} Installed ${count} skills to skills/`);
       } else {
-        failures.push('skills/gsdt-*');
+        failures.push('skills/gsd-*');
       }
     } else {
-      failures.push('skills/gsdt-*');
+      failures.push('skills/gsd-*');
     }
   } else if (isCursor) {
     const skillsDir = path.join(targetDir, 'skills');
     const gsdSrc = path.join(src, 'commands', GSDT_COMMANDS_DIR);
-    copyCommandsAsCursorSkills(gsdSrc, skillsDir, 'gsdt', pathPrefix, runtime);
+    copyCommandsAsCursorSkills(gsdSrc, skillsDir, 'gsd', pathPrefix, runtime);
     const installedSkillNames = listCodexSkillNames(skillsDir); // reuse — same dir structure
     if (installedSkillNames.length > 0) {
       console.log(`  ${green}✓${reset} Installed ${installedSkillNames.length} skills to skills/`);
     } else {
-      failures.push('skills/gsdt-*');
+      failures.push('skills/gsd-*');
     }
   } else if (isWindsurf) {
     const skillsDir = path.join(targetDir, 'skills');
     const gsdSrc = path.join(src, 'commands', GSDT_COMMANDS_DIR);
-    copyCommandsAsWindsurfSkills(gsdSrc, skillsDir, 'gsdt', pathPrefix, runtime);
+    copyCommandsAsWindsurfSkills(gsdSrc, skillsDir, 'gsd', pathPrefix, runtime);
     const installedSkillNames = listCodexSkillNames(skillsDir); // reuse — same dir structure
     if (installedSkillNames.length > 0) {
       console.log(`  ${green}✓${reset} Installed ${installedSkillNames.length} skills to skills/`);
     } else {
-      failures.push('skills/gsdt-*');
+      failures.push('skills/gsd-*');
     }
   } else {
     // Claude Code & Gemini: nested structure in commands/ directory
@@ -4211,10 +4211,10 @@ function install(isGlobal, runtime = 'claude') {
     const agentsDest = path.join(targetDir, 'agents');
     fs.mkdirSync(agentsDest, { recursive: true });
 
-    // Remove old GSD agents (gsd-*.md) before copying new ones
+    // Remove old GSD agents (gsdt-*.md) before copying new ones
     if (fs.existsSync(agentsDest)) {
       for (const file of fs.readdirSync(agentsDest)) {
-        if (file.startsWith('gsd-') && file.endsWith('.md')) {
+        if (file.startsWith('gsdt-') && file.endsWith('.md')) {
           fs.unlinkSync(path.join(agentsDest, file));
         }
       }
@@ -4404,14 +4404,14 @@ function install(isGlobal, runtime = 'claude') {
       configContent = setManagedCodexHooksOwnership(codexHooksFeature.content, codexHooksFeature.ownership);
 
       // Add SessionStart hook for update checking
-      const updateCheckScript = path.resolve(targetDir, GSDT_INSTALL_DIR, 'hooks', 'gsdt-update-check.js').replace(/\\/g, '/');
+      const updateCheckScript = path.resolve(targetDir, GSDT_INSTALL_DIR, 'hooks', 'gsdt-check-update.js').replace(/\\/g, '/');
       const hookBlock =
         `${eol}# GSD Hooks${eol}` +
         `[[hooks]]${eol}` +
         `event = "SessionStart"${eol}` +
         `command = "node ${updateCheckScript}"${eol}`;
 
-      if (hasEnabledCodexHooksFeature(configContent) && !configContent.includes('gsd-update-check')) {
+      if (hasEnabledCodexHooksFeature(configContent) && !configContent.includes('gsdt-check-update')) {
         configContent += hookBlock;
       }
 

@@ -26,11 +26,12 @@
  *   current-timestamp [format]         Get timestamp (full|date|filename)
  *   list-todos [area]                  Count and enumerate pending todos
  *   verify-path-exists <path>          Check file/directory existence
- *   config-ensure-section              Initialize .planning/config.json
+ *   config-ensure-section              Initialize .claude/.gsdt-planning/config.json
  *   history-digest                     Aggregate all SUMMARY.md data
  *   summary-extract <path> [--fields]  Extract structured data from SUMMARY.md
  *   state-snapshot                     Structured parse of STATE.md
  *   phase-plan-index <phase>           Index plans with waves and status
+ *   capture decide                     Deterministic next action for auto-flow
  *   websearch <query>                  Search web via Brave API (if configured)
  *     [--limit N] [--freshness day|week|month]
  *
@@ -57,7 +58,7 @@
  *
  * Validation:
  *   validate consistency               Check phase numbering, disk/roadmap sync
- *   validate health [--repair]         Check .planning/ integrity, optionally repair
+ *   validate health [--repair]         Check .claude/.gsdt-planning/ integrity, optionally repair
  *   validate agents                    Check GSD agent installation status
  *
  * Progress:
@@ -147,12 +148,14 @@ const config = require('./lib/config.cjs');
 const template = require('./lib/template.cjs');
 const milestone = require('./lib/milestone.cjs');
 const commands = require('./lib/commands.cjs');
+const review = require('./lib/review/index.cjs');
 const init = require('./lib/init.cjs');
 const frontmatter = require('./lib/frontmatter.cjs');
 const profilePipeline = require('./lib/profile-pipeline.cjs');
 const profileOutput = require('./lib/profile-output.cjs');
 const workstream = require('./lib/workstream.cjs');
 const capture = require('./lib/capture.cjs');
+const intake = require('./lib/intake.cjs');
 
 // ─── Arg parsing helpers ──────────────────────────────────────────────────────
 
@@ -219,11 +222,11 @@ async function main() {
     error(`Invalid --cwd: ${cwd}`);
   }
 
-  // Resolve worktree root: in a linked worktree, .planning/ lives in the main worktree.
-  // However, in monorepo worktrees where the subdirectory itself owns .planning/,
+  // Resolve worktree root: in a linked worktree, .claude/.gsdt-planning/ lives in the main worktree.
+  // However, in monorepo worktrees where the subdirectory itself owns .claude/.gsdt-planning/,
   // skip worktree resolution — the CWD is already the correct project root.
   const { resolveWorktreeRoot } = require('./lib/core.cjs');
-  if (!fs.existsSync(path.join(cwd, '.planning'))) {
+  if (!fs.existsSync(path.join(cwd, '.claude/.gsdt-planning'))) {
     const worktreeRoot = resolveWorktreeRoot(cwd);
     if (worktreeRoot !== cwd) {
       cwd = worktreeRoot;
@@ -278,8 +281,8 @@ async function main() {
     error('Usage: gsdt-tools <command> [args] [--raw] [--pick <field>] [--cwd <path>] [--ws <name>]\nCommands: state, resolve-model, find-phase, commit, verify-summary, verify, frontmatter, template, generate-slug, current-timestamp, list-todos, verify-path-exists, config-ensure-section, config-new-project, init, workstream');
   }
 
-  // Multi-repo guard: resolve project root for commands that read/write .planning/.
-  // Skip for pure-utility commands that don't touch .planning/ to avoid unnecessary
+  // Multi-repo guard: resolve project root for commands that read/write .claude/.gsdt-planning/.
+  // Skip for pure-utility commands that don't touch .claude/.gsdt-planning/ to avoid unnecessary
   // filesystem traversal on every invocation.
   const SKIP_ROOT_RESOLUTION = new Set([
     'generate-slug', 'current-timestamp', 'verify-path-exists',
@@ -917,10 +920,141 @@ async function runCommand(command, args, cwd, raw) {
         capture.cmdCaptureSave(cwd, args.slice(2), raw);
       } else if (subcommand === 'graph') {
         capture.cmdCaptureGraph(cwd, raw);
+      } else if (subcommand === 'decide') {
+        capture.cmdCaptureDecide(cwd, raw);
       } else if (subcommand === 'fragments') {
         capture.cmdCaptureFragments(cwd, raw);
       } else {
-        error('Unknown capture subcommand. Available: save, graph, fragments');
+        error('Unknown capture subcommand. Available: save, graph, decide, fragments');
+      }
+      break;
+    }
+
+    case 'intake': {
+      const subcommand = args[1];
+      if (subcommand === 'state') {
+        intake.cmdIntakeState(cwd, raw);
+      } else if (subcommand === 'save-raw') {
+        intake.cmdIntakeSaveRaw(cwd, args.slice(2), raw);
+      } else if (subcommand === 'merge') {
+        intake.cmdIntakeMerge(cwd, args.slice(2), raw);
+      } else if (subcommand === 'decide') {
+        intake.cmdIntakeDecide(cwd, args.slice(2), raw);
+      } else if (subcommand === 'render') {
+        intake.cmdIntakeRender(cwd, raw);
+      } else if (subcommand === 'materialize') {
+        intake.cmdIntakeMaterialize(cwd, args.slice(2), raw);
+      } else {
+        error('Unknown intake subcommand. Available: state, save-raw, merge, decide, render, materialize');
+      }
+      break;
+    }
+
+    case 'review': {
+      review.cmdReview(cwd, args.slice(1), raw);
+      break;
+    }
+
+    case 'compound': {
+      const compound = require('./lib/review/compound.cjs');
+      const compoundSubcmd = args[1];
+      const readStringFlag = (flagName) => {
+        const index = args.indexOf(flagName);
+        if (index === -1 || args[index + 1] === undefined) return '';
+        return String(args[index + 1]);
+      };
+      const projectDirFlag = readStringFlag('--project-dir');
+      const projectDir = projectDirFlag ? path.resolve(cwd, projectDirFlag) : cwd;
+      const readJsonFlag = (flagName) => {
+        const index = args.indexOf(flagName);
+        if (index === -1 || !args[index + 1]) return { value: null, error: null };
+        try {
+          return { value: JSON.parse(args[index + 1]), error: null };
+        } catch (error) {
+          return { value: null, error: error.message };
+        }
+      };
+      const readJsonFileFlag = (flagName) => {
+        const index = args.indexOf(flagName);
+        if (index === -1 || !args[index + 1]) return { value: null, error: null };
+        try {
+          return { value: JSON.parse(fs.readFileSync(args[index + 1], 'utf8')), error: null };
+        } catch (error) {
+          return { value: null, error: error.message };
+        }
+      };
+
+      if (compoundSubcmd === 'find') {
+        const query = args.slice(2).join(' ') || '';
+        const result = await compound.findSolutions(projectDir, query);
+        console.log(JSON.stringify(result, null, 2));
+      }
+      else if (compoundSubcmd === 'process') {
+        const outputIdx = args.indexOf('--researcher-output');
+        const researcherOutput = outputIdx !== -1 ? JSON.parse(args[outputIdx + 1]) : {};
+        const result = await compound.processLearnings(projectDir, [researcherOutput]);
+        console.log(JSON.stringify(result, null, 2));
+      }
+      else if (compoundSubcmd === 'dispatch' || compoundSubcmd === 'emit') {
+        const inlineEvent = readJsonFlag('--event-json');
+        const fileEvent = readJsonFileFlag('--event-file');
+        const parseError = inlineEvent.error || fileEvent.error;
+        if (parseError) {
+          console.log(JSON.stringify({
+            processed: false,
+            reason: 'invalid_event_json',
+            error: parseError
+          }, null, 2));
+          break;
+        }
+        const event = inlineEvent.value || fileEvent.value || {};
+        const result = await compound.dispatchCompoundEvent(projectDir, event, {
+          skipResearch: args.includes('--no-research')
+        });
+        console.log(JSON.stringify(result, null, 2));
+      }
+      else if (compoundSubcmd === 'hook') {
+        const result = await compound.handleHookEvent(projectDir, {
+          event: readStringFlag('--event') || 'post-commit',
+          commit_hash: readStringFlag('--commit-hash'),
+          commit_message: readStringFlag('--commit-msg'),
+          files: readStringFlag('--files'),
+          phase: readStringFlag('--phase'),
+          severity: readStringFlag('--severity'),
+        }, {
+          skipResearch: args.includes('--no-research')
+        });
+        console.log(JSON.stringify(result, null, 2));
+      }
+      else if (compoundSubcmd === 'memory') {
+        const researchIdx = args.indexOf('--research');
+        const docPathIdx = args.indexOf('--doc-path');
+        const research = researchIdx !== -1 ? JSON.parse(args[researchIdx + 1]) : {};
+        const docPath = docPathIdx !== -1 ? args[docPathIdx + 1] : '';
+        const entry = await compound.writeToMemory(projectDir, research, docPath);
+        console.log(JSON.stringify(entry, null, 2));
+      }
+      else if (compoundSubcmd === 'anti-pattern') {
+        const researchIdx = args.indexOf('--research');
+        const research = researchIdx !== -1 ? JSON.parse(args[researchIdx + 1]) : {};
+        await compound.updateAntiPatterns(projectDir, research);
+        console.log('Anti-pattern appended to .claude/.gsdt-planning/anti-patterns.md');
+      }
+      else if (compoundSubcmd === 'watch') {
+        const Watch = require('./lib/review/watch.cjs');
+        const intervalIdx = args.indexOf('--interval');
+        const interval = intervalIdx !== -1 ? parseInt(args[intervalIdx + 1]) : 5000;
+
+        console.log(`Starting compound watch on ${projectDir}...`);
+        const watch = new Watch.CompoundWatch(projectDir, { interval });
+
+        process.on('SIGINT', () => watch.stop());
+        process.on('SIGTERM', () => watch.stop());
+
+        watch.start().catch(console.error);
+      }
+      else {
+        error(`Unknown compound subcommand: ${compoundSubcmd}\nAvailable: find, process, dispatch, emit, hook, memory, anti-pattern, watch`);
       }
       break;
     }

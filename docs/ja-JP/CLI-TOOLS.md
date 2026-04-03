@@ -26,7 +26,7 @@ node gsdt-tools.cjs <command> [args] [--raw] [--cwd <path>]
 
 ## State コマンド
 
-`.planning/STATE.md` を管理します — プロジェクトの生きた記憶です。
+`.claude/.gsdt-planning/STATE.md` を管理します — プロジェクトの生きた記憶です。
 
 ```bash
 # プロジェクトの全設定 + 状態を JSON として読み込む
@@ -129,7 +129,7 @@ node gsdt-tools.cjs roadmap update-plan-progress <N>
 
 ## Config コマンド
 
-`.planning/config.json` の読み書き。
+`.claude/.gsdt-planning/config.json` の読み書き。
 
 ```bash
 # デフォルト値で config.json を初期化
@@ -196,7 +196,7 @@ node gsdt-tools.cjs verify key-links <plan-file>
 # フェーズ番号、ディスク/ロードマップの同期を確認
 node gsdt-tools.cjs validate consistency
 
-# .planning/ の整合性チェック、任意で修復
+# .claude/.gsdt-planning/ の整合性チェック、任意で修復
 node gsdt-tools.cjs validate health [--repair]
 ```
 

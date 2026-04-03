@@ -51,7 +51,7 @@ Phases:
 提交内容：
 
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: initialize [project-name] ([N] phases)" --files .planning/
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: initialize [project-name] ([N] phases)" --files .claude/.gsdt-planning/
 ```
 
 </format>
@@ -123,13 +123,13 @@ Tasks completed: [N]/[N]
 - [Task 2 name]
 - [Task 3 name]
 
-SUMMARY: .planning/phases/XX-name/{phase}-{plan}-SUMMARY.md
+SUMMARY: .claude/.gsdt-planning/phases/XX-name/{phase}-{plan}-SUMMARY.md
 ```
 
 提交内容：
 
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs({phase}-{plan}): complete [plan-name] plan" --files .planning/phases/XX-name/{phase}-{plan}-PLAN.md .planning/phases/XX-name/{phase}-{plan}-SUMMARY.md .planning/STATE.md .planning/ROADMAP.md
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs({phase}-{plan}): complete [plan-name] plan" --files .claude/.gsdt-planning/phases/XX-name/{phase}-{plan}-PLAN.md .claude/.gsdt-planning/phases/XX-name/{phase}-{plan}-SUMMARY.md .claude/.gsdt-planning/STATE.md .claude/.gsdt-planning/ROADMAP.md
 ```
 
 **注意：** 代码文件不包含 - 已按任务提交。
@@ -149,7 +149,7 @@ Current: [task name]
 提交内容：
 
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "wip: [phase-name] paused at task [X]/[Y]" --files .planning/
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "wip: [phase-name] paused at task [X]/[Y]" --files .claude/.gsdt-planning/
 ```
 
 </format>

@@ -12,7 +12,7 @@ describe('GSDTools', () => {
     tmpDir = join(tmpdir(), `gsdt-tools-test-${Date.now()}-${Math.random().toString(36).slice(2)}`);
     fixtureDir = join(tmpDir, 'fixtures');
     await mkdir(fixtureDir, { recursive: true });
-    await mkdir(join(tmpDir, '.planning'), { recursive: true });
+    await mkdir(join(tmpDir, '.claude/.gsdt-planning'), { recursive: true });
   });
 
   afterEach(async () => {
@@ -279,7 +279,7 @@ describe('GSDTools', () => {
         brave_search_available: false,
         firecrawl_available: false,
         exa_search_available: false,
-        project_path: '.planning/PROJECT.md',
+        project_path: '.claude/.gsdt-planning/PROJECT.md',
         project_root: '/tmp/test',
       };
 
@@ -303,7 +303,7 @@ describe('GSDTools', () => {
       expect(result.project_exists).toBe(false);
       expect(result.has_git).toBe(true);
       expect(result.is_brownfield).toBe(false);
-      expect(result.project_path).toBe('.planning/PROJECT.md');
+      expect(result.project_path).toBe('.claude/.gsdt-planning/PROJECT.md');
     });
 
     it('propagates errors from gsdt-tools', async () => {

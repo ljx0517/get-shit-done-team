@@ -11,7 +11,7 @@ const assert = require('node:assert');
 const fs = require('fs');
 const path = require('path');
 
-const COMMAND_PATH = path.join(__dirname, '..', 'commands', 'gsd', 'execute-phase.md');
+const COMMAND_PATH = path.join(__dirname, '..', 'commands', 'gsdt', 'execute-phase.md');
 
 describe('execute-phase command: active flags are explicit', () => {
   test('command file exists', () => {

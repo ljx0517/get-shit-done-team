@@ -54,11 +54,11 @@ Extract from init JSON: `executor_model`, `commit_docs`, `sub_repos`, `phase_dir
 
 Also read STATE.md for position, decisions, blockers:
 ```bash
-cat .planning/STATE.md 2>/dev/null
+cat .claude/.gsdt-planning/STATE.md 2>/dev/null
 ```
 
-If STATE.md missing but .planning/ exists: offer to reconstruct or continue without.
-If .planning/ missing: Error — project not initialized.
+If STATE.md missing but .claude/.gsdt-planning/ exists: offer to reconstruct or continue without.
+If .claude/.gsdt-planning/ missing: Error — project not initialized.
 </step>
 
 <step name="load_plan">
@@ -355,7 +355,7 @@ git commit -m "{type}({phase}-{plan}): {concise task description}
 </task_commit_protocol>
 
 <summary_creation>
-After all tasks complete, create `{phase}-{plan}-SUMMARY.md` at `.planning/phases/XX-name/`.
+After all tasks complete, create `{phase}-{plan}-SUMMARY.md` at `.claude/.gsdt-planning/phases/XX-name/`.
 
 **ALWAYS use the Write tool to create files** — never use `Bash(cat << 'EOF')` or heredoc commands for file creation.
 
@@ -470,7 +470,7 @@ node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" state add-blocker "Blocker descript
 
 <final_commit>
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs({phase}-{plan}): complete [plan-name] plan" --files .planning/phases/XX-name/{phase}-{plan}-SUMMARY.md .planning/STATE.md .planning/ROADMAP.md .planning/REQUIREMENTS.md
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs({phase}-{plan}): complete [plan-name] plan" --files .claude/.gsdt-planning/phases/XX-name/{phase}-{plan}-SUMMARY.md .claude/.gsdt-planning/STATE.md .claude/.gsdt-planning/ROADMAP.md .claude/.gsdt-planning/REQUIREMENTS.md
 ```
 
 Separate from per-task commits — captures execution results only.

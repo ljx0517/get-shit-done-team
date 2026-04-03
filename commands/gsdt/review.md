@@ -1,26 +1,19 @@
----
-name: gsd:review
-description: Request cross-AI peer review of phase plans from external AI CLIs
-argument-hint: "--phase N [--gemini] [--claude] [--codex] [--all]"
-allowed-tools:
-  - Read
-  - Write
-  - Bash
-  - Glob
-  - Grep
----
+<purpose>
+Cross-AI peer review — invoke external AI CLIs to independently review phase plans.
+Each CLI gets the same prompt (PROJECT.md context, phase plans, requirements) and
+produces structured feedback. Results are combined into REVIEWS.md for the planner
+to incorporate via --reviews flag.
 
-<objective>
-Invoke external AI CLIs (Gemini, Claude, Codex) to independently review phase plans.
-Produces a structured REVIEWS.md with per-reviewer feedback that can be fed back into
-planning via /gsdt:plan-phase --reviews.
+This implements adversarial review: different AI models catch different blind spots.
+A plan that survives review from 2-3 independent AI systems is more robust.
 
-**Flow:** Detect CLIs → Build review prompt → Invoke each CLI → Collect responses → Write REVIEWS.md
-</objective>
-
-<execution_context>
-@~/.claude/gsdt/workflows/review.md
-</execution_context>
+**Enhanced with:**
+- Parallel execution (not sequential)
+- Session management with checkpoint/resume
+- Fingerprint deduplication + cross-reviewer boost
+- Confidence filtering
+- Structured JSON output + Markdown
+</purpose>
 
 <context>
 Phase number: extracted from $ARGUMENTS (required)
@@ -30,6 +23,9 @@ Phase number: extracted from $ARGUMENTS (required)
 - `--claude` — Include Claude CLI review (uses separate session)
 - `--codex` — Include Codex CLI review
 - `--all` — Include all available CLIs
+- `--json` — Output JSON format (machine-readable)
+- `--session ID` — Resume existing session
+- `--threshold N` — Confidence threshold (default 0.6)
 </context>
 
 <process>

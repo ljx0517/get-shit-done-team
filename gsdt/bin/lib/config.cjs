@@ -164,7 +164,7 @@ function buildNewProjectConfig(userChoices) {
 }
 
 /**
- * Command: create a fully-materialized .planning/config.json for a new project.
+ * Command: create a fully-materialized .claude/.gsdt-planning/config.json for a new project.
  *
  * Accepts user-chosen settings as a JSON string (the keys the user explicitly
  * configured during /gsdt:new-project). All remaining keys are filled from
@@ -192,20 +192,20 @@ function cmdConfigNewProject(cwd, choicesJson, raw) {
     }
   }
 
-  // Ensure .planning directory exists
+  // Ensure .claude/.gsdt-planning directory exists
   try {
     if (!fs.existsSync(planningBase)) {
       fs.mkdirSync(planningBase, { recursive: true });
     }
   } catch (err) {
-    error('Failed to create .planning directory: ' + err.message);
+    error('Failed to create .claude/.gsdt-planning directory: ' + err.message);
   }
 
   const config = buildNewProjectConfig(userChoices);
 
   try {
     fs.writeFileSync(configPath, JSON.stringify(config, null, 2), 'utf-8');
-    output({ created: true, path: '.planning/config.json' }, raw, 'created');
+    output({ created: true, path: '.claude/.gsdt-planning/config.json' }, raw, 'created');
   } catch (err) {
     error('Failed to write config.json: ' + err.message);
   }
@@ -221,13 +221,13 @@ function ensureConfigFile(cwd) {
   const planningBase = planningRoot(cwd);
   const configPath = path.join(planningBase, 'config.json');
 
-  // Ensure .planning directory exists
+  // Ensure .claude/.gsdt-planning directory exists
   try {
     if (!fs.existsSync(planningBase)) {
       fs.mkdirSync(planningBase, { recursive: true });
     }
   } catch (err) {
-    error('Failed to create .planning directory: ' + err.message);
+    error('Failed to create .claude/.gsdt-planning directory: ' + err.message);
   }
 
   // Check if config already exists
@@ -239,7 +239,7 @@ function ensureConfigFile(cwd) {
 
   try {
     fs.writeFileSync(configPath, JSON.stringify(config, null, 2), 'utf-8');
-    return { created: true, path: '.planning/config.json' };
+    return { created: true, path: '.claude/.gsdt-planning/config.json' };
   } catch (err) {
     error('Failed to create config.json: ' + err.message);
   }

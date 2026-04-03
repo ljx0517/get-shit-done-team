@@ -227,7 +227,7 @@ One command, one flow. The system:
 
 You approve the roadmap. Now you're ready to build.
 
-**Creates:** `PROJECT.md`, `REQUIREMENTS.md`, `ROADMAP.md`, `STATE.md`, `.planning/research/`
+**Creates:** `PROJECT.md`, `REQUIREMENTS.md`, `ROADMAP.md`, `STATE.md`, `.claude/.gsdt-planning/research/`
 
 ---
 
@@ -396,7 +396,7 @@ Quick mode gives you GSD guarantees (atomic commits, state tracking) with a fast
 
 - **Same agents** — Planner + executor, same quality
 - **Skips optional steps** — No research, no plan checker, no verifier by default
-- **Separate tracking** — Lives in `.planning/quick/`, not phases
+- **Separate tracking** — Lives in `.claude/.gsdt-planning/quick/`, not phases
 
 **`--discuss` flag:** Lightweight discussion to surface gray areas before planning.
 
@@ -411,7 +411,7 @@ Flags are composable: `--discuss --research --full` gives discussion + research 
 > What do you want to do? "Add dark mode toggle to settings"
 ```
 
-**Creates:** `.planning/quick/001-add-dark-mode-toggle/PLAN.md`, `SUMMARY.md`
+**Creates:** `.claude/.gsdt-planning/quick/001-add-dark-mode-toggle/PLAN.md`, `SUMMARY.md`
 
 ---
 
@@ -590,7 +590,7 @@ You're never locked in. The system adapts.
 | Command | What it does |
 |---------|--------------|
 | `/gsdt:review` | Cross-AI peer review of current phase or branch |
-| `/gsdt:pr-branch` | Create clean PR branch filtering `.planning/` commits |
+| `/gsdt:pr-branch` | Create clean PR branch filtering `.claude/.gsdt-planning/` commits |
 | `/gsdt:audit-uat` | Audit verification debt — find phases missing UAT |
 
 ### Backlog & Threads
@@ -612,9 +612,10 @@ You're never locked in. The system adapts.
 | `/gsdt:check-todos` | List pending todos |
 | `/gsdt:debug [desc]` | Systematic debugging with persistent state |
 | `/gsdt:do <text>` | Route freeform text to the right GSD command automatically |
+| `/gsdt:intake <text>` | Quiet semantic intake — AI-assisted semantic intake with deterministic guardrails for low-interruption routing into briefs and phase planning |
 | `/gsdt:note <text>` | Zero-friction idea capture — append, list, or promote notes to todos |
 | `/gsdt:quick [--full] [--discuss] [--research]` | Execute ad-hoc task with GSD guarantees (`--full` adds plan-checking and verification, `--discuss` gathers context first, `--research` investigates approaches before planning) |
-| `/gsdt:health [--repair]` | Validate `.planning/` directory integrity, auto-repair with `--repair` |
+| `/gsdt:health [--repair]` | Validate `.claude/.gsdt-planning/` directory integrity, auto-repair with `--repair` |
 | `/gsdt:stats` | Display project statistics — phases, plans, requirements, git metrics |
 | `/gsdt:profile-user [--questionnaire] [--refresh]` | Generate developer behavioral profile from session analysis for personalized responses |
 
@@ -624,7 +625,7 @@ You're never locked in. The system adapts.
 
 ## Configuration
 
-GSD stores project settings in `.planning/config.json`. Configure during `/gsdt:new-project` or update later with `/gsdt:settings`. For the full config schema, workflow toggles, git branching options, and per-agent model breakdown, see the [User Guide](docs/USER-GUIDE.md#configuration-reference).
+GSD stores project settings in `.claude/.gsdt-planning/config.json`. Configure during `/gsdt:new-project` or update later with `/gsdt:settings`. For the full config schema, workflow toggles, git branching options, and per-agent model breakdown, see the [User Guide](docs/USER-GUIDE.md#configuration-reference).
 
 ### Core Settings
 
@@ -677,7 +678,7 @@ Use `/gsdt:settings` to toggle these, or override per-invocation:
 | Setting | Default | What it controls |
 |---------|---------|------------------|
 | `parallelization.enabled` | `true` | Run independent plans simultaneously |
-| `planning.commit_docs` | `true` | Track `.planning/` in git |
+| `planning.commit_docs` | `true` | Track `.claude/.gsdt-planning/` in git |
 | `hooks.context_warnings` | `true` | Show context window usage warnings |
 
 ### Agent Skills
@@ -717,7 +718,7 @@ GSD includes defense-in-depth security since v1.27:
 
 - **Path traversal prevention** — All user-supplied file paths (`--text-file`, `--prd`) are validated to resolve within the project directory
 - **Prompt injection detection** — Centralized `security.cjs` module scans for injection patterns in user-supplied text before it enters planning artifacts
-- **PreToolUse prompt guard hook** — `gsdt-prompt-guard` scans writes to `.planning/` for embedded injection vectors (advisory, not blocking)
+- **PreToolUse prompt guard hook** — `gsdt-prompt-guard` scans writes to `.claude/.gsdt-planning/` for embedded injection vectors (advisory, not blocking)
 - **Safe JSON parsing** — Malformed `--fields` arguments are caught before they corrupt state
 - **Shell argument validation** — User text is sanitized before shell interpolation
 - **CI-ready injection scanner** — `prompt-injection-scan.test.cjs` scans all agent/workflow/command files for embedded injection vectors

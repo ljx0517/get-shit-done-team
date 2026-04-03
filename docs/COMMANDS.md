@@ -22,7 +22,7 @@ Initialize a new project with deep context gathering.
 |------|-------------|
 | `--auto @file.md` | Auto-extract from document, skip interactive questions |
 
-**Prerequisites:** No existing `.planning/PROJECT.md`
+**Prerequisites:** No existing `.claude/.gsdt-planning/PROJECT.md`
 **Produces:** `PROJECT.md`, `REQUIREMENTS.md`, `ROADMAP.md`, `STATE.md`, `config.json`, `research/`, `CLAUDE.md`
 
 ```bash
@@ -34,7 +34,7 @@ Initialize a new project with deep context gathering.
 
 ### `/gsdt:new-workspace`
 
-Create an isolated workspace with repo copies and independent `.planning/` directory.
+Create an isolated workspace with repo copies and independent `.claude/.gsdt-planning/` directory.
 
 | Flag | Description |
 |------|-------------|
@@ -49,7 +49,7 @@ Create an isolated workspace with repo copies and independent `.planning/` direc
 - Multi-repo: work on a subset of repos with isolated GSD state
 - Feature isolation: `--repos .` creates a worktree of the current repo
 
-**Produces:** `WORKSPACE.md`, `.planning/`, repo copies (worktrees or clones)
+**Produces:** `WORKSPACE.md`, `.claude/.gsdt-planning/`, repo copies (worktrees or clones)
 
 ```bash
 /gsdt:new-workspace --name feature-b --repos hr-ui,ZeymoAPI
@@ -102,7 +102,7 @@ Capture implementation decisions before planning.
 | `--batch` | Group questions for batch intake instead of one-by-one |
 | `--analyze` | Add trade-off analysis during discussion |
 
-**Prerequisites:** `.planning/ROADMAP.md` exists
+**Prerequisites:** `.claude/.gsdt-planning/ROADMAP.md` exists
 **Produces:** `{phase}-CONTEXT.md`, `{phase}-DISCUSSION-LOG.md` (audit trail)
 
 ```bash
@@ -122,7 +122,7 @@ Generate UI design contract for frontend phases.
 |----------|----------|-------------|
 | `N` | No | Phase number (defaults to current phase) |
 
-**Prerequisites:** `.planning/ROADMAP.md` exists, phase has frontend/UI work
+**Prerequisites:** `.claude/.gsdt-planning/ROADMAP.md` exists, phase has frontend/UI work
 **Produces:** `{phase}-UI-SPEC.md`
 
 ```bash
@@ -149,7 +149,7 @@ Research, plan, and verify a phase.
 | `--prd <file>` | Use a PRD file instead of discuss-phase for context |
 | `--reviews` | Replan with cross-AI review feedback from REVIEWS.md |
 
-**Prerequisites:** `.planning/ROADMAP.md` exists
+**Prerequisites:** `.claude/.gsdt-planning/ROADMAP.md` exists
 **Produces:** `{phase}-RESEARCH.md`, `{phase}-{N}-PLAN.md`, `{phase}-VALIDATION.md`
 
 ```bash
@@ -200,7 +200,7 @@ User acceptance testing with auto-diagnosis.
 
 Automatically advance to the next logical workflow step. Reads project state and runs the appropriate command.
 
-**Prerequisites:** `.planning/` directory exists
+**Prerequisites:** `.claude/.gsdt-planning/` directory exists
 **Behavior:**
 - No project → suggests `/gsdt:new-project`
 - Phase needs discussion → runs `/gsdt:discuss-phase`
@@ -220,7 +220,7 @@ Automatically advance to the next logical workflow step. Reads project state and
 Generate a session report with work summary, outcomes, and estimated resource usage.
 
 **Prerequisites:** Active project with recent work
-**Produces:** `.planning/reports/SESSION_REPORT.md`
+**Produces:** `.claude/.gsdt-planning/reports/SESSION_REPORT.md`
 
 ```bash
 /gsdt:session-report                 # Generate post-session summary
@@ -270,7 +270,7 @@ Retroactive 6-pillar visual audit of implemented frontend.
 | `N` | No | Phase number (defaults to last executed phase) |
 
 **Prerequisites:** Project has frontend code (works standalone, no GSD project needed)
-**Produces:** `{phase}-UI-REVIEW.md`, screenshots in `.planning/ui-reviews/`
+**Produces:** `{phase}-UI-REVIEW.md`, screenshots in `.claude/.gsdt-planning/ui-reviews/`
 
 ```bash
 /gsdt:ui-review                      # Audit current phase
@@ -327,7 +327,7 @@ Generate comprehensive project summary from milestone artifacts for team onboard
 | `version` | No | Milestone version (defaults to current/latest milestone) |
 
 **Prerequisites:** At least one completed or in-progress milestone
-**Produces:** `.planning/reports/MILESTONE_SUMMARY-v{version}.md`
+**Produces:** `.claude/.gsdt-planning/reports/MILESTONE_SUMMARY-v{version}.md`
 
 **Summary includes:**
 - Overview, architecture decisions, phase-by-phase breakdown
@@ -474,7 +474,7 @@ Save context handoff when stopping mid-phase.
 
 Interactive command center for managing multiple phases from one terminal.
 
-**Prerequisites:** `.planning/ROADMAP.md` exists
+**Prerequisites:** `.claude/.gsdt-planning/ROADMAP.md` exists
 **Behavior:**
 - Dashboard of all phases with visual status indicators
 - Recommends optimal next actions based on dependencies and progress
@@ -537,6 +537,27 @@ Route freeform text to the right GSD command.
 
 ```bash
 /gsdt:do                             # Then describe what you want
+```
+
+### `/gsdt:intake`
+
+Quiet semantic intake for freeform ideas, constraints, and phase refinements.
+
+| Argument | Required | Description |
+|----------|----------|-------------|
+| `text` | Yes | Raw input to normalize into semantic planning units |
+
+**Behavior:**
+- Persists raw input under `.claude/.gsdt-intake/raw/`
+- Normalizes freeform input into `user_story`, `constraint`, `preference`, `technical_enabler`, and `open_question`
+- Uses dedicated `gsdt:intake-*` subskills for semantic normalization, resolution, readiness, and brief drafting, while the CLI enforces deterministic guards and materialization
+- Auto-triggers `/gsdt:new-project --auto` only when cold-start semantic readiness is high
+- Auto-triggers `/gsdt:plan-phase N --prd ...` only when a target phase is confident and no existing plans are present
+- Falls back to one-line `collect_more`, `idle`, or `backlog_candidate` status when confidence is not high enough
+
+```bash
+/gsdt:intake "I want a low-friction way to turn rough ideas into a project brief"
+/gsdt:intake "Phase 2 should only cover email/password login, not social auth yet"
 ```
 
 ### `/gsdt:note`
@@ -633,7 +654,7 @@ Generate a developer behavioral profile from Claude Code session analysis across
 
 ### `/gsdt:health`
 
-Validate `.planning/` directory integrity.
+Validate `.claude/.gsdt-planning/` directory integrity.
 
 | Flag | Description |
 |------|-------------|
@@ -664,8 +685,8 @@ Post-mortem investigation of failed or stuck GSD workflows.
 |----------|----------|-------------|
 | `description` | No | Problem description (prompted if omitted) |
 
-**Prerequisites:** `.planning/` directory exists
-**Produces:** `.planning/forensics/report-{timestamp}.md`
+**Prerequisites:** `.claude/.gsdt-planning/` directory exists
+**Produces:** `.claude/.gsdt-planning/forensics/report-{timestamp}.md`
 
 **Investigation covers:**
 - Git history analysis (recent commits, stuck patterns, time gaps)
@@ -701,7 +722,7 @@ Manage parallel workstreams for concurrent work on different milestone areas.
 | `resume <name>` | Resume work in a workstream |
 
 **Prerequisites:** Active GSD project
-**Produces:** Workstream directories under `.planning/`, state tracking per workstream
+**Produces:** Workstream directories under `.claude/.gsdt-planning/`, state tracking per workstream
 
 ```bash
 /gsdt:workstreams                    # List all workstreams
@@ -824,7 +845,7 @@ Cross-AI peer review of phase plans from external AI CLIs.
 
 ### `/gsdt:pr-branch`
 
-Create a clean PR branch by filtering out `.planning/` commits.
+Create a clean PR branch by filtering out `.claude/.gsdt-planning/` commits.
 
 | Argument | Required | Description |
 |----------|----------|-------------|
@@ -893,7 +914,7 @@ Capture a forward-looking idea with trigger conditions — surfaces automaticall
 
 Seeds solve context rot: instead of a one-liner in Deferred that nobody reads, a seed preserves the full WHY, WHEN to surface, and breadcrumbs to details.
 
-**Produces:** `.planning/seeds/SEED-NNN-slug.md`
+**Produces:** `.claude/.gsdt-planning/seeds/SEED-NNN-slug.md`
 **Consumed by:** `/gsdt:new-milestone` (scans seeds and presents matches)
 
 ```bash

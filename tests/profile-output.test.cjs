@@ -128,7 +128,7 @@ describe('generate-claude-md command', () => {
   beforeEach(() => {
     tmpDir = createTempGitProject();
     fs.writeFileSync(
-      path.join(tmpDir, '.planning', 'PROJECT.md'),
+      path.join(tmpDir, '.claude/.gsdt-planning', 'PROJECT.md'),
       '# My Project\n\nA test project.\n\n## Tech Stack\n\n- Node.js\n- TypeScript\n'
     );
   });

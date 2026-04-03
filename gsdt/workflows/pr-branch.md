@@ -1,5 +1,5 @@
 <purpose>
-Create a clean branch for pull requests by filtering out .planning/ commits.
+Create a clean branch for pull requests by filtering out .claude/.gsdt-planning/ commits.
 The PR branch contains only code changes — reviewers don't see GSD artifacts
 (PLAN.md, SUMMARY.md, STATE.md, CONTEXT.md, etc.).
 
@@ -48,17 +48,17 @@ Classify commits:
 git log --oneline "$TARGET".."$CURRENT_BRANCH" --no-merges
 ```
 
-For each commit, check if it ONLY touches .planning/ files:
+For each commit, check if it ONLY touches .claude/.gsdt-planning/ files:
 
 ```bash
 # For each commit hash
 FILES=$(git diff-tree --no-commit-id --name-only -r $HASH)
-ALL_PLANNING=$(echo "$FILES" | grep -v "^\.planning/" | wc -l)
+ALL_PLANNING=$(echo "$FILES" | grep -v "^\.claude/.gsdt-planning/" | wc -l)
 ```
 
 Classify:
-- **Code commits**: Touch at least one non-.planning/ file → INCLUDE
-- **Planning-only commits**: Touch only .planning/ files → EXCLUDE
+- **Code commits**: Touch at least one non-.claude/.gsdt-planning/ file → INCLUDE
+- **Planning-only commits**: Touch only .claude/.gsdt-planning/ files → EXCLUDE
 - **Mixed commits**: Touch both → INCLUDE (planning changes come along)
 
 Display analysis:
@@ -82,8 +82,8 @@ Cherry-pick only code commits (in order):
 ```bash
 for HASH in $CODE_COMMITS; do
   git cherry-pick "$HASH" --no-commit
-  # Remove any .planning/ files that came along in mixed commits
-  git rm -r --cached .planning/ 2>/dev/null || true
+  # Remove any .claude/.gsdt-planning/ files that came along in mixed commits
+  git rm -r --cached .claude/.gsdt-planning/ 2>/dev/null || true
   git commit -C "$HASH"
 done
 ```
@@ -96,8 +96,8 @@ git checkout "$CURRENT_BRANCH"
 
 <step name="verify">
 ```bash
-# Verify no .planning/ files in PR branch
-PLANNING_FILES=$(git diff --name-only "$TARGET".."$PR_BRANCH" | grep "^\.planning/" | wc -l)
+# Verify no .claude/.gsdt-planning/ files in PR branch
+PLANNING_FILES=$(git diff --name-only "$TARGET".."$PR_BRANCH" | grep "^\.claude/.gsdt-planning/" | wc -l)
 TOTAL_FILES=$(git diff --name-only "$TARGET".."$PR_BRANCH" | wc -l)
 PR_COMMITS=$(git rev-list --count "$TARGET".."$PR_BRANCH")
 ```
@@ -123,7 +123,7 @@ Or use /gsdt:ship to create the PR automatically.
 <success_criteria>
 - [ ] PR branch created from target
 - [ ] Planning-only commits excluded
-- [ ] No .planning/ files in PR branch diff
+- [ ] No .claude/.gsdt-planning/ files in PR branch diff
 - [ ] Commit messages preserved from original
 - [ ] User shown next steps
 </success_criteria>

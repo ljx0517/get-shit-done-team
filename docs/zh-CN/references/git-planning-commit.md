@@ -4,20 +4,20 @@
 
 ## 通过 CLI 提交
 
-始终使用 `gsdt-tools.cjs commit` 处理 `.planning/` 文件 — 它会自动处理 `commit_docs` 和 gitignore 检查：
+始终使用 `gsdt-tools.cjs commit` 处理 `.claude/.gsdt-planning/` 文件 — 它会自动处理 `commit_docs` 和 gitignore 检查：
 
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs({scope}): {description}" --files .planning/STATE.md .planning/ROADMAP.md
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs({scope}): {description}" --files .claude/.gsdt-planning/STATE.md .claude/.gsdt-planning/ROADMAP.md
 ```
 
-如果 `commit_docs` 为 `false` 或 `.planning/` 被 gitignore，CLI 会返回 `skipped`（带原因）。无需手动条件检查。
+如果 `commit_docs` 为 `false` 或 `.claude/.gsdt-planning/` 被 gitignore，CLI 会返回 `skipped`（带原因）。无需手动条件检查。
 
 ## 修改上次提交
 
-将 `.planning/` 文件变更合并到上次提交：
+将 `.claude/.gsdt-planning/` 文件变更合并到上次提交：
 
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "" --files .planning/codebase/*.md --amend
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "" --files .claude/.gsdt-planning/codebase/*.md --amend
 ```
 
 ## 提交消息模式
@@ -34,5 +34,5 @@ node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "" --files .planning/codebas
 ## 何时跳过
 
 - config 中 `commit_docs: false`
-- `.planning/` 被 gitignore
-- 无变更可提交（用 `git status --porcelain .planning/` 检查）
+- `.claude/.gsdt-planning/` 被 gitignore
+- 无变更可提交（用 `git status --porcelain .claude/.gsdt-planning/` 检查）

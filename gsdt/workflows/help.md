@@ -9,7 +9,7 @@ Display the complete GSD command reference. Output ONLY the reference content. D
 
 ## Quick Start
 
-1. `/gsdt:new-project` - Initialize project (includes research, requirements, roadmap)
+1. `/gsdt:auto 我想做一个...` - One-click automatic flow (capture -> decide -> initialize/plan)
 2. `/gsdt:plan-phase 1` - Create detailed plan for first phase
 3. `/gsdt:execute-phase 1` - Execute the phase
 
@@ -24,10 +24,20 @@ npx gsdt@latest
 ## Core Workflow
 
 ```
-/gsdt:new-project → /gsdt:plan-phase → /gsdt:execute-phase → repeat
+/gsdt:auto → /gsdt:plan-phase → /gsdt:execute-phase → repeat
 ```
 
 ### Project Initialization
+
+**`/gsdt:auto <idea>`**
+Default simplified entrypoint.
+
+- Natural language in, no command routing overhead
+- Automatically captures fragments and decides next action
+- Cold start auto-triggers `new-project --auto` when thresholds are met
+- After roadmap exists, auto-advances into discuss/plan chain
+
+Usage: `/gsdt:auto 我想做一个多 Agent 协作工具`
 
 **`/gsdt:new-project`**
 Initialize new project through unified flow.
@@ -38,7 +48,7 @@ One command takes you from idea to ready-for-planning:
 - Requirements definition with v1/v2/out-of-scope scoping
 - Roadmap creation with phase breakdown and success criteria
 
-Creates all `.planning/` artifacts:
+Creates all `.claude/.gsdt-planning/` artifacts:
 - `PROJECT.md` — vision and requirements
 - `config.json` — workflow mode (interactive/yolo)
 - `research/` — domain research (if selected)
@@ -46,13 +56,13 @@ Creates all `.planning/` artifacts:
 - `ROADMAP.md` — phases mapped to requirements
 - `STATE.md` — project memory
 
-Usage: `/gsdt:new-project`
+Usage: `/gsdt:new-project` (advanced/manual entrypoint)
 
 **`/gsdt:map-codebase`**
 Map an existing codebase for brownfield projects.
 
 - Analyzes codebase with parallel Explore agents
-- Creates `.planning/codebase/` with 7 focused documents
+- Creates `.claude/.gsdt-planning/codebase/` with 7 focused documents
 - Covers stack, architecture, structure, conventions, testing, integrations, concerns
 - Use before `/gsdt:new-project` on existing codebases
 
@@ -94,13 +104,13 @@ Usage: `/gsdt:list-phase-assumptions 3`
 **`/gsdt:plan-phase <number>`**
 Create detailed execution plan for a specific phase.
 
-- Generates `.planning/phases/XX-phase-name/XX-YY-PLAN.md`
+- Generates `.claude/.gsdt-planning/phases/XX-phase-name/XX-YY-PLAN.md`
 - Breaks phase into concrete, actionable tasks
 - Includes verification criteria and success measures
 - Multiple plans per phase supported (XX-01, XX-02, etc.)
 
 Usage: `/gsdt:plan-phase 1`
-Result: Creates `.planning/phases/01-foundation/01-01-PLAN.md`
+Result: Creates `.claude/.gsdt-planning/phases/01-foundation/01-01-PLAN.md`
 
 **PRD Express Path:** Pass `--prd path/to/requirements.md` to skip discuss-phase entirely. Your PRD becomes locked decisions in CONTEXT.md. Useful when you already have clear acceptance criteria.
 
@@ -139,7 +149,7 @@ Execute small, ad-hoc tasks with GSD guarantees but skip optional agents.
 
 Quick mode uses the same system with a shorter path:
 - Spawns planner + executor (skips researcher, checker, verifier by default)
-- Quick tasks live in `.planning/quick/` separate from planned phases
+- Quick tasks live in `.claude/.gsdt-planning/quick/` separate from planned phases
 - Updates STATE.md tracking (not ROADMAP.md)
 
 Flags enable additional quality steps:
@@ -151,7 +161,7 @@ Flags are composable: `--discuss --research --full` gives the complete quality p
 
 Usage: `/gsdt:quick`
 Usage: `/gsdt:quick --research --full`
-Result: Creates `.planning/quick/NNN-slug/PLAN.md`, `.planning/quick/NNN-slug/SUMMARY.md`
+Result: Creates `.claude/.gsdt-planning/quick/NNN-slug/PLAN.md`, `.claude/.gsdt-planning/quick/NNN-slug/SUMMARY.md`
 
 ---
 
@@ -266,10 +276,10 @@ Usage: `/gsdt:pause-work`
 Systematic debugging with persistent state across context resets.
 
 - Gathers symptoms through adaptive questioning
-- Creates `.planning/debug/[slug].md` to track investigation
+- Creates `.claude/.gsdt-planning/debug/[slug].md` to track investigation
 - Investigates using scientific method (evidence → hypothesis → test)
 - Survives `/clear` — run `/gsdt:debug` with no args to resume
-- Archives resolved issues to `.planning/debug/resolved/`
+- Archives resolved issues to `.claude/.gsdt-planning/debug/resolved/`
 
 Usage: `/gsdt:debug "login button doesn't work"`
 Usage: `/gsdt:debug` (resume active session)
@@ -279,7 +289,7 @@ Usage: `/gsdt:debug` (resume active session)
 **`/gsdt:note <text>`**
 Zero-friction idea capture — one command, instant save, no questions.
 
-- Saves timestamped note to `.planning/notes/` (or `~/.claude/notes/` globally)
+- Saves timestamped note to `.claude/.gsdt-planning/notes/` (or `~/.claude/notes/` globally)
 - Three subcommands: append (default), list, promote
 - Promote converts a note into a structured todo
 - Works without a project (falls back to global scope)
@@ -295,7 +305,7 @@ Usage: `/gsdt:note --global cross-project idea`
 Capture idea or task as todo from current conversation.
 
 - Extracts context from conversation (or uses provided description)
-- Creates structured todo file in `.planning/todos/pending/`
+- Creates structured todo file in `.claude/.gsdt-planning/todos/pending/`
 - Infers area from file paths for grouping
 - Checks for duplicates before creating
 - Updates STATE.md todo count
@@ -356,9 +366,9 @@ Usage: `/gsdt:review --phase 3 --all`
 ---
 
 **`/gsdt:pr-branch [target]`**
-Create a clean branch for pull requests by filtering out .planning/ commits.
+Create a clean branch for pull requests by filtering out .claude/.gsdt-planning/ commits.
 
-- Classifies commits: code-only (include), planning-only (exclude), mixed (include sans .planning/)
+- Classifies commits: code-only (include), planning-only (exclude), mixed (include sans .claude/.gsdt-planning/)
 - Cherry-picks code commits onto a clean branch
 - Reviewers see only code changes, no GSD artifacts
 
@@ -415,7 +425,7 @@ Configure workflow toggles and model profile interactively.
 
 - Toggle researcher, plan checker, verifier agents
 - Select model profile (quality/balanced/budget/inherit)
-- Updates `.planning/config.json`
+- Updates `.claude/.gsdt-planning/config.json`
 
 Usage: `/gsdt:settings`
 
@@ -434,10 +444,10 @@ Usage: `/gsdt:set-profile budget`
 **`/gsdt:cleanup`**
 Archive accumulated phase directories from completed milestones.
 
-- Identifies phases from completed milestones still in `.planning/phases/`
+- Identifies phases from completed milestones still in `.claude/.gsdt-planning/phases/`
 - Shows dry-run summary before moving anything
-- Moves phase dirs to `.planning/milestones/v{X.Y}-phases/`
-- Use after multiple milestones to reduce `.planning/phases/` clutter
+- Moves phase dirs to `.claude/.gsdt-planning/milestones/v{X.Y}-phases/`
+- Use after multiple milestones to reduce `.claude/.gsdt-planning/phases/` clutter
 
 Usage: `/gsdt:cleanup`
 
@@ -466,7 +476,7 @@ Usage: `/gsdt:join-discord`
 ## Files & Structure
 
 ```
-.planning/
+.claude/.gsdt-planning/
 ├── PROJECT.md            # Project vision
 ├── ROADMAP.md            # Current phase breakdown
 ├── STATE.md              # Project memory & context
@@ -502,7 +512,7 @@ Usage: `/gsdt:join-discord`
 
 ## Workflow Modes
 
-Set during `/gsdt:new-project`:
+Set during `/gsdt:auto` (which auto-triggers `/gsdt:new-project`) or direct `/gsdt:new-project`:
 
 **Interactive Mode**
 
@@ -516,24 +526,24 @@ Set during `/gsdt:new-project`:
 - Executes plans without confirmation
 - Only stops for critical checkpoints
 
-Change anytime by editing `.planning/config.json`
+Change anytime by editing `.claude/.gsdt-planning/config.json`
 
 ## Planning Configuration
 
-Configure how planning artifacts are managed in `.planning/config.json`:
+Configure how planning artifacts are managed in `.claude/.gsdt-planning/config.json`:
 
 **`planning.commit_docs`** (default: `true`)
 - `true`: Planning artifacts committed to git (standard workflow)
 - `false`: Planning artifacts kept local-only, not committed
 
 When `commit_docs: false`:
-- Add `.planning/` to your `.gitignore`
+- Add `.claude/.gsdt-planning/` to your `.gitignore`
 - Useful for OSS contributions, client projects, or keeping planning private
 - All planning files still work normally, just not tracked in git
 
 **`planning.search_gitignored`** (default: `false`)
 - `true`: Add `--no-ignore` to broad ripgrep searches
-- Only needed when `.planning/` is gitignored and you want project-wide searches to include it
+- Only needed when `.claude/.gsdt-planning/` is gitignored and you want project-wide searches to include it
 
 Example config:
 ```json
@@ -550,7 +560,7 @@ Example config:
 **Starting a new project:**
 
 ```
-/gsdt:new-project        # Unified flow: questioning → research → requirements → roadmap
+/gsdt:auto 我想做一个...   # One-click automatic start
 /clear
 /gsdt:plan-phase 1       # Create plans for first phase
 /clear
@@ -599,8 +609,8 @@ Example config:
 
 ## Getting Help
 
-- Read `.planning/PROJECT.md` for project vision
-- Read `.planning/STATE.md` for current context
-- Check `.planning/ROADMAP.md` for phase status
+- Read `.claude/.gsdt-planning/PROJECT.md` for project vision
+- Read `.claude/.gsdt-planning/STATE.md` for current context
+- Check `.claude/.gsdt-planning/ROADMAP.md` for phase status
 - Run `/gsdt:progress` to check where you're up to
 </reference>

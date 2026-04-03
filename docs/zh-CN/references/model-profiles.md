@@ -42,7 +42,7 @@
 编排器在生成代理前解析模型：
 
 ```
-1. 读取 .planning/config.json
+1. 读取 .claude/.gsdt-planning/config.json
 2. 检查 model_overrides 是否有代理特定覆盖
 3. 如果没有覆盖，在配置表中查找代理
 4. 将 model 参数传递给 Task 调用
@@ -68,7 +68,7 @@
 
 运行时：`/gsdt:set-profile <profile>`
 
-项目默认值：在 `.planning/config.json` 中设置：
+项目默认值：在 `.claude/.gsdt-planning/config.json` 中设置：
 ```json
 {
   "model_profile": "balanced"

@@ -9,7 +9,7 @@
 // making direct edits that bypass state tracking.
 //
 // Enable via config: hooks.workflow_guard: true (default: false)
-// Only triggers on Write/Edit tool calls to non-.planning/ files.
+// Only triggers on Write/Edit tool calls to non-.gsdt-planning/ files.
 
 const fs = require('fs');
 const path = require('path');
@@ -39,8 +39,8 @@ process.stdin.on('end', () => {
     // Check the file being edited
     const filePath = data.tool_input?.file_path || data.tool_input?.path || '';
 
-    // Allow edits to .planning/ files (GSD state management)
-    if (filePath.includes('.planning/') || filePath.includes('.planning\\')) {
+    // Allow edits to .gsdt-planning/ files (GSD state management)
+    if (filePath.includes('.gsdt-planning/') || filePath.includes('.gsdt-planning\\')) {
       process.exit(0);
     }
 
@@ -59,7 +59,7 @@ process.stdin.on('end', () => {
 
     // Check if workflow guard is enabled
     const cwd = data.cwd || process.cwd();
-    const configPath = path.join(cwd, '.planning', 'config.json');
+    const configPath = path.join(cwd, '.gsdt-planning', 'config.json');
     if (fs.existsSync(configPath)) {
       try {
         const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
@@ -73,7 +73,7 @@ process.stdin.on('end', () => {
       process.exit(0); // No GSD project — don't guard
     }
 
-    // If we get here: GSD project, guard enabled, file edit outside .planning/,
+    // If we get here: GSD project, guard enabled, file edit outside .gsdt-planning/,
     // not in a subagent context. Inject advisory warning.
     const output = {
       hookSpecificOutput: {

@@ -222,7 +222,7 @@ claude --dangerously-skip-permissions
 
 你审核并批准路线图后，就可以开始构建。
 
-**生成：** `PROJECT.md`、`REQUIREMENTS.md`、`ROADMAP.md`、`STATE.md`、`.planning/research/`
+**生成：** `PROJECT.md`、`REQUIREMENTS.md`、`ROADMAP.md`、`STATE.md`、`.claude/.gsdt-planning/research/`
 
 ---
 
@@ -389,7 +389,7 @@ claude --dangerously-skip-permissions
 
 - **相同的代理体系**：同样是 planner + executor，质量不降
 - **跳过可选步骤**：默认不启用 research、plan checker、verifier
-- **独立跟踪**：数据存放在 `.planning/quick/`，不和 phase 混在一起
+- **独立跟踪**：数据存放在 `.claude/.gsdt-planning/quick/`，不和 phase 混在一起
 
 **`--discuss` 参数：** 在规划前先进行轻量讨论，理清灰区。
 
@@ -404,7 +404,7 @@ claude --dangerously-skip-permissions
 > What do you want to do? "Add dark mode toggle to settings"
 ```
 
-**生成：** `.planning/quick/001-add-dark-mode-toggle/PLAN.md`、`SUMMARY.md`
+**生成：** `.claude/.gsdt-planning/quick/001-add-dark-mode-toggle/PLAN.md`、`SUMMARY.md`
 
 ---
 
@@ -566,7 +566,7 @@ lmn012o feat(08-02): create registration endpoint
 | 命令 | 作用 |
 |------|------|
 | `/gsdt:review` | 对当前阶段或分支进行跨 AI 同行评审 |
-| `/gsdt:pr-branch` | 创建过滤 `.planning/` 提交的干净 PR 分支 |
+| `/gsdt:pr-branch` | 创建过滤 `.claude/.gsdt-planning/` 提交的干净 PR 分支 |
 | `/gsdt:audit-uat` | 审计验证债务——找出缺少 UAT 的阶段 |
 
 ### 积压
@@ -595,7 +595,7 @@ lmn012o feat(08-02): create registration endpoint
 | `/gsdt:do <text>` | 将自由文本自动路由到正确的 GSD 命令 |
 | `/gsdt:note <text>` | 零摩擦想法捕捉——追加、列出或提升为待办 |
 | `/gsdt:quick [--full] [--discuss] [--research]` | 以 GSD 保障执行临时任务（`--full` 增加计划检查和验证，`--discuss` 先补上下文，`--research` 在规划前先调研） |
-| `/gsdt:health [--repair]` | 校验 `.planning/` 目录完整性，带 `--repair` 时自动修复 |
+| `/gsdt:health [--repair]` | 校验 `.claude/.gsdt-planning/` 目录完整性，带 `--repair` 时自动修复 |
 | `/gsdt:stats` | 显示项目统计——阶段、计划、需求、git 指标 |
 | `/gsdt:profile-user [--questionnaire] [--refresh]` | 从会话分析生成开发者行为档案，用于个性化响应 |
 
@@ -605,7 +605,7 @@ lmn012o feat(08-02): create registration endpoint
 
 ## 配置
 
-GSD 将项目设置保存在 `.planning/config.json`。你可以在 `/gsdt:new-project` 时配置，也可以稍后通过 `/gsdt:settings` 修改。完整的配置 schema、工作流开关、git branching 选项以及各代理的模型分配，请查看[用户指南](docs/USER-GUIDE.md#configuration-reference)。
+GSD 将项目设置保存在 `.claude/.gsdt-planning/config.json`。你可以在 `/gsdt:new-project` 时配置，也可以稍后通过 `/gsdt:settings` 修改。完整的配置 schema、工作流开关、git branching 选项以及各代理的模型分配，请查看[用户指南](docs/USER-GUIDE.md#configuration-reference)。
 
 ### 核心设置
 
@@ -657,7 +657,7 @@ GSD 将项目设置保存在 `.planning/config.json`。你可以在 `/gsdt:new-p
 | Setting | Default | 作用 |
 |---------|---------|------|
 | `parallelization.enabled` | `true` | 是否并行执行独立计划 |
-| `planning.commit_docs` | `true` | 是否将 `.planning/` 纳入 git 跟踪 |
+| `planning.commit_docs` | `true` | 是否将 `.claude/.gsdt-planning/` 纳入 git 跟踪 |
 | `hooks.context_warnings` | `true` | 显示上下文窗口使用量警告 |
 
 ### Git 分支策略

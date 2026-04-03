@@ -13,7 +13,7 @@ async function createTempProject(): Promise<string> {
 }
 
 async function createPlanningDir(projectDir: string, files: Record<string, string>): Promise<void> {
-  const planningDir = join(projectDir, '.planning');
+  const planningDir = join(projectDir, '.claude/.gsdt-planning');
   await mkdir(planningDir, { recursive: true });
   for (const [filename, content] of Object.entries(files)) {
     await writeFile(join(planningDir, filename), content, 'utf-8');
@@ -149,7 +149,7 @@ describe('ContextEngine', () => {
     });
 
     it('warns for missing required files', async () => {
-      // Empty .planning dir — STATE.md is required for all phases
+      // Empty .claude/.gsdt-planning dir — STATE.md is required for all phases
       await createPlanningDir(projectDir, {});
 
       const logger = makeMockLogger();
@@ -162,8 +162,8 @@ describe('ContextEngine', () => {
       );
     });
 
-    it('handles missing .planning directory gracefully', async () => {
-      // No .planning dir at all
+    it('handles missing .claude/.gsdt-planning directory gracefully', async () => {
+      // No .claude/.gsdt-planning dir at all
       const engine = new ContextEngine(projectDir);
       const files = await engine.resolveContextFiles(PhaseType.Execute);
 

@@ -40,6 +40,7 @@ Always use the exact name from this list — do not fall back to 'general-purpos
 - gsdt-codebase-mapper — Maps project structure and dependencies
 - gsdt-integration-checker — Checks cross-phase integration
 - gsdt-nyquist-auditor — Validates verification coverage
+- gsdt-review-fixer — Applies safe_auto Assess fixes and returns resolved findings
 - gsdt-ui-researcher — Researches UI/UX approaches
 - gsdt-ui-checker — Reviews UI implementation quality
 - gsdt-ui-auditor — Audits UI against design requirements
@@ -70,7 +71,7 @@ Parse JSON for: `executor_model`, `verifier_model`, `commit_docs`, `parallelizat
 
 **If `phase_found` is false:** Error — phase directory not found.
 **If `plan_count` is 0:** Error — no plans found in phase.
-**If `state_exists` is false but `.planning/` exists:** Offer reconstruct or continue.
+**If `state_exists` is false but `.claude/.gsdt-planning/` exists:** Offer reconstruct or continue.
 
 When `parallelization` is false, plans within a wave execute sequentially.
 
@@ -252,9 +253,9 @@ Execute each selected wave in sequence. Within a wave: parallel if `PARALLELIZAT
        <files_to_read>
        Read these files at execution start using the Read tool:
        - {phase_dir}/{plan_file} (Plan)
-       - .planning/PROJECT.md (Project context — core value, requirements, evolution rules)
-       - .planning/STATE.md (State)
-       - .planning/config.json (Config, if exists)
+       - .claude/.gsdt-planning/PROJECT.md (Project context — core value, requirements, evolution rules)
+       - .claude/.gsdt-planning/STATE.md (State)
+       - .claude/.gsdt-planning/config.json (Config, if exists)
        - ./CLAUDE.md (Project instructions, if exists — follow project-specific guidelines and coding conventions)
        - .claude/skills/ or .agents/skills/ (Project skills, if either exists — list skills, read SKILL.md for each, follow relevant rules during implementation)
        </files_to_read>
@@ -509,13 +510,13 @@ For each gap that has a `debug_session:` field:
 - Update frontmatter `updated:` timestamp
 - Move to resolved directory:
 ```bash
-mkdir -p .planning/debug/resolved
-mv .planning/debug/{slug}.md .planning/debug/resolved/
+mkdir -p .claude/.gsdt-planning/debug/resolved
+mv .claude/.gsdt-planning/debug/{slug}.md .claude/.gsdt-planning/debug/resolved/
 ```
 
 **6. Commit updated artifacts:**
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs(phase-${PARENT_PHASE}): resolve UAT gaps and debug sessions after ${PHASE_NUMBER} gap closure" --files .planning/phases/*${PARENT_PHASE}*/*-UAT.md .planning/debug/resolved/*.md
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs(phase-${PARENT_PHASE}): resolve UAT gaps and debug sessions after ${PHASE_NUMBER} gap closure" --files .claude/.gsdt-planning/phases/*${PARENT_PHASE}*/*-UAT.md .claude/.gsdt-planning/debug/resolved/*.md
 ```
 </step>
 
@@ -527,7 +528,7 @@ Run prior phases' test suites to catch cross-phase regressions BEFORE verificati
 **Step 1: Discover prior phases' test files**
 ```bash
 # Find all VERIFICATION.md files from prior phases in current milestone
-PRIOR_VERIFICATIONS=$(find .planning/phases/ -name "*-VERIFICATION.md" ! -path "*${PHASE_NUMBER}*" 2>/dev/null)
+PRIOR_VERIFICATIONS=$(find .claude/.gsdt-planning/phases/ -name "*-VERIFICATION.md" ! -path "*${PHASE_NUMBER}*" 2>/dev/null)
 ```
 
 **Step 2: Extract test file lists from prior verifications**
@@ -577,7 +578,16 @@ Options:
 3. Abort phase — roll back and re-plan
 ```
 
-Use AskUserQuestion to present the options.
+Before AskUserQuestion, immediately emit a `compound candidate event` in the background for each regression failure:
+
+```bash
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" compound dispatch \
+  --event-file "$EVENT_FILE" \
+  >/tmp/gsdt-execute-regression-compound.log 2>&1 &
+```
+
+This is candidate-only capture unless the regression artifact already includes a confirmed root cause.
+Then use AskUserQuestion to present the options.
 </step>
 
 <step name="verify_phase_goal">
@@ -609,7 +619,7 @@ grep "^status:" "$PHASE_DIR"/*-VERIFICATION.md | cut -d: -f2 | tr -d ' '
 
 | Status | Action |
 |--------|--------|
-| `passed` | → update_roadmap |
+| `passed` | → assess_phase |
 | `human_needed` | Present items for human testing, get approval or feedback |
 | `gaps_found` | Present gap summary, offer `/gsdt:plan-phase {phase} --gaps ${GSD_WS}` |
 
@@ -697,6 +707,95 @@ Also: `/gsdt:verify-work {X} ${GSD_WS}` — manual testing first
 ```
 
 Gap closure cycle: `/gsdt:plan-phase {X} --gaps ${GSD_WS}` reads VERIFICATION.md → creates gap plans with `gap_closure: true` → user runs `/gsdt:execute-phase {X} --gaps-only ${GSD_WS}` → verifier re-runs.
+
+Before presenting the gap-closure path, emit a `compound candidate event` for each verification gap:
+
+```bash
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" compound dispatch \
+  --event-file "$EVENT_FILE" \
+  >/tmp/gsdt-execute-gap-compound.log 2>&1 &
+```
+
+Default event shape:
+
+- `source: execute-phase`
+- `status: candidate`
+- `problem: verifier gap summary`
+- `symptoms: [failed must-have or regression detail]`
+- `severity: major` (or verifier-provided severity)
+- `phase: current phase`
+- `tags: [execute-phase, verification-gap, compound-candidate]`
+
+If the verifier already produced a concrete root cause, dispatch may upgrade the event directly to `diagnosed`.
+</step>
+
+<step name="assess_phase">
+Run internal Assess before marking the phase complete. This keeps the user-facing flow
+unchanged while adding automatic pre-shipment quality closure for the current phase only.
+
+Read and follow `~/.claude/gsdt/workflows/assess.md`.
+
+Prepare phase-scoped reviewer output automatically:
+
+- infer intent from ROADMAP, REQUIREMENTS, VERIFICATION, SUMMARY, and CONTEXT
+- auto-select always-on plus conditional reviewers from the Assess persona catalog
+- spawn reviewers in parallel using the Assess subagent template
+- write their merged JSON array to `$ASSESS_REVIEWERS_JSON`
+
+Do not ask the user to pick reviewers or clarify intent inside this step.
+
+Run `review assess --phase "${PHASE_NUMBER}"` in `internal_auto` mode:
+
+```bash
+ASSESS_REVIEWERS_JSON=$(mktemp /tmp/gsdt-assess-reviewers.XXXXXX.json)
+ASSESS_RESULT_JSON=$(mktemp /tmp/gsdt-assess-result.XXXXXX.json)
+
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" review assess \
+  --phase "${PHASE_NUMBER}" \
+  --mode internal_auto \
+  --json \
+  --reviewer-output-file "$ASSESS_REVIEWERS_JSON" \
+  > "$ASSESS_RESULT_JSON"
+```
+
+If `safe_auto` findings exist, allow one bounded `Task(subagent_type="gsdt-review-fixer", ...)` pass before reading the final Assess artifact.
+Never auto-apply `gated_auto` or `manual` findings here.
+
+Read `{phase_dir}/{phase_num}-ASSESS.json` and branch on `verdict`:
+
+| Assess verdict | Action |
+|----------------|--------|
+| `clean` | → update_roadmap |
+| `auto_fixed` | → update_roadmap |
+| `blocking_findings` | Present assess gap summary, route back into existing `gap_closure` cycle |
+| `degraded` | Stop and report why assess could not complete |
+
+If `blocking_findings`:
+
+```bash
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" compound dispatch \
+  --event-file "$EVENT_FILE" \
+  >/tmp/gsdt-assess-compound.log 2>&1 &
+```
+
+Use assess gaps as the next `gap_closure` input:
+
+```
+## ⚠ Phase {X}: {Name} — Assess Blocking Findings
+
+**Report:** {phase_dir}/{phase_num}-ASSESS.md
+
+### Blocking Findings
+{Summaries from ASSESS.md}
+
+---
+## ▶ Next Up
+
+`/gsdt:plan-phase {X} --gaps ${GSD_WS}`
+```
+
+This preserves the current gap loop:
+`/gsdt:plan-phase {X} --gaps` -> gap_closure plans -> `/gsdt:execute-phase {X} --gaps-only` -> verifier -> assess.
 </step>
 
 <step name="update_roadmap">
@@ -726,7 +825,7 @@ These items are tracked and will appear in `/gsdt:progress` and `/gsdt:audit-uat
 ```
 
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs(phase-{X}): complete phase execution" --files .planning/ROADMAP.md .planning/STATE.md .planning/REQUIREMENTS.md {phase_dir}/*-VERIFICATION.md
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs(phase-{X}): complete phase execution" --files .claude/.gsdt-planning/ROADMAP.md .claude/.gsdt-planning/STATE.md .claude/.gsdt-planning/REQUIREMENTS.md {phase_dir}/*-VERIFICATION.md {phase_dir}/*-ASSESS.md {phase_dir}/*-ASSESS.json
 ```
 </step>
 
@@ -736,7 +835,7 @@ node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs(phase-{X}): complete p
 PROJECT.md tracks validated requirements, decisions, and current state. Without this step,
 PROJECT.md falls behind silently over multiple phases.
 
-1. Read `.planning/PROJECT.md`
+1. Read `.claude/.gsdt-planning/PROJECT.md`
 2. If the file exists and has a `## Validated Requirements` or `## Requirements` section:
    - Move any requirements validated by this phase from Active → Validated
    - Add a brief note: `Validated in Phase {X}: {Name}`
@@ -746,10 +845,10 @@ PROJECT.md falls behind silently over multiple phases.
 5. Commit the change:
 
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs(phase-{X}): evolve PROJECT.md after phase completion" --files .planning/PROJECT.md
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs(phase-{X}): evolve PROJECT.md after phase completion" --files .claude/.gsdt-planning/PROJECT.md
 ```
 
-**Skip this step if** `.planning/PROJECT.md` does not exist.
+**Skip this step if** `.claude/.gsdt-planning/PROJECT.md` does not exist.
 </step>
 
 <step name="offer_next">

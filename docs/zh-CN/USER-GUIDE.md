@@ -229,7 +229,7 @@
 
 ## 配置参考
 
-GSD 在 `.planning/config.json` 中存储项目设置。在 `/gsdt:new-project` 期间配置或稍后用 `/gsdt:settings` 更新。
+GSD 在 `.claude/.gsdt-planning/config.json` 中存储项目设置。在 `/gsdt:new-project` 期间配置或稍后用 `/gsdt:settings` 更新。
 
 ### 完整 config.json 模式
 
@@ -268,10 +268,10 @@ GSD 在 `.planning/config.json` 中存储项目设置。在 `/gsdt:new-project` 
 
 | 设置 | 选项 | 默认值 | 控制内容 |
 |---------|---------|---------|------------------|
-| `planning.commit_docs` | `true`, `false` | `true` | `.planning/` 文件是否提交到 git |
-| `planning.search_gitignored` | `true`, `false` | `false` | 在广泛搜索中添加 `--no-ignore` 以包含 `.planning/` |
+| `planning.commit_docs` | `true`, `false` | `true` | `.claude/.gsdt-planning/` 文件是否提交到 git |
+| `planning.search_gitignored` | `true`, `false` | `false` | 在广泛搜索中添加 `--no-ignore` 以包含 `.claude/.gsdt-planning/` |
 
-> **注意：** 如果 `.planning/` 在 `.gitignore` 中，无论配置值如何，`commit_docs` 自动为 `false`。
+> **注意：** 如果 `.claude/.gsdt-planning/` 在 `.gitignore` 中，无论配置值如何，`commit_docs` 自动为 `false`。
 
 ### 工作流开关
 
@@ -407,7 +407,7 @@ claude --dangerously-skip-permissions
 
 ### "项目已初始化"
 
-你运行了 `/gsdt:new-project` 但 `.planning/PROJECT.md` 已存在。这是安全检查。如果你想重新开始，先删除 `.planning/` 目录。
+你运行了 `/gsdt:new-project` 但 `.claude/.gsdt-planning/PROJECT.md` 已存在。这是安全检查。如果你想重新开始，先删除 `.claude/.gsdt-planning/` 目录。
 
 ### 长会话期间上下文退化
 
@@ -435,7 +435,7 @@ claude --dangerously-skip-permissions
 
 ### 处理敏感/私有项目
 
-在 `/gsdt:new-project` 期间或通过 `/gsdt:settings` 设置 `commit_docs: false`。将 `.planning/` 添加到 `.gitignore`。规划工件保留在本地，从不接触 git。
+在 `/gsdt:new-project` 期间或通过 `/gsdt:settings` 设置 `commit_docs: false`。将 `.claude/.gsdt-planning/` 添加到 `.gitignore`。规划工件保留在本地，从不接触 git。
 
 ### GSD 更新覆盖了我的本地更改
 
@@ -468,7 +468,7 @@ claude --dangerously-skip-permissions
 供参考，这是 GSD 在你的项目中创建的内容：
 
 ```
-.planning/
+.claude/.gsdt-planning/
   PROJECT.md              # 项目愿景和上下文（始终加载）
   REQUIREMENTS.md         # 界定 v1/v2 需求及 ID
   ROADMAP.md              # 带状态跟踪的阶段分解

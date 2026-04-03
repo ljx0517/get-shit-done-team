@@ -102,11 +102,11 @@ export interface InitNewProjectInfo {
   /** Whether docs should be committed after generation. */
   commit_docs: boolean;
 
-  /** Whether .planning/PROJECT.md already exists. */
+  /** Whether .claude/.gsdt-planning/PROJECT.md already exists. */
   project_exists: boolean;
-  /** Whether a .planning/codebase directory exists. */
+  /** Whether a .claude/.gsdt-planning/codebase directory exists. */
   has_codebase_map: boolean;
-  /** Whether .planning/ directory exists at all. */
+  /** Whether .claude/.gsdt-planning/ directory exists at all. */
   planning_exists: boolean;
 
   /** Whether source code files were detected in the project. */
@@ -128,7 +128,7 @@ export interface InitNewProjectInfo {
   /** Whether Exa Search API key is available. */
   exa_search_available: boolean;
 
-  /** Relative path to PROJECT.md (always '.planning/PROJECT.md'). */
+  /** Relative path to PROJECT.md (always '.claude/.gsdt-planning/PROJECT.md'). */
   project_path: string;
 
   /** Absolute project root path (injected by withProjectRoot). */

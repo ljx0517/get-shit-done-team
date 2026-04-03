@@ -12,9 +12,9 @@ Valid GSD subagent types (use exact names — do not fall back to 'general-purpo
 </available_agent_types>
 
 <paths>
-DEBUG_DIR=.planning/debug
+DEBUG_DIR=.claude/.gsdt-planning/debug
 
-Debug files use the `.planning/debug/` path (hidden directory with leading dot).
+Debug files use the `.claude/.gsdt-planning/debug/` path (hidden directory with leading dot).
 </paths>
 
 <core_principle>
@@ -90,7 +90,7 @@ For each gap, fill the debug-subagent-prompt template and spawn:
 
 ```
 Task(
-  prompt=filled_debug_subagent_prompt + "\n\n<files_to_read>\n- {phase_dir}/{phase_num}-UAT.md\n- .planning/STATE.md\n</files_to_read>\n${AGENT_SKILLS_DEBUGGER}",
+  prompt=filled_debug_subagent_prompt + "\n\n<files_to_read>\n- {phase_dir}/{phase_num}-UAT.md\n- .claude/.gsdt-planning/STATE.md\n</files_to_read>\n${AGENT_SKILLS_DEBUGGER}",
   subagent_type="gsdt-debugger",
   isolation="worktree",
   description="Debug: {truth_short}"
@@ -163,14 +163,14 @@ For each gap in the Gaps section, add artifacts and missing fields:
   missing:
     - "Add commentCount to useEffect dependency array"
     - "Trigger re-render when new comment added"
-  debug_session: .planning/debug/comment-not-refreshing.md
+  debug_session: .claude/.gsdt-planning/debug/comment-not-refreshing.md
 ```
 
 Update status in frontmatter to "diagnosed".
 
 Commit the updated UAT.md:
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs({phase_num}): add root causes from diagnosis" --files ".planning/phases/XX-name/{phase_num}-UAT.md"
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs({phase_num}): add root causes from diagnosis" --files ".claude/.gsdt-planning/phases/XX-name/{phase_num}-UAT.md"
 ```
 </step>
 
@@ -196,6 +196,47 @@ Proceeding to plan fixes...
 
 Return to verify-work orchestrator for automatic planning.
 Do NOT offer manual next steps - verify-work handles the rest.
+</step>
+
+<step name="trigger_compound_learning">
+**Trigger Compound Learning (后台自动，不阻塞)**
+
+**时机**: 诊断完成且有具体根因时
+
+**关键**: 使用后台执行 (`&`)，完全不阻塞用户流程
+
+```bash
+# 对每个有 root cause 的 gap，写入结构化事件并走统一 compound dispatch
+for gap in "${GAPS[@]}"; do
+  if [ -n "$gap.root_cause" ] && [ "$gap.root_cause" != "Investigation inconclusive" ]; then
+    EVENT_FILE=$(mktemp "${TMPDIR:-/tmp}/gsdt-compound-${gap.slug}.XXXXXX.json")
+
+    # EVENT_FILE 内容需要包含:
+    # {
+    #   "source": "diagnose-issues",
+    #   "status": "diagnosed",
+    #   "problem": "$gap.truth",
+    #   "symptoms": ["$gap.reason"],
+    #   "root_cause": "$gap.root_cause",
+    #   "severity": "$gap.severity",
+    #   "files": $gap.files,
+    #   "debug_session": "$gap.debug_session",
+    #   "phase": "$PHASE_NUMBER",
+    #   "tags": ["uat", "auto-captured", "diagnose-issues"]
+    # }
+
+    node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" compound dispatch \
+      --event-file "$EVENT_FILE" \
+      >/tmp/gsdt-compound-${gap.slug}.log 2>&1 &
+  fi
+done
+
+# 立即返回，用户无感知
+echo "◆ Knowledge auto-captured (background)"
+```
+
+**用户体验**: 完全无感知，知识在后台自动积累。
+**实现约束**: diagnose-issues 不再直接依赖 `gsdt-compound` subagent，而是统一走 `compound dispatch` 单写管道。
 </step>
 
 </process>

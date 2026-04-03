@@ -1,5 +1,5 @@
 /**
- * Context engine — resolves which .planning/ state files exist per phase type.
+ * Context engine — resolves which .claude/.gsdt-planning/ state files exist per phase type.
  *
  * Different phases need different subsets of context files. The execute phase
  * only needs STATE.md + config.json (minimal). Research needs STATE.md +
@@ -10,13 +10,14 @@
  */
 
 import { readFile, access } from 'node:fs/promises';
-import { join } from 'node:path';
 import { constants } from 'node:fs';
+import { join } from 'node:path';
 
 import type { ContextFiles } from './types.js';
 import { PhaseType } from './types.js';
 import type { GSDLogger } from './logger.js';
 import { ClassifyContextLoader } from './classify-context-loader.js';
+import { resolvePlanningDir } from './path-config.js';
 
 // ─── File manifest per phase ─────────────────────────────────────────────────
 
@@ -73,11 +74,13 @@ const PHASE_FILE_MANIFEST: Record<PhaseType, FileSpec[]> = {
 // ─── ContextEngine class ─────────────────────────────────────────────────────
 
 export class ContextEngine {
+  private readonly projectDir: string;
   private readonly planningDir: string;
   private readonly logger?: GSDLogger;
 
   constructor(projectDir: string, logger?: GSDLogger) {
-    this.planningDir = join(projectDir, '.planning');
+    this.projectDir = projectDir;
+    this.planningDir = resolvePlanningDir(projectDir);
     this.logger = logger;
   }
 
@@ -122,10 +125,9 @@ export class ContextEngine {
    */
   private async resolveClassifyContext(): Promise<ContextFiles> {
     const result: ContextFiles = {};
-    const projectDir = this.planningDir.replace('/.planning', '');
 
     // Use the skill to determine what context is needed
-    const { files } = await ClassifyContextLoader.loadFiles(projectDir);
+    const { files } = await ClassifyContextLoader.loadFiles(this.projectDir);
 
     // Map skill output keys to ContextFiles format
     if (files.existing_project) {

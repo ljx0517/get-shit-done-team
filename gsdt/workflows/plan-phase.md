@@ -47,7 +47,7 @@ Extract `--prd <filepath>` from $ARGUMENTS. If present, set PRD_FILE to the file
 
 **If `phase_found` is false:** Validate phase exists in ROADMAP.md. If valid, create the directory using `phase_slug` and `padded_phase` from init:
 ```bash
-mkdir -p ".planning/phases/${padded_phase}-${phase_slug}"
+mkdir -p ".claude/.gsdt-planning/phases/${padded_phase}-${phase_slug}"
 ```
 
 **Existing artifacts from init:** `has_research`, `has_plans`, `plan_count`.
@@ -362,7 +362,7 @@ test -f "${PHASE_DIR}/${PADDED_PHASE}-VALIDATION.md" && echo "VALIDATION_CREATED
 
 ## 5.6. UI Design Contract Gate
 
-> Skip if `workflow.ui_phase` is explicitly `false` AND `workflow.ui_safety_gate` is explicitly `false` in `.planning/config.json`. If keys are absent, treat as enabled.
+> Skip if `workflow.ui_phase` is explicitly `false` AND `workflow.ui_safety_gate` is explicitly `false` in `.claude/.gsdt-planning/config.json`. If keys are absent, treat as enabled.
 
 ```bash
 UI_PHASE_CFG=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" config-get workflow.ui_phase 2>/dev/null || echo "true")
@@ -751,7 +751,7 @@ Plans ready. Launching execute-phase...
 
 Launch execute-phase using the Skill tool to avoid nested Task sessions (which cause runtime freezes due to deep agent nesting):
 ```
-Skill(skill="gsd:execute-phase", args="${PHASE} --auto --no-transition ${GSD_WS}")
+Skill(skill="gsdt:execute-phase", args="${PHASE} --auto --no-transition ${GSD_WS}")
 ```
 
 The `--no-transition` flag tells execute-phase to return status after verification instead of chaining further. This keeps the auto-advance chain flat — each phase runs at the same nesting level rather than spawning deeper Task agents.
@@ -810,7 +810,7 @@ Verification: {Passed | Passed with override | Skipped}
 ───────────────────────────────────────────────────────────────
 
 **Also available:**
-- cat .planning/phases/{phase-dir}/*-PLAN.md — review plans
+- cat .claude/.gsdt-planning/phases/{phase-dir}/*-PLAN.md — review plans
 - /gsdt:plan-phase {X} --research — re-research first
 - /gsdt:review --phase {X} --all — peer review plans with external AIs
 - /gsdt:plan-phase {X} --reviews — replan incorporating review feedback
@@ -843,7 +843,7 @@ If freezes persist, try `--skip-research` to reduce the agent chain from 3 to 2 
 </windows_troubleshooting>
 
 <success_criteria>
-- [ ] .planning/ directory validated
+- [ ] .claude/.gsdt-planning/ directory validated
 - [ ] Phase validated against roadmap
 - [ ] Phase directory created if needed
 - [ ] CONTEXT.md loaded early (step 4) and passed to ALL agents

@@ -22,19 +22,19 @@ function writeRoadmap(tmpDir, phases) {
   }).join('\n');
 
   const content = `# Roadmap\n\n## Progress\n\n${checklist}\n\n${sections}`;
-  fs.writeFileSync(path.join(tmpDir, '.planning', 'ROADMAP.md'), content);
+  fs.writeFileSync(path.join(tmpDir, '.claude/.gsdt-planning', 'ROADMAP.md'), content);
 }
 
 // Helper: write a minimal STATE.md
 function writeState(tmpDir) {
-  fs.writeFileSync(path.join(tmpDir, '.planning', 'STATE.md'), '---\nstatus: active\n---\n# State\n');
+  fs.writeFileSync(path.join(tmpDir, '.claude/.gsdt-planning', 'STATE.md'), '---\nstatus: active\n---\n# State\n');
 }
 
 // Helper: scaffold a phase directory with specific artifacts
 function scaffoldPhase(tmpDir, num, opts = {}) {
   const padded = String(num).padStart(2, '0');
   const slug = opts.slug || 'test-phase';
-  const dir = path.join(tmpDir, '.planning', 'phases', `${padded}-${slug}`);
+  const dir = path.join(tmpDir, '.claude/.gsdt-planning', 'phases', `${padded}-${slug}`);
   fs.mkdirSync(dir, { recursive: true });
 
   if (opts.context) fs.writeFileSync(path.join(dir, `${padded}-CONTEXT.md`), '# Context');
@@ -300,7 +300,7 @@ describe('init manager', () => {
 
     const waiting = { type: 'decision', phase: '1', question: 'Pick one' };
     fs.writeFileSync(
-      path.join(tmpDir, '.planning', 'WAITING.json'),
+      path.join(tmpDir, '.claude/.gsdt-planning', 'WAITING.json'),
       JSON.stringify(waiting)
     );
 

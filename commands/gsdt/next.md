@@ -1,5 +1,5 @@
 ---
-name: gsd:next
+name: gsdt:next
 description: Automatically advance to the next logical step in the GSD workflow
 allowed-tools:
   - Read
@@ -7,6 +7,7 @@ allowed-tools:
   - Grep
   - Glob
   - SlashCommand
+  - Task
 ---
 <objective>
 Detect the current project state and automatically invoke the next logical GSD workflow step.

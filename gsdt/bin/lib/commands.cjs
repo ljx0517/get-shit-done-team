@@ -240,8 +240,8 @@ function cmdCommit(cwd, message, files, raw, amend, noVerify) {
     return;
   }
 
-  // Check if .planning is gitignored
-  if (isGitIgnored(cwd, '.planning')) {
+  // Check if .claude/.gsdt-planning is gitignored
+  if (isGitIgnored(cwd, '.claude/.gsdt-planning')) {
     const result = { committed: false, hash: null, reason: 'skipped_gitignored' };
     output(result, raw, 'skipped');
     return;
@@ -285,7 +285,7 @@ function cmdCommit(cwd, message, files, raw, amend, noVerify) {
   }
 
   // Stage files
-  const filesToStage = files && files.length > 0 ? files : ['.planning/'];
+  const filesToStage = files && files.length > 0 ? files : ['.claude/.gsdt-planning/'];
   for (const file of filesToStage) {
     const fullPath = path.join(cwd, file);
     if (!fs.existsSync(fullPath)) {
@@ -327,7 +327,7 @@ function cmdCommitToSubrepo(cwd, message, files, raw) {
   const subRepos = config.sub_repos;
 
   if (!subRepos || subRepos.length === 0) {
-    error('no sub_repos configured in .planning/config.json');
+    error('no sub_repos configured in .claude/.gsdt-planning/config.json');
   }
 
   if (!files || files.length === 0) {

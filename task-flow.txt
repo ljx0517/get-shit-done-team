@@ -125,8 +125,8 @@
   │         isolation="worktree",                                       │
   │         prompt="<files_to_read>                                     │
   │           - {phase_dir}/{plan_file}  ← PLAN.md                      │
-  │           - .planning/PROJECT.md                                   │
-  │           - .planning/STATE.md                                     │
+  │           - .claude/.gsdt-planning/PROJECT.md                                   │
+  │           - .claude/.gsdt-planning/STATE.md                                     │
   │           - ./CLAUDE.md                                             │
   │         "                                                           │
   │       )                                                             │

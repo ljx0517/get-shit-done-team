@@ -33,7 +33,7 @@ gsdt-tools config-set workflow.discuss_mode assumptions
 gsdt-tools config-set workflow.discuss_mode discuss
 ```
 
-The setting is per-project (stored in `.planning/config.json`).
+The setting is per-project (stored in `.claude/.gsdt-planning/config.json`).
 
 ## How Assumptions Mode Works
 

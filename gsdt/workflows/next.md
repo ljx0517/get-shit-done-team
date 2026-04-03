@@ -18,8 +18,8 @@ node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" state json 2>/dev/null || echo "{}"
 ```
 
 Also read:
-- `.planning/STATE.md` — current phase, progress, plan counts
-- `.planning/ROADMAP.md` — milestone structure and phase list
+- `.claude/.gsdt-planning/STATE.md` — current phase, progress, plan counts
+- `.claude/.gsdt-planning/ROADMAP.md` — milestone structure and phase list
 
 Extract:
 - `current_phase` — which phase is active
@@ -27,7 +27,7 @@ Extract:
 - `progress` — overall percentage
 - `status` — active, paused, etc.
 
-If no `.planning/` directory exists:
+If no `.claude/.gsdt-planning/` directory exists:
 ```
 No GSD project detected. Run `/gsdt:new-project` to get started.
 ```
@@ -85,6 +85,22 @@ Display the determination:
 
 Then immediately invoke the determined command via SlashCommand.
 Do not ask for confirmation — the whole point of `/gsdt:next` is zero-friction advancement.
+</step>
+
+<step name="invoke_command">
+**Auto-invoke the determined command.**
+
+Use SlashCommand to invoke the command determined in the previous step:
+
+```
+SlashCommand("/gsdt:{command} {args}")
+```
+
+Examples:
+- If determined: `/gsdt:execute-phase 3` → `SlashCommand("/gsdt:execute-phase 3")`
+- If determined: `/gsdt:discuss-phase 2` → `SlashCommand("/gsdt:discuss-phase 2")`
+
+After invoking, stop. The dispatched command handles all output.
 </step>
 
 </process>

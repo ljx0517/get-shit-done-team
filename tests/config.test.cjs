@@ -16,12 +16,12 @@ const { runGsdTools, createTempProject, cleanup } = require('./helpers.cjs');
 // ─── helpers ──────────────────────────────────────────────────────────────────
 
 function readConfig(tmpDir) {
-  const configPath = path.join(tmpDir, '.planning', 'config.json');
+  const configPath = path.join(tmpDir, '.claude/.gsdt-planning', 'config.json');
   return JSON.parse(fs.readFileSync(configPath, 'utf-8'));
 }
 
 function writeConfig(tmpDir, obj) {
-  const configPath = path.join(tmpDir, '.planning', 'config.json');
+  const configPath = path.join(tmpDir, '.claude/.gsdt-planning', 'config.json');
   fs.writeFileSync(configPath, JSON.stringify(obj, null, 2), 'utf-8');
 }
 
@@ -480,7 +480,7 @@ describe('config-new-project command', () => {
     assert.ok(result.success, `Command failed: ${result.error}`);
     const out = JSON.parse(result.output);
     assert.strictEqual(out.created, true);
-    assert.strictEqual(out.path, '.planning/config.json');
+    assert.strictEqual(out.path, '.claude/.gsdt-planning/config.json');
   });
 });
 
@@ -587,8 +587,8 @@ describe('config-get edge cases', () => {
   });
 
   test('errors when config.json contains malformed JSON', () => {
-    const configPath = path.join(tmpDir, '.planning', 'config.json');
-    fs.mkdirSync(path.join(tmpDir, '.planning'), { recursive: true });
+    const configPath = path.join(tmpDir, '.claude/.gsdt-planning', 'config.json');
+    fs.mkdirSync(path.join(tmpDir, '.claude/.gsdt-planning'), { recursive: true });
     fs.writeFileSync(configPath, '{not valid json', 'utf-8');
     const result = runGsdTools('config-get model_profile', tmpDir);
     assert.strictEqual(result.success, false);

@@ -1,5 +1,5 @@
 ---
-name: gsd:health
+name: gsdt:health
 description: Diagnose planning directory health and optionally repair issues
 argument-hint: [--repair]
 allowed-tools:
@@ -9,7 +9,7 @@ allowed-tools:
   - AskUserQuestion
 ---
 <objective>
-Validate `.planning/` directory integrity and report actionable issues. Checks for missing files, invalid configurations, inconsistent state, and orphaned plans.
+Validate `.claude/.gsdt-planning/` directory integrity and report actionable issues. Checks for missing files, invalid configurations, inconsistent state, and orphaned plans.
 </objective>
 
 <execution_context>

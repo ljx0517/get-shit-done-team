@@ -1,5 +1,5 @@
 /**
- * Config reader — loads `.planning/config.json` and merges with defaults.
+ * Config reader — loads `.claude/.gsdt-planning/config.json` and merges with defaults.
  *
  * Mirrors the default structure from `gsdt/bin/lib/config.cjs`
  * `buildNewProjectConfig()`.
@@ -7,6 +7,8 @@
 
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
+
+import { DEFAULT_PLANNING_DIR } from './path-config.js';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -40,7 +42,7 @@ export interface HooksConfig {
 export interface PathSettings {
   /** Base installation directory relative to projectDir. Default: '.claude/gsdt' */
   install_dir: string;
-  /** Planning directory name. Default: '.planning' */
+  /** Planning directory name. Default: '.claude/.gsdt-planning' */
   planning_dir: string;
 }
 
@@ -97,19 +99,19 @@ export const CONFIG_DEFAULTS: GSDConfig = {
   agent_skills: {},
   paths: {
     install_dir: '.claude/gsdt',
-    planning_dir: '.planning',
+    planning_dir: DEFAULT_PLANNING_DIR,
   },
 };
 
 // ─── Loader ──────────────────────────────────────────────────────────────────
 
 /**
- * Load project config from `.planning/config.json`, merging with defaults.
+ * Load project config from the planning directory config.json, merging with defaults.
  * Returns full defaults when file is missing or empty.
  * Throws on malformed JSON with a helpful error message.
  */
 export async function loadConfig(projectDir: string): Promise<GSDConfig> {
-  const configPath = join(projectDir, '.planning', 'config.json');
+  const configPath = join(projectDir, DEFAULT_PLANNING_DIR, 'config.json');
 
   let raw: string;
   try {

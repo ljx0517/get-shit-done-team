@@ -14,11 +14,11 @@ const fs = require('fs');
 const path = require('path');
 
 const AGENTS_DIR = path.join(__dirname, '..', 'agents');
-const WORKFLOWS_DIR = path.join(__dirname, '..', 'get-shit-done', 'workflows');
-const COMMANDS_DIR = path.join(__dirname, '..', 'commands', 'gsd');
+const WORKFLOWS_DIR = path.join(__dirname, '..', 'gsdt', 'workflows');
+const COMMANDS_DIR = path.join(__dirname, '..', 'commands', 'gsdt');
 
 const ALL_AGENTS = fs.readdirSync(AGENTS_DIR)
-  .filter(f => f.startsWith('gsd-') && f.endsWith('.md'))
+  .filter(f => f.startsWith('gsdt-') && f.endsWith('.md'))
   .map(f => f.replace('.md', ''));
 
 const FILE_WRITING_AGENTS = ALL_AGENTS.filter(name => {
@@ -109,7 +109,7 @@ describe('SPAWN: spawn type consistency', () => {
       const files = fs.readdirSync(dir).filter(f => f.endsWith('.md'));
       for (const file of files) {
         const content = fs.readFileSync(path.join(dir, file), 'utf-8');
-        const hasWorkaround = content.includes('First, read ~/.claude/agents/gsd-');
+        const hasWorkaround = content.includes('First, read ~/.claude/agents/');
         assert.ok(
           !hasWorkaround,
           `${file} still has "First, read agent .md" workaround — use named subagent_type instead`
@@ -373,7 +373,7 @@ describe('DISCUSS: discussion log generation', () => {
   });
 
   test('discussion-log template exists', () => {
-    const templatePath = path.join(__dirname, '..', 'get-shit-done', 'templates', 'discussion-log.md');
+    const templatePath = path.join(__dirname, '..', 'gsdt', 'templates', 'discussion-log.md');
     assert.ok(
       fs.existsSync(templatePath),
       'discussion-log.md template must exist'

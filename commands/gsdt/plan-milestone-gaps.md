@@ -1,5 +1,5 @@
 ---
-name: gsd:plan-milestone-gaps
+name: gsdt:plan-milestone-gaps
 description: Create phases to close all gaps identified by milestone audit
 allowed-tools:
   - Read
@@ -23,7 +23,7 @@ One command creates all fix phases — no manual `/gsdt:add-phase` per gap.
 
 <context>
 **Audit results:**
-Glob: .planning/v*-MILESTONE-AUDIT.md (use most recent)
+Glob: .claude/.gsdt-planning/v*-MILESTONE-AUDIT.md (use most recent)
 
 Original intent and current planning state are loaded on demand inside the workflow.
 </context>

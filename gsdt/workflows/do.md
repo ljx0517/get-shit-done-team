@@ -27,7 +27,7 @@ Wait for response before continuing.
 INIT=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" state load 2>/dev/null)
 ```
 
-Track whether `.planning/` exists — some routes require it, others don't.
+Track whether `.claude/.gsdt-planning/` exists — some routes require it, others don't.
 </step>
 
 <step name="route">
@@ -37,7 +37,8 @@ Evaluate `$ARGUMENTS` against these routing rules. Apply the **first matching** 
 
 | If the text describes... | Route to | Why |
 |--------------------------|----------|-----|
-| Starting a new project, "set up", "initialize" | `/gsdt:new-project` | Needs full project initialization |
+| Open-ended startup intent, "开始做", "从想法开始", "不知道先做啥" | `/gsdt:auto` | One-click autopilot: collect -> decide -> advance |
+| Starting a new project, "set up", "initialize" | `/gsdt:auto` | Default to simplified automatic flow |
 | Mapping or analyzing an existing codebase | `/gsdt:map-codebase` | Codebase discovery |
 | A bug, error, crash, failure, or something broken | `/gsdt:debug` | Needs systematic investigation |
 | Exploring, researching, comparing, or "how does X work" | `/gsdt:research-phase` | Domain research before planning |
@@ -54,7 +55,7 @@ Evaluate `$ARGUMENTS` against these routing rules. Apply the **first matching** 
 | Completing a milestone, shipping, releasing | `/gsdt:complete-milestone` | Milestone lifecycle |
 | A specific, actionable, small task (add feature, fix typo, update config) | `/gsdt:quick` | Self-contained, single executor |
 
-**Requires `.planning/` directory:** All routes except `/gsdt:new-project`, `/gsdt:map-codebase`, `/gsdt:help`, and `/gsdt:join-discord`. If the project doesn't exist and the route requires it, suggest `/gsdt:new-project` first.
+**Requires `.claude/.gsdt-planning/` directory:** All routes except `/gsdt:auto`, `/gsdt:new-project`, `/gsdt:map-codebase`, `/gsdt:help`, and `/gsdt:join-discord`. If the project doesn't exist and the route requires it, suggest `/gsdt:auto` first.
 
 **Ambiguity handling:** If the text could reasonably match multiple routes, ask the user via AskUserQuestion with the top 2-3 options. For example:
 
@@ -82,13 +83,22 @@ Which approach fits better?
 </step>
 
 <step name="dispatch">
-**Invoke the chosen command.**
+**Invoke the chosen command via SlashCommand.**
 
-Run the selected `/gsdt:*` command, passing `$ARGUMENTS` as args.
+Use the SlashCommand tool to invoke the routed command:
+
+```
+SlashCommand("/gsdt:{command} {args}")
+```
+
+Examples:
+- "我想修登录 bug" → `SlashCommand("/gsdt:debug 登录 bug")`
+- "我想开始新项目" → `SlashCommand("/gsdt:auto 我想开始一个新项目")`
+- "我想继续工作" → `SlashCommand("/gsdt:resume-work")`
 
 If the chosen command expects a phase number and one wasn't provided in the text, extract it from context or ask via AskUserQuestion.
 
-After invoking the command, stop. The dispatched command handles everything from here.
+After invoking, stop. The dispatched command handles everything from here.
 </step>
 
 </process>

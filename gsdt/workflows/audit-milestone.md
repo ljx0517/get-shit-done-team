@@ -111,7 +111,7 @@ For each phase's VERIFICATION.md, extract the expanded requirements table:
 
 For each phase's SUMMARY.md, extract `requirements-completed` from YAML frontmatter:
 ```bash
-for summary in .planning/phases/*-*/*-SUMMARY.md; do
+for summary in .claude/.gsdt-planning/phases/*-*/*-SUMMARY.md; do
   [ -e "$summary" ] || continue
   node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" summary-extract "$summary" --fields requirements_completed --pick requirements_completed
 done
@@ -162,7 +162,7 @@ Discovery only — never auto-calls `/gsdt:validate-phase`.
 
 ## 6. Aggregate into v{version}-MILESTONE-AUDIT.md
 
-Create `.planning/v{version}-v{version}-MILESTONE-AUDIT.md` with:
+Create `.claude/.gsdt-planning/v{version}-v{version}-MILESTONE-AUDIT.md` with:
 
 ```yaml
 ---
@@ -219,7 +219,7 @@ Output this markdown directly (not as a code block). Route based on status:
 ## ✓ Milestone {version} — Audit Passed
 
 **Score:** {N}/{M} requirements satisfied
-**Report:** .planning/v{version}-MILESTONE-AUDIT.md
+**Report:** .claude/.gsdt-planning/v{version}-MILESTONE-AUDIT.md
 
 All requirements covered. Cross-phase integration verified. E2E flows complete.
 
@@ -242,7 +242,7 @@ All requirements covered. Cross-phase integration verified. E2E flows complete.
 ## ⚠ Milestone {version} — Gaps Found
 
 **Score:** {N}/{M} requirements satisfied
-**Report:** .planning/v{version}-MILESTONE-AUDIT.md
+**Report:** .claude/.gsdt-planning/v{version}-MILESTONE-AUDIT.md
 
 ### Unsatisfied Requirements
 
@@ -281,7 +281,7 @@ Phases needing validation: run `/gsdt:validate-phase {N}` for each flagged phase
 ───────────────────────────────────────────────────────────────
 
 **Also available:**
-- cat .planning/v{version}-MILESTONE-AUDIT.md — see full report
+- cat .claude/.gsdt-planning/v{version}-MILESTONE-AUDIT.md — see full report
 - /gsdt:complete-milestone {version} — proceed anyway (accept tech debt)
 
 ───────────────────────────────────────────────────────────────
@@ -293,7 +293,7 @@ Phases needing validation: run `/gsdt:validate-phase {N}` for each flagged phase
 ## ⚡ Milestone {version} — Tech Debt Review
 
 **Score:** {N}/{M} requirements satisfied
-**Report:** .planning/v{version}-MILESTONE-AUDIT.md
+**Report:** .claude/.gsdt-planning/v{version}-MILESTONE-AUDIT.md
 
 All requirements met. No critical blockers. Accumulated tech debt needs review.
 

@@ -224,7 +224,7 @@ claude --dangerously-skip-permissions
 
 ロードマップを承認します。これでビルドの準備が整いました。
 
-**作成されるファイル：** `PROJECT.md`、`REQUIREMENTS.md`、`ROADMAP.md`、`STATE.md`、`.planning/research/`
+**作成されるファイル：** `PROJECT.md`、`REQUIREMENTS.md`、`ROADMAP.md`、`STATE.md`、`.claude/.gsdt-planning/research/`
 
 ---
 
@@ -393,7 +393,7 @@ claude --dangerously-skip-permissions
 
 - **同じエージェント** — プランナー + エグゼキューター、同じ品質
 - **オプションステップをスキップ** — デフォルトではリサーチ、プランチェッカー、ベリファイアなし
-- **別トラッキング** — `.planning/quick/` に保存、フェーズとは別管理
+- **別トラッキング** — `.claude/.gsdt-planning/quick/` に保存、フェーズとは別管理
 
 **`--discuss` フラグ：** 計画前にグレーゾーンを洗い出す軽量ディスカッション。
 
@@ -408,7 +408,7 @@ claude --dangerously-skip-permissions
 > What do you want to do? "Add dark mode toggle to settings"
 ```
 
-**作成されるファイル：** `.planning/quick/001-add-dark-mode-toggle/PLAN.md`、`SUMMARY.md`
+**作成されるファイル：** `.claude/.gsdt-planning/quick/001-add-dark-mode-toggle/PLAN.md`、`SUMMARY.md`
 
 ---
 
@@ -590,7 +590,7 @@ lmn012o feat(08-02): create registration endpoint
 | コマンド | 説明 |
 |---------|--------------|
 | `/gsdt:review` | 現在のフェーズまたはブランチのクロスAIピアレビュー |
-| `/gsdt:pr-branch` | `.planning/` コミットをフィルタリングしたクリーンなPRブランチを作成 |
+| `/gsdt:pr-branch` | `.claude/.gsdt-planning/` コミットをフィルタリングしたクリーンなPRブランチを作成 |
 | `/gsdt:audit-uat` | 検証負債を監査 — UATが未実施のフェーズを検出 |
 
 ### バックログ & スレッド
@@ -614,7 +614,7 @@ lmn012o feat(08-02): create registration endpoint
 | `/gsdt:do <text>` | フリーフォームテキストを適切なGSDコマンドに自動ルーティング |
 | `/gsdt:note <text>` | ゼロフリクションのアイデアキャプチャ — ノートの追加、一覧、todoへの昇格 |
 | `/gsdt:quick [--full] [--discuss] [--research]` | GSDの保証付きでアドホックタスクを実行（`--full` でプランチェックと検証を追加、`--discuss` で事前にコンテキストを収集、`--research` で計画前にアプローチを調査） |
-| `/gsdt:health [--repair]` | `.planning/` ディレクトリの整合性を検証、`--repair` で自動修復 |
+| `/gsdt:health [--repair]` | `.claude/.gsdt-planning/` ディレクトリの整合性を検証、`--repair` で自動修復 |
 | `/gsdt:stats` | プロジェクト統計を表示 — フェーズ、プラン、要件、gitメトリクス |
 | `/gsdt:profile-user [--questionnaire] [--refresh]` | セッション分析から開発者行動プロファイルを生成し、パーソナライズされた応答を提供 |
 
@@ -624,7 +624,7 @@ lmn012o feat(08-02): create registration endpoint
 
 ## 設定
 
-GSDはプロジェクト設定を `.planning/config.json` に保存します。`/gsdt:new-project` 実行時に設定するか、後から `/gsdt:settings` で更新できます。完全な設定スキーマ、ワークフロートグル、gitブランチオプション、エージェントごとのモデル内訳については、[ユーザーガイド](docs/ja-JP/USER-GUIDE.md#configuration-reference)をご覧ください。
+GSDはプロジェクト設定を `.claude/.gsdt-planning/config.json` に保存します。`/gsdt:new-project` 実行時に設定するか、後から `/gsdt:settings` で更新できます。完全な設定スキーマ、ワークフロートグル、gitブランチオプション、エージェントごとのモデル内訳については、[ユーザーガイド](docs/ja-JP/USER-GUIDE.md#configuration-reference)をご覧ください。
 
 ### コア設定
 
@@ -677,7 +677,7 @@ GSDはプロジェクト設定を `.planning/config.json` に保存します。`
 | 設定 | デフォルト | 制御内容 |
 |---------|---------|------------------|
 | `parallelization.enabled` | `true` | 独立したプランを同時に実行 |
-| `planning.commit_docs` | `true` | `.planning/` をgitで追跡 |
+| `planning.commit_docs` | `true` | `.claude/.gsdt-planning/` をgitで追跡 |
 | `hooks.context_warnings` | `true` | コンテキストウィンドウの使用量警告を表示 |
 
 ### Gitブランチ
@@ -707,7 +707,7 @@ GSDはv1.27以降、多層防御セキュリティを備えています：
 
 - **パストラバーサル防止** — ユーザー提供のすべてのファイルパス（`--text-file`、`--prd`）がプロジェクトディレクトリ内に解決されるか検証
 - **プロンプトインジェクション検出** — 集中型 `security.cjs` モジュールが計画成果物に入る前にユーザー提供テキストのインジェクションパターンをスキャン
-- **PreToolUseプロンプトガードフック** — `gsdt-prompt-guard` が `.planning/` への書き込みに埋め込まれたインジェクションベクトルをスキャン（アドバイザリー、ブロッキングではない）
+- **PreToolUseプロンプトガードフック** — `gsdt-prompt-guard` が `.claude/.gsdt-planning/` への書き込みに埋め込まれたインジェクションベクトルをスキャン（アドバイザリー、ブロッキングではない）
 - **安全なJSON解析** — 不正な `--fields` 引数が状態を破損する前にキャッチ
 - **シェル引数バリデーション** — シェル補間前にユーザーテキストをサニタイズ
 - **CI対応インジェクションスキャナー** — `prompt-injection-scan.test.cjs` が全エージェント/ワークフロー/コマンドファイルの埋め込みインジェクションベクトルをスキャン

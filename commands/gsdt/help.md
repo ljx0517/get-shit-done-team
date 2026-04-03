@@ -1,5 +1,5 @@
 ---
-name: gsd:help
+name: gsdt:help
 description: Show available GSD commands and usage guide
 ---
 <objective>

@@ -64,11 +64,11 @@ If no UI-SPEC exists: audit against abstract 6-pillar standards.
 
 ```bash
 # Ensure directory exists
-mkdir -p .planning/ui-reviews
+mkdir -p .claude/.gsdt-planning/ui-reviews
 
 # Write .gitignore if not present
-if [ ! -f .planning/ui-reviews/.gitignore ]; then
-  cat > .planning/ui-reviews/.gitignore << 'GITIGNORE'
+if [ ! -f .claude/.gsdt-planning/ui-reviews/.gitignore ]; then
+  cat > .claude/.gsdt-planning/ui-reviews/.gitignore << 'GITIGNORE'
 # Screenshot files — never commit binary assets
 *.png
 *.webp
@@ -78,7 +78,7 @@ if [ ! -f .planning/ui-reviews/.gitignore ]; then
 *.bmp
 *.tiff
 GITIGNORE
-  echo "Created .planning/ui-reviews/.gitignore"
+  echo "Created .claude/.gsdt-planning/ui-reviews/.gitignore"
 fi
 ```
 
@@ -95,7 +95,7 @@ This gate runs unconditionally on every audit. The .gitignore ensures screenshot
 DEV_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000 2>/dev/null || echo "000")
 
 if [ "$DEV_STATUS" = "200" ]; then
-  SCREENSHOT_DIR=".planning/ui-reviews/${PADDED_PHASE}-$(date +%Y%m%d-%H%M%S)"
+  SCREENSHOT_DIR=".claude/.gsdt-planning/ui-reviews/${PADDED_PHASE}-$(date +%Y%m%d-%H%M%S)"
   mkdir -p "$SCREENSHOT_DIR"
 
   # Desktop
@@ -135,6 +135,14 @@ Try port 3000 first, then 5173 (Vite default), then 8080.
 - **2** — Needs work: Notable gaps, contract partially met
 - **1** — Poor: Significant issues, contract not met
 
+**Confidence calibration:** For each finding, assign confidence based on evidence type:
+- Code grep match: 0.75-0.95
+- File exists check: 0.60-0.80
+- Screenshot assessment: 0.50-0.70
+- Pattern inference: 0.40-0.60
+
+**Severity mapping:** Score 1 → P1, Score 2 → P2, Score 3 → P3, Score 4 → no finding
+
 ### Pillar 1: Copywriting
 
 **Audit method:** Grep for string literals, check component text content.
@@ -151,6 +159,8 @@ grep -rn "went wrong\|try again\|error occurred" src --include="*.tsx" --include
 **If UI-SPEC exists:** Compare each declared CTA/empty/error copy against actual strings.
 **If no UI-SPEC:** Flag generic patterns against UX best practices.
 
+**Autofix class:** Usually `manual` (requires writer decision), rarely `safe_auto` (can auto-replace obvious patterns)
+
 ### Pillar 2: Visuals
 
 **Audit method:** Check component structure, visual hierarchy indicators.
@@ -158,6 +168,8 @@ grep -rn "went wrong\|try again\|error occurred" src --include="*.tsx" --include
 - Is there a clear focal point on the main screen?
 - Are icon-only buttons paired with aria-labels or tooltips?
 - Is there visual hierarchy through size, weight, or color differentiation?
+
+**Confidence:** Lower for screenshot-only (0.50-0.70), higher if grep confirms aria-labels (0.70-0.85)
 
 ### Pillar 3: Color
 
@@ -173,6 +185,8 @@ grep -rn "#[0-9a-fA-F]\{3,8\}\|rgb(" src --include="*.tsx" --include="*.jsx" 2>/
 **If UI-SPEC exists:** Verify accent is only used on declared elements.
 **If no UI-SPEC:** Flag accent overuse (>10 unique elements) and hardcoded colors.
 
+**Autofix class:** `safe_auto` for hardcoded colors (can replace with tokens), `manual` for overuse (design decision)
+
 ### Pillar 4: Typography
 
 **Audit method:** Grep font size and weight classes.
@@ -186,6 +200,8 @@ grep -rohn "font-\(thin\|light\|normal\|medium\|semibold\|bold\|extrabold\)" src
 
 **If UI-SPEC exists:** Verify only declared sizes and weights are used.
 **If no UI-SPEC:** Flag if >4 font sizes or >2 font weights in use.
+
+**Autofix class:** `gated_auto` (needs design review), `safe_auto` if normalizing to standard values
 
 ### Pillar 5: Spacing
 
@@ -201,6 +217,8 @@ grep -rn "\[.*px\]\|\[.*rem\]" src --include="*.tsx" --include="*.jsx" 2>/dev/nu
 **If UI-SPEC exists:** Verify spacing matches declared scale.
 **If no UI-SPEC:** Flag arbitrary spacing values and inconsistent patterns.
 
+**Autofix class:** `safe_auto` for arbitrary values (can normalize), `manual` for inconsistent patterns (needs design decision)
+
 ### Pillar 6: Experience Design
 
 **Audit method:** Check for state coverage and interaction patterns.
@@ -215,6 +233,8 @@ grep -rn "empty\|isEmpty\|no.*found\|length === 0" src --include="*.tsx" --inclu
 ```
 
 Score based on: loading states present, error boundaries exist, empty states handled, disabled states for actions, confirmation for destructive actions.
+
+**Autofix class:** `gated_auto` (can add skeleton loading, but error design needs review)
 
 </audit_pillars>
 
@@ -270,7 +290,7 @@ npx shadcn diff {block} 2>/dev/null
 
 <output_format>
 
-## Output: UI-REVIEW.md
+## Output: UI-REVIEW.md (Markdown)
 
 **ALWAYS use the Write tool to create files** — never use `Bash(cat << 'EOF')` or heredoc commands for file creation. Mandatory regardless of `commit_docs` setting.
 
@@ -334,6 +354,59 @@ Write to: `$PHASE_DIR/$PADDED_PHASE-UI-REVIEW.md`
 {list of files examined}
 ```
 
+## Output: JSON Findings (when --json flag present)
+
+When the orchestrator passes `--json`, also write a structured JSON file alongside the Markdown:
+
+Write to: `$PHASE_DIR/$PADDED_PHASE-UI-REVIEW.json`
+
+```json
+{
+  "version": "2.0",
+  "phase": "{N}",
+  "audited_at": "{ISO timestamp}",
+  "baseline": "{UI-SPEC.md / abstract standards}",
+  "screenshots": "{captured / not captured}",
+  "pillar_scores": {
+    "copywriting": {score},
+    "visuals": {score},
+    "color": {score},
+    "typography": {score},
+    "spacing": {score},
+    "experience": {score}
+  },
+  "overall_score": {total},
+  "overall_max": 24,
+  "findings": [
+    {
+      "id": "{sha256 fingerprint}",
+      "pillar": "copywriting|visuals|color|typography|spacing|experience",
+      "severity": "P1|P2|P3",
+      "confidence": 0.0-1.0,
+      "autofix_class": "safe_auto|gated_auto|manual|advisory",
+      "ui_score": {1-4},
+      "title": "{issue title}",
+      "description": "{detailed description}",
+      "file": "{file path}",
+      "line": {line number},
+      "evidence": ["{specific grep match or observation}"],
+      "suggestions": ["{concrete fix suggestion}"]
+    }
+  ],
+  "top_fixes": [
+    {
+      "pillar": "{pillar}",
+      "title": "{fix title}",
+      "impact": "{user impact}",
+      "fix": "{concrete fix}"
+    }
+  ]
+}
+```
+
+**Severity mapping:** Score 1 → P1, Score 2 → P2, Score 3 → P3, Score 4 → no finding
+**Confidence calibration:** Code grep = 0.75-0.95, screenshot = 0.50-0.70, inference = 0.40-0.60
+
 </output_format>
 
 <execution_flow>
@@ -371,9 +444,17 @@ For each of the 6 pillars:
 
 Run the registry audit from `<registry_audit>`. Only executes if `components.json` exists AND UI-SPEC.md lists third-party registries. Results feed into UI-REVIEW.md.
 
-## Step 7: Write UI-REVIEW.md
+## Step 7: Write UI-REVIEW.md (and JSON if requested)
 
 Use output format from `<output_format>`. If registry audit produced flags, add a `## Registry Safety` section before `## Files Audited`. Write to `$PHASE_DIR/$PADDED_PHASE-UI-REVIEW.md`.
+
+If `--json` flag was passed by orchestrator, also write JSON findings to `$PHASE_DIR/$PADDED_PHASE-UI-REVIEW.json`.
+
+**Critical:** Every finding must include:
+- `confidence: 0.0-1.0` — How certain you are (see calibration guide)
+- `severity: P1|P2|P3` — Based on pillar score (1→P1, 2→P2, 3→P3)
+- `autofix_class: safe_auto|gated_auto|manual` — Whether can be auto-fixed
+- `evidence: string[]` — Code grep matches or specific observations
 
 ## Step 8: Return Structured Result
 
@@ -407,10 +488,30 @@ Use output format from `<output_format>`. If registry audit produced flags, add 
 
 ### File Created
 `$PHASE_DIR/$PADDED_PHASE-UI-REVIEW.md`
+`$PHASE_DIR/$PADDED_PHASE-UI-REVIEW.json` (if --json requested)
 
 ### Recommendation Count
-- Priority fixes: {N}
-- Minor recommendations: {N}
+- Priority fixes (P1): {N}
+- Medium fixes (P2): {N}
+- Minor recommendations (P3): {N}
+```
+
+**If --json was passed**, also include the JSON findings inline:
+
+```json
+{
+  "phase": "{N}",
+  "overall_score": {total},
+  "findings": [
+    {
+      "pillar": "{pillar}",
+      "severity": "{P1|P2|P3}",
+      "confidence": 0.0-1.0,
+      "title": "{issue title}",
+      "file": "{file}:{line}"
+    }
+  ]
+}
 ```
 
 </structured_returns>

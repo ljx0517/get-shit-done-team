@@ -45,14 +45,14 @@ description: Plan a phase
 Next:
 /gsdt:execute-phase 17
 /gsdt-help
-gsd:progress
+gsdt:progress
 `;
 
     const result = convertClaudeCommandToCursorSkill(input, 'gsd-plan-phase');
 
     assert.ok(result.includes('/gsd-execute-phase 17'), 'slash command remains slash-prefixed');
     assert.ok(result.includes('/gsdt-help'), 'existing slash command is preserved');
-    assert.ok(result.includes('gsd-progress'), 'non-slash gsd: references still normalize');
+    assert.ok(result.includes('gsd-progress'), 'non-slash gsdt: references still normalize');
     assert.ok(!result.includes('/gsdt:execute-phase'), 'legacy colon command form is removed');
   });
 });

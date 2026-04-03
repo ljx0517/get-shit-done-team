@@ -7,9 +7,9 @@ Dynamically determines which context files the Classify phase needs, based on pr
 ## Triggers
 
 When the Orchestrator needs to run the Classify phase, this skill decides:
-1. Does the project already exist? (has `.planning/PROJECT.md`)
-2. Does it have a roadmap? (has `.planning/ROADMAP.md`)
-3. Does it have recent state? (has `.planning/STATE.md`)
+1. Does the project already exist? (has `.claude/.gsdt-planning/PROJECT.md`)
+2. Does it have a roadmap? (has `.claude/.gsdt-planning/ROADMAP.md`)
+3. Does it have recent state? (has `.claude/.gsdt-planning/STATE.md`)
 4. Based on these answers, which files should be loaded as context?
 
 ## Context Files
@@ -42,13 +42,13 @@ interface ClassifyContext {
   needsProjectFile: boolean;  // Load PROJECT.md as 'existing_project'
   needsRoadmapFile: boolean;  // Load ROADMAP.md as 'existing_roadmap'
   needsStateFile: boolean;    // Load STATE.md as 'project_state'
-  projectExists: boolean;     // True if any .planning files exist
+  projectExists: boolean;     // True if any .claude/.gsdt-planning files exist
 }
 
 function determineClassifyContext(projectDir: string): ClassifyContext {
-  const hasProject = exists(join(projectDir, '.planning', 'PROJECT.md'));
-  const hasRoadmap = exists(join(projectDir, '.planning', 'ROADMAP.md'));
-  const hasState = exists(join(projectDir, '.planning', 'STATE.md'));
+  const hasProject = exists(join(projectDir, '.claude/.gsdt-planning', 'PROJECT.md'));
+  const hasRoadmap = exists(join(projectDir, '.claude/.gsdt-planning', 'ROADMAP.md'));
+  const hasState = exists(join(projectDir, '.claude/.gsdt-planning', 'STATE.md'));
   const projectExists = hasProject || hasRoadmap || hasState;
 
   return {
