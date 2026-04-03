@@ -1,0 +1,13 @@
+{
+  "name": "cold-start-story-rich",
+  "repo_state": {
+    "mode": "cold_start"
+  },
+  "user_input": "我想要一个低打扰的入口，把零散想法整理成项目 brief。",
+  "assistant_output": "已分析输入。\n<intake_units_json>\n{\n  \"units\": [\n    {\n      \"type\": \"user_story\",\n      \"summary\": \"Developer can start planning from one sentence\",\n      \"actor\": \"Developer\",\n      \"need\": \"Describe an idea in natural language\",\n      \"value\": \"Reduce startup friction\",\n      \"confidence\": 0.95\n    },\n    {\n      \"type\": \"user_story\",\n      \"summary\": \"User can turn rough ideas into a project brief\",\n      \"actor\": \"User\",\n      \"need\": \"Capture freeform thoughts\",\n      \"value\": \"Avoid writing a full PRD first\",\n      \"confidence\": 0.94\n    },\n    {\n      \"type\": \"preference\",\n      \"summary\": \"Keep the interaction low-friction\",\n      \"confidence\": 0.87\n    }\n  ]\n}\n</intake_units_json>\n<intake_status>\n已收纳 | brief ready | next=trigger_new_project\n</intake_status>",
+  "expected": {
+    "mode": "cold_start",
+    "next_action": "trigger_new_project",
+    "one_line_includes": "brief ready"
+  }
+}

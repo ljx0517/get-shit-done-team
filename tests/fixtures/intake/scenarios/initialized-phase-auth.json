@@ -1,0 +1,16 @@
+{
+  "name": "initialized-phase-auth",
+  "repo_state": {
+    "mode": "initialized_project",
+    "phase2HasPlan": false
+  },
+  "user_input": "第二阶段先做邮箱密码登录，不要加社交登录。",
+  "assistant_output": "已分析输入。\n<intake_units_json>\n{\n  \"units\": [\n    {\n      \"type\": \"user_story\",\n      \"summary\": \"User can log in with email and password\",\n      \"actor\": \"User\",\n      \"need\": \"Log in with email and password\",\n      \"value\": \"Access the application securely\",\n      \"confidence\": 0.95,\n      \"phase_hint\": {\n        \"phase\": 2,\n        \"confidence\": 0.95,\n        \"reason\": \"Matches authentication phase goal\"\n      }\n    },\n    {\n      \"type\": \"constraint\",\n      \"summary\": \"Do not add social login in this phase\",\n      \"confidence\": 0.87,\n      \"phase_hint\": {\n        \"phase\": 2,\n        \"confidence\": 0.92,\n        \"reason\": \"Explicit scope for phase 2\"\n      }\n    },\n    {\n      \"type\": \"preference\",\n      \"summary\": \"Keep authentication flow low-friction\",\n      \"confidence\": 0.82,\n      \"phase_hint\": {\n        \"phase\": 2,\n        \"confidence\": 0.81,\n        \"reason\": \"Applies to authentication UX\"\n      }\n    }\n  ]\n}\n</intake_units_json>\n<intake_status>\n已收纳 | phase=2 conf=0.93 | next=trigger_plan_phase_prd\n</intake_status>",
+  "expected": {
+    "mode": "initialized_project",
+    "next_action": "trigger_plan_phase_prd",
+    "target_phase": "2",
+    "has_existing_plans": false,
+    "one_line_includes": "phase=2"
+  }
+}

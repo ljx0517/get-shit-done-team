@@ -1,0 +1,14 @@
+{
+  "name": "future-backlog-candidate",
+  "repo_state": {
+    "mode": "initialized_project",
+    "phase2HasPlan": false
+  },
+  "user_input": "以后也许可以加 analytics dashboard，不过不是现在这一阶段。",
+  "assistant_output": "已分析输入。\n<intake_units_json>\n{\n  \"units\": [\n    {\n      \"type\": \"technical_enabler\",\n      \"summary\": \"Add analytics dashboard later after the core flow stabilizes\",\n      \"confidence\": 0.78,\n      \"phase_hint\": {\n        \"phase\": 3,\n        \"confidence\": 0.42,\n        \"reason\": \"Forward-looking idea adjacent to analytics phase but not ready\"\n      }\n    },\n    {\n      \"type\": \"preference\",\n      \"summary\": \"Keep analytics work for a later milestone\",\n      \"confidence\": 0.76\n    }\n  ]\n}\n</intake_units_json>\n<intake_status>\n已收纳 | backlog candidate | next=backlog_candidate\n</intake_status>",
+  "expected": {
+    "mode": "initialized_project",
+    "next_action": "backlog_candidate",
+    "one_line_includes": "backlog candidate"
+  }
+}

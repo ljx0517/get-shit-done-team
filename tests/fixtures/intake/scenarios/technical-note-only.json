@@ -1,0 +1,15 @@
+{
+  "name": "technical-note-only",
+  "repo_state": {
+    "mode": "initialized_project",
+    "phase2HasPlan": false
+  },
+  "user_input": "技术上可以考虑 Redis、BullMQ、Postgres 分区，后面再决定。",
+  "assistant_output": "<intake_units_json>\n{\n  \"units\": [\n    {\n      \"type\": \"technical_enabler\",\n      \"summary\": \"Evaluate Redis and BullMQ for async task execution\",\n      \"confidence\": 0.79\n    },\n    {\n      \"type\": \"technical_enabler\",\n      \"summary\": \"Consider Postgres partitioning later if scale demands it\",\n      \"confidence\": 0.74\n    },\n    {\n      \"type\": \"preference\",\n      \"summary\": \"Defer infrastructure commitments until product scope is clearer\",\n      \"confidence\": 0.82\n    }\n  ]\n}\n</intake_units_json>\n<intake_status>\n已收纳 | next=idle\n</intake_status>",
+  "expected": {
+    "next_action": "backlog_candidate",
+    "blocking_conflicts": 0,
+    "one_line_includes": "backlog candidate",
+    "must_not_include_user_story": true
+  }
+}
