@@ -286,6 +286,28 @@ function loadConfig(cwd) {
       try { fs.writeFileSync(configPath, JSON.stringify(parsed, null, 2), 'utf-8'); } catch {}
     }
 
+    // Warn about unrecognized top-level keys so users don't silently lose config.
+    // Derived from config-set's VALID_CONFIG_KEYS (canonical source) plus internal-only
+    // keys that loadConfig handles but config-set doesn't expose. This avoids maintaining
+    // a hardcoded duplicate that drifts when new config keys are added.
+    const { VALID_CONFIG_KEYS } = require('./config.cjs');
+    const KNOWN_TOP_LEVEL = new Set([
+      // Extract top-level key names from dot-notation paths (e.g., 'workflow.research' → 'workflow')
+      ...[...VALID_CONFIG_KEYS].map(k => k.split('.')[0]),
+      // Section containers that hold nested sub-keys
+      'git', 'workflow', 'planning', 'hooks',
+      // Internal keys loadConfig reads but config-set doesn't expose
+      'model_overrides', 'agent_skills', 'context_window', 'resolve_model_ids',
+      // Deprecated keys (still accepted for migration, not in config-set)
+      'depth', 'multiRepo',
+    ]);
+    const unknownKeys = Object.keys(parsed).filter(k => !KNOWN_TOP_LEVEL.has(k));
+    if (unknownKeys.length > 0) {
+      process.stderr.write(
+        `gsd-tools: warning: unknown config key(s) in .planning/config.json: ${unknownKeys.join(', ')} — these will be ignored\n`
+      );
+    }
+
     const get = (key, nested) => {
       if (parsed[key] !== undefined) return parsed[key];
       if (nested && parsed[nested.section] && parsed[nested.section][nested.field] !== undefined) {
