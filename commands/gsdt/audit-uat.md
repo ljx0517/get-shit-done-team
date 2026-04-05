@@ -19,6 +19,6 @@ Scan all phases for pending, skipped, blocked, and human_needed UAT items. Cross
 Core planning files are loaded in-workflow via CLI.
 
 **Scope:**
-Glob: .claude/.gsdt-planning/phases/*/*-UAT.md
-Glob: .claude/.gsdt-planning/phases/*/*-VERIFICATION.md
+Glob: .gsdt-planning/phases/*/*-UAT.md
+Glob: .gsdt-planning/phases/*/*-VERIFICATION.md
 </context>

@@ -66,8 +66,8 @@ describe('milestone-summary workflow', () => {
   test('workflow writes to reports directory', () => {
     const content = fs.readFileSync(workflowPath, 'utf-8');
     assert.ok(
-      content.includes('.claude/.gsdt-planning/reports/MILESTONE_SUMMARY'),
-      'should write summary to .claude/.gsdt-planning/reports/'
+      content.includes('.gsdt-planning/reports/MILESTONE_SUMMARY'),
+      'should write summary to .gsdt-planning/reports/'
     );
   });
 
@@ -131,7 +131,7 @@ describe('milestone-summary workflow', () => {
   test('workflow checks both audit file locations for archived milestones', () => {
     const content = fs.readFileSync(workflowPath, 'utf-8');
     assert.ok(
-      content.includes('.claude/.gsdt-planning/milestones/v${VERSION}-MILESTONE-AUDIT.md'),
+      content.includes('.gsdt-planning/milestones/v${VERSION}-MILESTONE-AUDIT.md'),
       'should check milestones/ directory for archived audit file'
     );
   });
@@ -163,30 +163,30 @@ describe('milestone-summary artifact path resolution', () => {
     const content = fs.readFileSync(workflowPath, 'utf-8');
     // Archived roadmap path should be under milestones/
     assert.ok(
-      content.includes('.claude/.gsdt-planning/milestones/v${VERSION}-ROADMAP.md'),
-      'archived ROADMAP path should be under .claude/.gsdt-planning/milestones/'
+      content.includes('.gsdt-planning/milestones/v${VERSION}-ROADMAP.md'),
+      'archived ROADMAP path should be under .gsdt-planning/milestones/'
     );
     assert.ok(
-      content.includes('.claude/.gsdt-planning/milestones/v${VERSION}-REQUIREMENTS.md'),
-      'archived REQUIREMENTS path should be under .claude/.gsdt-planning/milestones/'
+      content.includes('.gsdt-planning/milestones/v${VERSION}-REQUIREMENTS.md'),
+      'archived REQUIREMENTS path should be under .gsdt-planning/milestones/'
     );
     assert.ok(
-      content.includes('.claude/.gsdt-planning/milestones/v${VERSION}-MILESTONE-AUDIT.md'),
-      'archived AUDIT path should be under .claude/.gsdt-planning/milestones/'
+      content.includes('.gsdt-planning/milestones/v${VERSION}-MILESTONE-AUDIT.md'),
+      'archived AUDIT path should be under .gsdt-planning/milestones/'
     );
   });
 
-  test('current milestone paths point to .claude/.gsdt-planning/ root', () => {
+  test('current milestone paths point to .gsdt-planning/ root', () => {
     const content = fs.readFileSync(workflowPath, 'utf-8');
-    // Current milestone should read from .claude/.gsdt-planning/ root
+    // Current milestone should read from .gsdt-planning/ root
     const lines = content.split('\n');
     const currentSection = lines.slice(
       lines.findIndex(l => l.includes('Current/in-progress')),
       lines.findIndex(l => l.includes('Current/in-progress')) + 10
     ).join('\n');
     assert.ok(
-      currentSection.includes('ROADMAP_PATH=".claude/.gsdt-planning/ROADMAP.md"'),
-      'current ROADMAP path should be at .claude/.gsdt-planning/ root'
+      currentSection.includes('ROADMAP_PATH=".gsdt-planning/ROADMAP.md"'),
+      'current ROADMAP path should be at .gsdt-planning/ root'
     );
   });
 });
@@ -205,7 +205,7 @@ describe('milestone-summary fixture-based artifact discovery', () => {
 
   test('discovers artifacts in archived milestone structure', () => {
     // Create archived milestone structure
-    const milestonesDir = path.join(tmpDir, '.claude/.gsdt-planning', 'milestones');
+    const milestonesDir = path.join(tmpDir, '.gsdt-planning', 'milestones');
     fs.mkdirSync(milestonesDir, { recursive: true });
     fs.writeFileSync(path.join(milestonesDir, 'v1.0-ROADMAP.md'), '# Roadmap v1.0');
     fs.writeFileSync(path.join(milestonesDir, 'v1.0-REQUIREMENTS.md'), '# Reqs v1.0');
@@ -220,9 +220,9 @@ describe('milestone-summary fixture-based artifact discovery', () => {
 
   test('discovers phase artifacts across multiple phases', () => {
     // Create phase structure with varying artifact completeness
-    const phase1 = path.join(tmpDir, '.claude/.gsdt-planning', 'phases', '01-setup');
-    const phase2 = path.join(tmpDir, '.claude/.gsdt-planning', 'phases', '02-core');
-    const phase3 = path.join(tmpDir, '.claude/.gsdt-planning', 'phases', '03-ui');
+    const phase1 = path.join(tmpDir, '.gsdt-planning', 'phases', '01-setup');
+    const phase2 = path.join(tmpDir, '.gsdt-planning', 'phases', '02-core');
+    const phase3 = path.join(tmpDir, '.gsdt-planning', 'phases', '03-ui');
     fs.mkdirSync(phase1, { recursive: true });
     fs.mkdirSync(phase2, { recursive: true });
     fs.mkdirSync(phase3, { recursive: true });
@@ -241,7 +241,7 @@ describe('milestone-summary fixture-based artifact discovery', () => {
     fs.writeFileSync(path.join(phase3, '03-SUMMARY.md'), 'one_liner: UI');
 
     // Verify discovery
-    const phasesDir = path.join(tmpDir, '.claude/.gsdt-planning', 'phases');
+    const phasesDir = path.join(tmpDir, '.gsdt-planning', 'phases');
     const phaseDirs = fs.readdirSync(phasesDir, { withFileTypes: true })
       .filter(e => e.isDirectory())
       .map(e => e.name);
@@ -260,13 +260,13 @@ describe('milestone-summary fixture-based artifact discovery', () => {
     assert.strictEqual(p3Files.length, 1, 'phase 3 should have 1 artifact');
   });
 
-  test('handles empty .claude/.gsdt-planning directory without error', () => {
-    const planningDir = path.join(tmpDir, '.claude/.gsdt-planning');
+  test('handles empty .gsdt-planning directory without error', () => {
+    const planningDir = path.join(tmpDir, '.gsdt-planning');
     fs.mkdirSync(planningDir, { recursive: true });
 
-    // No milestones, no phases — just empty .claude/.gsdt-planning/
+    // No milestones, no phases — just empty .gsdt-planning/
     const contents = fs.readdirSync(planningDir);
-    assert.strictEqual(contents.length, 0, 'empty .claude/.gsdt-planning/ should have no contents');
+    assert.strictEqual(contents.length, 0, 'empty .gsdt-planning/ should have no contents');
 
     // Should not throw when checking for milestones dir
     const milestonesExists = fs.existsSync(path.join(planningDir, 'milestones'));

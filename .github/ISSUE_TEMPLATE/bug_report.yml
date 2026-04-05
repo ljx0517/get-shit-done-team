@@ -30,7 +30,7 @@ body:
       options:
         - Claude Code
         - Gemini CLI
-        - OpenCode
+        - Vibe Agent Team
         - Codex
         - Copilot
         - Antigravity
@@ -134,9 +134,9 @@ body:
     attributes:
       label: GSD Configuration
       description: |
-        If the bug is related to planning, phases, or workflow behavior, paste your `.claude/.gsdt-planning/config.json`.
+        If the bug is related to planning, phases, or workflow behavior, paste your `.gsdt-planning/config.json` (or legacy `.claude/.gsdt-planning/config.json`).
 
-        **How to retrieve:** `cat .claude/.gsdt-planning/config.json`
+        **How to retrieve:** `cat .gsdt-planning/config.json`
 
         **⚠️ PII Warning:** This file may contain project-specific names. Redact if sensitive.
       render: json
@@ -148,9 +148,9 @@ body:
     attributes:
       label: GSD State (if relevant)
       description: |
-        If the bug involves incorrect state tracking or phase progression, include your `.claude/.gsdt-planning/STATE.md`.
+        If the bug involves incorrect state tracking or phase progression, include your `.gsdt-planning/STATE.md` (or legacy `.claude/.gsdt-planning/STATE.md`).
 
-        **How to retrieve:** `cat .claude/.gsdt-planning/STATE.md`
+        **How to retrieve:** `cat .gsdt-planning/STATE.md`
 
         **⚠️ PII Warning:** This file contains project names, phase descriptions, and timestamps. Redact any project names or details you don't want public.
       render: markdown
@@ -167,7 +167,7 @@ body:
         **How to retrieve:**
         - Claude Code: `cat ~/.claude/settings.json`
         - Gemini CLI: `cat ~/.gemini/settings.json`
-        - OpenCode: `cat ~/.config/opencode/opencode.json` or `opencode.jsonc`
+        - Vibe Agent Team: `cat ~/.config/opencode/opencode.json` or `opencode.jsonc`
 
         **⚠️ PII Warning:** This file may contain API keys, tokens, or custom paths. **Remove all API keys and tokens before pasting.** We recommend running through [presidio-anonymizer](https://microsoft.github.io/presidio/) or manually redacting any line containing "key", "token", or "secret".
       render: json
@@ -218,7 +218,7 @@ body:
         - `npm list -g get-shit-done-cc` — confirms installed version
         - `ls -la ~/.claude/get-shit-done/` — confirms installation files (Claude Code)
         - `cat ~/.claude/get-shit-done/gsd-file-manifest.json` — file manifest for debugging install issues
-        - `ls -la .claude/.gsdt-planning/` — confirms planning directory state
+        - `ls -la .gsdt-planning/` — confirms planning directory state (legacy: `.claude/.gsdt-planning/`)
 
         **⚠️ PII Warning:** File listings and manifests contain your home directory path. Replace your username with `REDACTED`.
     validations:

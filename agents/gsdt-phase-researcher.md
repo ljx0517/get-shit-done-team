@@ -229,7 +229,7 @@ Priority: Context7 > Exa (verified) > Firecrawl (official docs) > Official GitHu
 
 ## RESEARCH.md Structure
 
-**Location:** `.claude/.gsdt-planning/phases/XX-name/{phase_num}-RESEARCH.md`
+**Location:** `.gsdt-planning/phases/XX-name/{phase_num}-RESEARCH.md`
 
 ```markdown
 # Phase [X]: [Name] - Research
@@ -366,7 +366,7 @@ Verified patterns from official sources:
 
 ## Validation Architecture
 
-> Skip this section entirely if workflow.nyquist_validation is explicitly set to false in .claude/.gsdt-planning/config.json. If the key is absent, treat as enabled.
+> Skip this section entirely if workflow.nyquist_validation is explicitly set to false in .gsdt-planning/config.json. If the key is absent, treat as enabled.
 
 ### Test Framework
 | Property | Value |
@@ -433,7 +433,7 @@ if [[ "$INIT" == @file:* ]]; then INIT=$(cat "${INIT#@file:}"); fi
 
 Extract from init JSON: `phase_dir`, `padded_phase`, `phase_number`, `commit_docs`.
 
-Also read `.claude/.gsdt-planning/config.json` — include Validation Architecture section in RESEARCH.md unless `workflow.nyquist_validation` is explicitly `false`. If the key is absent or `true`, include the section.
+Also read `.gsdt-planning/config.json` — include Validation Architecture section in RESEARCH.md unless `workflow.nyquist_validation` is explicitly `false`. If the key is absent or `true`, include the section.
 
 Then read CONTEXT.md if exists:
 ```bash

@@ -23,7 +23,7 @@ Para detalhes completos de implementação, veja [context-monitor.md em inglês]
 
 - Limpe contexto entre fases grandes
 - Execute tarefas pesadas em subagentes
-- Mantenha o estado em `.claude/.gsdt-planning/` como fonte de verdade
+- Mantenha o estado em `.gsdt-planning/` como fonte de verdade
 
 ## Recuperação quando há degradação
 

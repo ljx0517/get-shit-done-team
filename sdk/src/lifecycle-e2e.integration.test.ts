@@ -108,7 +108,7 @@ describe.skipIf(!cliAvailable)('E2E Lifecycle: InitRunner → GSD.runPhase() ful
       } catch {
         // If roadmap analyze fails, try scanning the phases dir directly
         try {
-          const phasesDir = join(tmpDir, '.claude/.gsdt-planning', 'phases');
+          const phasesDir = join(tmpDir, '.gsdt-planning', 'phases');
           const entries = await readdir(phasesDir);
           const phaseEntries = entries
             .filter(e => /^\d+/.test(e))
@@ -143,7 +143,7 @@ describe.skipIf(!cliAvailable)('E2E Lifecycle: InitRunner → GSD.runPhase() ful
     }
 
     // Verify ROADMAP.md exists and contains at least one phase
-    const roadmapPath = join(tmpDir, '.claude/.gsdt-planning', 'ROADMAP.md');
+    const roadmapPath = join(tmpDir, '.gsdt-planning', 'ROADMAP.md');
     const roadmapStat = await stat(roadmapPath).catch(() => null);
     expect(roadmapStat).not.toBeNull();
 

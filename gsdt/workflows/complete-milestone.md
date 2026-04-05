@@ -8,9 +8,9 @@ Mark a shipped version (v1.0, v1.1, v2.0) as complete. Creates historical record
 
 1. templates/milestone.md
 2. templates/milestone-archive.md
-3. `.claude/.gsdt-planning/ROADMAP.md`
-4. `.claude/.gsdt-planning/REQUIREMENTS.md`
-5. `.claude/.gsdt-planning/PROJECT.md`
+3. `.gsdt-planning/ROADMAP.md`
+4. `.gsdt-planning/REQUIREMENTS.md`
+5. `.gsdt-planning/PROJECT.md`
 
 </required_reading>
 
@@ -18,14 +18,14 @@ Mark a shipped version (v1.0, v1.1, v2.0) as complete. Creates historical record
 
 When a milestone completes:
 
-1. Extract full milestone details to `.claude/.gsdt-planning/milestones/v[X.Y]-ROADMAP.md`
-2. Archive requirements to `.claude/.gsdt-planning/milestones/v[X.Y]-REQUIREMENTS.md`
+1. Extract full milestone details to `.gsdt-planning/milestones/v[X.Y]-ROADMAP.md`
+2. Archive requirements to `.gsdt-planning/milestones/v[X.Y]-REQUIREMENTS.md`
 3. Update ROADMAP.md — replace milestone details with one-line summary
 4. Delete REQUIREMENTS.md (fresh one for next milestone)
 5. Perform full PROJECT.md evolution review
 6. Offer to create next milestone inline
 7. Archive UI artifacts (`*-UI-SPEC.md`, `*-UI-REVIEW.md`) alongside other phase documents
-8. Clean up `.claude/.gsdt-planning/ui-reviews/` screenshot files (binary assets, never archived)
+8. Clean up `.gsdt-planning/ui-reviews/` screenshot files (binary assets, never archived)
 
 **Context Efficiency:** Archives keep ROADMAP.md constant-size and REQUIREMENTS.md milestone-scoped.
 
@@ -90,7 +90,7 @@ If user selects "Proceed anyway": note incomplete requirements in MILESTONES.md 
 <config-check>
 
 ```bash
-cat .claude/.gsdt-planning/config.json 2>/dev/null || true
+cat .gsdt-planning/config.json 2>/dev/null || true
 ```
 
 </config-check>
@@ -155,7 +155,7 @@ Extract one-liners from SUMMARY.md files using summary-extract:
 
 ```bash
 # For each phase in milestone, extract one-liner
-for summary in .claude/.gsdt-planning/phases/*-*/*-SUMMARY.md; do
+for summary in .gsdt-planning/phases/*-*/*-SUMMARY.md; do
   [ -e "$summary" ] || continue
   node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" summary-extract "$summary" --fields one_liner --pick one_liner
 done
@@ -189,7 +189,7 @@ Full PROJECT.md evolution review at milestone completion.
 Read all phase summaries:
 
 ```bash
-cat .claude/.gsdt-planning/phases/*-*/*-SUMMARY.md
+cat .gsdt-planning/phases/*-*/*-SUMMARY.md
 ```
 
 **Full review checklist:**
@@ -323,7 +323,7 @@ Initial user testing showed demand for shape tools.
 
 <step name="reorganize_roadmap">
 
-Update `.claude/.gsdt-planning/ROADMAP.md` — group completed milestone phases:
+Update `.gsdt-planning/ROADMAP.md` — group completed milestone phases:
 
 ```markdown
 # Roadmap: [Project Name]
@@ -374,7 +374,7 @@ ARCHIVE=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" milestone complete "v[X.Y
 ```
 
 The CLI handles:
-- Creating `.claude/.gsdt-planning/milestones/` directory
+- Creating `.gsdt-planning/milestones/` directory
 - Archiving ROADMAP.md to `milestones/v[X.Y]-ROADMAP.md`
 - Archiving REQUIREMENTS.md to `milestones/v[X.Y]-REQUIREMENTS.md` with archive header
 - Moving audit file to milestones if it exists
@@ -383,7 +383,7 @@ The CLI handles:
 
 Extract from result: `version`, `date`, `phases`, `plans`, `tasks`, `accomplishments`, `archived`.
 
-Verify: `✅ Milestone archived to .claude/.gsdt-planning/milestones/`
+Verify: `✅ Milestone archived to .gsdt-planning/milestones/`
 
 **Phase archival (optional):** After archival completes, ask the user:
 
@@ -391,13 +391,13 @@ AskUserQuestion(header="Archive Phases", question="Archive phase directories to 
 
 If "Yes": move phase directories to the milestone archive:
 ```bash
-mkdir -p .claude/.gsdt-planning/milestones/v[X.Y]-phases
-# For each phase directory in .claude/.gsdt-planning/phases/:
-mv .claude/.gsdt-planning/phases/{phase-dir} .claude/.gsdt-planning/milestones/v[X.Y]-phases/
+mkdir -p .gsdt-planning/milestones/v[X.Y]-phases
+# For each phase directory in .gsdt-planning/phases/:
+mv .gsdt-planning/phases/{phase-dir} .gsdt-planning/milestones/v[X.Y]-phases/
 ```
-Verify: `✅ Phase directories archived to .claude/.gsdt-planning/milestones/v[X.Y]-phases/`
+Verify: `✅ Phase directories archived to .gsdt-planning/milestones/v[X.Y]-phases/`
 
-If "Skip": Phase directories remain in `.claude/.gsdt-planning/phases/` as raw execution history. Use `/gsdt:cleanup` later to archive retroactively.
+If "Skip": Phase directories remain in `.gsdt-planning/phases/` as raw execution history. Use `/gsdt:cleanup` later to archive retroactively.
 
 After archival, the AI still handles:
 - Reorganizing ROADMAP.md with milestone grouping (requires judgment)
@@ -435,8 +435,8 @@ After `milestone complete` has archived, reorganize ROADMAP.md with milestone gr
 **Then delete originals:**
 
 ```bash
-rm .claude/.gsdt-planning/ROADMAP.md
-rm .claude/.gsdt-planning/REQUIREMENTS.md
+rm .gsdt-planning/ROADMAP.md
+rm .gsdt-planning/REQUIREMENTS.md
 ```
 
 </step>
@@ -447,7 +447,7 @@ rm .claude/.gsdt-planning/REQUIREMENTS.md
 
 Check for existing retrospective:
 ```bash
-ls .claude/.gsdt-planning/RETROSPECTIVE.md 2>/dev/null || true
+ls .gsdt-planning/RETROSPECTIVE.md 2>/dev/null || true
 ```
 
 **If exists:** Read the file, append new milestone section before the "## Cross-Milestone Trends" section.
@@ -497,7 +497,7 @@ If the "## Cross-Milestone Trends" section exists, update the tables with new da
 
 **Commit:**
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: update retrospective for v${VERSION}" --files .claude/.gsdt-planning/RETROSPECTIVE.md
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: update retrospective for v${VERSION}" --files .gsdt-planning/RETROSPECTIVE.md
 ```
 
 </step>
@@ -511,7 +511,7 @@ Most STATE.md updates were handled by `milestone complete`, but verify and updat
 ```markdown
 ## Project Reference
 
-See: .claude/.gsdt-planning/PROJECT.md (updated [today])
+See: .gsdt-planning/PROJECT.md (updated [today])
 
 **Core value:** [Current core value from PROJECT.md]
 **Current focus:** [Next milestone or "Planning next milestone"]
@@ -580,9 +580,9 @@ git checkout main
 if [ "$BRANCHING_STRATEGY" = "phase" ]; then
   for branch in $PHASE_BRANCHES; do
     git merge --squash "$branch"
-    # Strip .claude/.gsdt-planning/ from staging if commit_docs is false
+    # Strip .gsdt-planning/ from staging if commit_docs is false
     if [ "$COMMIT_DOCS" = "false" ]; then
-      git reset HEAD .claude/.gsdt-planning/ 2>/dev/null || true
+      git reset HEAD .gsdt-planning/ 2>/dev/null || true
     fi
     git commit -m "feat: $branch for v[X.Y]"
   done
@@ -590,9 +590,9 @@ fi
 
 if [ "$BRANCHING_STRATEGY" = "milestone" ]; then
   git merge --squash "$MILESTONE_BRANCH"
-  # Strip .claude/.gsdt-planning/ from staging if commit_docs is false
+  # Strip .gsdt-planning/ from staging if commit_docs is false
   if [ "$COMMIT_DOCS" = "false" ]; then
-    git reset HEAD .claude/.gsdt-planning/ 2>/dev/null || true
+    git reset HEAD .gsdt-planning/ 2>/dev/null || true
   fi
   git commit -m "feat: $MILESTONE_BRANCH for v[X.Y]"
 fi
@@ -609,9 +609,9 @@ git checkout main
 if [ "$BRANCHING_STRATEGY" = "phase" ]; then
   for branch in $PHASE_BRANCHES; do
     git merge --no-ff --no-commit "$branch"
-    # Strip .claude/.gsdt-planning/ from staging if commit_docs is false
+    # Strip .gsdt-planning/ from staging if commit_docs is false
     if [ "$COMMIT_DOCS" = "false" ]; then
-      git reset HEAD .claude/.gsdt-planning/ 2>/dev/null || true
+      git reset HEAD .gsdt-planning/ 2>/dev/null || true
     fi
     git commit -m "Merge branch '$branch' for v[X.Y]"
   done
@@ -619,9 +619,9 @@ fi
 
 if [ "$BRANCHING_STRATEGY" = "milestone" ]; then
   git merge --no-ff --no-commit "$MILESTONE_BRANCH"
-  # Strip .claude/.gsdt-planning/ from staging if commit_docs is false
+  # Strip .gsdt-planning/ from staging if commit_docs is false
   if [ "$COMMIT_DOCS" = "false" ]; then
-    git reset HEAD .claude/.gsdt-planning/ 2>/dev/null || true
+    git reset HEAD .gsdt-planning/ 2>/dev/null || true
   fi
   git commit -m "Merge branch '$MILESTONE_BRANCH' for v[X.Y]"
 fi
@@ -661,7 +661,7 @@ Key accomplishments:
 - [Item 2]
 - [Item 3]
 
-See .claude/.gsdt-planning/MILESTONES.md for full details."
+See .gsdt-planning/MILESTONES.md for full details."
 ```
 
 Confirm: "Tagged: v[X.Y]"
@@ -680,7 +680,7 @@ git push origin v[X.Y]
 Commit milestone completion.
 
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "chore: complete v[X.Y] milestone" --files .claude/.gsdt-planning/milestones/v[X.Y]-ROADMAP.md .claude/.gsdt-planning/milestones/v[X.Y]-REQUIREMENTS.md .claude/.gsdt-planning/milestones/v[X.Y]-MILESTONE-AUDIT.md .claude/.gsdt-planning/MILESTONES.md .claude/.gsdt-planning/PROJECT.md .claude/.gsdt-planning/STATE.md
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "chore: complete v[X.Y] milestone" --files .gsdt-planning/milestones/v[X.Y]-ROADMAP.md .gsdt-planning/milestones/v[X.Y]-REQUIREMENTS.md .gsdt-planning/milestones/v[X.Y]-MILESTONE-AUDIT.md .gsdt-planning/MILESTONES.md .gsdt-planning/PROJECT.md .gsdt-planning/STATE.md
 ```
 ```
 
@@ -701,7 +701,7 @@ Archived:
 - milestones/v[X.Y]-ROADMAP.md
 - milestones/v[X.Y]-REQUIREMENTS.md
 
-Summary: .claude/.gsdt-planning/MILESTONES.md
+Summary: .gsdt-planning/MILESTONES.md
 Tag: v[X.Y]
 
 ---

@@ -2,7 +2,7 @@
 
 > **エージェント型ワーカー向け:** 必須サブスキル: superpowers:subagent-driven-development（推奨）または superpowers:executing-plans を使用して、このプランをタスクごとに実装してください。各ステップはチェックボックス（`- [ ]`）構文で進捗を追跡します。
 
-**目標:** `/gsdt:new-project` が `.claude/.gsdt-planning/config.json` を作成する際、ユーザーが選択した6つのキーだけでなく、すべての有効なデフォルト値を含むファイルを生成する。これにより、開発者はソースコードを読まなくてもすべての設定を確認できるようになる。
+**目標:** `/gsdt:new-project` が `.gsdt-planning/config.json` を作成する際、ユーザーが選択した6つのキーだけでなく、すべての有効なデフォルト値を含むファイルを生成する。これにより、開発者はソースコードを読まなくてもすべての設定を確認できるようになる。
 
 **アーキテクチャ:** `config.cjs` に単一の JS 関数 `buildNewProjectConfig(cwd, userChoices)` を追加し、新規プロジェクトの完全な設定の唯一の信頼できる情報源とする。これを CLI コマンド `config-new-project` として公開する。`new-project.md` ワークフローを更新し、部分的な JSON をインラインで書き込む代わりにこのコマンドを呼び出すようにする。
 
@@ -219,7 +219,7 @@ describe('config-new-project command', () => {
     assert.ok(result.success, `Command failed: ${result.error}`);
     const out = JSON.parse(result.output);
     assert.strictEqual(out.created, true);
-    assert.strictEqual(out.path, '.claude/.gsdt-planning/config.json');
+    assert.strictEqual(out.path, '.gsdt-planning/config.json');
   });
 });
 ```
@@ -314,7 +314,7 @@ function buildNewProjectConfig(cwd, userChoices) {
 }
 
 /**
- * コマンド: 新規プロジェクト用の完全展開された .claude/.gsdt-planning/config.json を作成する。
+ * コマンド: 新規プロジェクト用の完全展開された .gsdt-planning/config.json を作成する。
  *
  * ユーザーが選択した設定を JSON 文字列として受け取る（/gsdt:new-project 時に
  * ユーザーが明示的に設定したキー）。残りのキーはハードコードされたデフォルトと
@@ -323,8 +323,8 @@ function buildNewProjectConfig(cwd, userChoices) {
  * 冪等: config.json が既に存在する場合は { created: false } を返す。
  */
 function cmdConfigNewProject(cwd, choicesJson, raw) {
-  const configPath = path.join(cwd, '.claude/.gsdt-planning', 'config.json');
-  const planningDir = path.join(cwd, '.claude/.gsdt-planning');
+  const configPath = path.join(cwd, '.gsdt-planning', 'config.json');
+  const planningDir = path.join(cwd, '.gsdt-planning');
 
   // 冪等: 既存の設定を上書きしない
   if (fs.existsSync(configPath)) {
@@ -342,20 +342,20 @@ function cmdConfigNewProject(cwd, choicesJson, raw) {
     }
   }
 
-  // .claude/.gsdt-planning ディレクトリが存在することを確認
+  // .gsdt-planning ディレクトリが存在することを確認
   try {
     if (!fs.existsSync(planningDir)) {
       fs.mkdirSync(planningDir, { recursive: true });
     }
   } catch (err) {
-    error('Failed to create .claude/.gsdt-planning directory: ' + err.message);
+    error('Failed to create .gsdt-planning directory: ' + err.message);
   }
 
   const config = buildNewProjectConfig(cwd, userChoices);
 
   try {
     fs.writeFileSync(configPath, JSON.stringify(config, null, 2), 'utf-8');
-    output({ created: true, path: '.claude/.gsdt-planning/config.json' }, raw, 'created');
+    output({ created: true, path: '.gsdt-planning/config.json' }, raw, 'created');
   } catch (err) {
     error('Failed to write config.json: ' + err.message);
   }
@@ -412,7 +412,7 @@ cd /Users/diego/Dev/get-shit-done
 node gsdt/bin/gsdt-tools.cjs config-new-project '{"mode":"interactive","granularity":"standard"}' --cwd /tmp/gsd-smoke-$(date +%s)
 ```
 
-期待結果: `{"created":true,"path":".claude/.gsdt-planning/config.json"}` （または類似の出力）が表示される。
+期待結果: `{"created":true,"path":".gsdt-planning/config.json"}` （または類似の出力）が表示される。
 
 クリーンアップ: `rm -rf /tmp/gsd-smoke-*`
 
@@ -451,7 +451,7 @@ git commit -m "feat: register config-new-project in gsdt-tools CLI router"
 ステップ 2a で config.json を作成しているブロックを探す:
 
 ```markdown
-Create `.claude/.gsdt-planning/config.json` with mode set to "yolo":
+Create `.gsdt-planning/config.json` with mode set to "yolo":
 
 ```json
 {
@@ -466,10 +466,10 @@ Create `.claude/.gsdt-planning/config.json` with mode set to "yolo":
 インライン JSON 書き込みの指示を以下に置き換える:
 
 ```markdown
-Create `.claude/.gsdt-planning/config.json` using the CLI (fills in all defaults automatically):
+Create `.gsdt-planning/config.json` using the CLI (fills in all defaults automatically):
 
 ```bash
-mkdir -p .claude/.gsdt-planning
+mkdir -p .gsdt-planning
 node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" config-new-project "$(cat <<'CHOICES'
 {
   "mode": "yolo",
@@ -498,7 +498,7 @@ CHOICES
 ステップ 5 で config.json を作成しているブロックを探す:
 
 ```markdown
-Create `.claude/.gsdt-planning/config.json` with all settings:
+Create `.gsdt-planning/config.json` with all settings:
 
 ```json
 {
@@ -512,10 +512,10 @@ Create `.claude/.gsdt-planning/config.json` with all settings:
 以下に置き換える:
 
 ```markdown
-Create `.claude/.gsdt-planning/config.json` using the CLI (fills in all defaults automatically):
+Create `.gsdt-planning/config.json` using the CLI (fills in all defaults automatically):
 
 ```bash
-mkdir -p .claude/.gsdt-planning
+mkdir -p .gsdt-planning
 node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" config-new-project "$(cat <<'CHOICES'
 {
   "mode": "[selected: yolo|interactive]",
@@ -597,7 +597,7 @@ node /Users/diego/Dev/gsdt/gsdt/bin/gsdt-tools.cjs config-new-project '{
 
 # ファイルに期待される12個のキーがすべて含まれていることを確認
 echo "=== Generated config.json ==="
-cat "$TMP/.claude/.gsdt-planning/config.json"
+cat "$TMP/.gsdt-planning/config.json"
 
 # クリーンアップ
 rm -rf "$TMP"
@@ -612,11 +612,11 @@ TMP=$(mktemp -d)
 CHOICES='{"mode":"yolo","granularity":"coarse"}'
 
 node /Users/diego/Dev/gsdt/gsdt/bin/gsdt-tools.cjs config-new-project "$CHOICES" --cwd "$TMP"
-FIRST=$(cat "$TMP/.claude/.gsdt-planning/config.json")
+FIRST=$(cat "$TMP/.gsdt-planning/config.json")
 
 # 2回目の呼び出しは何も変更しないはず
 node /Users/diego/Dev/gsdt/gsdt/bin/gsdt-tools.cjs config-new-project "$CHOICES" --cwd "$TMP"
-SECOND=$(cat "$TMP/.claude/.gsdt-planning/config.json")
+SECOND=$(cat "$TMP/.gsdt-planning/config.json")
 
 [ "$FIRST" = "$SECOND" ] && echo "IDEMPOTENT: OK" || echo "IDEMPOTENT: FAIL"
 rm -rf "$TMP"
@@ -662,7 +662,7 @@ feat: materialize all config defaults at new-project initialization
 
 **問題:**
 `/gsdt:new-project` はオンボーディング時にユーザーが明示的に選択した6つのキーのみで
-`.claude/.gsdt-planning/config.json` を作成する。5つの追加キー
+`.gsdt-planning/config.json` を作成する。5つの追加キー
 （`search_gitignored`、`brave_search`、`git.branching_strategy`、
 `git.phase_branch_template`、`git.milestone_branch_template`）は実行時に
 `loadConfig()` が暗黙的に解決するが、ディスクには書き込まれない。
@@ -693,7 +693,7 @@ JSON テンプレートの書き込みの代わりにこのコマンドを呼び
 - 新しいユーザー向けフラグなし
 
 **発見可能性が向上する理由:**
-初めて `.claude/.gsdt-planning/config.json` を開いた開発者が `git.branching_strategy: "none"` を
+初めて `.gsdt-planning/config.json` を開いた開発者が `git.branching_strategy: "none"` を
 見て、GSD のソースコードを読まなくてもブランチ戦略機能が利用可能で設定変更できることを
 即座に理解できるようになる。
 ```

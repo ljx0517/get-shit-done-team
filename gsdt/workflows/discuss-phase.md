@@ -217,9 +217,9 @@ Read project-level and prior phase context to avoid re-asking decided questions 
 **Step 1: Read project-level files**
 ```bash
 # Core project files
-cat .claude/.gsdt-planning/PROJECT.md 2>/dev/null || true
-cat .claude/.gsdt-planning/REQUIREMENTS.md 2>/dev/null || true
-cat .claude/.gsdt-planning/STATE.md 2>/dev/null || true
+cat .gsdt-planning/PROJECT.md 2>/dev/null || true
+cat .gsdt-planning/REQUIREMENTS.md 2>/dev/null || true
+cat .gsdt-planning/STATE.md 2>/dev/null || true
 ```
 
 Extract from these:
@@ -230,7 +230,7 @@ Extract from these:
 **Step 2: Read all prior CONTEXT.md files**
 ```bash
 # Find all CONTEXT.md files from phases before current
-(find .claude/.gsdt-planning/phases -name "*-CONTEXT.md" 2>/dev/null || true) | sort
+(find .gsdt-planning/phases -name "*-CONTEXT.md" 2>/dev/null || true) | sort
 ```
 
 For each CONTEXT.md where phase number < current phase:
@@ -311,7 +311,7 @@ Lightweight scan of existing code to inform gray area identification and discuss
 
 **Step 1: Check for existing codebase maps**
 ```bash
-ls .claude/.gsdt-planning/codebase/*.md 2>/dev/null || true
+ls .gsdt-planning/codebase/*.md 2>/dev/null || true
 ```
 
 **If codebase maps exist:** Read the most relevant ones (CONVENTIONS.md, STRUCTURE.md, STACK.md based on phase type). Extract:
@@ -582,7 +582,7 @@ Track deferred ideas internally.
 
 For each selected area, conduct a focused discussion loop.
 
-**Research-before-questions mode:** Check if `workflow.research_before_questions` is enabled in config (from init context or `.claude/.gsdt-planning/config.json`). When enabled, before presenting questions for each area:
+**Research-before-questions mode:** Check if `workflow.research_before_questions` is enabled in config (from init context or `.gsdt-planning/config.json`). When enabled, before presenting questions for each area:
 1. Do a brief web search for best practices related to the area topic
 2. Summarize the top findings in 2-3 bullet points
 3. Present the research alongside the question so the user can make a more informed decision
@@ -751,7 +751,7 @@ Use values from init: `phase_dir`, `phase_slug`, `padded_phase`.
 
 If `phase_dir` is null (phase exists in roadmap but no directory):
 ```bash
-mkdir -p ".claude/.gsdt-planning/phases/${padded_phase}-${phase_slug}"
+mkdir -p ".gsdt-planning/phases/${padded_phase}-${phase_slug}"
 ```
 
 **File location:** `${phase_dir}/${padded_phase}-CONTEXT.md`
@@ -863,7 +863,7 @@ Write file.
 Present summary and next steps:
 
 ```
-Created: .claude/.gsdt-planning/phases/${PADDED_PHASE}-${SLUG}/${PADDED_PHASE}-CONTEXT.md
+Created: .gsdt-planning/phases/${PADDED_PHASE}-${SLUG}/${PADDED_PHASE}-CONTEXT.md
 
 ## Decisions Captured
 
@@ -964,7 +964,7 @@ node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" state record-session \
 Commit STATE.md:
 
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs(state): record phase ${PHASE} context session" --files .claude/.gsdt-planning/STATE.md
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs(state): record phase ${PHASE} context session" --files .gsdt-planning/STATE.md
 ```
 </step>
 
@@ -993,10 +993,7 @@ node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" config-set workflow._auto_chain_act
 
 Display banner:
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► AUTO-ADVANCING TO PLAN
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
+── GSD ► AUTO-ADVANCING TO PLAN ──
 Context captured. Launching plan-phase...
 ```
 
@@ -1010,10 +1007,7 @@ This keeps the auto-advance chain flat — discuss, plan, and execute all run at
 **Handle plan-phase return:**
 - **PHASE COMPLETE** → Full chain succeeded. Display:
   ```
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   GSD ► PHASE ${PHASE} COMPLETE
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
+  ── GSD ► PHASE ${PHASE} COMPLETE ──
   Auto-advance pipeline finished: discuss → plan → execute
 
   Next: /gsdt:discuss-phase ${NEXT_PHASE} --auto ${GSD_WS}

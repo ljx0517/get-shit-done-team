@@ -2,23 +2,23 @@
  * Workstream — CRUD operations for workstream namespacing
  *
  * Workstreams enable parallel milestones by scoping ROADMAP.md, STATE.md,
- * REQUIREMENTS.md, and phases/ into .claude/.gsdt-planning/workstreams/{name}/ directories.
+ * REQUIREMENTS.md, and phases/ into `.gsdt-planning/workstreams/{name}/` directories.
  *
  * When no workstreams/ directory exists, GSD operates in "flat mode" with
- * everything at .claude/.gsdt-planning/ — backward compatible with pre-workstream installs.
+ * everything at `.gsdt-planning/` — backward compatible with pre-workstream installs.
  */
 
 const fs = require('fs');
 const path = require('path');
-const { output, error, planningPaths, planningRoot, toPosixPath, getMilestoneInfo, generateSlugInternal, setActiveWorkstream, getActiveWorkstream, filterPlanFiles, filterSummaryFiles, readSubdirectories } = require('./core.cjs');
+const { output, error, planningPaths, planningRoot, planningDirDisplay, toPosixPath, getMilestoneInfo, generateSlugInternal, setActiveWorkstream, getActiveWorkstream, filterPlanFiles, filterSummaryFiles, readSubdirectories } = require('./core.cjs');
 const { stateExtractField } = require('./state.cjs');
 
 // ─── Migration ──────────────────────────────────────────────────────────────
 
 /**
- * Migrate flat .claude/.gsdt-planning/ layout to workstream mode.
+ * Migrate flat `.gsdt-planning/` layout to workstream mode.
  * Moves per-workstream files (ROADMAP.md, STATE.md, REQUIREMENTS.md, phases/)
- * into .claude/.gsdt-planning/workstreams/{name}/. Shared files (PROJECT.md, config.json,
+ * into `.gsdt-planning/workstreams/{name}/`. Shared files (PROJECT.md, config.json,
  * milestones/, research/, codebase/, todos/) stay in place.
  */
 function migrateToWorkstreams(cwd, workstreamName) {
@@ -30,7 +30,7 @@ function migrateToWorkstreams(cwd, workstreamName) {
   const wsDir = path.join(baseDir, 'workstreams', workstreamName);
 
   if (fs.existsSync(path.join(baseDir, 'workstreams'))) {
-    throw new Error('Already in workstream mode — .claude/.gsdt-planning/workstreams/ exists');
+    throw new Error('Already in workstream mode — workstreams/ exists under the planning directory');
   }
 
   const toMove = [
@@ -78,7 +78,7 @@ function cmdWorkstreamCreate(cwd, name, options, raw) {
 
   const baseDir = planningRoot(cwd);
   if (!fs.existsSync(baseDir)) {
-    error('.claude/.gsdt-planning/ directory not found — run /gsdt:new-project first');
+    error(`${planningDirDisplay(cwd)}/ directory not found — run /gsdt:new-project first`);
   }
 
   const wsRoot = path.join(baseDir, 'workstreams');

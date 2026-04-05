@@ -19,7 +19,7 @@ describe('template select command', () => {
   beforeEach(() => {
     tmpDir = createTempProject();
     // Create a phase directory with a plan
-    const phaseDir = path.join(tmpDir, '.claude/.gsdt-planning', 'phases', '01-setup');
+    const phaseDir = path.join(tmpDir, '.gsdt-planning', 'phases', '01-setup');
     fs.mkdirSync(phaseDir, { recursive: true });
   });
 
@@ -28,7 +28,7 @@ describe('template select command', () => {
   });
 
   test('selects minimal template for simple plan', () => {
-    const planPath = path.join(tmpDir, '.claude/.gsdt-planning', 'phases', '01-setup', '01-01-PLAN.md');
+    const planPath = path.join(tmpDir, '.gsdt-planning', 'phases', '01-setup', '01-01-PLAN.md');
     fs.writeFileSync(planPath, [
       '# Plan',
       '',
@@ -38,7 +38,7 @@ describe('template select command', () => {
       'File: `src/index.ts`',
     ].join('\n'));
 
-    const result = runGsdTools(`template select .claude/.gsdt-planning/phases/01-setup/01-01-PLAN.md`, tmpDir);
+    const result = runGsdTools(`template select .gsdt-planning/phases/01-setup/01-01-PLAN.md`, tmpDir);
     assert.ok(result.success, `Failed: ${result.error}`);
     const out = JSON.parse(result.output);
     assert.strictEqual(out.type, 'minimal');
@@ -46,7 +46,7 @@ describe('template select command', () => {
   });
 
   test('selects standard template for moderate plan', () => {
-    const planPath = path.join(tmpDir, '.claude/.gsdt-planning', 'phases', '01-setup', '01-01-PLAN.md');
+    const planPath = path.join(tmpDir, '.gsdt-planning', 'phases', '01-setup', '01-01-PLAN.md');
     fs.writeFileSync(planPath, [
       '# Plan',
       '',
@@ -62,14 +62,14 @@ describe('template select command', () => {
       'Files: `src/auth/login.ts`, `src/auth/register.ts`, `src/routes/index.ts`, `src/middleware/auth.ts`',
     ].join('\n'));
 
-    const result = runGsdTools(`template select .claude/.gsdt-planning/phases/01-setup/01-01-PLAN.md`, tmpDir);
+    const result = runGsdTools(`template select .gsdt-planning/phases/01-setup/01-01-PLAN.md`, tmpDir);
     assert.ok(result.success, `Failed: ${result.error}`);
     const out = JSON.parse(result.output);
     assert.strictEqual(out.type, 'standard');
   });
 
   test('selects complex template for plan with decisions and many files', () => {
-    const planPath = path.join(tmpDir, '.claude/.gsdt-planning', 'phases', '01-setup', '01-01-PLAN.md');
+    const planPath = path.join(tmpDir, '.gsdt-planning', 'phases', '01-setup', '01-01-PLAN.md');
     const lines = ['# Plan', ''];
     for (let i = 1; i <= 6; i++) {
       lines.push(`### Task ${i}`, `Do task ${i}.`, '');
@@ -80,14 +80,14 @@ describe('template select command', () => {
     }
     fs.writeFileSync(planPath, lines.join('\n'));
 
-    const result = runGsdTools(`template select .claude/.gsdt-planning/phases/01-setup/01-01-PLAN.md`, tmpDir);
+    const result = runGsdTools(`template select .gsdt-planning/phases/01-setup/01-01-PLAN.md`, tmpDir);
     assert.ok(result.success, `Failed: ${result.error}`);
     const out = JSON.parse(result.output);
     assert.strictEqual(out.type, 'complex');
   });
 
   test('returns standard as fallback for nonexistent file', () => {
-    const result = runGsdTools(`template select .claude/.gsdt-planning/phases/01-setup/nonexistent.md`, tmpDir);
+    const result = runGsdTools(`template select .gsdt-planning/phases/01-setup/nonexistent.md`, tmpDir);
     assert.ok(result.success, `Failed: ${result.error}`);
     const out = JSON.parse(result.output);
     assert.strictEqual(out.type, 'standard');
@@ -102,10 +102,10 @@ describe('template fill command', () => {
 
   beforeEach(() => {
     tmpDir = createTempProject();
-    const phaseDir = path.join(tmpDir, '.claude/.gsdt-planning', 'phases', '01-setup');
+    const phaseDir = path.join(tmpDir, '.gsdt-planning', 'phases', '01-setup');
     fs.mkdirSync(phaseDir, { recursive: true });
     fs.writeFileSync(
-      path.join(tmpDir, '.claude/.gsdt-planning', 'ROADMAP.md'),
+      path.join(tmpDir, '.gsdt-planning', 'ROADMAP.md'),
       '## Roadmap\n\n### Phase 1: Setup\n**Goal:** Initial setup\n'
     );
   });
@@ -154,7 +154,7 @@ describe('template fill command', () => {
 
   test('rejects existing file', () => {
     // Create the file first
-    const phaseDir = path.join(tmpDir, '.claude/.gsdt-planning', 'phases', '01-setup');
+    const phaseDir = path.join(tmpDir, '.gsdt-planning', 'phases', '01-setup');
     fs.writeFileSync(path.join(phaseDir, '01-01-SUMMARY.md'), '# Existing');
 
     const result = runGsdTools('template fill summary --phase 1', tmpDir);

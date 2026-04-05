@@ -48,7 +48,7 @@ X/Y plans complete (Z%)
 - **Project age:** N days
 ```
 
-If no `.claude/.gsdt-planning/` directory exists, inform the user to run `/gsdt:new-project` first.
+If no `.gsdt-planning/` directory exists, inform the user to run `/gsdt:new-project` first.
 </step>
 
 </process>

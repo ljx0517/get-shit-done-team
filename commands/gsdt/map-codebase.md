@@ -1,6 +1,6 @@
 ---
 name: gsdt:map-codebase
-description: Analyze codebase with parallel mapper agents to produce .claude/.gsdt-planning/codebase/ documents
+description: Analyze codebase with parallel mapper agents to produce .gsdt-planning/codebase/ documents
 argument-hint: "[optional: specific area to map, e.g., 'api' or 'auth']"
 allowed-tools:
   - Read
@@ -14,9 +14,9 @@ allowed-tools:
 <objective>
 Analyze existing codebase using parallel gsdt-codebase-mapper agents to produce structured codebase documents.
 
-Each mapper agent explores a focus area and **writes documents directly** to `.claude/.gsdt-planning/codebase/`. The orchestrator only receives confirmations, keeping context usage minimal.
+Each mapper agent explores a focus area and **writes documents directly** to `.gsdt-planning/codebase/`. The orchestrator only receives confirmations, keeping context usage minimal.
 
-Output: .claude/.gsdt-planning/codebase/ folder with 7 structured documents about the codebase state.
+Output: .gsdt-planning/codebase/ folder with 7 structured documents about the codebase state.
 </objective>
 
 <execution_context>
@@ -27,7 +27,7 @@ Output: .claude/.gsdt-planning/codebase/ folder with 7 structured documents abou
 Focus area: $ARGUMENTS (optional - if provided, tells agents to focus on specific subsystem)
 
 **Load project state if exists:**
-Check for .claude/.gsdt-planning/STATE.md - loads context if project already initialized
+Check for .gsdt-planning/STATE.md - loads context if project already initialized
 
 **This command can run:**
 - Before /gsdt:new-project (brownfield codebases) - creates codebase map first
@@ -49,8 +49,8 @@ Check for .claude/.gsdt-planning/STATE.md - loads context if project already ini
 </when_to_use>
 
 <process>
-1. Check if .claude/.gsdt-planning/codebase/ already exists (offer to refresh or skip)
-2. Create .claude/.gsdt-planning/codebase/ directory structure
+1. Check if .gsdt-planning/codebase/ already exists (offer to refresh or skip)
+2. Create .gsdt-planning/codebase/ directory structure
 3. Spawn 4 parallel gsdt-codebase-mapper agents:
    - Agent 1: tech focus → writes STACK.md, INTEGRATIONS.md
    - Agent 2: arch focus → writes ARCHITECTURE.md, STRUCTURE.md
@@ -63,7 +63,7 @@ Check for .claude/.gsdt-planning/STATE.md - loads context if project already ini
 </process>
 
 <success_criteria>
-- [ ] .claude/.gsdt-planning/codebase/ directory created
+- [ ] .gsdt-planning/codebase/ directory created
 - [ ] All 7 codebase documents written by mapper agents
 - [ ] Documents follow template structure
 - [ ] Parallel agents completed without errors

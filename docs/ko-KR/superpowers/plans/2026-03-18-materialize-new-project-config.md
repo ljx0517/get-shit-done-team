@@ -2,7 +2,7 @@
 
 > **에이전트 작업자를 위한 안내:** 필수 하위 기술: superpowers:subagent-driven-development(권장) 또는 superpowers:executing-plans를 사용하여 이 계획을 작업 단위로 구현하세요. 단계는 체크박스(`- [ ]`) 형식으로 진행 상황을 추적합니다.
 
-**목표:** `/gsdt:new-project`가 `.claude/.gsdt-planning/config.json`을 생성할 때, 파일에 사용자가 선택한 6개 키만이 아닌 모든 유효한 기본값이 포함되도록 하여 개발자가 소스 코드를 읽지 않고도 모든 설정을 확인할 수 있게 합니다.
+**목표:** `/gsdt:new-project`가 `.gsdt-planning/config.json`을 생성할 때, 파일에 사용자가 선택한 6개 키만이 아닌 모든 유효한 기본값이 포함되도록 하여 개발자가 소스 코드를 읽지 않고도 모든 설정을 확인할 수 있게 합니다.
 
 **아키텍처:** 새 프로젝트의 전체 config에 대한 단일 진실 공급원으로서 `config.cjs`에 단일 JS 함수 `buildNewProjectConfig(cwd, userChoices)`를 추가합니다. CLI 명령어 `config-new-project`로 노출합니다. 부분적인 JSON을 인라인으로 작성하는 대신 이 명령어를 호출하도록 `new-project.md` 워크플로우를 업데이트합니다.
 
@@ -219,7 +219,7 @@ describe('config-new-project command', () => {
     assert.ok(result.success, `Command failed: ${result.error}`);
     const out = JSON.parse(result.output);
     assert.strictEqual(out.created, true);
-    assert.strictEqual(out.path, '.claude/.gsdt-planning/config.json');
+    assert.strictEqual(out.path, '.gsdt-planning/config.json');
   });
 });
 ```
@@ -314,7 +314,7 @@ function buildNewProjectConfig(cwd, userChoices) {
 }
 
 /**
- * 명령어: 새 프로젝트를 위한 완전히 구체화된 .claude/.gsdt-planning/config.json을 생성합니다.
+ * 명령어: 새 프로젝트를 위한 완전히 구체화된 .gsdt-planning/config.json을 생성합니다.
  *
  * 사용자가 선택한 설정을 JSON 문자열로 받습니다(/gsdt:new-project 중 명시적으로
  * 구성한 키들). 나머지 키들은 하드코딩된 기본값과 선택적 ~/.gsdt/defaults.json에서 채워집니다.
@@ -322,8 +322,8 @@ function buildNewProjectConfig(cwd, userChoices) {
  * 멱등성: config.json이 이미 존재하면 { created: false }를 반환합니다.
  */
 function cmdConfigNewProject(cwd, choicesJson, raw) {
-  const configPath = path.join(cwd, '.claude/.gsdt-planning', 'config.json');
-  const planningDir = path.join(cwd, '.claude/.gsdt-planning');
+  const configPath = path.join(cwd, '.gsdt-planning', 'config.json');
+  const planningDir = path.join(cwd, '.gsdt-planning');
 
   // 멱등성: 기존 config를 덮어쓰지 않음
   if (fs.existsSync(configPath)) {
@@ -341,20 +341,20 @@ function cmdConfigNewProject(cwd, choicesJson, raw) {
     }
   }
 
-  // .claude/.gsdt-planning 디렉토리가 존재하는지 확인
+  // .gsdt-planning 디렉토리가 존재하는지 확인
   try {
     if (!fs.existsSync(planningDir)) {
       fs.mkdirSync(planningDir, { recursive: true });
     }
   } catch (err) {
-    error('Failed to create .claude/.gsdt-planning directory: ' + err.message);
+    error('Failed to create .gsdt-planning directory: ' + err.message);
   }
 
   const config = buildNewProjectConfig(cwd, userChoices);
 
   try {
     fs.writeFileSync(configPath, JSON.stringify(config, null, 2), 'utf-8');
-    output({ created: true, path: '.claude/.gsdt-planning/config.json' }, raw, 'created');
+    output({ created: true, path: '.gsdt-planning/config.json' }, raw, 'created');
   } catch (err) {
     error('Failed to write config.json: ' + err.message);
   }
@@ -411,7 +411,7 @@ cd /Users/diego/Dev/get-shit-done
 node gsdt/bin/gsdt-tools.cjs config-new-project '{"mode":"interactive","granularity":"standard"}' --cwd /tmp/gsd-smoke-$(date +%s)
 ```
 
-예상 결과: `{"created":true,"path":".claude/.gsdt-planning/config.json"}` (또는 유사한 형태)가 출력됩니다.
+예상 결과: `{"created":true,"path":".gsdt-planning/config.json"}` (또는 유사한 형태)가 출력됩니다.
 
 정리: `rm -rf /tmp/gsd-smoke-*`
 
@@ -450,7 +450,7 @@ git commit -m "feat: register config-new-project in gsdt-tools CLI router"
 Step 2a에서 config.json을 생성하는 블록을 찾으세요:
 
 ```markdown
-Create `.claude/.gsdt-planning/config.json` with mode set to "yolo":
+Create `.gsdt-planning/config.json` with mode set to "yolo":
 
 ```json
 {
@@ -465,10 +465,10 @@ Create `.claude/.gsdt-planning/config.json` with mode set to "yolo":
 인라인 JSON 작성 지침을 다음으로 교체하세요:
 
 ```markdown
-Create `.claude/.gsdt-planning/config.json` using the CLI (fills in all defaults automatically):
+Create `.gsdt-planning/config.json` using the CLI (fills in all defaults automatically):
 
 ```bash
-mkdir -p .claude/.gsdt-planning
+mkdir -p .gsdt-planning
 node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" config-new-project "$(cat <<'CHOICES'
 {
   "mode": "yolo",
@@ -497,7 +497,7 @@ The command merges your selections with all runtime defaults (`search_gitignored
 Step 5에서 config.json을 생성하는 블록을 찾으세요:
 
 ```markdown
-Create `.claude/.gsdt-planning/config.json` with all settings:
+Create `.gsdt-planning/config.json` with all settings:
 
 ```json
 {
@@ -511,10 +511,10 @@ Create `.claude/.gsdt-planning/config.json` with all settings:
 다음으로 교체하세요:
 
 ```markdown
-Create `.claude/.gsdt-planning/config.json` using the CLI (fills in all defaults automatically):
+Create `.gsdt-planning/config.json` using the CLI (fills in all defaults automatically):
 
 ```bash
-mkdir -p .claude/.gsdt-planning
+mkdir -p .gsdt-planning
 node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" config-new-project "$(cat <<'CHOICES'
 {
   "mode": "[selected: yolo|interactive]",
@@ -596,7 +596,7 @@ node /Users/diego/Dev/gsdt/gsdt/bin/gsdt-tools.cjs config-new-project '{
 
 # 파일에 예상되는 12개 키가 모두 있는지 확인
 echo "=== Generated config.json ==="
-cat "$TMP/.claude/.gsdt-planning/config.json"
+cat "$TMP/.gsdt-planning/config.json"
 
 # 정리
 rm -rf "$TMP"
@@ -611,11 +611,11 @@ TMP=$(mktemp -d)
 CHOICES='{"mode":"yolo","granularity":"coarse"}'
 
 node /Users/diego/Dev/gsdt/gsdt/bin/gsdt-tools.cjs config-new-project "$CHOICES" --cwd "$TMP"
-FIRST=$(cat "$TMP/.claude/.gsdt-planning/config.json")
+FIRST=$(cat "$TMP/.gsdt-planning/config.json")
 
 # 두 번째 호출은 no-op이어야 함
 node /Users/diego/Dev/gsdt/gsdt/bin/gsdt-tools.cjs config-new-project "$CHOICES" --cwd "$TMP"
-SECOND=$(cat "$TMP/.claude/.gsdt-planning/config.json")
+SECOND=$(cat "$TMP/.gsdt-planning/config.json")
 
 [ "$FIRST" = "$SECOND" ] && echo "IDEMPOTENT: OK" || echo "IDEMPOTENT: FAIL"
 rm -rf "$TMP"
@@ -661,7 +661,7 @@ feat: materialize all config defaults at new-project initialization
 
 **문제:**
 `/gsdt:new-project`는 온보딩 중 사용자가 명시적으로 선택한 6개 키만으로
-`.claude/.gsdt-planning/config.json`을 생성합니다. 5개의 추가 키
+`.gsdt-planning/config.json`을 생성합니다. 5개의 추가 키
 (`search_gitignored`, `brave_search`, `git.branching_strategy`,
 `git.phase_branch_template`, `git.milestone_branch_template`)는
 런타임에 `loadConfig()`가 자동으로 해석하지만 디스크에는 기록되지 않습니다.
@@ -693,7 +693,7 @@ feat: materialize all config defaults at new-project initialization
 - 새로운 사용자 대면 플래그 없음
 
 **이것이 발견성을 개선하는 이유:**
-처음으로 `.claude/.gsdt-planning/config.json`을 여는 개발자는 이제
+처음으로 `.gsdt-planning/config.json`을 여는 개발자는 이제
 `git.branching_strategy: "none"`을 확인하고 GSD 소스를 읽지 않고도
 브랜칭이 가능하고 구성 가능하다는 것을 즉시 이해할 수 있습니다.
 ```

@@ -44,7 +44,7 @@ export interface OrchestratorOptions extends GSDOptions {
   onClassificationComplete?: (result: ClassificationResult) => Promise<void>;
   /** Called when milestone design completes. */
   onMilestoneDesignComplete?: (result: MilestoneDesignResult) => Promise<void>;
-  /** Planning directory name. Default: '.claude/.gsdt-planning' */
+  /** Planning directory name. Default: '.gsdt-planning' */
   planningDir?: string;
 }
 

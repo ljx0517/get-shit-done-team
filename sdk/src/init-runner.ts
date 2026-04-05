@@ -78,7 +78,7 @@ export interface InitRunnerDeps {
   sdkPromptsDir?: string;
   /** Installation directory relative to projectDir. Default: '.claude/gsdt' */
   installDir?: string;
-  /** Planning directory name. Default: '.claude/.gsdt-planning' */
+  /** Planning directory name. Default: '.gsdt-planning' */
   planningDir?: string;
 }
 
@@ -129,7 +129,7 @@ export class InitRunner {
   }
 
   /**
-   * Resolve .claude/.gsdt-planning directory path.
+   * Resolve .gsdt-planning directory path.
    */
   private getPlanningDir(): string {
     return resolvePlanningDir(this.projectDir, this.planningDir);

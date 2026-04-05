@@ -22,7 +22,7 @@ Extract from init JSON: `project_exists`, `roadmap_exists`, `state_exists`, `pha
 DISCUSS_MODE=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" config-get workflow.discuss_mode 2>/dev/null || echo "discuss")
 ```
 
-If `project_exists` is false (no `.claude/.gsdt-planning/` directory):
+If `project_exists` is false (no `.gsdt-planning/` directory):
 
 ```
 No planning structure found.
@@ -85,7 +85,7 @@ Use this instead of manually reading/parsing ROADMAP.md.
 - Use `current_phase` and `next_phase` from `$ROADMAP`
 - Note `paused_at` if work was paused (from `$STATE`)
 - Count pending todos: use `init todos` or `list-todos`
-- Check for active debug sessions: `(ls .claude/.gsdt-planning/debug/*.md 2>/dev/null || true) | grep -v resolved | wc -l`
+- Check for active debug sessions: `(ls .gsdt-planning/debug/*.md 2>/dev/null || true) | grep -v resolved | wc -l`
   </step>
 
 <step name="report">
@@ -143,9 +143,9 @@ CONTEXT: [✓ if has_context | - if not]
 List files in the current phase directory:
 
 ```bash
-(ls -1 .claude/.gsdt-planning/phases/[current-phase-dir]/*-PLAN.md 2>/dev/null || true) | wc -l
-(ls -1 .claude/.gsdt-planning/phases/[current-phase-dir]/*-SUMMARY.md 2>/dev/null || true) | wc -l
-(ls -1 .claude/.gsdt-planning/phases/[current-phase-dir]/*-UAT.md 2>/dev/null || true) | wc -l
+(ls -1 .gsdt-planning/phases/[current-phase-dir]/*-PLAN.md 2>/dev/null || true) | wc -l
+(ls -1 .gsdt-planning/phases/[current-phase-dir]/*-SUMMARY.md 2>/dev/null || true) | wc -l
+(ls -1 .gsdt-planning/phases/[current-phase-dir]/*-UAT.md 2>/dev/null || true) | wc -l
 ```
 
 State: "This phase has {X} plans, {Y} summaries."
@@ -156,7 +156,7 @@ Check for UAT.md files with status "diagnosed" (has gaps needing fixes).
 
 ```bash
 # Check for diagnosed UAT with gaps or partial (incomplete) testing
-grep -l "status: diagnosed\|status: partial" .claude/.gsdt-planning/phases/[current-phase-dir]/*-UAT.md 2>/dev/null || true
+grep -l "status: diagnosed\|status: partial" .gsdt-planning/phases/[current-phase-dir]/*-UAT.md 2>/dev/null || true
 ```
 
 Track:

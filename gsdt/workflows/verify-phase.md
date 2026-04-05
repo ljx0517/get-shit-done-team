@@ -37,7 +37,7 @@ Extract from init JSON: `phase_dir`, `phase_number`, `phase_name`, `has_plans`, 
 Then load phase details and list plans/summaries:
 ```bash
 node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" roadmap get-phase "${phase_number}"
-grep -E "^| ${phase_number}" .claude/.gsdt-planning/REQUIREMENTS.md 2>/dev/null || true
+grep -E "^| ${phase_number}" .gsdt-planning/REQUIREMENTS.md 2>/dev/null || true
 ls "$phase_dir"/*-SUMMARY.md "$phase_dir"/*-PLAN.md 2>/dev/null || true
 ```
 
@@ -171,7 +171,7 @@ Record status and evidence for each key link.
 <step name="verify_requirements">
 If REQUIREMENTS.md exists:
 ```bash
-grep -E "Phase ${PHASE_NUM}" .claude/.gsdt-planning/REQUIREMENTS.md 2>/dev/null || true
+grep -E "Phase ${PHASE_NUM}" .gsdt-planning/REQUIREMENTS.md 2>/dev/null || true
 ```
 
 For each requirement: parse description → identify supporting truths/artifacts → status: ✓ SATISFIED / ✗ BLOCKED / ? NEEDS HUMAN.

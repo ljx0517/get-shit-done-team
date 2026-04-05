@@ -1,6 +1,6 @@
 # Architecture Research Template
 
-Template for `.claude/.gsdt-planning/research/ARCHITECTURE.md` — system structure patterns for the project domain.
+Template for `.gsdt-planning/research/ARCHITECTURE.md` — system structure patterns for the project domain.
 
 <template>
 

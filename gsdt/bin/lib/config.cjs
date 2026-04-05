@@ -4,7 +4,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { output, error, planningRoot } = require('./core.cjs');
+const { output, error, planningRoot, resolvePlanningDirName, toPosixPath } = require('./core.cjs');
 const {
   VALID_PROFILES,
   getAgentToModelMapForProfile,
@@ -73,15 +73,15 @@ function buildNewProjectConfig(userChoices) {
   const homedir = require('os').homedir();
 
   // Detect API key availability
-  const braveKeyFile = path.join(homedir, '.gsdt', 'brave_api_key');
+  const braveKeyFile = path.join(homedir, '.gsd', 'brave_api_key');
   const hasBraveSearch = !!(process.env.BRAVE_API_KEY || fs.existsSync(braveKeyFile));
-  const firecrawlKeyFile = path.join(homedir, '.gsdt', 'firecrawl_api_key');
+  const firecrawlKeyFile = path.join(homedir, '.gsd', 'firecrawl_api_key');
   const hasFirecrawl = !!(process.env.FIRECRAWL_API_KEY || fs.existsSync(firecrawlKeyFile));
-  const exaKeyFile = path.join(homedir, '.gsdt', 'exa_api_key');
+  const exaKeyFile = path.join(homedir, '.gsd', 'exa_api_key');
   const hasExaSearch = !!(process.env.EXA_API_KEY || fs.existsSync(exaKeyFile));
 
-  // Load user-level defaults from ~/.gsdt/defaults.json if available
-  const globalDefaultsPath = path.join(homedir, '.gsdt', 'defaults.json');
+  // Load user-level defaults from ~/.gsd/defaults.json if available
+  const globalDefaultsPath = path.join(homedir, '.gsd', 'defaults.json');
   let userDefaults = {};
   try {
     if (fs.existsSync(globalDefaultsPath)) {
@@ -164,7 +164,7 @@ function buildNewProjectConfig(userChoices) {
 }
 
 /**
- * Command: create a fully-materialized .claude/.gsdt-planning/config.json for a new project.
+ * Command: create a fully-materialized `.gsdt-planning/config.json` for a new project.
  *
  * Accepts user-chosen settings as a JSON string (the keys the user explicitly
  * configured during /gsdt:new-project). All remaining keys are filled from
@@ -192,20 +192,20 @@ function cmdConfigNewProject(cwd, choicesJson, raw) {
     }
   }
 
-  // Ensure .claude/.gsdt-planning directory exists
+  // Ensure planning directory exists
   try {
     if (!fs.existsSync(planningBase)) {
       fs.mkdirSync(planningBase, { recursive: true });
     }
   } catch (err) {
-    error('Failed to create .claude/.gsdt-planning directory: ' + err.message);
+    error('Failed to create planning directory: ' + err.message);
   }
 
   const config = buildNewProjectConfig(userChoices);
 
   try {
     fs.writeFileSync(configPath, JSON.stringify(config, null, 2), 'utf-8');
-    output({ created: true, path: '.claude/.gsdt-planning/config.json' }, raw, 'created');
+    output({ created: true, path: `${toPosixPath(resolvePlanningDirName(cwd))}/config.json` }, raw, 'created');
   } catch (err) {
     error('Failed to write config.json: ' + err.message);
   }
@@ -221,13 +221,13 @@ function ensureConfigFile(cwd) {
   const planningBase = planningRoot(cwd);
   const configPath = path.join(planningBase, 'config.json');
 
-  // Ensure .claude/.gsdt-planning directory exists
+  // Ensure planning directory exists
   try {
     if (!fs.existsSync(planningBase)) {
       fs.mkdirSync(planningBase, { recursive: true });
     }
   } catch (err) {
-    error('Failed to create .claude/.gsdt-planning directory: ' + err.message);
+    error('Failed to create planning directory: ' + err.message);
   }
 
   // Check if config already exists
@@ -239,7 +239,7 @@ function ensureConfigFile(cwd) {
 
   try {
     fs.writeFileSync(configPath, JSON.stringify(config, null, 2), 'utf-8');
-    return { created: true, path: '.claude/.gsdt-planning/config.json' };
+    return { created: true, path: `${toPosixPath(resolvePlanningDirName(cwd))}/config.json` };
   } catch (err) {
     error('Failed to create config.json: ' + err.message);
   }

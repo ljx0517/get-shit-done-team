@@ -25,7 +25,7 @@ Store as `$IDEA`.
 
 <step name="create_seed_dir">
 ```bash
-mkdir -p .claude/.gsdt-planning/seeds
+mkdir -p .gsdt-planning/seeds
 ```
 </step>
 
@@ -86,7 +86,7 @@ Store relevant file paths as `$BREADCRUMBS`.
 <step name="generate_seed_id">
 ```bash
 # Find next seed number
-EXISTING=$( (ls .claude/.gsdt-planning/seeds/SEED-*.md 2>/dev/null || true) | wc -l )
+EXISTING=$( (ls .gsdt-planning/seeds/SEED-*.md 2>/dev/null || true) | wc -l )
 NEXT=$((EXISTING + 1))
 PADDED=$(printf "%03d" $NEXT)
 ```
@@ -95,7 +95,7 @@ Generate slug from idea summary.
 </step>
 
 <step name="write_seed">
-Write `.claude/.gsdt-planning/seeds/SEED-{PADDED}-{slug}.md`:
+Write `.gsdt-planning/seeds/SEED-{PADDED}-{slug}.md`:
 
 ```markdown
 ---
@@ -140,7 +140,7 @@ Related code and decisions found in the current codebase:
 
 <step name="commit_seed">
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: plant seed — {$IDEA}" --files .claude/.gsdt-planning/seeds/SEED-{PADDED}-{slug}.md
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: plant seed — {$IDEA}" --files .gsdt-planning/seeds/SEED-{PADDED}-{slug}.md
 ```
 </step>
 
@@ -151,7 +151,7 @@ node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: plant seed — {$IDEA
 "{$IDEA}"
 Trigger: {$TRIGGER}
 Scope: {$SCOPE}
-File: .claude/.gsdt-planning/seeds/SEED-{PADDED}-{slug}.md
+File: .gsdt-planning/seeds/SEED-{PADDED}-{slug}.md
 
 This seed will surface automatically when you run /gsdt:new-milestone
 and the milestone scope matches the trigger condition.
@@ -161,7 +161,7 @@ and the milestone scope matches the trigger condition.
 </process>
 
 <success_criteria>
-- [ ] Seed file created in .claude/.gsdt-planning/seeds/
+- [ ] Seed file created in .gsdt-planning/seeds/
 - [ ] Frontmatter includes status, trigger, scope
 - [ ] Breadcrumbs collected from codebase
 - [ ] Committed to git

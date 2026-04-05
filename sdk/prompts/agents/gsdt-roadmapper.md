@@ -511,11 +511,11 @@ When files are written and returning to orchestrator:
 ## ROADMAP CREATED
 
 **Files written:**
-- .claude/.gsdt-planning/ROADMAP.md
-- .claude/.gsdt-planning/STATE.md
+- .gsdt-planning/ROADMAP.md
+- .gsdt-planning/STATE.md
 
 **Updated:**
-- .claude/.gsdt-planning/REQUIREMENTS.md (traceability section)
+- .gsdt-planning/REQUIREMENTS.md (traceability section)
 
 ### Summary
 
@@ -541,8 +541,8 @@ When files are written and returning to orchestrator:
 ### Files Ready for Review
 
 User can review actual files:
-- `cat .claude/.gsdt-planning/ROADMAP.md`
-- `cat .claude/.gsdt-planning/STATE.md`
+- `cat .gsdt-planning/ROADMAP.md`
+- `cat .gsdt-planning/STATE.md`
 
 {If gaps found during creation:}
 
@@ -565,9 +565,9 @@ After incorporating user feedback and updating files:
 - {change 2}
 
 **Files updated:**
-- .claude/.gsdt-planning/ROADMAP.md
-- .claude/.gsdt-planning/STATE.md (if needed)
-- .claude/.gsdt-planning/REQUIREMENTS.md (if traceability changed)
+- .gsdt-planning/ROADMAP.md
+- .gsdt-planning/STATE.md (if needed)
+- .gsdt-planning/REQUIREMENTS.md (if traceability changed)
 
 ### Updated Summary
 

@@ -174,9 +174,9 @@ describe('InitRunner assembled output', () => {
   } as unknown as GSDEventStream;
 
   beforeAll(async () => {
-    // Create temp directory with .claude/.gsdt-planning/ structure for InitRunner file reads
+    // Create temp directory with .gsdt-planning/ structure for InitRunner file reads
     tmpDir = await mkdtemp(join(tmpdir(), 'assembled-prompts-'));
-    const planningDir = join(tmpDir, '.claude/.gsdt-planning');
+    const planningDir = join(tmpDir, '.gsdt-planning');
     const researchDir = join(planningDir, 'research');
     await mkdir(researchDir, { recursive: true });
 

@@ -18,9 +18,9 @@ verification. Users should never be told to run `/gsdt:transition`.
 
 **Read these files NOW:**
 
-1. `.claude/.gsdt-planning/STATE.md`
-2. `.claude/.gsdt-planning/PROJECT.md`
-3. `.claude/.gsdt-planning/ROADMAP.md`
+1. `.gsdt-planning/STATE.md`
+2. `.gsdt-planning/PROJECT.md`
+3. `.gsdt-planning/ROADMAP.md`
 4. Current phase's plan files (`*-PLAN.md`)
 5. Current phase's summary files (`*-SUMMARY.md`)
 
@@ -41,8 +41,8 @@ Mark current phase complete and advance to next. This is the natural point where
 Before transition, read project state:
 
 ```bash
-cat .claude/.gsdt-planning/STATE.md 2>/dev/null || true
-cat .claude/.gsdt-planning/PROJECT.md 2>/dev/null || true
+cat .gsdt-planning/STATE.md 2>/dev/null || true
+cat .gsdt-planning/PROJECT.md 2>/dev/null || true
 ```
 
 Parse current position to verify we're transitioning the right phase.
@@ -55,8 +55,8 @@ Note accumulated context that may need updating after transition.
 Check current phase has all plan summaries:
 
 ```bash
-(ls .claude/.gsdt-planning/phases/XX-current/*-PLAN.md 2>/dev/null || true) | sort
-(ls .claude/.gsdt-planning/phases/XX-current/*-SUMMARY.md 2>/dev/null || true) | sort
+(ls .gsdt-planning/phases/XX-current/*-PLAN.md 2>/dev/null || true) | sort
+(ls .gsdt-planning/phases/XX-current/*-SUMMARY.md 2>/dev/null || true) | sort
 ```
 
 **Verification logic:**
@@ -69,7 +69,7 @@ Check current phase has all plan summaries:
 <config-check>
 
 ```bash
-cat .claude/.gsdt-planning/config.json 2>/dev/null || true
+cat .gsdt-planning/config.json 2>/dev/null || true
 ```
 
 </config-check>
@@ -79,7 +79,7 @@ cat .claude/.gsdt-planning/config.json 2>/dev/null || true
 ```bash
 # Count outstanding items in current phase
 OUTSTANDING=""
-for f in .claude/.gsdt-planning/phases/XX-current/*-UAT.md .claude/.gsdt-planning/phases/XX-current/*-VERIFICATION.md; do
+for f in .gsdt-planning/phases/XX-current/*-UAT.md .gsdt-planning/phases/XX-current/*-VERIFICATION.md; do
   [ -f "$f" ] || continue
   grep -q "result: pending\|result: blocked\|status: partial\|status: human_needed\|status: diagnosed" "$f" && OUTSTANDING="$OUTSTANDING\n$(basename $f)"
 done
@@ -151,7 +151,7 @@ Wait for user decision.
 Check for lingering handoffs:
 
 ```bash
-ls .claude/.gsdt-planning/phases/XX-current/.continue-here*.md 2>/dev/null || true
+ls .gsdt-planning/phases/XX-current/.continue-here*.md 2>/dev/null || true
 ```
 
 If found, delete them — phase is complete, handoffs are stale.
@@ -191,7 +191,7 @@ Evolve PROJECT.md to reflect learnings from completed phase.
 **Read phase summaries:**
 
 ```bash
-cat .claude/.gsdt-planning/phases/XX-current/*-SUMMARY.md
+cat .gsdt-planning/phases/XX-current/*-SUMMARY.md
 ```
 
 **Assess requirement changes:**
@@ -299,7 +299,7 @@ Update Project Reference section in STATE.md.
 ```markdown
 ## Project Reference
 
-See: .claude/.gsdt-planning/PROJECT.md (updated [today])
+See: .gsdt-planning/PROJECT.md (updated [today])
 
 **Core value:** [Current core value from PROJECT.md]
 **Current focus:** [Next phase name]
@@ -429,7 +429,7 @@ Read ROADMAP.md to get the next phase's name and goal.
 **Check if next phase has CONTEXT.md:**
 
 ```bash
-ls .claude/.gsdt-planning/phases/*[X+1]*/*-CONTEXT.md 2>/dev/null || true
+ls .gsdt-planning/phases/*[X+1]*/*-CONTEXT.md 2>/dev/null || true
 ```
 
 **If next phase exists:**

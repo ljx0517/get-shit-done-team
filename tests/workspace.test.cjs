@@ -143,7 +143,7 @@ describe('init list-workspaces', () => {
   test('finds workspaces with WORKSPACE.md', () => {
     const wsBase = path.join(tmpDir, 'gsdt-workspaces');
     const ws1 = path.join(wsBase, 'feature-a');
-    fs.mkdirSync(path.join(ws1, '.claude/.gsdt-planning'), { recursive: true });
+    fs.mkdirSync(path.join(ws1, '.gsdt-planning'), { recursive: true });
     fs.writeFileSync(path.join(ws1, 'WORKSPACE.md'), [
       '# Workspace: feature-a',
       '',
@@ -247,7 +247,7 @@ describe('workspace worktree integration', () => {
   test('creates workspace with git worktree', () => {
     const wsPath = path.join(tmpDir, 'my-workspace');
     fs.mkdirSync(wsPath);
-    fs.mkdirSync(path.join(wsPath, '.claude', '.gsdt-planning'), { recursive: true });
+    fs.mkdirSync(path.join(wsPath, '.gsdt-planning'), { recursive: true });
 
     // Create worktree
     execSync(`git worktree add "${path.join(wsPath, 'source-repo')}" -b workspace/test`, {

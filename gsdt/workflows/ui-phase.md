@@ -99,10 +99,7 @@ If "Update": continue to step 5.
 
 Display:
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► UI DESIGN CONTRACT — PHASE {N}
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
+── GSD ► UI DESIGN CONTRACT — PHASE {N} ──
 ◆ Spawning UI researcher...
 ```
 
@@ -161,10 +158,7 @@ Display blocker details and options. Exit workflow.
 
 Display:
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► VERIFYING UI-SPEC
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
+── GSD ► VERIFYING UI-SPEC ──
 ◆ Spawning UI checker...
 ```
 
@@ -248,10 +242,7 @@ Use AskUserQuestion for the choice.
 
 Display:
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► UI-SPEC READY ✓
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
+── GSD ► UI-SPEC READY ✓ ──
 **Phase {N}: {Name}** — UI design contract approved
 
 Dimensions: 6/6 passed

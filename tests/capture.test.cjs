@@ -117,7 +117,7 @@ describe('capture decide', () => {
     assert.strictEqual(coldOutput.roadmap_exists, false);
     assert.strictEqual(coldOutput.decision.next_action, 'collect_more');
 
-    const roadmapPath = path.join(tmpDir, '.claude/.gsdt-planning', 'ROADMAP.md');
+    const roadmapPath = path.join(tmpDir, '.gsdt-planning', 'ROADMAP.md');
     fs.writeFileSync(roadmapPath, '# Roadmap: Test\n\n### Phase 1: Init\n');
 
     const hotDecide = runTools(['capture', 'decide'], tmpDir);

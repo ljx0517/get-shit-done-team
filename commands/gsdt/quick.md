@@ -17,7 +17,7 @@ Execute small, ad-hoc tasks with GSD guarantees (atomic commits, STATE.md tracki
 
 Quick mode is the same system with a shorter path:
 - Spawns gsdt-planner (quick mode) + gsdt-executor(s)
-- Quick tasks live in `.claude/.gsdt-planning/quick/` separate from planned phases
+- Quick tasks live in `.gsdt-planning/quick/` separate from planned phases
 - Updates STATE.md "Quick Tasks Completed" table (NOT ROADMAP.md)
 
 **Default:** Skips research, discussion, plan-checker, verifier. Use when you know exactly what to do.

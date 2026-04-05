@@ -1,6 +1,6 @@
 # Verification Report Template
 
-Template for `.claude/.gsdt-planning/phases/XX-name/{phase_num}-VERIFICATION.md` — phase goal verification results.
+Template for `.gsdt-planning/phases/XX-name/{phase_num}-VERIFICATION.md` — phase goal verification results.
 
 ---
 

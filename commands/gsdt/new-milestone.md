@@ -15,11 +15,11 @@ Start a new milestone: questioning → research (optional) → requirements → 
 Brownfield equivalent of new-project. Project exists, PROJECT.md has history. Gathers "what's next", updates PROJECT.md, then runs requirements → roadmap cycle.
 
 **Creates/Updates:**
-- `.claude/.gsdt-planning/PROJECT.md` — updated with new milestone goals
-- `.claude/.gsdt-planning/research/` — domain research (optional, NEW features only)
-- `.claude/.gsdt-planning/REQUIREMENTS.md` — scoped requirements for this milestone
-- `.claude/.gsdt-planning/ROADMAP.md` — phase structure (continues numbering)
-- `.claude/.gsdt-planning/STATE.md` — reset for new milestone
+- `.gsdt-planning/PROJECT.md` — updated with new milestone goals
+- `.gsdt-planning/research/` — domain research (optional, NEW features only)
+- `.gsdt-planning/REQUIREMENTS.md` — scoped requirements for this milestone
+- `.gsdt-planning/ROADMAP.md` — phase structure (continues numbering)
+- `.gsdt-planning/STATE.md` — reset for new milestone
 
 **After:** `/gsdt:plan-phase [N]` to start execution.
 </objective>

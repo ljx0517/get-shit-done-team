@@ -25,8 +25,8 @@
 ## Automatic Mode Rules
 
 - Background dispatch must not ask the user whether to reuse an existing solution.
-- `candidate` events only persist to `.claude/.gsdt-planning/compound-events.json`.
-- `diagnosed` and `resolved` events may write `docs/solutions/`, `.claude/.gsdt-planning/compound-memory.json`, and `.claude/.gsdt-planning/anti-patterns.md`.
+- `candidate` events only persist to `.gsdt-planning/compound-events.json`.
+- `diagnosed` and `resolved` events may write `docs/solutions/`, `.gsdt-planning/compound-memory.json`, and `.gsdt-planning/anti-patterns.md`.
 - `post-commit` hook events may be promoted to `diagnosed` heuristically when the commit message includes clear root-cause clues.
 - High-overlap matches update the existing doc in place.
 - Moderate-overlap matches create a new doc and store the matched doc in `related`.

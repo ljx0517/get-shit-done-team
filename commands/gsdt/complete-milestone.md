@@ -25,10 +25,10 @@ Output: Milestone archived (roadmap + requirements), PROJECT.md evolved, git tag
 
 <context>
 **Project files:**
-- `.claude/.gsdt-planning/ROADMAP.md`
-- `.claude/.gsdt-planning/REQUIREMENTS.md`
-- `.claude/.gsdt-planning/STATE.md`
-- `.claude/.gsdt-planning/PROJECT.md`
+- `.gsdt-planning/ROADMAP.md`
+- `.gsdt-planning/REQUIREMENTS.md`
+- `.gsdt-planning/STATE.md`
+- `.gsdt-planning/PROJECT.md`
 
 **User input:**
 
@@ -41,7 +41,7 @@ Output: Milestone archived (roadmap + requirements), PROJECT.md evolved, git tag
 
 0. **Check for audit:**
 
-   - Look for `.claude/.gsdt-planning/v{{version}}-MILESTONE-AUDIT.md`
+   - Look for `.gsdt-planning/v{{version}}-MILESTONE-AUDIT.md`
    - If missing or stale: recommend `/gsdt:audit-milestone` first
    - If audit status is `gaps_found`: recommend `/gsdt:plan-milestone-gaps` first
    - If audit status is `passed`: proceed to step 1
@@ -82,17 +82,17 @@ Output: Milestone archived (roadmap + requirements), PROJECT.md evolved, git tag
 
 4. **Archive milestone:**
 
-   - Create `.claude/.gsdt-planning/milestones/v{{version}}-ROADMAP.md`
+   - Create `.gsdt-planning/milestones/v{{version}}-ROADMAP.md`
    - Extract full phase details from ROADMAP.md
    - Fill milestone-archive.md template
    - Update ROADMAP.md to one-line summary with link
 
 5. **Archive requirements:**
 
-   - Create `.claude/.gsdt-planning/milestones/v{{version}}-REQUIREMENTS.md`
+   - Create `.gsdt-planning/milestones/v{{version}}-REQUIREMENTS.md`
    - Mark all v1 requirements as complete (checkboxes checked)
    - Note requirement outcomes (validated, adjusted, dropped)
-   - Delete `.claude/.gsdt-planning/REQUIREMENTS.md` (fresh one created for next milestone)
+   - Delete `.gsdt-planning/REQUIREMENTS.md` (fresh one created for next milestone)
 
 6. **Update PROJECT.md:**
 
@@ -114,9 +114,9 @@ Output: Milestone archived (roadmap + requirements), PROJECT.md evolved, git tag
 
 <success_criteria>
 
-- Milestone archived to `.claude/.gsdt-planning/milestones/v{{version}}-ROADMAP.md`
-- Requirements archived to `.claude/.gsdt-planning/milestones/v{{version}}-REQUIREMENTS.md`
-- `.claude/.gsdt-planning/REQUIREMENTS.md` deleted (fresh for next milestone)
+- Milestone archived to `.gsdt-planning/milestones/v{{version}}-ROADMAP.md`
+- Requirements archived to `.gsdt-planning/milestones/v{{version}}-REQUIREMENTS.md`
+- `.gsdt-planning/REQUIREMENTS.md` deleted (fresh for next milestone)
 - ROADMAP.md collapsed to one-line entry
 - PROJECT.md updated with current state
 - Git tag v{{version}} created

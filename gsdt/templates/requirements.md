@@ -1,6 +1,6 @@
 # Requirements Template
 
-Template for `.claude/.gsdt-planning/REQUIREMENTS.md` — checkable requirements that define "done."
+Template for `.gsdt-planning/REQUIREMENTS.md` — checkable requirements that define "done."
 
 <template>
 

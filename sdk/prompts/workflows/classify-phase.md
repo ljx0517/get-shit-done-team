@@ -31,8 +31,8 @@ This is the idea, thought, or requirement to be classified.
 
 <step name="check_existing_project">
 Look for existing project context:
-- Check if .claude/.gsdt-planning/PROJECT.md exists
-- Check if .claude/.gsdt-planning/ROADMAP.md exists
+- Check if .gsdt-planning/PROJECT.md exists
+- Check if .gsdt-planning/ROADMAP.md exists
 - If found, read PROJECT.md to understand current project state
 
 This helps classify whether this is a new_project or a feature addition.
@@ -49,7 +49,7 @@ Perform classification analysis:
 </step>
 
 <step name="produce_output">
-Write CLASSIFICATION.md to .claude/.gsdt-planning/CLASSIFICATION.md
+Write CLASSIFICATION.md to .gsdt-planning/CLASSIFICATION.md
 
 The output serves as input for the DesignMilestone phase.
 </step>
@@ -60,6 +60,6 @@ The output serves as input for the DesignMilestone phase.
 - Raw input received and understood
 - Existing project context checked (if applicable)
 - Classification complete with all dimensions analyzed
-- CLASSIFICATION.md written to .claude/.gsdt-planning/
+- CLASSIFICATION.md written to .gsdt-planning/
 - Classification result returned to orchestrator
 </success_criteria>

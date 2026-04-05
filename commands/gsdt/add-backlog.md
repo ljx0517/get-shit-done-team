@@ -18,7 +18,7 @@ the normal phase sequence and accumulate context over time.
 
 1. **Read ROADMAP.md** to find existing backlog entries:
    ```bash
-   cat .claude/.gsdt-planning/ROADMAP.md
+   cat .gsdt-planning/ROADMAP.md
    ```
 
 2. **Find next backlog number:**
@@ -30,8 +30,8 @@ the normal phase sequence and accumulate context over time.
 3. **Create the phase directory:**
    ```bash
    SLUG=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" generate-slug "$ARGUMENTS")
-   mkdir -p ".claude/.gsdt-planning/phases/${NEXT}-${SLUG}"
-   touch ".claude/.gsdt-planning/phases/${NEXT}-${SLUG}/.gitkeep"
+   mkdir -p ".gsdt-planning/phases/${NEXT}-${SLUG}"
+   touch ".gsdt-planning/phases/${NEXT}-${SLUG}/.gitkeep"
    ```
 
 4. **Add to ROADMAP.md** under a `## Backlog` section. If the section doesn't exist, create it at the end:
@@ -51,7 +51,7 @@ the normal phase sequence and accumulate context over time.
 
 5. **Commit:**
    ```bash
-   node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: add backlog item ${NEXT} — ${ARGUMENTS}" --files .claude/.gsdt-planning/ROADMAP.md ".claude/.gsdt-planning/phases/${NEXT}-${SLUG}/.gitkeep"
+   node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: add backlog item ${NEXT} — ${ARGUMENTS}" --files .gsdt-planning/ROADMAP.md ".gsdt-planning/phases/${NEXT}-${SLUG}/.gitkeep"
    ```
 
 6. **Report:**
@@ -59,7 +59,7 @@ the normal phase sequence and accumulate context over time.
    ## 📋 Backlog Item Added
 
    Phase {NEXT}: {description}
-   Directory: .claude/.gsdt-planning/phases/{NEXT}-{slug}/
+   Directory: .gsdt-planning/phases/{NEXT}-{slug}/
 
    This item lives in the backlog parking lot.
    Use /gsdt:discuss-phase {NEXT} to explore it further.

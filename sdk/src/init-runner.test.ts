@@ -95,7 +95,7 @@ function makeProjectInfo(overrides: Partial<InitNewProjectInfo> = {}): InitNewPr
     brave_search_available: false,
     firecrawl_available: false,
     exa_search_available: false,
-    project_path: '.claude/.gsdt-planning/PROJECT.md',
+    project_path: '.gsdt-planning/PROJECT.md',
     ...overrides,
   };
 }
@@ -205,8 +205,8 @@ describe('InitRunner', () => {
 
     await runner.run('build a todo app');
 
-    // config.json should be written to .claude/.gsdt-planning/config.json in tmpDir
-    const configPath = join(tmpDir, '.claude/.gsdt-planning', 'config.json');
+    // config.json should be written to .gsdt-planning/config.json in tmpDir
+    const configPath = join(tmpDir, '.gsdt-planning', 'config.json');
     const content = await readFile(configPath, 'utf-8');
     const parsed = JSON.parse(content);
 
@@ -480,22 +480,22 @@ describe('InitRunner', () => {
     const result = await runner.run('build a todo app');
 
     expect(result.success).toBe(true);
-    expect(result.artifacts).toContain('.claude/.gsdt-planning/config.json');
-    expect(result.artifacts).toContain('.claude/.gsdt-planning/PROJECT.md');
-    expect(result.artifacts).toContain('.claude/.gsdt-planning/research/SUMMARY.md');
-    expect(result.artifacts).toContain('.claude/.gsdt-planning/REQUIREMENTS.md');
-    expect(result.artifacts).toContain('.claude/.gsdt-planning/ROADMAP.md');
-    expect(result.artifacts).toContain('.claude/.gsdt-planning/STATE.md');
+    expect(result.artifacts).toContain('.gsdt-planning/config.json');
+    expect(result.artifacts).toContain('.gsdt-planning/PROJECT.md');
+    expect(result.artifacts).toContain('.gsdt-planning/research/SUMMARY.md');
+    expect(result.artifacts).toContain('.gsdt-planning/REQUIREMENTS.md');
+    expect(result.artifacts).toContain('.gsdt-planning/ROADMAP.md');
+    expect(result.artifacts).toContain('.gsdt-planning/STATE.md');
   });
 
   it('run() includes research artifact paths on success', async () => {
     const { runner } = createRunner();
     const result = await runner.run('build a todo app');
 
-    expect(result.artifacts).toContain('.claude/.gsdt-planning/research/STACK.md');
-    expect(result.artifacts).toContain('.claude/.gsdt-planning/research/FEATURES.md');
-    expect(result.artifacts).toContain('.claude/.gsdt-planning/research/ARCHITECTURE.md');
-    expect(result.artifacts).toContain('.claude/.gsdt-planning/research/PITFALLS.md');
+    expect(result.artifacts).toContain('.gsdt-planning/research/STACK.md');
+    expect(result.artifacts).toContain('.gsdt-planning/research/FEATURES.md');
+    expect(result.artifacts).toContain('.gsdt-planning/research/ARCHITECTURE.md');
+    expect(result.artifacts).toContain('.gsdt-planning/research/PITFALLS.md');
   });
 
   // ─── Git init test ─────────────────────────────────────────────────────

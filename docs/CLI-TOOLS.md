@@ -26,7 +26,7 @@ node gsdt-tools.cjs <command> [args] [--raw] [--cwd <path>]
 
 ## State Commands
 
-Manage `.claude/.gsdt-planning/STATE.md` — the project's living memory.
+Manage `.gsdt-planning/STATE.md` — the project's living memory.
 
 ```bash
 # Load full project config + state as JSON
@@ -129,7 +129,7 @@ node gsdt-tools.cjs roadmap update-plan-progress <N>
 
 ## Config Commands
 
-Read and write `.claude/.gsdt-planning/config.json`.
+Read and write `.gsdt-planning/config.json`.
 
 ```bash
 # Initialize config.json with defaults
@@ -196,7 +196,7 @@ Check project integrity.
 # Check phase numbering, disk/roadmap sync
 node gsdt-tools.cjs validate consistency
 
-# Check .claude/.gsdt-planning/ integrity, optionally repair
+# Check .gsdt-planning/ integrity, optionally repair
 node gsdt-tools.cjs validate health [--repair]
 ```
 

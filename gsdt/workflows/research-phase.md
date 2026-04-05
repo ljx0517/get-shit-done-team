@@ -31,7 +31,7 @@ If `found` is false: Error and exit.
 ## Step 2: Check Existing Research
 
 ```bash
-ls .claude/.gsdt-planning/phases/${PHASE}-*/RESEARCH.md 2>/dev/null || true
+ls .gsdt-planning/phases/${PHASE}-*/RESEARCH.md 2>/dev/null || true
 ```
 
 If exists: Offer update/view/skip options.
@@ -66,7 +66,7 @@ Phase description: {description}
 </additional_context>
 
 <output>
-Write to: .claude/.gsdt-planning/phases/${PHASE}-{slug}/${PHASE}-RESEARCH.md
+Write to: .gsdt-planning/phases/${PHASE}-{slug}/${PHASE}-RESEARCH.md
 </output>",
   subagent_type="gsdt-phase-researcher",
   model="{researcher_model}"

@@ -11,19 +11,19 @@ allowed-tools:
 ---
 <context>
 **Flags:**
-- `--auto` — Automatic mode. Reuses existing `.claude/.gsdt-planning/config.json` when present; otherwise asks config questions once, then runs research → requirements → roadmap without further interaction. Expects idea document via @ reference.
+- `--auto` — Automatic mode. Reuses existing `.gsdt-planning/config.json` when present; otherwise asks config questions once, then runs research → requirements → roadmap without further interaction. Expects idea document via @ reference.
 </context>
 
 <objective>
 Initialize a new project through unified flow: questioning → research (optional) → requirements → roadmap.
 
 **Creates:**
-- `.claude/.gsdt-planning/PROJECT.md` — project context
-- `.claude/.gsdt-planning/config.json` — workflow preferences
-- `.claude/.gsdt-planning/research/` — domain research (optional)
-- `.claude/.gsdt-planning/REQUIREMENTS.md` — scoped requirements
-- `.claude/.gsdt-planning/ROADMAP.md` — phase structure
-- `.claude/.gsdt-planning/STATE.md` — project memory
+- `.gsdt-planning/PROJECT.md` — project context
+- `.gsdt-planning/config.json` — workflow preferences
+- `.gsdt-planning/research/` — domain research (optional)
+- `.gsdt-planning/REQUIREMENTS.md` — scoped requirements
+- `.gsdt-planning/ROADMAP.md` — phase structure
+- `.gsdt-planning/STATE.md` — project memory
 
 **After this command:** Run `/gsdt:plan-phase 1` to start execution.
 </objective>

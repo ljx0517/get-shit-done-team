@@ -93,7 +93,7 @@ If `files` field has entries, read and briefly summarize each.
 <step name="check_roadmap">
 Check for roadmap (can use init progress or directly check file existence):
 
-If `.claude/.gsdt-planning/ROADMAP.md` exists:
+If `.gsdt-planning/ROADMAP.md` exists:
 1. Check if todo's area matches an upcoming phase
 2. Check if todo's files overlap with a phase's scope
 3. Note any match for action options
@@ -126,7 +126,7 @@ Use AskUserQuestion:
 <step name="execute_action">
 **Work on it now:**
 ```bash
-mv ".claude/.gsdt-planning/todos/pending/[filename]" ".claude/.gsdt-planning/todos/done/"
+mv ".gsdt-planning/todos/pending/[filename]" ".gsdt-planning/todos/done/"
 ```
 Update STATE.md todo count. Present problem/solution context. Begin work or ask how to proceed.
 
@@ -154,8 +154,8 @@ Re-run `init todos` to get updated count, then update STATE.md "### Pending Todo
 If todo was moved to done/, commit the change:
 
 ```bash
-git rm --cached .claude/.gsdt-planning/todos/pending/[filename] 2>/dev/null || true
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: start work on todo - [title]" --files .claude/.gsdt-planning/todos/done/[filename] .claude/.gsdt-planning/STATE.md
+git rm --cached .gsdt-planning/todos/pending/[filename] 2>/dev/null || true
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: start work on todo - [title]" --files .gsdt-planning/todos/done/[filename] .gsdt-planning/STATE.md
 ```
 
 Tool respects `commit_docs` config and gitignore automatically.

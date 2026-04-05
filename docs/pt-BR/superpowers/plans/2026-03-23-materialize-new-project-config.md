@@ -7,7 +7,7 @@ Fonte canônica: `docs/superpowers/plans/2026-03-18-materialize-new-project-conf
 
 ## Contexto
 
-Este plano formaliza a materialização explícita da configuração do projeto durante `/gsdt:new-project`, garantindo que escolhas feitas na inicialização sejam persistidas de forma determinística em `.claude/.gsdt-planning/config.json`.
+Este plano formaliza a materialização explícita da configuração do projeto durante `/gsdt:new-project`, garantindo que escolhas feitas na inicialização sejam persistidas de forma determinística em `.gsdt-planning/config.json`.
 
 ## Objetivos
 
@@ -20,7 +20,7 @@ Este plano formaliza a materialização explícita da configuração do projeto 
 Inclui:
 
 - mapeamento de respostas de setup para chaves de configuração
-- escrita idempotente de `.claude/.gsdt-planning/config.json`
+- escrita idempotente de `.gsdt-planning/config.json`
 - validação mínima de schema antes de persistir
 
 Não inclui:

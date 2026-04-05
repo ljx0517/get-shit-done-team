@@ -3,6 +3,7 @@
  */
 const fs = require('fs');
 const path = require('path');
+const { planningRoot } = require('../core.cjs');
 
 const BUG_TRACK_TYPES = new Set([
   'logic_error',
@@ -56,7 +57,8 @@ const EVENT_STATUS_ORDER = {
   resolved: 2,
 };
 
-const COMPOUND_EVENT_FILE = path.join('.claude/.gsdt-planning', 'compound-events.json');
+/** Relative path for display; actual file is under `planningRoot(baseDir)`. */
+const COMPOUND_EVENT_FILE = path.join('.gsdt-planning', 'compound-events.json');
 
 function toArray(value) {
   if (Array.isArray(value)) return value.filter(Boolean).map(v => String(v).trim()).filter(Boolean);
@@ -255,7 +257,7 @@ function normalizeCompoundEvent(input = {}) {
 }
 
 function getCompoundEventFile(baseDir) {
-  return path.join(baseDir, COMPOUND_EVENT_FILE);
+  return path.join(planningRoot(baseDir), 'compound-events.json');
 }
 
 function loadCompoundEvents(baseDir) {

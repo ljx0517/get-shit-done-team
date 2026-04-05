@@ -11,7 +11,7 @@ const { spawn } = require('child_process');
 const homeDir = os.homedir();
 const cwd = process.cwd();
 
-// Detect runtime config directory (supports Claude, OpenCode, Gemini)
+// Detect runtime config directory (Claude, Vibe Agent Team paths under opencode, Gemini, …)
 // Respects CLAUDE_CONFIG_DIR for custom config directory setups
 function detectConfigDir(baseDir) {
   // Check env override first (supports multi-account setups)

@@ -5,7 +5,7 @@
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
-const { safeReadFile, loadConfig, normalizePhaseName, execGit, findPhaseInternal, getMilestoneInfo, stripShippedMilestones, extractCurrentMilestone, planningDir, planningRoot, output, error, checkAgentsInstalled } = require('./core.cjs');
+const { safeReadFile, loadConfig, normalizePhaseName, execGit, findPhaseInternal, getMilestoneInfo, stripShippedMilestones, extractCurrentMilestone, planningDir, planningRoot, planningDirDisplay, output, error, checkAgentsInstalled } = require('./core.cjs');
 const { extractFrontmatter, parseMustHavesBlock } = require('./frontmatter.cjs');
 const { writeStateMd } = require('./state.cjs');
 
@@ -525,7 +525,7 @@ function cmdValidateHealth(cwd, options, raw) {
   if (resolved === os.homedir()) {
     output({
       status: 'error',
-      errors: [{ code: 'E010', message: `CWD is home directory (${resolved}) — health check would read the wrong .claude/.gsdt-planning/ directory. Run from your project root instead.`, fix: 'cd into your project directory and retry' }],
+      errors: [{ code: 'E010', message: `CWD is home directory (${resolved}) — health check would read the wrong GSD planning directory. Run from your project root instead.`, fix: 'cd into your project directory and retry' }],
       warnings: [],
       info: [{ code: 'I010', message: `Resolved CWD: ${resolved}` }],
       repairable_count: 0,
@@ -554,9 +554,9 @@ function cmdValidateHealth(cwd, options, raw) {
     else info.push(issue);
   };
 
-  // ─── Check 1: .claude/.gsdt-planning/ exists ───────────────────────────────────────────
+  // ─── Check 1: planning directory exists ───────────────────────────────────────────
   if (!fs.existsSync(planBase)) {
-    addIssue('error', 'E001', '.claude/.gsdt-planning/ directory not found', 'Run /gsdt:new-project to initialize');
+    addIssue('error', 'E001', `${planningDirDisplay(cwd)}/ directory not found`, 'Run /gsdt:new-project to initialize');
     output({
       status: 'broken',
       errors,
@@ -798,7 +798,7 @@ function cmdValidateHealth(cwd, options, raw) {
             const milestone = getMilestoneInfo(cwd);
             let stateContent = `# Session State\n\n`;
             stateContent += `## Project Reference\n\n`;
-            stateContent += `See: .claude/.gsdt-planning/PROJECT.md\n\n`;
+            stateContent += `See: ${planningDirDisplay(cwd)}/PROJECT.md\n\n`;
             stateContent += `## Position\n\n`;
             stateContent += `**Milestone:** ${milestone.version} ${milestone.name}\n`;
             stateContent += `**Current phase:** (determining...)\n`;

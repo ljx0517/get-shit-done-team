@@ -7,9 +7,7 @@ Visual patterns for user-facing GSD output. Orchestrators @-reference this file.
 Use for major workflow transitions.
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► {STAGE NAME}
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSD ► {STAGE NAME} ──
 ```
 
 **Stage names (uppercase):**

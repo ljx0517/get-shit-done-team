@@ -58,8 +58,8 @@ DECIMAL_PHASE=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" phase next-decimal 
 
 ```bash
 SLUG=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" generate-slug "$DESCRIPTION" --raw)
-PHASE_DIR=".claude/.gsdt-planning/phases/${DECIMAL_PHASE}-${SLUG}"
+PHASE_DIR=".gsdt-planning/phases/${DECIMAL_PHASE}-${SLUG}"
 mkdir -p "$PHASE_DIR"
 ```
 
-示例：`.claude/.gsdt-planning/phases/06.1-fix-critical-auth-bug/`
+示例：`.gsdt-planning/phases/06.1-fix-critical-auth-bug/`

@@ -24,7 +24,7 @@ Closes #<!-- issue number -->
 
 - [ ] Claude Code
 - [ ] Gemini CLI
-- [ ] OpenCode
+- [ ] Vibe Agent Team
 - [ ] Codex
 - [ ] Copilot
 - [ ] N/A (not runtime-specific)

@@ -16,12 +16,12 @@ milestone sequence or remove stale entries.
 
 1. **List backlog items:**
    ```bash
-   ls -d .claude/.gsdt-planning/phases/999* 2>/dev/null || echo "No backlog items found"
+   ls -d .gsdt-planning/phases/999* 2>/dev/null || echo "No backlog items found"
    ```
 
 2. **Read ROADMAP.md** and extract all 999.x phase entries:
    ```bash
-   cat .claude/.gsdt-planning/ROADMAP.md
+   cat .gsdt-planning/ROADMAP.md
    ```
    Show each backlog item with its description, any accumulated context (CONTEXT.md, RESEARCH.md), and creation date.
 
@@ -46,7 +46,7 @@ milestone sequence or remove stale entries.
 
 6. **Commit changes:**
    ```bash
-   node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: review backlog — promoted N, removed M" --files .claude/.gsdt-planning/ROADMAP.md
+   node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: review backlog — promoted N, removed M" --files .gsdt-planning/ROADMAP.md
    ```
 
 7. **Report summary:**

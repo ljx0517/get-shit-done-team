@@ -1,6 +1,6 @@
 # Stack Research Template
 
-Template for `.claude/.gsdt-planning/research/STACK.md` — recommended technologies for the project domain.
+Template for `.gsdt-planning/research/STACK.md` — recommended technologies for the project domain.
 
 <template>
 

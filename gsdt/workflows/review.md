@@ -88,12 +88,12 @@ if [[ "$INIT" == @file:* ]]; then INIT=$(cat "${INIT#@file:}"); fi
 Read from init: `phase_dir`, `phase_number`, `padded_phase`.
 
 Then read:
-1. `.claude/.gsdt-planning/PROJECT.md` (first 80 lines — project context)
-2. Phase section from `.claude/.gsdt-planning/ROADMAP.md`
+1. `.gsdt-planning/PROJECT.md` (first 80 lines — project context)
+2. Phase section from `.gsdt-planning/ROADMAP.md`
 3. All `*-PLAN.md` files in the phase directory
 4. `*-CONTEXT.md` if present (user decisions)
 5. `*-RESEARCH.md` if present (domain research)
-6. `.claude/.gsdt-planning/REQUIREMENTS.md` (requirements this phase addresses)
+6. `.gsdt-planning/REQUIREMENTS.md` (requirements this phase addresses)
 </step>
 
 <step name="build_prompt">
@@ -195,10 +195,7 @@ wait
 
 Display progress:
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► CROSS-AI REVIEW — Phase {N}
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
+── GSD ► CROSS-AI REVIEW — Phase {N} ──
 ◆ Reviewing with {CLI}... (parallel)...
 ◆ All reviewers complete
 ```
@@ -326,10 +323,7 @@ node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: cross-AI review for p
 Display summary:
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► REVIEW COMPLETE
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
+── GSD ► REVIEW COMPLETE ──
 Session: {SESSION_ID}
 Phase {N} reviewed by {count} AI systems.
 

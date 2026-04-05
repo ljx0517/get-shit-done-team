@@ -6,11 +6,11 @@
 
 ## 課題
 
-GSD は作業ディレクトリごとに1つの `.claude/.gsdt-planning/` ディレクトリに紐づいています。複数の独立したプロジェクトを持つユーザー（20以上の子リポジトリを含むモノレポ構成など）や、同一リポジトリ内でフィーチャーブランチの分離が必要なユーザーは、手動でのクローンや状態管理なしに並行して GSD セッションを実行することができません。
+GSD は作業ディレクトリごとに1つの `.gsdt-planning/` ディレクトリに紐づいています。複数の独立したプロジェクトを持つユーザー（20以上の子リポジトリを含むモノレポ構成など）や、同一リポジトリ内でフィーチャーブランチの分離が必要なユーザーは、手動でのクローンや状態管理なしに並行して GSD セッションを実行することができません。
 
 ## 解決策
 
-3つの新しいコマンドで**物理的なワークスペースディレクトリ**を作成・一覧表示・削除します。各ワークスペースにはリポジトリのコピー（git worktree またはクローン）と独立した `.claude/.gsdt-planning/` ディレクトリが含まれます。
+3つの新しいコマンドで**物理的なワークスペースディレクトリ**を作成・一覧表示・削除します。各ワークスペースにはリポジトリのコピー（git worktree またはクローン）と独立した `.gsdt-planning/` ディレクトリが含まれます。
 
 これにより2つのユースケースに対応します：
 - **マルチリポジトリオーケストレーション (A):** 親ディレクトリから複数のリポジトリにまたがるワークスペース
@@ -20,7 +20,7 @@ GSD は作業ディレクトリごとに1つの `.claude/.gsdt-planning/` ディ
 
 ### `/gsdt:new-workspace`
 
-リポジトリのコピーと独自の `.claude/.gsdt-planning/` を持つワークスペースディレクトリを作成します。
+リポジトリのコピーと独自の `.gsdt-planning/` を持つワークスペースディレクトリを作成します。
 
 ```
 /gsdt:new-workspace --name feature-b --repos hr-ui,ZeymoAPI --path ~/workspaces/feature-b
@@ -51,7 +51,7 @@ GSD は作業ディレクトリごとに1つの `.claude/.gsdt-planning/` ディ
 ```
 ~/gsdt-workspaces/feature-b/          # workspace root
 ├── WORKSPACE.md                      # manifest
-├── .claude/.gsdt-planning/                        # independent GSD planning directory
+├── .gsdt-planning/                        # independent GSD planning directory
 │   ├── PROJECT.md                    # (if user ran /gsdt:new-project)
 │   ├── STATE.md
 │   └── config.json
@@ -62,9 +62,9 @@ GSD は作業ディレクトリごとに1つの `.claude/.gsdt-planning/` ディ
 ```
 
 主要な特性：
-- `.claude/.gsdt-planning/` はワークスペースのルートに配置され、個々のリポジトリ内には配置されない
+- `.gsdt-planning/` はワークスペースのルートに配置され、個々のリポジトリ内には配置されない
 - 各リポジトリはワークスペースルート直下の対等なディレクトリ
-- `WORKSPACE.md` はルートにある唯一の GSD 固有ファイル（`.claude/.gsdt-planning/` を除く）
+- `WORKSPACE.md` はルートにある唯一の GSD 固有ファイル（`.gsdt-planning/` を除く）
 - `--strategy clone` の場合も同じ構造だが、リポジトリは完全なクローンとなる
 
 ## WORKSPACE.md のフォーマット
@@ -99,7 +99,7 @@ Strategy: worktree
    - Worktree: `git worktree add <workspace>/<repo-name> -b workspace/<name>`
    - Clone: `git clone <source> <workspace>/<repo-name>`
 6. **WORKSPACE.md の書き込み** — ソースパス、戦略、ブランチを含むマニフェスト
-7. **.claude/.gsdt-planning/ の初期化** — `mkdir -p <workspace>/.claude/.gsdt-planning`
+7. **.gsdt-planning/ の初期化** — `mkdir -p <workspace>/.gsdt-planning`
 8. **/gsdt:new-project の提案** — 新しいワークスペースでプロジェクト初期化を実行するか確認する
 9. **コミット** — commit_docs が有効な場合、WORKSPACE.md のアトミックコミット
 10. **完了** — ワークスペースのパスと次のステップを表示する
@@ -179,7 +179,7 @@ Strategy: worktree
 |----------|-----------|
 | 論理的なレジストリではなく物理ディレクトリを採用 | ファイルシステムを信頼の源とする — GSD の既存の cwd ベースの検出パターンと一致する |
 | Worktree をデフォルト戦略とする | 軽量（.git オブジェクトを共有）、作成が高速、クリーンアップが容易 |
-| `.claude/.gsdt-planning/` をワークスペースルートに配置 | 個々のリポジトリの planning から完全に分離できる。各ワークスペースは独立した GSD プロジェクトとなる |
+| `.gsdt-planning/` をワークスペースルートに配置 | 個々のリポジトリの planning から完全に分離できる。各ワークスペースは独立した GSD プロジェクトとなる |
 | 中央レジストリを使用しない | 状態の乖離を回避する。`list-workspaces` はファイルシステムを直接スキャンする |
 | ケース B を A の特殊ケースとする | `--repos .` で同じ仕組みを再利用し、フィーチャーブランチ専用のコードが不要 |
 | デフォルトパスを `~/gsdt-workspaces/<name>` とする | `list-workspaces` がスキャンしやすい予測可能な場所に配置し、ワークスペースをソースリポジトリの外に保つ |

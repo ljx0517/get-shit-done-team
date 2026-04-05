@@ -64,11 +64,11 @@ If no UI-SPEC exists: audit against abstract 6-pillar standards.
 
 ```bash
 # Ensure directory exists
-mkdir -p .claude/.gsdt-planning/ui-reviews
+mkdir -p .gsdt-planning/ui-reviews
 
 # Write .gitignore if not present
-if [ ! -f .claude/.gsdt-planning/ui-reviews/.gitignore ]; then
-  cat > .claude/.gsdt-planning/ui-reviews/.gitignore << 'GITIGNORE'
+if [ ! -f .gsdt-planning/ui-reviews/.gitignore ]; then
+  cat > .gsdt-planning/ui-reviews/.gitignore << 'GITIGNORE'
 # Screenshot files — never commit binary assets
 *.png
 *.webp
@@ -78,7 +78,7 @@ if [ ! -f .claude/.gsdt-planning/ui-reviews/.gitignore ]; then
 *.bmp
 *.tiff
 GITIGNORE
-  echo "Created .claude/.gsdt-planning/ui-reviews/.gitignore"
+  echo "Created .gsdt-planning/ui-reviews/.gitignore"
 fi
 ```
 
@@ -95,7 +95,7 @@ This gate runs unconditionally on every audit. The .gitignore ensures screenshot
 DEV_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000 2>/dev/null || echo "000")
 
 if [ "$DEV_STATUS" = "200" ]; then
-  SCREENSHOT_DIR=".claude/.gsdt-planning/ui-reviews/${PADDED_PHASE}-$(date +%Y%m%d-%H%M%S)"
+  SCREENSHOT_DIR=".gsdt-planning/ui-reviews/${PADDED_PHASE}-$(date +%Y%m%d-%H%M%S)"
   mkdir -p "$SCREENSHOT_DIR"
 
   # Desktop

@@ -1,6 +1,6 @@
 # Research Summary Template
 
-Template for `.claude/.gsdt-planning/research/SUMMARY.md` — executive summary of project research with roadmap implications.
+Template for `.gsdt-planning/research/SUMMARY.md` — executive summary of project research with roadmap implications.
 
 <template>
 

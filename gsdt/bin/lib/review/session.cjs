@@ -64,11 +64,11 @@ function generateSessionId() {
  * @returns {string} Path to sessions directory
  */
 function getSessionsDir(cwd) {
-  const planningDir = path.join(cwd, '.claude/.gsdt-planning', 'review-sessions');
-  if (!fs.existsSync(planningDir)) {
-    fs.mkdirSync(planningDir, { recursive: true });
+  const sessionsDir = path.join(core.planningRoot(cwd), 'review-sessions');
+  if (!fs.existsSync(sessionsDir)) {
+    fs.mkdirSync(sessionsDir, { recursive: true });
   }
-  return planningDir;
+  return sessionsDir;
 }
 
 /**

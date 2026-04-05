@@ -17,8 +17,8 @@ Execute all remaining milestone phases autonomously. For each phase: discuss →
 Uses ROADMAP.md phase discovery and Skill() flat invocations for each phase command. After all phases complete: milestone audit → complete → cleanup.
 
 **Creates/Updates:**
-- `.claude/.gsdt-planning/STATE.md` — updated after each phase
-- `.claude/.gsdt-planning/ROADMAP.md` — progress updated after each phase
+- `.gsdt-planning/STATE.md` — updated after each phase
+- `.gsdt-planning/ROADMAP.md` — progress updated after each phase
 - Phase artifacts — CONTEXT.md, PLANs, SUMMARYs per phase
 
 **After:** Milestone is complete and cleaned up.

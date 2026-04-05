@@ -30,10 +30,7 @@ Parse JSON for: `milestone_version`, `milestone_name`, `phase_count`, `completed
 Display startup banner:
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► MANAGER
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
+── GSD ► MANAGER ──
  {milestone_version} — {milestone_name}
  {phase_count} phases · {completed_count} complete
 
@@ -81,9 +78,7 @@ Use `deps_display` from init JSON for the Deps column — shows which phases thi
 Example output:
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► DASHBOARD
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSD ► DASHBOARD ──
  ████████████░░░░░░░░ 60%  (3/5 phases)
  ◆ Background: Planning Phase 4
  | # | Phase                | Deps | D | P | E | Status              |
@@ -327,10 +322,7 @@ Classify the error:
 Display final status with progress bar:
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► SESSION END
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
+── GSD ► SESSION END ──
  {milestone_version} — {milestone_name}
  {PROGRESS_BAR} {progress_pct}%  ({completed_count}/{phase_count} phases)
 

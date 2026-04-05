@@ -15,7 +15,7 @@
 ⏺ 项目分析：Get Shit Done (GSD)
 
   这是一个元提示词工具，基于规范驱动的开发系统，支持 Claude
-  Code、OpenCode、Gemini 和 Codex。
+  Code、Vibe Agent Team、Gemini 和 Codex。
 
   ---
   核心架构
@@ -556,7 +556,7 @@
   - quality — Opus everywhere except verification
   - balanced — Opus for planning, Sonnet for execution (default)
   - budget — Sonnet for writing, Haiku for research/verification
-  - inherit — Use current session model for all agents (OpenCode /model)
+  - inherit — Use current session model for all agents (Vibe Agent Team /model)
 
   Usage: /gsd:set-profile budget
 

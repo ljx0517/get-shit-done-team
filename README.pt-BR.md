@@ -4,7 +4,7 @@
 
 [English](README.md) · **Português** · [简体中文](README.zh-CN.md) · [日本語](README.ja-JP.md)
 
-**Um sistema leve e poderoso de meta-prompting, engenharia de contexto e desenvolvimento orientado a especificação para Claude Code, OpenCode, Gemini CLI, Codex, Copilot, Cursor e Antigravity.**
+**Um sistema leve e poderoso de meta-prompting, engenharia de contexto e desenvolvimento orientado a especificação para Claude Code, Vibe Agent Team, Gemini CLI, Codex, Copilot, Cursor e Antigravity.**
 
 **Resolve context rot — a degradação de qualidade que acontece conforme o Claude enche a janela de contexto.**
 
@@ -51,7 +51,7 @@ npx gsdt@latest
 
 Sou desenvolvedor solo. Eu não escrevo código — o Claude Code escreve.
 
-Existem outras ferramentas de desenvolvimento orientado por especificação. BMAD, Speckit... Mas quase todas parecem mais complexas do que o necessário (cerimônias de sprint, story points, sync com stakeholders, retrospectivas, fluxos Jira) ou não entendem de verdade o panorama do que você está construindo. Eu não sou uma empresa de software com 50 pessoas. Não quero teatro corporativo. Só quero construir coisas boas que funcionem.
+Existem outras ferramentas de desenvolvimento orientado por especificação (por exemplo Speckit). Mas quase todas parecem mais complexas do que o necessário (cerimônias de sprint, story points, sync com stakeholders, retrospectivas, fluxos Jira) ou não entendem de verdade o panorama do que você está construindo. Eu não sou uma empresa de software com 50 pessoas. Não quero teatro corporativo. Só quero construir coisas boas que funcionem.
 
 Então eu criei o GSD. A complexidade fica no sistema, não no seu fluxo. Por trás: engenharia de contexto, formatação XML de prompts, orquestração de subagentes, gerenciamento de estado. O que você vê: alguns comandos que simplesmente funcionam.
 
@@ -80,12 +80,12 @@ npx gsdt@latest
 ```
 
 O instalador pede:
-1. **Runtime** — Claude Code, OpenCode, Gemini, Codex, Copilot, Cursor, Antigravity, ou todos
+1. **Runtime** — Claude Code, Vibe Agent Team, Gemini, Codex, Copilot, Cursor, Antigravity, ou todos
 2. **Local** — Global (todos os projetos) ou local (apenas projeto atual)
 
 Verifique com:
 - Claude Code / Gemini: `/gsdt:help`
-- OpenCode: `/gsdt-help`
+- Vibe Agent Team: `/gsdt-help` (instala em `~/.config/opencode/` por padrão)
 - Codex: `$gsdt-help`
 - Copilot: `/gsdt:help`
 - Antigravity: `/gsdt:help`
@@ -107,8 +107,9 @@ npx gsdt@latest
 npx gsdt --claude --global
 npx gsdt --claude --local
 
-# OpenCode
-npx gsdt --opencode --global
+# Vibe Agent Team (comandos flat; config em ~/.config/opencode/)
+npx gsdt --vibe-agent-team --global
+# alias: npx gsdt --opencode --global
 
 # Gemini CLI
 npx gsdt --gemini --global
@@ -134,7 +135,7 @@ npx gsdt --all --global
 ```
 
 Use `--global` (`-g`) ou `--local` (`-l`) para pular a pergunta de local.
-Use `--claude`, `--opencode`, `--gemini`, `--codex`, `--copilot`, `--cursor`, `--antigravity` ou `--all` para pular a pergunta de runtime.
+Use `--claude`, `--vibe-agent-team` (ou `--opencode`), `--gemini`, `--codex`, `--copilot`, `--cursor`, `--antigravity` ou `--all` para pular a pergunta de runtime.
 
 </details>
 
@@ -165,7 +166,7 @@ O sistema:
 3. **Extrai requisitos** (v1, v2 e fora de escopo)
 4. **Monta roadmap** por fases
 
-**Cria:** `PROJECT.md`, `REQUIREMENTS.md`, `ROADMAP.md`, `STATE.md`, `.claude/.gsdt-planning/research/`
+**Cria:** `PROJECT.md`, `REQUIREMENTS.md`, `ROADMAP.md`, `STATE.md`, `.gsdt-planning/research/`
 
 ### 2. Discutir fase
 
@@ -309,7 +310,7 @@ Cada tarefa gera commit próprio, facilitando `git bisect`, rollback e rastreabi
 | `/gsdt:settings` | Configura perfis e agentes |
 | `/gsdt:set-profile <profile>` | Troca perfil (quality/balanced/budget/inherit) |
 | `/gsdt:quick [--full] [--discuss] [--research]` | Execução rápida com garantias do GSD |
-| `/gsdt:health [--repair]` | Verifica e repara `.claude/.gsdt-planning/` |
+| `/gsdt:health [--repair]` | Verifica e repara `.gsdt-planning/` |
 
 > Para a lista completa de comandos e opções, use `/gsdt:help`.
 
@@ -317,7 +318,7 @@ Cada tarefa gera commit próprio, facilitando `git bisect`, rollback e rastreabi
 
 ## Configuração
 
-As configurações do projeto ficam em `.claude/.gsdt-planning/config.json`.
+As configurações do projeto ficam em `.gsdt-planning/config.json`.
 Você pode configurar no `/gsdt:new-project` ou ajustar depois com `/gsdt:settings`.
 
 ### Ajustes principais
@@ -397,7 +398,7 @@ CLAUDE_CONFIG_DIR=/home/youruser/.claude npx gsdt --global
 ```bash
 # Instalações globais
 npx gsdt --claude --global --uninstall
-npx gsdt --opencode --global --uninstall
+npx gsdt --vibe-agent-team --global --uninstall
 npx gsdt --gemini --global --uninstall
 npx gsdt --codex --global --uninstall
 npx gsdt --copilot --global --uninstall
@@ -406,7 +407,7 @@ npx gsdt --antigravity --global --uninstall
 
 # Instalações locais (projeto atual)
 npx gsdt --claude --local --uninstall
-npx gsdt --opencode --local --uninstall
+npx gsdt --vibe-agent-team --local --uninstall
 npx gsdt --gemini --local --uninstall
 npx gsdt --codex --local --uninstall
 npx gsdt --copilot --local --uninstall
@@ -418,11 +419,11 @@ npx gsdt --antigravity --local --uninstall
 
 ## Community Ports
 
-OpenCode, Gemini CLI e Codex agora são suportados nativamente via `npx gsdt`.
+Vibe Agent Team, Gemini CLI e Codex agora são suportados nativamente via `npx gsdt`.
 
 | Projeto | Plataforma | Descrição |
 |---------|------------|-----------|
-| [gsdt-opencode](https://github.com/rokicool/gsdt-opencode) | OpenCode | Adaptação original para OpenCode |
+| [gsdt-opencode](https://github.com/rokicool/gsdt-opencode) | Vibe Agent Team | Adaptação comunitária inicial (nome histórico do repositório) |
 | gsdt-gemini (archived) | Gemini CLI | Adaptação original para Gemini por uberfuzzy |
 
 ---

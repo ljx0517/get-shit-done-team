@@ -21,7 +21,7 @@
 
 ## System Overview
 
-GSD is a **meta-prompting framework** that sits between the user and AI coding agents (Claude Code, Gemini CLI, OpenCode, Codex, Copilot, Antigravity). It provides:
+GSD is a **meta-prompting framework** that sits between the user and AI coding agents (Claude Code, Gemini CLI, Vibe Agent Team, Codex, Copilot, Antigravity). It provides:
 
 1. **Context engineering** — Structured artifacts that give the AI everything it needs per task
 2. **Multi-agent orchestration** — Thin orchestrators that spawn specialized agents with fresh context windows
@@ -59,7 +59,7 @@ GSD is a **meta-prompting framework** that sits between the user and AI coding a
 └──────────────────────┬───────────────────────────────┘
                        │
 ┌──────────────────────▼───────────────────────────────┐
-│              FILE SYSTEM (.claude/.gsdt-planning/)                 │
+│              FILE SYSTEM (.gsdt-planning/)                 │
 │   PROJECT.md | REQUIREMENTS.md | ROADMAP.md          │
 │   STATE.md | config.json | phases/ | research/       │
 └──────────────────────────────────────────────────────┘
@@ -83,7 +83,7 @@ Workflow files (`gsdt/workflows/*.md`) never do heavy lifting. They:
 
 ### 3. File-Based State
 
-All state lives in `.claude/.gsdt-planning/` as human-readable Markdown and JSON. No database, no server, no external dependencies. This means:
+All state lives in `.gsdt-planning/` as human-readable Markdown and JSON. No database, no server, no external dependencies. This means:
 - State survives context resets (`/clear`)
 - State is inspectable by both humans and agents
 - State can be committed to git for team visibility
@@ -108,7 +108,7 @@ Multiple layers prevent common failure modes:
 
 User-facing entry points. Each file contains YAML frontmatter (name, description, allowed-tools) and a prompt body that bootstraps the workflow. Commands are installed as:
 - **Claude Code:** Custom slash commands (`/gsdt:command-name`)
-- **OpenCode:** Slash commands (`/gsd-command-name`)
+- **Vibe Agent Team:** Slash commands (`/gsd-command-name`)
 - **Codex:** Skills (`$gsd-command-name`)
 - **Copilot:** Slash commands (`/gsdt:command-name`)
 - **Antigravity:** Skills
@@ -169,7 +169,7 @@ Runtime hooks that integrate with the host AI agent:
 | `gsdt-statusline.js` | `statusLine` | Displays model, task, directory, and context usage bar |
 | `gsdt-context-monitor.js` | `PostToolUse` / `AfterTool` | Injects agent-facing context warnings at 35%/25% remaining |
 | `gsdt-check-update.js` | `SessionStart` | Background check for new GSD versions |
-| `gsdt-prompt-guard.js` | `PreToolUse` | Scans `.claude/.gsdt-planning/` writes for prompt injection patterns (advisory) |
+| `gsdt-prompt-guard.js` | `PreToolUse` | Scans `.gsdt-planning/` writes for prompt injection patterns (advisory) |
 | `gsdt-workflow-guard.js` | `PreToolUse` | Detects file edits outside GSD workflow context (advisory, opt-in via `hooks.workflow_guard`) |
 
 ### CLI Tools (`gsdt/bin/`)
@@ -361,16 +361,16 @@ UI-SPEC.md (per phase) ───────────────────
 ```
 
 Equivalent paths for other runtimes:
-- **OpenCode:** `~/.config/opencode/` or `~/.opencode/`
+- **Vibe Agent Team:** `~/.config/opencode/` or `~/.opencode/`
 - **Gemini CLI:** `~/.gemini/`
 - **Codex:** `~/.codex/` (uses skills instead of commands)
 - **Copilot:** `~/.github/`
 - **Antigravity:** `~/.gemini/antigravity/` (global) or `./.agent/` (local)
 
-### Project Files (`.claude/.gsdt-planning/`)
+### Project Files (`.gsdt-planning/`)
 
 ```
-.claude/.gsdt-planning/
+.gsdt-planning/
 ├── PROJECT.md              # Project vision, constraints, decisions, evolution rules
 ├── REQUIREMENTS.md         # Scoped requirements (v1/v2/out-of-scope)
 ├── ROADMAP.md              # Phase breakdown with status tracking
@@ -425,12 +425,12 @@ Equivalent paths for other runtimes:
 
 The installer (`bin/install.js`, ~3,000 lines) handles:
 
-1. **Runtime detection** — Interactive prompt or CLI flags (`--claude`, `--opencode`, `--gemini`, `--codex`, `--copilot`, `--antigravity`, `--all`)
+1. **Runtime detection** — Interactive prompt or CLI flags (`--claude`, `--vibe-agent-team` / `--opencode`, `--gemini`, `--codex`, `--copilot`, `--antigravity`, `--all`)
 2. **Location selection** — Global (`--global`) or local (`--local`)
 3. **File deployment** — Copies commands, workflows, references, templates, agents, hooks
 4. **Runtime adaptation** — Transforms file content per runtime:
    - Claude Code: Uses as-is
-   - OpenCode: Converts agent frontmatter to `name:`, `model: inherit`, `mode: subagent`
+   - Vibe Agent Team: Converts agent frontmatter to `name:`, `model: inherit`, `mode: subagent`
    - Codex: Generates TOML config + skills from commands
    - Copilot: Maps tool names (Read→read, Bash→execute, etc.)
    - Gemini: Adjusts hook event names (`AfterTool` instead of `PostToolUse`)
@@ -490,13 +490,13 @@ Debounce: 5 tool uses between repeated warnings. Severity escalation (WARNING→
 ### Security Hooks (v1.27)
 
 **Prompt Guard** (`gsdt-prompt-guard.js`):
-- Triggers on Write/Edit to `.claude/.gsdt-planning/` files
+- Triggers on Write/Edit to `.gsdt-planning/` files
 - Scans content for prompt injection patterns (role override, instruction bypass, system tag injection)
 - Advisory-only — logs detection, does not block
 - Patterns are inlined (subset of `security.cjs`) for hook independence
 
 **Workflow Guard** (`gsdt-workflow-guard.js`):
-- Triggers on Write/Edit to non-`.claude/.gsdt-planning/` files
+- Triggers on Write/Edit to non-`.gsdt-planning/` files
 - Detects edits outside GSD workflow context (no active `/gsdt:` command or Task subagent)
 - Advises using `/gsdt:quick` or `/gsdt:fast` for state-tracked changes
 - Opt-in via `hooks.workflow_guard: true` (default: false)
@@ -510,7 +510,7 @@ GSD supports 6 AI coding runtimes through a unified command/workflow architectur
 | Runtime | Command Format | Agent System | Config Location |
 |---------|---------------|--------------|-----------------|
 | Claude Code | `/gsdt:command` | Task spawning | `~/.claude/` |
-| OpenCode | `/gsd-command` | Subagent mode | `~/.config/opencode/` |
+| Vibe Agent Team | `/gsd-command` | Subagent mode | `~/.config/opencode/` |
 | Gemini CLI | `/gsdt:command` | Task spawning | `~/.gemini/` |
 | Codex | `$gsd-command` | Skills | `~/.codex/` |
 | Copilot | `/gsdt:command` | Agent delegation | `~/.github/` |

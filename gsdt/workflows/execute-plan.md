@@ -26,14 +26,14 @@ if [[ "$INIT" == @file:* ]]; then INIT=$(cat "${INIT#@file:}"); fi
 
 Extract from init JSON: `executor_model`, `commit_docs`, `sub_repos`, `phase_dir`, `phase_number`, `plans`, `summaries`, `incomplete_plans`, `state_path`, `config_path`.
 
-If `.claude/.gsdt-planning/` missing: error.
+If `.gsdt-planning/` missing: error.
 </step>
 
 <step name="identify_plan">
 ```bash
 # Use plans/summaries from INIT JSON, or list files
-(ls .claude/.gsdt-planning/phases/XX-name/*-PLAN.md 2>/dev/null || true) | sort
-(ls .claude/.gsdt-planning/phases/XX-name/*-SUMMARY.md 2>/dev/null || true) | sort
+(ls .gsdt-planning/phases/XX-name/*-PLAN.md 2>/dev/null || true) | sort
+(ls .gsdt-planning/phases/XX-name/*-SUMMARY.md 2>/dev/null || true) | sort
 ```
 
 Find first PLAN without matching SUMMARY. Decimal phases supported (`01.1-hotfix/`):
@@ -61,7 +61,7 @@ PLAN_START_EPOCH=$(date +%s)
 
 <step name="parse_segments">
 ```bash
-grep -n "type=\"checkpoint" .claude/.gsdt-planning/phases/XX-name/{phase}-{plan}-PLAN.md
+grep -n "type=\"checkpoint" .gsdt-planning/phases/XX-name/{phase}-{plan}-PLAN.md
 ```
 
 **Routing by checkpoint type:**
@@ -83,12 +83,12 @@ Fresh context per subagent preserves peak quality. Main context stays lean.
 
 <step name="init_agent_tracking">
 ```bash
-if [ ! -f .claude/.gsdt-planning/agent-history.json ]; then
-  echo '{"version":"1.0","max_entries":50,"entries":[]}' > .claude/.gsdt-planning/agent-history.json
+if [ ! -f .gsdt-planning/agent-history.json ]; then
+  echo '{"version":"1.0","max_entries":50,"entries":[]}' > .gsdt-planning/agent-history.json
 fi
-rm -f .claude/.gsdt-planning/current-agent-id.txt
-if [ -f .claude/.gsdt-planning/current-agent-id.txt ]; then
-  INTERRUPTED_ID=$(cat .claude/.gsdt-planning/current-agent-id.txt)
+rm -f .gsdt-planning/current-agent-id.txt
+if [ -f .gsdt-planning/current-agent-id.txt ]; then
+  INTERRUPTED_ID=$(cat .gsdt-planning/current-agent-id.txt)
   echo "Found interrupted agent: $INTERRUPTED_ID"
 fi
 ```
@@ -121,7 +121,7 @@ Pattern B only (verify-only checkpoints). Skip for A/C.
 
 <step name="load_prompt">
 ```bash
-cat .claude/.gsdt-planning/phases/XX-name/{phase}-{plan}-PLAN.md
+cat .gsdt-planning/phases/XX-name/{phase}-{plan}-PLAN.md
 ```
 This IS the execution instructions. Follow exactly. If plan references CONTEXT.md: honor user's vision throughout.
 
@@ -375,14 +375,14 @@ fi
 
 <step name="generate_user_setup">
 ```bash
-grep -A 50 "^user_setup:" .claude/.gsdt-planning/phases/XX-name/{phase}-{plan}-PLAN.md | head -50
+grep -A 50 "^user_setup:" .gsdt-planning/phases/XX-name/{phase}-{plan}-PLAN.md | head -50
 ```
 
 If user_setup exists: create `{phase}-USER-SETUP.md` using template `~/.claude/gsdt/templates/user-setup.md`. Per service: env vars table, account setup checklist, dashboard config, local dev notes, verification commands. Status "Incomplete". Set `USER_SETUP_CREATED=true`. If empty/missing: skip.
 </step>
 
 <step name="create_summary">
-Create `{phase}-{plan}-SUMMARY.md` at `.claude/.gsdt-planning/phases/XX-name/`. Use `~/.claude/gsdt/templates/summary.md`.
+Create `{phase}-{plan}-SUMMARY.md` at `.gsdt-planning/phases/XX-name/`. Use `~/.claude/gsdt/templates/summary.md`.
 
 **Frontmatter:** phase, plan, subsystem, tags | requires/provides/affects | tech-stack.added/patterns | key-files.created/modified | key-decisions | requirements-completed (**MUST** copy `requirements` array from PLAN.md frontmatter verbatim) | duration ($DURATION), completed ($PLAN_END_TIME date).
 
@@ -463,12 +463,12 @@ Extract requirement IDs from the plan's frontmatter (e.g., `requirements: [AUTH-
 Task code already committed per-task. Commit plan metadata:
 
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs({phase}-{plan}): complete [plan-name] plan" --files .claude/.gsdt-planning/phases/XX-name/{phase}-{plan}-SUMMARY.md .claude/.gsdt-planning/STATE.md .claude/.gsdt-planning/ROADMAP.md .claude/.gsdt-planning/REQUIREMENTS.md
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs({phase}-{plan}): complete [plan-name] plan" --files .gsdt-planning/phases/XX-name/{phase}-{plan}-SUMMARY.md .gsdt-planning/STATE.md .gsdt-planning/ROADMAP.md .gsdt-planning/REQUIREMENTS.md
 ```
 </step>
 
 <step name="update_codebase_map">
-If .claude/.gsdt-planning/codebase/ doesn't exist: skip.
+If .gsdt-planning/codebase/ doesn't exist: skip.
 
 ```bash
 FIRST_TASK=$(git log --oneline --grep="feat({phase}-{plan}):" --grep="fix({phase}-{plan}):" --grep="test({phase}-{plan}):" --reverse | head -1 | cut -d' ' -f1)
@@ -478,7 +478,7 @@ git diff --name-only ${FIRST_TASK}^..HEAD 2>/dev/null || true
 Update only structural changes: new src/ dir → STRUCTURE.md | deps → STACK.md | file pattern → CONVENTIONS.md | API client → INTEGRATIONS.md | config → STACK.md | renamed → update paths. Skip code-only/bugfix/content changes.
 
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "" --files .claude/.gsdt-planning/codebase/*.md --amend
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "" --files .gsdt-planning/codebase/*.md --amend
 ```
 </step>
 
@@ -486,8 +486,8 @@ node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "" --files .claude/.gsdt-pla
 If `USER_SETUP_CREATED=true`: display `⚠️ USER SETUP REQUIRED` with path + env/config tasks at TOP.
 
 ```bash
-(ls -1 .claude/.gsdt-planning/phases/[current-phase-dir]/*-PLAN.md 2>/dev/null || true) | wc -l
-(ls -1 .claude/.gsdt-planning/phases/[current-phase-dir]/*-SUMMARY.md 2>/dev/null || true) | wc -l
+(ls -1 .gsdt-planning/phases/[current-phase-dir]/*-PLAN.md 2>/dev/null || true) | wc -l
+(ls -1 .gsdt-planning/phases/[current-phase-dir]/*-SUMMARY.md 2>/dev/null || true) | wc -l
 ```
 
 | Condition | Route | Action |

@@ -14,7 +14,7 @@ Detect whether GSD is installed locally or globally by checking both locations a
 First, derive `PREFERRED_RUNTIME` from the invoking prompt's `execution_context` path:
 - Path contains `/.codex/` -> `codex`
 - Path contains `/.gemini/` -> `gemini`
-- Path contains `/.config/opencode/` or `/.opencode/` -> `opencode`
+- Path contains `/.config/opencode/` or `/.opencode/` -> `opencode` (Vibe Agent Team layout; CLI `--vibe-agent-team` or alias `--opencode`)
 - Otherwise -> `claude`
 
 Use `PREFERRED_RUNTIME` as the first runtime checked so `/gsdt:update` targets the runtime that invoked it.
@@ -123,7 +123,7 @@ echo "$TARGET_RUNTIME"
 Parse output:
 - Line 1 = installed version (`0.0.0` means unknown version)
 - Line 2 = install scope (`LOCAL`, `GLOBAL`, or `UNKNOWN`)
-- Line 3 = target runtime (`claude`, `opencode`, `gemini`, or `codex`)
+- Line 3 = target runtime (`claude`, `opencode` [= Vibe Agent Team], `gemini`, or `codex`)
 - If scope is `UNKNOWN`, proceed to install step using `--claude --global` fallback.
 
 If multiple runtime installs are detected and the invoking runtime cannot be determined from execution_context, ask the user which runtime to update before running install.

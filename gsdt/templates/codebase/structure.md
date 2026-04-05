@@ -1,6 +1,6 @@
 # Structure Template
 
-Template for `.claude/.gsdt-planning/codebase/STRUCTURE.md` - captures physical file organization.
+Template for `.gsdt-planning/codebase/STRUCTURE.md` - captures physical file organization.
 
 **Purpose:** Document where things physically live in the codebase. Answers "where do I put X?"
 
@@ -158,7 +158,7 @@ gsdt/
 - Subdirectories: None
 
 **gsdt/templates/**
-- Purpose: Document templates for .claude/.gsdt-planning/ files
+- Purpose: Document templates for .gsdt-planning/ files
 - Contains: Template definitions with frontmatter
 - Key files: project.md, roadmap.md, plan.md, summary.md
 - Subdirectories: codebase/ (new - for stack/architecture/structure templates)

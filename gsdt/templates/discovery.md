@@ -1,6 +1,6 @@
 # Discovery Template
 
-Template for `.claude/.gsdt-planning/phases/XX-name/DISCOVERY.md` - shallow research for library/option decisions.
+Template for `.gsdt-planning/phases/XX-name/DISCOVERY.md` - shallow research for library/option decisions.
 
 **Purpose:** Answer "which library/option should we use" questions during mandatory discovery in plan-phase.
 
@@ -71,7 +71,7 @@ Before completing discovery, verify:
 
 
 <output_structure>
-Create `.claude/.gsdt-planning/phases/XX-name/DISCOVERY.md`:
+Create `.gsdt-planning/phases/XX-name/DISCOVERY.md`:
 
 ```markdown
 # [Topic] Discovery

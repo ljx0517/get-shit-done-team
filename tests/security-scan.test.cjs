@@ -374,7 +374,7 @@ describe('security-scan.yml workflow', () => {
 
   test('workflow includes planning directory check', () => {
     const content = fs.readFileSync(workflowPath, 'utf-8');
-    assert.ok(content.includes('.claude/.gsdt-planning/'), 'Missing .claude/.gsdt-planning/ directory check');
+    assert.ok(content.includes('.gsdt-planning/'), 'Missing .gsdt-planning/ directory check');
   });
 
   test('workflow triggers on pull_request', () => {

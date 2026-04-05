@@ -30,7 +30,7 @@ gsdt-tools config-set workflow.discuss_mode assumptions
 gsdt-tools config-set workflow.discuss_mode discuss
 ```
 
-この設定はプロジェクト単位です（`.claude/.gsdt-planning/config.json` に保存されます）。
+この設定はプロジェクト単位です（`.gsdt-planning/config.json` に保存されます）。
 
 ## Assumptions モードの仕組み
 

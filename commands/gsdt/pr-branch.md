@@ -1,6 +1,6 @@
 ---
 name: gsdt:pr-branch
-description: Create a clean PR branch by filtering out .claude/.gsdt-planning/ commits — ready for code review
+description: Create a clean PR branch by filtering out .gsdt-planning/ commits — ready for code review
 argument-hint: "[target branch, default: main]"
 allowed-tools:
   - Bash
@@ -9,7 +9,7 @@ allowed-tools:
 ---
 
 <objective>
-Create a clean branch suitable for pull requests by filtering out .claude/.gsdt-planning/ commits
+Create a clean branch suitable for pull requests by filtering out .gsdt-planning/ commits
 from the current branch. Reviewers see only code changes, not GSD planning artifacts.
 
 This solves the problem of PR diffs being cluttered with PLAN.md, SUMMARY.md, STATE.md

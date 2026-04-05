@@ -109,8 +109,8 @@ describe('forensics workflow', () => {
   test('workflow writes report to forensics directory', () => {
     const content = fs.readFileSync(workflowPath, 'utf-8');
     assert.ok(
-      content.includes('.claude/.gsdt-planning/forensics/report-'),
-      'should write to .claude/.gsdt-planning/forensics/'
+      content.includes('.gsdt-planning/forensics/report-'),
+      'should write to .gsdt-planning/forensics/'
     );
   });
 
@@ -198,14 +198,14 @@ describe('forensics fixture-based tests', () => {
 
   test('detects missing artifacts in phase structure', () => {
     // Phase 1: complete
-    const phase1 = path.join(tmpDir, '.claude/.gsdt-planning', 'phases', '01-setup');
+    const phase1 = path.join(tmpDir, '.gsdt-planning', 'phases', '01-setup');
     fs.mkdirSync(phase1, { recursive: true });
     fs.writeFileSync(path.join(phase1, '01-PLAN-A.md'), 'plan');
     fs.writeFileSync(path.join(phase1, '01-SUMMARY.md'), 'summary');
     fs.writeFileSync(path.join(phase1, '01-VERIFICATION.md'), 'verification');
 
     // Phase 2: missing SUMMARY and VERIFICATION (anomaly)
-    const phase2 = path.join(tmpDir, '.claude/.gsdt-planning', 'phases', '02-core');
+    const phase2 = path.join(tmpDir, '.gsdt-planning', 'phases', '02-core');
     fs.mkdirSync(phase2, { recursive: true });
     fs.writeFileSync(path.join(phase2, '02-PLAN-A.md'), 'plan');
 
@@ -220,7 +220,7 @@ describe('forensics fixture-based tests', () => {
   });
 
   test('forensics report directory can be created', () => {
-    const forensicsDir = path.join(tmpDir, '.claude/.gsdt-planning', 'forensics');
+    const forensicsDir = path.join(tmpDir, '.gsdt-planning', 'forensics');
     fs.mkdirSync(forensicsDir, { recursive: true });
     const reportPath = path.join(forensicsDir, 'report-20260321-150000.md');
     fs.writeFileSync(reportPath, '# Forensic Report\n');
@@ -230,13 +230,13 @@ describe('forensics fixture-based tests', () => {
     assert.ok(content.includes('Forensic Report'), 'report should have header');
   });
 
-  test('handles project with no .claude/.gsdt-planning directory', () => {
-    // No .claude/.gsdt-planning/ at all
-    const planningExists = fs.existsSync(path.join(tmpDir, '.claude/.gsdt-planning'));
-    assert.strictEqual(planningExists, false, 'no .claude/.gsdt-planning/ should exist');
+  test('handles project with no .gsdt-planning directory', () => {
+    // No .gsdt-planning/ at all
+    const planningExists = fs.existsSync(path.join(tmpDir, '.gsdt-planning'));
+    assert.strictEqual(planningExists, false, 'no .gsdt-planning/ should exist');
 
     // Forensics should still work with git data
-    const forensicsDir = path.join(tmpDir, '.claude/.gsdt-planning', 'forensics');
+    const forensicsDir = path.join(tmpDir, '.gsdt-planning', 'forensics');
     fs.mkdirSync(forensicsDir, { recursive: true });
     assert.ok(fs.existsSync(forensicsDir), 'forensics dir created on demand');
   });

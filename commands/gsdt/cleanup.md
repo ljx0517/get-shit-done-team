@@ -3,9 +3,9 @@ name: gsdt:cleanup
 description: Archive accumulated phase directories from completed milestones
 ---
 <objective>
-Archive phase directories from completed milestones into `.claude/.gsdt-planning/milestones/v{X.Y}-phases/`.
+Archive phase directories from completed milestones into `.gsdt-planning/milestones/v{X.Y}-phases/`.
 
-Use when `.claude/.gsdt-planning/phases/` has accumulated directories from past milestones.
+Use when `.gsdt-planning/phases/` has accumulated directories from past milestones.
 </objective>
 
 <execution_context>

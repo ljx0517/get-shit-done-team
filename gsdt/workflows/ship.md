@@ -217,7 +217,7 @@ node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" state update "Status" "Phase ${PHAS
 
 If `commit_docs` is true:
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs(${padded_phase}): ship phase ${PHASE_NUMBER} — PR #${PR_NUMBER}" --files .claude/.gsdt-planning/STATE.md
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs(${padded_phase}): ship phase ${PHASE_NUMBER} — PR #${PR_NUMBER}" --files .gsdt-planning/STATE.md
 ```
 </step>
 

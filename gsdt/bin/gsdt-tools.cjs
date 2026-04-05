@@ -26,7 +26,7 @@
  *   current-timestamp [format]         Get timestamp (full|date|filename)
  *   list-todos [area]                  Count and enumerate pending todos
  *   verify-path-exists <path>          Check file/directory existence
- *   config-ensure-section              Initialize .claude/.gsdt-planning/config.json
+ *   config-ensure-section              Initialize `.gsdt-planning/config.json`
  *   history-digest                     Aggregate all SUMMARY.md data
  *   summary-extract <path> [--fields]  Extract structured data from SUMMARY.md
  *   state-snapshot                     Structured parse of STATE.md
@@ -58,7 +58,7 @@
  *
  * Validation:
  *   validate consistency               Check phase numbering, disk/roadmap sync
- *   validate health [--repair]         Check .claude/.gsdt-planning/ integrity, optionally repair
+ *   validate health [--repair]         Check `.gsdt-planning/` integrity, optionally repair
  *   validate agents                    Check GSD agent installation status
  *
  * Progress:
@@ -222,11 +222,15 @@ async function main() {
     error(`Invalid --cwd: ${cwd}`);
   }
 
-  // Resolve worktree root: in a linked worktree, .claude/.gsdt-planning/ lives in the main worktree.
-  // However, in monorepo worktrees where the subdirectory itself owns .claude/.gsdt-planning/,
-  // skip worktree resolution — the CWD is already the correct project root.
-  const { resolveWorktreeRoot } = require('./lib/core.cjs');
-  if (!fs.existsSync(path.join(cwd, '.claude/.gsdt-planning'))) {
+  // Resolve worktree root: in a linked worktree, `.gsdt-planning/` (or legacy `.claude/.gsdt-planning/`)
+  // lives in the main worktree. Skip worktree resolution when this cwd already has a planning dir.
+  const { resolveWorktreeRoot, planningRoot } = require('./lib/core.cjs');
+  let hasLocalPlanning = false;
+  try {
+    const pr = planningRoot(cwd);
+    hasLocalPlanning = fs.existsSync(pr) && fs.statSync(pr).isDirectory();
+  } catch { /* treat as no local planning */ }
+  if (!hasLocalPlanning) {
     const worktreeRoot = resolveWorktreeRoot(cwd);
     if (worktreeRoot !== cwd) {
       cwd = worktreeRoot;
@@ -281,8 +285,8 @@ async function main() {
     error('Usage: gsdt-tools <command> [args] [--raw] [--pick <field>] [--cwd <path>] [--ws <name>]\nCommands: state, resolve-model, find-phase, commit, verify-summary, verify, frontmatter, template, generate-slug, current-timestamp, list-todos, verify-path-exists, config-ensure-section, config-new-project, init, workstream');
   }
 
-  // Multi-repo guard: resolve project root for commands that read/write .claude/.gsdt-planning/.
-  // Skip for pure-utility commands that don't touch .claude/.gsdt-planning/ to avoid unnecessary
+  // Multi-repo guard: resolve project root for commands that read/write the GSD planning directory.
+  // Skip for pure-utility commands that don't touch planning files to avoid unnecessary
   // filesystem traversal on every invocation.
   const SKIP_ROOT_RESOLUTION = new Set([
     'generate-slug', 'current-timestamp', 'verify-path-exists',
@@ -1038,7 +1042,7 @@ async function runCommand(command, args, cwd, raw) {
         const researchIdx = args.indexOf('--research');
         const research = researchIdx !== -1 ? JSON.parse(args[researchIdx + 1]) : {};
         await compound.updateAntiPatterns(projectDir, research);
-        console.log('Anti-pattern appended to .claude/.gsdt-planning/anti-patterns.md');
+        console.log(`Anti-pattern appended to ${require('./lib/core.cjs').planningDirDisplay(projectDir)}/anti-patterns.md`);
       }
       else if (compoundSubcmd === 'watch') {
         const Watch = require('./lib/review/watch.cjs');

@@ -38,8 +38,8 @@ If the prompt contains a `<files_to_read>` block, you MUST read every file liste
 
 <step name="check_project_context">
 Check if a project already exists by looking for:
-- .claude/.gsdt-planning/PROJECT.md — existing project description
-- .claude/.gsdt-planning/ROADMAP.md — existing roadmap
+- .gsdt-planning/PROJECT.md — existing project description
+- .gsdt-planning/ROADMAP.md — existing roadmap
 - package.json, Cargo.toml, pyproject.toml — existing code
 
 If project exists: read PROJECT.md to understand current state before classifying.

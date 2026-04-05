@@ -47,7 +47,7 @@ function runGsdTools(args, cwd = process.cwd(), env = {}) {
   }
 }
 
-// Create a bare temp directory (no .claude/.gsdt-planning/ structure)
+// Create a bare temp directory (no `.gsdt-planning/` structure)
 function createTempDir(prefix = 'gsd-test-') {
   return fs.mkdtempSync(path.join(require('os').tmpdir(), prefix));
 }
@@ -55,14 +55,14 @@ function createTempDir(prefix = 'gsd-test-') {
 // Create temp directory structure
 function createTempProject(prefix = 'gsd-test-') {
   const tmpDir = fs.mkdtempSync(path.join(require('os').tmpdir(), prefix));
-  fs.mkdirSync(path.join(tmpDir, '.claude/.gsdt-planning', 'phases'), { recursive: true });
+  fs.mkdirSync(path.join(tmpDir, '.gsdt-planning', 'phases'), { recursive: true });
   return tmpDir;
 }
 
 // Create temp directory with initialized git repo and at least one commit
 function createTempGitProject(prefix = 'gsd-test-') {
   const tmpDir = fs.mkdtempSync(path.join(require('os').tmpdir(), prefix));
-  fs.mkdirSync(path.join(tmpDir, '.claude/.gsdt-planning', 'phases'), { recursive: true });
+  fs.mkdirSync(path.join(tmpDir, '.gsdt-planning', 'phases'), { recursive: true });
 
   execSync('git init', { cwd: tmpDir, stdio: 'pipe' });
   execSync('git config user.email "test@test.com"', { cwd: tmpDir, stdio: 'pipe' });
@@ -70,7 +70,7 @@ function createTempGitProject(prefix = 'gsd-test-') {
   execSync('git config commit.gpgsign false', { cwd: tmpDir, stdio: 'pipe' });
 
   fs.writeFileSync(
-    path.join(tmpDir, '.claude/.gsdt-planning', 'PROJECT.md'),
+    path.join(tmpDir, '.gsdt-planning', 'PROJECT.md'),
     '# Project\n\nTest project.\n'
   );
 

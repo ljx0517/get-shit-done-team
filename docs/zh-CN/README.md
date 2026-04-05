@@ -2,7 +2,7 @@
 
 # GET SHIT DONE
 
-**一个轻量级且强大的元提示、上下文工程和规格驱动开发系统，支持 Claude Code、OpenCode、Gemini CLI 和 Codex。**
+**一个轻量级且强大的元提示、上下文工程和规格驱动开发系统，支持 Claude Code、Vibe Agent Team、Gemini CLI 和 Codex。**
 
 **解决上下文衰减 —— 即 Claude 填充上下文窗口时发生的质量退化问题。**
 
@@ -49,7 +49,7 @@ npx gsdt@latest
 
 我是一名独立开发者。我不写代码 —— Claude Code 写。
 
-其他规格驱动开发工具确实存在，比如 BMAD、Speckit... 但它们似乎都把事情搞得比实际需要的复杂得多（冲刺会议、故事点、干系人同步、回顾、Jira 工作流），或者缺乏对你正在构建的东西的真正大局理解。我不是一个 50 人的软件公司。我不想搞企业级表演。我只是个想构建出好用的东西的创意人。
+其他规格驱动开发工具确实存在（如 Speckit 等），但它们似乎都把事情搞得比实际需要的复杂得多（冲刺会议、故事点、干系人同步、回顾、Jira 工作流），或者缺乏对你正在构建的东西的真正大局理解。我不是一个 50 人的软件公司。我不想搞企业级表演。我只是个想构建出好用的东西的创意人。
 
 所以我开发了 GSD。复杂性在系统内部，不在你的工作流里。幕后是：上下文工程、XML 提示格式、子代理编排、状态管理。你看到的是：几个命令，用就完了。
 
@@ -80,12 +80,12 @@ npx gsdt@latest
 ```
 
 安装程序会提示你选择：
-1. **运行时** —— Claude Code、OpenCode、Gemini、Codex 或全部
+1. **运行时** —— Claude Code、Vibe Agent Team、Gemini、Codex 或全部
 2. **位置** —— 全局（所有项目）或本地（仅当前项目）
 
 验证安装：
 - Claude Code / Gemini: `/gsdt:help`
-- OpenCode: `/gsdt-help`
+- Vibe Agent Team: `/gsdt-help`（默认安装到 `~/.config/opencode/`）
 - Codex: `$gsdt-help`
 
 > [!NOTE]
@@ -107,8 +107,9 @@ npx gsdt@latest
 npx gsdt --claude --global   # 安装到 ~/.claude/
 npx gsdt --claude --local    # 安装到 ./.claude/
 
-# OpenCode（开源，免费模型）
-npx gsdt --opencode --global # 安装到 ~/.config/opencode/
+# Vibe Agent Team（命令目录为 flat；配置在 ~/.config/opencode/）
+npx gsdt --vibe-agent-team --global
+# 别名：npx gsdt --opencode --global
 
 # Gemini CLI
 npx gsdt --gemini --global   # 安装到 ~/.gemini/
@@ -122,7 +123,7 @@ npx gsdt --all --global      # 安装到所有目录
 ```
 
 使用 `--global`（`-g`）或 `--local`（`-l`）跳过位置提示。
-使用 `--claude`、`--opencode`、`--gemini`、`--codex` 或 `--all` 跳过运行时提示。
+使用 `--claude`、`--vibe-agent-team`（或 `--opencode`）、`--gemini`、`--codex` 或 `--all` 跳过运行时提示。
 
 </details>
 
@@ -206,7 +207,7 @@ claude --dangerously-skip-permissions
 
 你批准路线图。现在准备好构建了。
 
-**创建：** `PROJECT.md`、`REQUIREMENTS.md`、`ROADMAP.md`、`STATE.md`、`.claude/.gsdt-planning/research/`
+**创建：** `PROJECT.md`、`REQUIREMENTS.md`、`ROADMAP.md`、`STATE.md`、`.gsdt-planning/research/`
 
 ---
 
@@ -366,7 +367,7 @@ claude --dangerously-skip-permissions
 
 - **相同代理** —— 规划者 + 执行者，相同质量
 - **跳过可选步骤** —— 无研究、无计划检查器、无验证器
-- **独立跟踪** —— 存放在 `.claude/.gsdt-planning/quick/`，不是阶段
+- **独立跟踪** —— 存放在 `.gsdt-planning/quick/`，不是阶段
 
 用于：bug 修复、小功能、配置更改、一次性任务。
 
@@ -375,7 +376,7 @@ claude --dangerously-skip-permissions
 > 你想做什么？"在设置中添加深色模式切换"
 ```
 
-**创建：** `.claude/.gsdt-planning/quick/001-add-dark-mode-toggle/PLAN.md`、`SUMMARY.md`
+**创建：** `.gsdt-planning/quick/001-add-dark-mode-toggle/PLAN.md`、`SUMMARY.md`
 
 ---
 
@@ -519,7 +520,7 @@ lmn012o feat(08-02): 创建注册端点
 | `/gsdt:check-todos` | 列出待处理事项 |
 | `/gsdt:debug [desc]` | 带持久状态的系统化调试 |
 | `/gsdt:quick [--full] [--discuss]` | 用 GSD 保证执行临时任务（`--full` 添加计划检查和验证，`--discuss` 先收集上下文） |
-| `/gsdt:health [--repair]` | 验证 `.claude/.gsdt-planning/` 目录完整性，用 `--repair` 自动修复 |
+| `/gsdt:health [--repair]` | 验证 `.gsdt-planning/` 目录完整性，用 `--repair` 自动修复 |
 
 <sup>¹ 由 Reddit 用户 OracleGreyBeard 贡献</sup>
 
@@ -527,7 +528,7 @@ lmn012o feat(08-02): 创建注册端点
 
 ## 配置
 
-GSD 在 `.claude/.gsdt-planning/config.json` 中存储项目设置。在 `/gsdt:new-project` 期间配置或稍后用 `/gsdt:settings` 更新。完整配置模式、工作流开关、git 分支选项和每个代理的模型分解，请参阅[用户指南](USER-GUIDE.md#配置参考)。
+GSD 在 `.gsdt-planning/config.json` 中存储项目设置。在 `/gsdt:new-project` 期间配置或稍后用 `/gsdt:settings` 更新。完整配置模式、工作流开关、git 分支选项和每个代理的模型分解，请参阅[用户指南](USER-GUIDE.md#配置参考)。
 
 ### 核心设置
 
@@ -573,7 +574,7 @@ GSD 在 `.claude/.gsdt-planning/config.json` 中存储项目设置。在 `/gsdt:
 | 设置 | 默认值 | 控制内容 |
 |---------|---------|------------------|
 | `parallelization.enabled` | `true` | 同时运行独立计划 |
-| `planning.commit_docs` | `true` | 在 git 中跟踪 `.claude/.gsdt-planning/` |
+| `planning.commit_docs` | `true` | 在 git 中跟踪 `.gsdt-planning/` |
 
 ### Git 分支
 
@@ -656,12 +657,12 @@ CLAUDE_CONFIG_DIR=/home/youruser/.claude npx gsdt --global
 ```bash
 # 全局安装
 npx gsdt --claude --global --uninstall
-npx gsdt --opencode --global --uninstall
+npx gsdt --vibe-agent-team --global --uninstall
 npx gsdt --codex --global --uninstall
 
 # 本地安装（当前项目）
 npx gsdt --claude --local --uninstall
-npx gsdt --opencode --local --uninstall
+npx gsdt --vibe-agent-team --local --uninstall
 npx gsdt --codex --local --uninstall
 ```
 
@@ -671,13 +672,13 @@ npx gsdt --codex --local --uninstall
 
 ## 社区移植
 
-OpenCode、Gemini CLI 和 Codex 现在通过 `npx gsdt` 原生支持。
+Vibe Agent Team、Gemini CLI 和 Codex 现在通过 `npx gsdt` 原生支持。
 
 这些社区移植开创了多运行时支持：
 
 | 项目 | 平台 | 描述 |
 |---------|----------|-------------|
-| [gsdt-opencode](https://github.com/rokicool/gsdt-opencode) | OpenCode | 原始 OpenCode 适配 |
+| [gsdt-opencode](https://github.com/rokicool/gsdt-opencode) | Vibe Agent Team | 早期社区适配（仓库名保留历史） |
 | gsdt-gemini (已归档) | Gemini CLI | 由 uberfuzzy 开发的原始 Gemini 适配 |
 
 ---

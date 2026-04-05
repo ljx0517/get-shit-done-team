@@ -50,7 +50,7 @@ body:
       options:
         - label: Claude Code
         - label: Gemini CLI
-        - label: OpenCode
+        - label: Vibe Agent Team
         - label: Codex
         - label: Copilot
         - label: Antigravity

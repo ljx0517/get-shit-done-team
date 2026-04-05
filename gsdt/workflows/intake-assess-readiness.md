@@ -12,8 +12,8 @@ Read the invoking command plus current intake and planning state before deciding
 Read these files if present:
 - `.claude/.gsdt-intake/ledger.json`
 - `.claude/.gsdt-intake/readiness.json`
-- `.claude/.gsdt-planning/ROADMAP.md`
-- `.claude/.gsdt-planning/STATE.md`
+- `.gsdt-planning/ROADMAP.md`
+- `.gsdt-planning/STATE.md`
 </step>
 
 <step name="assess_readiness">

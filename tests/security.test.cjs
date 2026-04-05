@@ -33,7 +33,7 @@ describe('validatePath', () => {
   });
 
   test('allows nested relative paths', () => {
-    const result = validatePath('.claude/.gsdt-planning/phases/01-setup/PLAN.md', base);
+    const result = validatePath('.gsdt-planning/phases/01-setup/PLAN.md', base);
     assert.ok(result.safe);
   });
 

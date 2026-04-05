@@ -1,5 +1,5 @@
 <purpose>
-Create structured `.claude/.gsdt-planning/HANDOFF.json` and `.continue-here.md` handoff files to preserve complete work state across sessions. The JSON provides machine-readable state for `/gsdt:resume-work`; the markdown provides human-readable context.
+Create structured `.gsdt-planning/HANDOFF.json` and `.continue-here.md` handoff files to preserve complete work state across sessions. The JSON provides machine-readable state for `/gsdt:resume-work`; the markdown provides human-readable context.
 </purpose>
 
 <required_reading>
@@ -13,7 +13,7 @@ Find current phase directory from most recently modified files:
 
 ```bash
 # Find most recent phase directory with work
-(ls -lt .claude/.gsdt-planning/phases/*/PLAN.md 2>/dev/null || true) | head -1 | grep -oP 'phases/\K[^/]+' || true
+(ls -lt .gsdt-planning/phases/*/PLAN.md 2>/dev/null || true) | head -1 | grep -oP 'phases/\K[^/]+' || true
 ```
 
 If no active phase detected, ask user which phase they're pausing work on.
@@ -36,13 +36,13 @@ Ask user for clarifications if needed via conversational questions.
 **Also inspect SUMMARY.md files for false completions:**
 ```bash
 # Check for placeholder content in existing summaries
-grep -l "To be filled\|placeholder\|TBD" .claude/.gsdt-planning/phases/*/*.md 2>/dev/null || true
+grep -l "To be filled\|placeholder\|TBD" .gsdt-planning/phases/*/*.md 2>/dev/null || true
 ```
 Report any summaries with placeholder content as incomplete items.
 </step>
 
 <step name="write_structured">
-**Write structured handoff to `.claude/.gsdt-planning/HANDOFF.json`:**
+**Write structured handoff to `.gsdt-planning/HANDOFF.json`:**
 
 ```bash
 timestamp=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" current-timestamp full --raw)
@@ -85,7 +85,7 @@ timestamp=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" current-timestamp full 
 </step>
 
 <step name="write">
-**Write handoff to `.claude/.gsdt-planning/phases/XX-name/.continue-here.md`:**
+**Write handoff to `.gsdt-planning/phases/XX-name/.continue-here.md`:**
 
 ```markdown
 ---
@@ -143,15 +143,15 @@ timestamp=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" current-timestamp full 
 
 <step name="commit">
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "wip: [phase-name] paused at task [X]/[Y]" --files .claude/.gsdt-planning/phases/*/.continue-here.md .claude/.gsdt-planning/HANDOFF.json
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "wip: [phase-name] paused at task [X]/[Y]" --files .gsdt-planning/phases/*/.continue-here.md .gsdt-planning/HANDOFF.json
 ```
 </step>
 
 <step name="confirm">
 ```
 ✓ Handoff created:
-  - .claude/.gsdt-planning/HANDOFF.json (structured, machine-readable)
-  - .claude/.gsdt-planning/phases/[XX-name]/.continue-here.md (human-readable)
+  - .gsdt-planning/HANDOFF.json (structured, machine-readable)
+  - .gsdt-planning/phases/[XX-name]/.continue-here.md (human-readable)
 
 Current state:
 

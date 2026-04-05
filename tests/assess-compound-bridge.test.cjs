@@ -16,7 +16,7 @@ const {
 
 function createTempProject(prefix = 'gsdt-assess-compound-') {
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), prefix));
-  const phaseDir = path.join(tmpDir, '.claude/.gsdt-planning', 'phases', '02-test-phase');
+  const phaseDir = path.join(tmpDir, '.gsdt-planning', 'phases', '02-test-phase');
   fs.mkdirSync(phaseDir, { recursive: true });
   return { tmpDir, phaseDir };
 }
@@ -74,6 +74,6 @@ describe('emitResolvedFindingsToCompound', () => {
     assert.strictEqual(stored.events.length, 1);
     assert.strictEqual(stored.events[0].source, 'assess');
     assert.strictEqual(stored.events[0].status, 'resolved');
-    assert.ok(fs.existsSync(path.join(tmpDir, '.claude/.gsdt-planning', 'compound-memory.json')));
+    assert.ok(fs.existsSync(path.join(tmpDir, '.gsdt-planning', 'compound-memory.json')));
   });
 });

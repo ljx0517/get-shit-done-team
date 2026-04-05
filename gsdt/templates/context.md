@@ -1,6 +1,6 @@
 # Phase Context Template
 
-Template for `.claude/.gsdt-planning/phases/XX-name/{phase_num}-CONTEXT.md` - captures implementation decisions for a phase.
+Template for `.gsdt-planning/phases/XX-name/{phase_num}-CONTEXT.md` - captures implementation decisions for a phase.
 
 **Purpose:** Document decisions that downstream agents need. Researcher uses this to know WHAT to investigate. Planner uses this to know WHAT choices are locked vs flexible.
 
@@ -338,7 +338,7 @@ The output should answer: "What does the researcher need to investigate? What ch
 - "Easy to use"
 
 **After creation:**
-- File lives in phase directory: `.claude/.gsdt-planning/phases/XX-name/{phase_num}-CONTEXT.md`
+- File lives in phase directory: `.gsdt-planning/phases/XX-name/{phase_num}-CONTEXT.md`
 - `gsdt-phase-researcher` uses decisions to focus investigation AND reads canonical_refs to know WHAT docs to study
 - `gsdt-planner` uses decisions + research to create executable tasks AND reads canonical_refs to verify alignment
 - Downstream agents should NOT need to ask the user again about captured decisions

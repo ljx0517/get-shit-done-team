@@ -1,6 +1,6 @@
 # Pitfalls Research Template
 
-Template for `.claude/.gsdt-planning/research/PITFALLS.md` — common mistakes to avoid in the project domain.
+Template for `.gsdt-planning/research/PITFALLS.md` — common mistakes to avoid in the project domain.
 
 <template>
 

@@ -27,13 +27,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Added prompt-driven Assess reviewer agents under `agents/` for correctness, testing, maintainability, project standards, learnings, security, performance, reliability, CLI readiness, UI regression, agent surface, and bounded safe-auto fixing.
 
 ### Changed
+- **Planning directory default**: project planning artifacts now default to **`<project>/.gsdt-planning/`** at the repo root instead of **`.claude/.gsdt-planning/`**, reducing IDE permission prompts on `.claude/` writes; legacy `.claude/.gsdt-planning/` is still detected when present. `buildNewProjectConfig` reads API keys and `defaults.json` from **`~/.gsd/`** (aligned with init and tests).
 - Updated `README.md`, `docs/COMMANDS.md`, and `docs/FEATURES.md` to document `/gsdt:intake` as a quiet semantic intake entrypoint alongside `/gsdt:do` and `/gsdt:note`.
 - Updated `intake materialize` output to include the exact downstream slash command that would be dispatched for cold-start and phase-ready handoffs, making brief consumption boundaries directly testable.
 - Refactored `/gsdt:intake` into a mixed-layered flow: AI now owns semantic resolution/readiness/artifact drafting in `gsdt/workflows/intake.md`, while `intake.cjs` applies deterministic guards, writes artifacts, and preserves safe dispatch boundaries.
 - Updated `gsdt/workflows/intake.md` to explicitly invoke the new `gsdt:intake-*` subskills via `Skill(...)`, while preserving deterministic `intake merge`, `intake decide`, and `intake materialize` boundaries.
 - Extended `intake merge`, `intake decide`, and `intake materialize` to accept `--resolution-file`, `--assessment-file`, and `--artifacts-file`, allowing semantic AI outputs to plug into the existing ledger/readiness pipeline without removing deterministic fallbacks.
-- Default planning artifacts now resolve to `.claude/.gsdt-planning` across the CLI, SDK, runtime workflow/prompt assets, and regression tests, replacing `.gsdt-planning` as the default project planning directory.
-- Updated user-facing documentation and repo guidance to reference `.claude/.gsdt-planning` consistently, including READMEs, localized docs, contributing guidance, bug report prompts, security scan rules, and related regression checks.
 - Cleaned remaining stale test fixtures that still referenced legacy repo paths like `get-shit-done/...`, `commands/gsd`, and old `gsd:*` workflow assertions, aligning regression coverage with the current `gsdt/` layout and `gsdt:*` source prompts.
 - Repaired runtime install bookkeeping drift so non-Claude runtimes continue installing `gsd-*` skills/commands while correctly copying, manifesting, and uninstalling `gsdt-*` agent artifacts and `gsdt` engine files.
 - Added the missing `gsdt-review-fixer` write-agent safeguards and filled missing `<available_agent_types>` listings for Assess / execute-phase workflow spawning contracts.
@@ -237,7 +236,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.25.0] - 2026-03-16
 
 ### Added
-- **Antigravity runtime support** — Full installation support for the Antigravity AI agent runtime (`--antigravity`), alongside Claude Code, OpenCode, Gemini, Codex, and Copilot
+- **Antigravity runtime support** — Full installation support for the Antigravity AI agent runtime (`--antigravity`), alongside Claude Code, Vibe Agent Team, Gemini, Codex, and Copilot
 - **`/gsdt:do` command** — Freeform text router that dispatches natural language to the right GSD command
 - **`/gsdt:note` command** — Zero-friction idea capture with append, list, and promote-to-todo subcommands
 - **Context window warning toggle** — Config option to disable context monitor warnings (`hooks.context_monitor: false`)
@@ -263,13 +262,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 - **`/gsdt:quick --research` flag** — Spawns focused research agent before planning, composable with `--discuss` and `--full` (#317)
-- **`inherit` model profile** for OpenCode — agents inherit the user's selected runtime model via `/model`
+- **`inherit` model profile** for Vibe Agent Team — agents inherit the user's selected runtime model via `/model`
 - **Persistent debug knowledge base** — resolved debug sessions append to `.gsdt-planning/debug/knowledge-base.md`, eliminating cold-start investigation on recurring issues
 - **Programmatic `/gsdt:set-profile`** — runs as a script instead of LLM-driven workflow, executes in seconds instead of 30-40s
 
 ### Fixed
 - ROADMAP.md searches scoped to current milestone — multi-milestone projects no longer match phases from archived milestones
-- OpenCode agent frontmatter conversion — agents get correct `name:`, `model: inherit`, `mode: subagent`
+- Vibe Agent Team agent frontmatter conversion — agents get correct `name:`, `model: inherit`, `mode: subagent`
 - `opencode.jsonc` config files respected during install (previously only `.json` was detected) (#1053)
 - Windows installer crash on EPERM/EACCES when scanning protected directories (#964)
 - `gsdt-tools.cjs` uses absolute paths in all install types (#820)
@@ -327,7 +326,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Renamed `depth` setting to `granularity` with values `coarse`/`standard`/`fine` to accurately reflect what it controls (phase count, not investigation depth). Backward-compatible migration auto-renames existing config.
 
 ### Fixed
-- Installer now replaces `$HOME/.claude/` paths (not just `~/.claude/`) for non-Claude runtimes — fixes broken commands on local installs and Gemini/OpenCode/Codex installs (#905, #909)
+- Installer now replaces `$HOME/.claude/` paths (not just `~/.claude/`) for non-Claude runtimes — fixes broken commands on local installs and Gemini/Vibe Agent Team/Codex installs (#905, #909)
 
 ## [1.22.2] - 2026-03-03
 
@@ -344,7 +343,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - State parsing supports both bold and plain field formats
 - Phase counting scoped to current milestone
 - Total phases derived from ROADMAP when phase directories don't exist yet
-- OpenCode detects runtime config directory instead of hardcoding `.claude`
+- Vibe Agent Team installer detects runtime config directory instead of hardcoding `.claude`
 - Gemini hooks use `AfterTool` event instead of `PostToolUse`
 - Multi-word commit messages preserved in CLI router
 - Regex patterns in milestone/state helpers properly escaped
@@ -499,7 +498,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 - Plans created without user context — `/gsdt:plan-phase` warns when no CONTEXT.md exists, `/gsdt:discuss-phase` warns when plans already exist (#253)
-- OpenCode installer converts `general-purpose` subagent type to OpenCode's `general`
+- Vibe Agent Team installer converts `general-purpose` subagent type to the opencode runtime's `general`
 - `/gsdt:complete-milestone` respects `commit_docs` setting when merging branches
 - Phase directories tracked in git via `.gitkeep` files
 
@@ -514,7 +513,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Wave execution diagram added to README for clearer parallelization visualization
 
 ### Fixed
-- OpenCode local installs now write config to `./.opencode/` instead of overwriting global `~/.config/opencode/`
+- Vibe Agent Team local installs now write config to `./.opencode/` instead of overwriting global `~/.config/opencode/`
 - Large JSON payloads write to temp files to prevent truncation in tool calls
 - Phase heading matching now supports `####` depth
 - Phase padding normalized in insert command
@@ -549,7 +548,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Fixed
 - UAT gaps and debug sessions now auto-resolve after gap-closure phase execution (#580)
 - Fall back to ROADMAP.md when phase directory missing (#521)
-- Template hook paths for OpenCode/Gemini runtimes (#585)
+- Template hook paths for Vibe Agent Team/Gemini runtimes (#585)
 - Accept both `##` and `###` phase headers, detect malformed ROADMAPs (#598, #599)
 - Use `{phase_num}` instead of ambiguous `{phase}` for filenames (#601)
 - Add package.json to prevent ESM inheritance issues (#602)
@@ -663,7 +662,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Security section in README with Claude Code deny rules for sensitive files
 
 ### Changed
-- Install respects `attribution.commit` setting for OpenCode compatibility (#286)
+- Install respects `attribution.commit` setting for opencode-compatible runtimes (#286)
 
 ### Fixed
 - **CRITICAL:** Prevent API keys from being committed via `/gsdt:map-codebase` (#429)
@@ -700,7 +699,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 - Native Gemini CLI support — install with `--gemini` flag or select from interactive menu
-- New `--all` flag to install for Claude Code, OpenCode, and Gemini simultaneously
+- New `--all` flag to install for Claude Code, Vibe Agent Team, and Gemini simultaneously
 
 ### Fixed
 - Context bar now shows 100% at actual 80% limit (was scaling incorrectly)
@@ -742,16 +741,16 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [1.9.7] - 2026-01-22
 
 ### Fixed
-- OpenCode installer now uses correct XDG-compliant config path (`~/.config/opencode/`) instead of `~/.opencode/`
-- OpenCode commands use flat structure (`command/gsdt-help.md`) matching OpenCode's expected format
-- OpenCode permissions written to `~/.config/opencode/opencode.json`
+- Vibe Agent Team installer now uses correct XDG-compliant config path (`~/.config/opencode/`) instead of `~/.opencode/`
+- Vibe Agent Team commands use flat structure (`command/gsdt-help.md`) matching the opencode CLI layout
+- Vibe Agent Team permissions written to `~/.config/opencode/opencode.json`
 
 ## [1.9.6] - 2026-01-22
 
 ### Added
-- Interactive runtime selection: installer now prompts to choose Claude Code, OpenCode, or both
-- Native OpenCode support: `--opencode` flag converts GSD to OpenCode format automatically
-- `--both` flag to install for both Claude Code and OpenCode in one command
+- Interactive runtime selection: installer now prompts to choose Claude Code, Vibe Agent Team, or both
+- Native Vibe Agent Team support: `--opencode` / `--vibe-agent-team` flag converts GSD to opencode-compatible format automatically
+- `--both` flag to install for both Claude Code and Vibe Agent Team in one command
 - Auto-configures `~/.opencode.json` permissions for seamless GSD doc access
 
 ### Changed

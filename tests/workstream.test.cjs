@@ -12,10 +12,10 @@ const { runGsdTools, createTempProject, cleanup } = require('./helpers.cjs');
 
 function createProjectWithState(tmpDir, roadmap, state) {
   if (roadmap) {
-    fs.writeFileSync(path.join(tmpDir, '.claude/.gsdt-planning', 'ROADMAP.md'), roadmap, 'utf-8');
+    fs.writeFileSync(path.join(tmpDir, '.gsdt-planning', 'ROADMAP.md'), roadmap, 'utf-8');
   }
   if (state) {
-    fs.writeFileSync(path.join(tmpDir, '.claude/.gsdt-planning', 'STATE.md'), state, 'utf-8');
+    fs.writeFileSync(path.join(tmpDir, '.gsdt-planning', 'STATE.md'), state, 'utf-8');
   }
 }
 
@@ -27,11 +27,11 @@ describe('planningDir workstream awareness via env var', () => {
   before(() => {
     tmpDir = createTempProject();
     // Create workstream structure
-    const wsDir = path.join(tmpDir, '.claude/.gsdt-planning', 'workstreams', 'alpha');
+    const wsDir = path.join(tmpDir, '.gsdt-planning', 'workstreams', 'alpha');
     fs.mkdirSync(path.join(wsDir, 'phases'), { recursive: true });
     fs.writeFileSync(path.join(wsDir, 'STATE.md'), '# State\n**Status:** In progress\n**Current Phase:** 1\n');
     fs.writeFileSync(path.join(wsDir, 'ROADMAP.md'), '## Roadmap v1.0: Alpha\n### Phase 1: Setup\n');
-    fs.writeFileSync(path.join(tmpDir, '.claude/.gsdt-planning', 'active-workstream'), 'alpha\n');
+    fs.writeFileSync(path.join(tmpDir, '.gsdt-planning', 'active-workstream'), 'alpha\n');
   });
 
   after(() => cleanup(tmpDir));
@@ -43,20 +43,20 @@ describe('planningDir workstream awareness via env var', () => {
     assert.ok(data.status || data.current_phase !== undefined, 'should return state data');
   });
 
-  test('state json reads from flat .claude/.gsdt-planning when no workstream set', () => {
+  test('state json reads from flat .gsdt-planning when no workstream set', () => {
     // Clear active-workstream so no auto-detection
-    try { fs.unlinkSync(path.join(tmpDir, '.claude/.gsdt-planning', 'active-workstream')); } catch {}
+    try { fs.unlinkSync(path.join(tmpDir, '.gsdt-planning', 'active-workstream')); } catch {}
     const result = runGsdTools(['state', 'json', '--raw'], tmpDir, { GSD_WORKSTREAM: '' });
-    // Should fail or return empty state since flat .claude/.gsdt-planning/ has no STATE.md
+    // Should fail or return empty state since flat .gsdt-planning/ has no STATE.md
     assert.ok(!result.success || result.output.includes('not found') || result.output === '{}',
-      'should read from flat .claude/.gsdt-planning/');
+      'should read from flat .gsdt-planning/');
     // Restore
-    fs.writeFileSync(path.join(tmpDir, '.claude/.gsdt-planning', 'active-workstream'), 'alpha\n');
+    fs.writeFileSync(path.join(tmpDir, '.gsdt-planning', 'active-workstream'), 'alpha\n');
   });
 
   test('--ws flag overrides GSD_WORKSTREAM env var', () => {
     // Create a second workstream
-    const betaDir = path.join(tmpDir, '.claude/.gsdt-planning', 'workstreams', 'beta');
+    const betaDir = path.join(tmpDir, '.gsdt-planning', 'workstreams', 'beta');
     fs.mkdirSync(path.join(betaDir, 'phases'), { recursive: true });
     fs.writeFileSync(path.join(betaDir, 'STATE.md'), '# State\n**Status:** Beta active\n');
 
@@ -72,7 +72,7 @@ describe('workstream create', () => {
 
   before(() => {
     tmpDir = createTempProject();
-    fs.writeFileSync(path.join(tmpDir, '.claude/.gsdt-planning', 'PROJECT.md'), '# Project\n');
+    fs.writeFileSync(path.join(tmpDir, '.gsdt-planning', 'PROJECT.md'), '# Project\n');
   });
 
   after(() => cleanup(tmpDir));
@@ -83,12 +83,12 @@ describe('workstream create', () => {
     const data = JSON.parse(result.output);
     assert.strictEqual(data.created, true);
     assert.strictEqual(data.workstream, 'feature-x');
-    assert.ok(fs.existsSync(path.join(tmpDir, '.claude/.gsdt-planning', 'workstreams', 'feature-x', 'STATE.md')));
-    assert.ok(fs.existsSync(path.join(tmpDir, '.claude/.gsdt-planning', 'workstreams', 'feature-x', 'phases')));
+    assert.ok(fs.existsSync(path.join(tmpDir, '.gsdt-planning', 'workstreams', 'feature-x', 'STATE.md')));
+    assert.ok(fs.existsSync(path.join(tmpDir, '.gsdt-planning', 'workstreams', 'feature-x', 'phases')));
   });
 
   test('sets created workstream as active', () => {
-    const active = fs.readFileSync(path.join(tmpDir, '.claude/.gsdt-planning', 'active-workstream'), 'utf-8').trim();
+    const active = fs.readFileSync(path.join(tmpDir, '.gsdt-planning', 'active-workstream'), 'utf-8').trim();
     assert.strictEqual(active, 'feature-x');
   });
 
@@ -114,10 +114,10 @@ describe('workstream create with migration', () => {
 
   before(() => {
     tmpDir = createTempProject();
-    fs.writeFileSync(path.join(tmpDir, '.claude/.gsdt-planning', 'PROJECT.md'), '# Project\n');
+    fs.writeFileSync(path.join(tmpDir, '.gsdt-planning', 'PROJECT.md'), '# Project\n');
     // Existing flat-mode work
-    fs.writeFileSync(path.join(tmpDir, '.claude/.gsdt-planning', 'ROADMAP.md'), '## Roadmap v1.0: Existing\n### Phase 1: A\n');
-    fs.writeFileSync(path.join(tmpDir, '.claude/.gsdt-planning', 'STATE.md'), '# State\n**Status:** In progress\n');
+    fs.writeFileSync(path.join(tmpDir, '.gsdt-planning', 'ROADMAP.md'), '## Roadmap v1.0: Existing\n### Phase 1: A\n');
+    fs.writeFileSync(path.join(tmpDir, '.gsdt-planning', 'STATE.md'), '# State\n**Status:** In progress\n');
   });
 
   after(() => cleanup(tmpDir));
@@ -130,10 +130,10 @@ describe('workstream create with migration', () => {
     assert.ok(data.migration, 'should include migration info');
     assert.strictEqual(data.migration.workstream, 'existing-work');
     // Old flat files moved to workstream dir
-    assert.ok(fs.existsSync(path.join(tmpDir, '.claude/.gsdt-planning', 'workstreams', 'existing-work', 'ROADMAP.md')));
-    assert.ok(fs.existsSync(path.join(tmpDir, '.claude/.gsdt-planning', 'workstreams', 'existing-work', 'STATE.md')));
+    assert.ok(fs.existsSync(path.join(tmpDir, '.gsdt-planning', 'workstreams', 'existing-work', 'ROADMAP.md')));
+    assert.ok(fs.existsSync(path.join(tmpDir, '.gsdt-planning', 'workstreams', 'existing-work', 'STATE.md')));
     // Shared files stay
-    assert.ok(fs.existsSync(path.join(tmpDir, '.claude/.gsdt-planning', 'PROJECT.md')));
+    assert.ok(fs.existsSync(path.join(tmpDir, '.gsdt-planning', 'PROJECT.md')));
   });
 });
 
@@ -144,7 +144,7 @@ describe('workstream list', () => {
     tmpDir = createTempProject();
     // Create two workstreams
     for (const ws of ['alpha', 'beta']) {
-      const wsDir = path.join(tmpDir, '.claude/.gsdt-planning', 'workstreams', ws);
+      const wsDir = path.join(tmpDir, '.gsdt-planning', 'workstreams', ws);
       fs.mkdirSync(path.join(wsDir, 'phases'), { recursive: true });
       fs.writeFileSync(path.join(wsDir, 'STATE.md'), `# State\n**Status:** Working on ${ws}\n**Current Phase:** 1\n`);
     }
@@ -187,7 +187,7 @@ describe('workstream status', () => {
 
   before(() => {
     tmpDir = createTempProject();
-    const wsDir = path.join(tmpDir, '.claude/.gsdt-planning', 'workstreams', 'alpha');
+    const wsDir = path.join(tmpDir, '.gsdt-planning', 'workstreams', 'alpha');
     fs.mkdirSync(path.join(wsDir, 'phases', '01-setup'), { recursive: true });
     fs.writeFileSync(path.join(wsDir, 'phases', '01-setup', 'PLAN.md'), '# Plan\n');
     fs.writeFileSync(path.join(wsDir, 'STATE.md'), '# State\n**Status:** In progress\n**Current Phase:** 1 — Setup\n');
@@ -220,10 +220,10 @@ describe('workstream complete', () => {
 
   before(() => {
     tmpDir = createTempProject();
-    const wsDir = path.join(tmpDir, '.claude/.gsdt-planning', 'workstreams', 'done-ws');
+    const wsDir = path.join(tmpDir, '.gsdt-planning', 'workstreams', 'done-ws');
     fs.mkdirSync(path.join(wsDir, 'phases'), { recursive: true });
     fs.writeFileSync(path.join(wsDir, 'STATE.md'), '# State\n**Status:** Complete\n');
-    fs.writeFileSync(path.join(tmpDir, '.claude/.gsdt-planning', 'active-workstream'), 'done-ws\n');
+    fs.writeFileSync(path.join(tmpDir, '.gsdt-planning', 'active-workstream'), 'done-ws\n');
   });
 
   after(() => cleanup(tmpDir));
@@ -233,13 +233,13 @@ describe('workstream complete', () => {
     assert.ok(result.success, `complete failed: ${result.error}`);
     const data = JSON.parse(result.output);
     assert.strictEqual(data.completed, true);
-    assert.ok(data.archived_to.startsWith('.claude/.gsdt-planning/milestones/ws-done-ws'));
+    assert.ok(data.archived_to.startsWith('.gsdt-planning/milestones/ws-done-ws'));
     // Workstream dir should be gone
-    assert.ok(!fs.existsSync(path.join(tmpDir, '.claude/.gsdt-planning', 'workstreams', 'done-ws')));
+    assert.ok(!fs.existsSync(path.join(tmpDir, '.gsdt-planning', 'workstreams', 'done-ws')));
   });
 
   test('clears active-workstream when completing active one', () => {
-    assert.ok(!fs.existsSync(path.join(tmpDir, '.claude/.gsdt-planning', 'active-workstream')));
+    assert.ok(!fs.existsSync(path.join(tmpDir, '.gsdt-planning', 'active-workstream')));
   });
 });
 
@@ -249,7 +249,7 @@ describe('workstream set/get', () => {
   before(() => {
     tmpDir = createTempProject();
     for (const ws of ['ws-a', 'ws-b']) {
-      const wsDir = path.join(tmpDir, '.claude/.gsdt-planning', 'workstreams', ws);
+      const wsDir = path.join(tmpDir, '.gsdt-planning', 'workstreams', ws);
       fs.mkdirSync(path.join(wsDir, 'phases'), { recursive: true });
       fs.writeFileSync(path.join(wsDir, 'STATE.md'), '# State\n');
     }
@@ -279,14 +279,14 @@ describe('getOtherActiveWorkstreams', () => {
     tmpDir = createTempProject();
     // Create 3 workstreams: alpha (active), beta (active), gamma (completed)
     for (const ws of ['alpha', 'beta', 'gamma']) {
-      const wsDir = path.join(tmpDir, '.claude/.gsdt-planning', 'workstreams', ws);
+      const wsDir = path.join(tmpDir, '.gsdt-planning', 'workstreams', ws);
       fs.mkdirSync(path.join(wsDir, 'phases'), { recursive: true });
     }
-    fs.writeFileSync(path.join(tmpDir, '.claude/.gsdt-planning', 'workstreams', 'alpha', 'STATE.md'),
+    fs.writeFileSync(path.join(tmpDir, '.gsdt-planning', 'workstreams', 'alpha', 'STATE.md'),
       '# State\n**Status:** In progress\n**Current Phase:** 3\n');
-    fs.writeFileSync(path.join(tmpDir, '.claude/.gsdt-planning', 'workstreams', 'beta', 'STATE.md'),
+    fs.writeFileSync(path.join(tmpDir, '.gsdt-planning', 'workstreams', 'beta', 'STATE.md'),
       '# State\n**Status:** In progress\n**Current Phase:** 5\n');
-    fs.writeFileSync(path.join(tmpDir, '.claude/.gsdt-planning', 'workstreams', 'gamma', 'STATE.md'),
+    fs.writeFileSync(path.join(tmpDir, '.gsdt-planning', 'workstreams', 'gamma', 'STATE.md'),
       '# State\n**Status:** Milestone complete\n');
   });
 
@@ -308,13 +308,13 @@ describe('workstream progress', () => {
 
   before(() => {
     tmpDir = createTempProject();
-    const wsDir = path.join(tmpDir, '.claude/.gsdt-planning', 'workstreams', 'feature');
+    const wsDir = path.join(tmpDir, '.gsdt-planning', 'workstreams', 'feature');
     fs.mkdirSync(path.join(wsDir, 'phases', '01-init'), { recursive: true });
     fs.writeFileSync(path.join(wsDir, 'phases', '01-init', 'PLAN.md'), '# Plan\n');
     fs.writeFileSync(path.join(wsDir, 'phases', '01-init', 'SUMMARY.md'), '# Summary\n');
     fs.writeFileSync(path.join(wsDir, 'STATE.md'), '# State\n**Status:** In progress\n**Current Phase:** 2\n');
     fs.writeFileSync(path.join(wsDir, 'ROADMAP.md'), '## Roadmap\n### Phase 1: Init\n### Phase 2: Build\n');
-    fs.writeFileSync(path.join(tmpDir, '.claude/.gsdt-planning', 'active-workstream'), 'feature\n');
+    fs.writeFileSync(path.join(tmpDir, '.gsdt-planning', 'active-workstream'), 'feature\n');
   });
 
   after(() => cleanup(tmpDir));
@@ -339,7 +339,7 @@ describe('gsdt-tools --ws flag integration', () => {
   before(() => {
     tmpDir = createTempProject();
     // Create a workstream with roadmap
-    const wsDir = path.join(tmpDir, '.claude/.gsdt-planning', 'workstreams', 'test-ws');
+    const wsDir = path.join(tmpDir, '.gsdt-planning', 'workstreams', 'test-ws');
     fs.mkdirSync(path.join(wsDir, 'phases', '01-setup'), { recursive: true });
     fs.writeFileSync(path.join(wsDir, 'ROADMAP.md'),
       '## Roadmap v1.0: Test\n### Phase 1: Setup\nDo setup things.\n');
@@ -372,8 +372,8 @@ describe('path traversal rejection', () => {
 
   before(() => {
     tmpDir = createTempProject();
-    fs.writeFileSync(path.join(tmpDir, '.claude/.gsdt-planning', 'PROJECT.md'), '# Project\n');
-    const wsDir = path.join(tmpDir, '.claude/.gsdt-planning', 'workstreams', 'legit');
+    fs.writeFileSync(path.join(tmpDir, '.gsdt-planning', 'PROJECT.md'), '# Project\n');
+    const wsDir = path.join(tmpDir, '.gsdt-planning', 'workstreams', 'legit');
     fs.mkdirSync(path.join(wsDir, 'phases'), { recursive: true });
     fs.writeFileSync(path.join(wsDir, 'STATE.md'), '# State\n');
   });
@@ -428,7 +428,7 @@ describe('path traversal rejection', () => {
     for (const name of maliciousNames) {
       test(`rejects poisoned file containing ${name}`, () => {
         // Write malicious name directly to the active-workstream file
-        fs.writeFileSync(path.join(tmpDir, '.claude/.gsdt-planning', 'active-workstream'), name + '\n');
+        fs.writeFileSync(path.join(tmpDir, '.gsdt-planning', 'active-workstream'), name + '\n');
         const result = runGsdTools(['workstream', 'get'], tmpDir, { GSD_WORKSTREAM: '' });
         assert.ok(result.success, 'get should succeed');
         const data = JSON.parse(result.output);
@@ -439,7 +439,7 @@ describe('path traversal rejection', () => {
 
     // Cleanup: remove poisoned file
     test('cleanup: remove active-workstream file', () => {
-      try { fs.unlinkSync(path.join(tmpDir, '.claude/.gsdt-planning', 'active-workstream')); } catch {}
+      try { fs.unlinkSync(path.join(tmpDir, '.gsdt-planning', 'active-workstream')); } catch {}
     });
   });
 

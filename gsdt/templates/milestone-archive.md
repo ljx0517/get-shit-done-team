@@ -1,6 +1,6 @@
 # Milestone Archive Template
 
-This template is used by the complete-milestone workflow to create archive files in `.claude/.gsdt-planning/milestones/`.
+This template is used by the complete-milestone workflow to create archive files in `.gsdt-planning/milestones/`.
 
 ---
 
@@ -89,7 +89,7 @@ Plans:
 
 ---
 
-_For current project status, see .claude/.gsdt-planning/ROADMAP.md_
+_For current project status, see .gsdt-planning/ROADMAP.md_
 
 ---
 
@@ -112,8 +112,8 @@ _For current project status, see .claude/.gsdt-planning/ROADMAP.md_
 
 **Archive location:**
 
-- Save to `.claude/.gsdt-planning/milestones/v{VERSION}-{NAME}.md`
-- Example: `.claude/.gsdt-planning/milestones/v1.0-mvp.md`
+- Save to `.gsdt-planning/milestones/v{VERSION}-{NAME}.md`
+- Example: `.gsdt-planning/milestones/v1.0-mvp.md`
 
 **After archiving:**
 

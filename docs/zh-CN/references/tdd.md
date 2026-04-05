@@ -50,8 +50,8 @@ Output: [可工作的、已测试的功能]
 </objective>
 
 <context>
-@.claude/.gsdt-planning/PROJECT.md
-@.claude/.gsdt-planning/ROADMAP.md
+@.gsdt-planning/PROJECT.md
+@.gsdt-planning/ROADMAP.md
 @relevant/source/files.ts
 </context>
 

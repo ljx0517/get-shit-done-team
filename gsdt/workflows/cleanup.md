@@ -1,14 +1,14 @@
 <purpose>
 
-Archive accumulated phase directories from completed milestones into `.claude/.gsdt-planning/milestones/v{X.Y}-phases/`. Identifies which phases belong to each completed milestone, shows a dry-run summary, and moves directories on confirmation.
+Archive accumulated phase directories from completed milestones into `.gsdt-planning/milestones/v{X.Y}-phases/`. Identifies which phases belong to each completed milestone, shows a dry-run summary, and moves directories on confirmation.
 
 </purpose>
 
 <required_reading>
 
-1. `.claude/.gsdt-planning/MILESTONES.md`
-2. `.claude/.gsdt-planning/milestones/` directory listing
-3. `.claude/.gsdt-planning/phases/` directory listing
+1. `.gsdt-planning/MILESTONES.md`
+2. `.gsdt-planning/milestones/` directory listing
+3. `.gsdt-planning/phases/` directory listing
 
 </required_reading>
 
@@ -16,10 +16,10 @@ Archive accumulated phase directories from completed milestones into `.claude/.g
 
 <step name="identify_completed_milestones">
 
-Read `.claude/.gsdt-planning/MILESTONES.md` to identify completed milestones and their versions.
+Read `.gsdt-planning/MILESTONES.md` to identify completed milestones and their versions.
 
 ```bash
-cat .claude/.gsdt-planning/MILESTONES.md
+cat .gsdt-planning/MILESTONES.md
 ```
 
 Extract each milestone version (e.g., v1.0, v1.1, v2.0).
@@ -27,7 +27,7 @@ Extract each milestone version (e.g., v1.0, v1.1, v2.0).
 Check which milestone archive dirs already exist:
 
 ```bash
-ls -d .claude/.gsdt-planning/milestones/v*-phases 2>/dev/null || true
+ls -d .gsdt-planning/milestones/v*-phases 2>/dev/null || true
 ```
 
 Filter to milestones that do NOT already have a `-phases` archive directory.
@@ -47,18 +47,18 @@ Stop here.
 For each completed milestone without a `-phases` archive, read the archived ROADMAP snapshot to determine which phases belong to it:
 
 ```bash
-cat .claude/.gsdt-planning/milestones/v{X.Y}-ROADMAP.md
+cat .gsdt-planning/milestones/v{X.Y}-ROADMAP.md
 ```
 
 Extract phase numbers and names from the archived roadmap (e.g., Phase 1: Foundation, Phase 2: Auth).
 
-Check which of those phase directories still exist in `.claude/.gsdt-planning/phases/`:
+Check which of those phase directories still exist in `.gsdt-planning/phases/`:
 
 ```bash
-ls -d .claude/.gsdt-planning/phases/*/ 2>/dev/null || true
+ls -d .gsdt-planning/phases/*/ 2>/dev/null || true
 ```
 
-Match phase directories to milestone membership. Only include directories that still exist in `.claude/.gsdt-planning/phases/`.
+Match phase directories to milestone membership. Only include directories that still exist in `.gsdt-planning/phases/`.
 
 </step>
 
@@ -75,14 +75,14 @@ These phase directories will be archived:
 - 02-auth/
 - 03-core-features/
 
-Destination: .claude/.gsdt-planning/milestones/v{X.Y}-phases/
+Destination: .gsdt-planning/milestones/v{X.Y}-phases/
 
 ### v{X.Z} — {Milestone Name}
 These phase directories will be archived:
 - 04-security/
 - 05-hardening/
 
-Destination: .claude/.gsdt-planning/milestones/v{X.Z}-phases/
+Destination: .gsdt-planning/milestones/v{X.Z}-phases/
 ```
 
 If no phase directories remain to archive (all already moved or deleted):
@@ -104,13 +104,13 @@ If "Cancel": Stop.
 For each milestone, move phase directories:
 
 ```bash
-mkdir -p .claude/.gsdt-planning/milestones/v{X.Y}-phases
+mkdir -p .gsdt-planning/milestones/v{X.Y}-phases
 ```
 
 For each phase directory belonging to this milestone:
 
 ```bash
-mv .claude/.gsdt-planning/phases/{dir} .claude/.gsdt-planning/milestones/v{X.Y}-phases/
+mv .gsdt-planning/phases/{dir} .gsdt-planning/milestones/v{X.Y}-phases/
 ```
 
 Repeat for all milestones in the cleanup set.
@@ -122,7 +122,7 @@ Repeat for all milestones in the cleanup set.
 Commit the changes:
 
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "chore: archive phase directories from completed milestones" --files .claude/.gsdt-planning/milestones/ .claude/.gsdt-planning/phases/
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "chore: archive phase directories from completed milestones" --files .gsdt-planning/milestones/ .gsdt-planning/phases/
 ```
 
 </step>
@@ -132,9 +132,9 @@ node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "chore: archive phase direct
 ```
 Archived:
 {For each milestone}
-- v{X.Y}: {N} phase directories → .claude/.gsdt-planning/milestones/v{X.Y}-phases/
+- v{X.Y}: {N} phase directories → .gsdt-planning/milestones/v{X.Y}-phases/
 
-.claude/.gsdt-planning/phases/ cleaned up.
+.gsdt-planning/phases/ cleaned up.
 ```
 
 </step>
@@ -146,7 +146,7 @@ Archived:
 - [ ] All completed milestones without existing phase archives identified
 - [ ] Phase membership determined from archived ROADMAP snapshots
 - [ ] Dry-run summary shown and user confirmed
-- [ ] Phase directories moved to `.claude/.gsdt-planning/milestones/v{X.Y}-phases/`
+- [ ] Phase directories moved to `.gsdt-planning/milestones/v{X.Y}-phases/`
 - [ ] Changes committed
 
 </success_criteria>

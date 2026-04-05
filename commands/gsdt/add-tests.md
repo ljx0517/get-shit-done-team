@@ -31,8 +31,8 @@ Output: Test files committed with message `test(phase-{N}): add unit and E2E tes
 <context>
 Phase: $ARGUMENTS
 
-@.claude/.gsdt-planning/STATE.md
-@.claude/.gsdt-planning/ROADMAP.md
+@.gsdt-planning/STATE.md
+@.gsdt-planning/ROADMAP.md
 </context>
 
 <process>

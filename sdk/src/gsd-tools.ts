@@ -1,7 +1,7 @@
 /**
  * GSD Tools Bridge — shells out to `gsdt-tools.cjs` for state management.
  *
- * All `.claude/.gsdt-planning/` state operations go through gsdt-tools.cjs rather than
+ * All `.gsdt-planning/` state operations go through gsdt-tools.cjs rather than
  * reimplementing 12K+ lines of logic.
  */
 

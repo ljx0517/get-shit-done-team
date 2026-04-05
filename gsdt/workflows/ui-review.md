@@ -41,9 +41,7 @@ UI_AUDITOR_MODEL=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" resolve-model gs
 
 Display banner:
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► UI AUDIT — PHASE {N}: {name}
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSD ► UI AUDIT — PHASE {N}: {name} ──
 ```
 
 ## 1. Session Management
@@ -156,10 +154,7 @@ Task(
 Display score summary:
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► UI AUDIT COMPLETE ✓
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
+── GSD ► UI AUDIT COMPLETE ✓ ──
 **Phase {N}: {Name}** — Overall: {score}/24
 
 | Pillar | Score |

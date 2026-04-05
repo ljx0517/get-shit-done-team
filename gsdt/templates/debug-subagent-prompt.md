@@ -27,7 +27,7 @@ goal: {find_root_cause_only | find_and_fix}
 </mode>
 
 <debug_file>
-Create: .claude/.gsdt-planning/debug/{slug}.md
+Create: .gsdt-planning/debug/{slug}.md
 </debug_file>
 ```
 
@@ -77,7 +77,7 @@ Continue debugging {slug}. Evidence is in the debug file.
 </objective>
 
 <prior_state>
-Debug file: @.claude/.gsdt-planning/debug/{slug}.md
+Debug file: @.gsdt-planning/debug/{slug}.md
 </prior_state>
 
 <checkpoint_response>

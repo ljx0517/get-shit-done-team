@@ -42,7 +42,7 @@ describe('getDirName (Copilot)', () => {
 
   test('does not break existing runtimes', () => {
     assert.strictEqual(getDirName('claude'), '.claude');
-    assert.strictEqual(getDirName('opencode'), '.opencode');
+    assert.strictEqual(getDirName('vibeAgentTeam'), '.opencode');
     assert.strictEqual(getDirName('gemini'), '.gemini');
     assert.strictEqual(getDirName('codex'), '.codex');
   });
@@ -106,7 +106,7 @@ describe('getConfigDirFromHome (Copilot)', () => {
   });
 
   test('does not break existing runtimes', () => {
-    assert.strictEqual(getConfigDirFromHome('opencode', true), "'.config', 'opencode'");
+    assert.strictEqual(getConfigDirFromHome('vibeAgentTeam', true), "'.config', 'opencode'");
     assert.strictEqual(getConfigDirFromHome('claude', true), "'.claude'");
     assert.strictEqual(getConfigDirFromHome('gemini', true), "'.gemini'");
     assert.strictEqual(getConfigDirFromHome('codex', true), "'.codex'");
@@ -154,12 +154,15 @@ describe('Source code integration (Copilot)', () => {
     assert.ok(src.includes('!isCodex && !isCopilot'), 'hooks skip check includes copilot');
   });
 
-  test('--both flag unchanged (still claude + opencode only)', () => {
-    // Verify the else-if-hasBoth maps to ['claude', 'opencode'] — NOT including copilot
+  test('--both flag unchanged (still claude + Vibe Agent Team only)', () => {
+    // Verify the else-if-hasBoth maps to ['claude', RUNTIME_VIBE_AGENT_TEAM] — NOT including copilot
     const bothUsage = src.indexOf('} else if (hasBoth)');
     assert.ok(bothUsage > 0, 'hasBoth usage exists');
-    const bothSection = src.substring(bothUsage, bothUsage + 200);
-    assert.ok(bothSection.includes("['claude', 'opencode']"), '--both maps to claude+opencode');
+    const bothSection = src.substring(bothUsage, bothUsage + 220);
+    assert.ok(
+      bothSection.includes("['claude', RUNTIME_VIBE_AGENT_TEAM]"),
+      '--both maps to claude + Vibe Agent Team runtime'
+    );
     assert.ok(!bothSection.includes('copilot'), '--both does NOT include copilot');
   });
 });

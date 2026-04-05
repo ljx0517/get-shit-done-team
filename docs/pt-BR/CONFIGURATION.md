@@ -1,6 +1,6 @@
 # Referência de Configuração do GSD
 
-Configurações do projeto ficam em `.claude/.gsdt-planning/config.json`.  
+Configurações do projeto ficam em `.gsdt-planning/config.json`.  
 Esta versão resume os parâmetros principais em Português. Para schema completo, veja [inglês](../CONFIGURATION.md).
 
 ---
@@ -42,7 +42,7 @@ Esta versão resume os parâmetros principais em Português. Para schema complet
 
 | Chave | Padrão | Descrição |
 |------|--------|-----------|
-| `planning.commit_docs` | `true` | Comitar `.claude/.gsdt-planning/` no git |
+| `planning.commit_docs` | `true` | Comitar `.gsdt-planning/` no git |
 | `planning.search_gitignored` | `false` | Incluir arquivos ignorados em buscas amplas |
 
 ## Workflow toggles

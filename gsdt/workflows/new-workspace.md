@@ -1,5 +1,5 @@
 <purpose>
-Create an isolated workspace directory with git repo copies (worktrees or clones) and an independent `.claude/.gsdt-planning/` directory. Supports multi-repo orchestration and single-repo feature branch isolation.
+Create an isolated workspace directory with git repo copies (worktrees or clones) and an independent `.gsdt-planning/` directory. Supports multi-repo orchestration and single-repo feature branch isolation.
 </purpose>
 
 <required_reading>
@@ -182,10 +182,10 @@ Strategy: $STRATEGY
 [Add context about what this workspace is for]
 ```
 
-## 8. Initialize .claude/.gsdt-planning/
+## 8. Initialize .gsdt-planning/
 
 ```bash
-mkdir -p "$TARGET_PATH/.claude/.gsdt-planning"
+mkdir -p "$TARGET_PATH/.gsdt-planning"
 ```
 
 ## 9. Report and Next Steps
@@ -232,6 +232,6 @@ Use AskUserQuestion:
 - [ ] Workspace directory created at target path
 - [ ] All specified repos copied (worktree or clone) into workspace
 - [ ] WORKSPACE.md manifest written with correct repo table
-- [ ] `.claude/.gsdt-planning/` directory initialized at workspace root
+- [ ] `.gsdt-planning/` directory initialized at workspace root
 - [ ] User informed of workspace path and next steps
 </success_criteria>

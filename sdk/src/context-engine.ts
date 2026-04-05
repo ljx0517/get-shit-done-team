@@ -1,5 +1,5 @@
 /**
- * Context engine — resolves which .claude/.gsdt-planning/ state files exist per phase type.
+ * Context engine — resolves which .gsdt-planning/ state files exist per phase type.
  *
  * Different phases need different subsets of context files. The execute phase
  * only needs STATE.md + config.json (minimal). Research needs STATE.md +

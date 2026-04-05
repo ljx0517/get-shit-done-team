@@ -23,7 +23,7 @@ doesn't belong to any specific phase.
 
 List all threads:
 ```bash
-ls .claude/.gsdt-planning/threads/*.md 2>/dev/null
+ls .gsdt-planning/threads/*.md 2>/dev/null
 ```
 
 For each thread, read the first few lines to show title and status:
@@ -48,7 +48,7 @@ No threads found. Create one with: /gsdt:thread <description>
 
 Resume the thread — load its context into the current session:
 ```bash
-cat ".claude/.gsdt-planning/threads/${THREAD_NAME}.md"
+cat ".gsdt-planning/threads/${THREAD_NAME}.md"
 ```
 
 Display the thread content and ask what the user wants to work on next.
@@ -67,12 +67,12 @@ Create a new thread:
 
 2. Create the threads directory if needed:
    ```bash
-   mkdir -p .claude/.gsdt-planning/threads
+   mkdir -p .gsdt-planning/threads
    ```
 
 3. Write the thread file:
    ```bash
-   cat > ".claude/.gsdt-planning/threads/${SLUG}.md" << 'EOF'
+   cat > ".gsdt-planning/threads/${SLUG}.md" << 'EOF'
    # Thread: {description}
 
    ## Status: OPEN
@@ -101,7 +101,7 @@ Create a new thread:
 
 5. Commit:
    ```bash
-   node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: create thread — ${ARGUMENTS}" --files ".claude/.gsdt-planning/threads/${SLUG}.md"
+   node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: create thread — ${ARGUMENTS}" --files ".gsdt-planning/threads/${SLUG}.md"
    ```
 
 6. Report:
@@ -109,7 +109,7 @@ Create a new thread:
    ## 🧵 Thread Created
 
    Thread: {slug}
-   File: .claude/.gsdt-planning/threads/{slug}.md
+   File: .gsdt-planning/threads/{slug}.md
 
    Resume anytime with: /gsdt:thread {slug}
    ```
@@ -123,5 +123,5 @@ Create a new thread:
 - The value is in Context and Next Steps — a cold-start session can pick up immediately
 - Threads can be promoted to phases or backlog items when they mature:
   /gsdt:add-phase or /gsdt:add-backlog with context from the thread
-- Thread files live in .claude/.gsdt-planning/threads/ — no collision with phases or other GSD structures
+- Thread files live in .gsdt-planning/threads/ — no collision with phases or other GSD structures
 </notes>

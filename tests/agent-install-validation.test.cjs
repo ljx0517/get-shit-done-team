@@ -52,7 +52,7 @@ describe('init commands: agents_installed field (#1371)', () => {
 
   test('init execute-phase includes agents_installed=true when agents exist', () => {
     // Create phase dir for init
-    const phaseDir = path.join(tmpDir, '.claude/.gsdt-planning', 'phases', '01-setup');
+    const phaseDir = path.join(tmpDir, '.gsdt-planning', 'phases', '01-setup');
     fs.mkdirSync(phaseDir, { recursive: true });
 
     // Create agents dir as sibling of gsdt/ (the installed layout)
@@ -74,7 +74,7 @@ describe('init commands: agents_installed field (#1371)', () => {
   });
 
   test('init plan-phase includes agents_installed=true when agents exist', () => {
-    const phaseDir = path.join(tmpDir, '.claude/.gsdt-planning', 'phases', '01-setup');
+    const phaseDir = path.join(tmpDir, '.gsdt-planning', 'phases', '01-setup');
     fs.mkdirSync(phaseDir, { recursive: true });
 
     const result = runGsdTools('init plan-phase 1 --raw', tmpDir);
@@ -87,7 +87,7 @@ describe('init commands: agents_installed field (#1371)', () => {
   });
 
   test('init execute-phase includes missing_agents list when agents are missing', () => {
-    const phaseDir = path.join(tmpDir, '.claude/.gsdt-planning', 'phases', '01-setup');
+    const phaseDir = path.join(tmpDir, '.gsdt-planning', 'phases', '01-setup');
     fs.mkdirSync(phaseDir, { recursive: true });
 
     const result = runGsdTools('init execute-phase 1 --raw', tmpDir);
@@ -117,26 +117,26 @@ describe('validate health: agent installation check W010 (#1371)', () => {
     tmpDir = createTempProject();
     // Write minimal project files so health check doesn't fail on E001-E005
     fs.writeFileSync(
-      path.join(tmpDir, '.claude/.gsdt-planning', 'PROJECT.md'),
+      path.join(tmpDir, '.gsdt-planning', 'PROJECT.md'),
       '# Project\n\n## What This Is\nTest\n\n## Core Value\nTest\n\n## Requirements\nTest\n'
     );
     fs.writeFileSync(
-      path.join(tmpDir, '.claude/.gsdt-planning', 'ROADMAP.md'),
+      path.join(tmpDir, '.gsdt-planning', 'ROADMAP.md'),
       '# Roadmap\n\n### Phase 1: Setup\n'
     );
     fs.writeFileSync(
-      path.join(tmpDir, '.claude/.gsdt-planning', 'STATE.md'),
+      path.join(tmpDir, '.gsdt-planning', 'STATE.md'),
       '# Session State\n\n## Current Position\n\nPhase: 1\n'
     );
     fs.writeFileSync(
-      path.join(tmpDir, '.claude/.gsdt-planning', 'config.json'),
+      path.join(tmpDir, '.gsdt-planning', 'config.json'),
       JSON.stringify({
         model_profile: 'balanced',
         commit_docs: true,
         workflow: { nyquist_validation: true },
       }, null, 2)
     );
-    fs.mkdirSync(path.join(tmpDir, '.claude/.gsdt-planning', 'phases', '01-setup'), { recursive: true });
+    fs.mkdirSync(path.join(tmpDir, '.gsdt-planning', 'phases', '01-setup'), { recursive: true });
   });
 
   afterEach(() => {

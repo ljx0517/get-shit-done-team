@@ -9,7 +9,7 @@
  * import { GSD } from '@gsdt/sdk';
  *
  * const gsd = new GSD({ projectDir: '/path/to/project' });
- * const result = await gsd.executePlan('.claude/.gsdt-planning/phases/01-auth/01-auth-01-PLAN.md');
+ * const result = await gsd.executePlan('.gsdt-planning/phases/01-auth/01-auth-01-PLAN.md');
  *
  * if (result.success) {
  *   console.log(`Plan completed in ${result.durationMs}ms, cost: $${result.totalCostUsd}`);

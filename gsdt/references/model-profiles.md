@@ -39,11 +39,11 @@ Model profiles control which Claude model each GSD agent uses. This allows balan
 
 **inherit** - Follow the current session model
 - All agents resolve to `inherit`
-- Best when you switch models interactively (for example OpenCode `/model`)
+- Best when you switch models interactively (for example Vibe Agent Team / `/model`)
 - **Required when using non-Anthropic providers** (OpenRouter, local models, etc.) — otherwise GSD may call Anthropic models directly, incurring unexpected costs
 - Use when: you want GSD to follow your currently selected runtime model
 
-## Using Non-Claude Runtimes (Codex, OpenCode, Gemini CLI)
+## Using Non-Claude Runtimes (Codex, Vibe Agent Team, Gemini CLI)
 
 When installed for a non-Claude runtime, the GSD installer sets `resolve_model_ids: "omit"` in `~/.gsdt/defaults.json`. This returns an empty model parameter for all agents, so each agent uses the runtime's default model. No manual setup is needed.
 
@@ -72,7 +72,7 @@ If you're using Claude Code with OpenRouter, a local model, or any non-Anthropic
 /gsdt:settings
 # → Select "Inherit" for model profile
 
-# Or manually in .claude/.gsdt-planning/config.json
+# Or manually in .gsdt-planning/config.json
 {
   "model_profile": "inherit"
 }
@@ -85,7 +85,7 @@ Without `inherit`, GSD's default `balanced` profile spawns specific Anthropic mo
 Orchestrators resolve model before spawning:
 
 ```
-1. Read .claude/.gsdt-planning/config.json
+1. Read .gsdt-planning/config.json
 2. Check model_overrides for agent-specific override
 3. If no override, look up agent in profile table
 4. Pass model parameter to Task call
@@ -111,7 +111,7 @@ Overrides take precedence over the profile. Valid values: `opus`, `sonnet`, `hai
 
 Runtime: `/gsdt:set-profile <profile>`
 
-Per-project default: Set in `.claude/.gsdt-planning/config.json`:
+Per-project default: Set in `.gsdt-planning/config.json`:
 ```json
 {
   "model_profile": "balanced"
@@ -136,4 +136,4 @@ Read-only exploration and pattern extraction. No reasoning required, just struct
 Claude Code's `"opus"` alias maps to a specific model version. Organizations may block older opus versions while allowing newer ones. GSD returns `"inherit"` for opus-tier agents, causing them to use whatever opus version the user has configured in their session. This avoids version conflicts and silent fallbacks to Sonnet.
 
 **Why `inherit` profile?**
-Some runtimes (including OpenCode) let users switch models at runtime (`/model`). The `inherit` profile keeps all GSD subagents aligned to that live selection.
+Some runtimes (including the Vibe Agent Team / opencode.json layout) let users switch models at runtime (`/model`). The `inherit` profile keeps all GSD subagents aligned to that live selection.

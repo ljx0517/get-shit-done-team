@@ -20,8 +20,8 @@ import { existsSync } from 'node:fs';
 /** Default install directory relative to project root. */
 export const DEFAULT_INSTALL_DIR = '.claude/gsdt';
 
-/** Default planning directory relative to project root. */
-export const DEFAULT_PLANNING_DIR = '.claude/.gsdt-planning';
+/** Default planning directory relative to project root (project `working_dir`, not under `.claude/`). */
+export const DEFAULT_PLANNING_DIR = '.gsdt-planning';
 
 /** Global fallback base directory (not ~/.claude to avoid conflicts with GSD-1). */
 const GLOBAL_FALLBACK_BASE = '.gsdt';

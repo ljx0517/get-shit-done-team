@@ -21,7 +21,7 @@
 
 ## 시스템 개요
 
-GSD는 사용자와 AI 코딩 에이전트(Claude Code, Gemini CLI, OpenCode, Codex, Copilot, Antigravity) 사이에 위치하는 **메타 프롬프팅 프레임워크**입니다. 다음을 제공합니다.
+GSD는 사용자와 AI 코딩 에이전트(Claude Code, Gemini CLI, Vibe Agent Team, Codex, Copilot, Antigravity) 사이에 위치하는 **메타 프롬프팅 프레임워크**입니다. 다음을 제공합니다.
 
 1. **컨텍스트 엔지니어링** — 작업별로 AI에게 필요한 모든 것을 제공하는 구조화된 아티팩트
 2. **멀티 에이전트 오케스트레이션** — 새로운 컨텍스트 윈도우로 전문화된 에이전트를 생성하는 가벼운 오케스트레이터
@@ -59,7 +59,7 @@ GSD는 사용자와 AI 코딩 에이전트(Claude Code, Gemini CLI, OpenCode, Co
 └──────────────────────┬───────────────────────────────┘
                        │
 ┌──────────────────────▼───────────────────────────────┐
-│              FILE SYSTEM (.claude/.gsdt-planning/)                 │
+│              FILE SYSTEM (.gsdt-planning/)                 │
 │   PROJECT.md | REQUIREMENTS.md | ROADMAP.md          │
 │   STATE.md | config.json | phases/ | research/       │
 └──────────────────────────────────────────────────────┘
@@ -83,7 +83,7 @@ GSD는 사용자와 AI 코딩 에이전트(Claude Code, Gemini CLI, OpenCode, Co
 
 ### 3. 파일 기반 상태
 
-모든 상태는 `.claude/.gsdt-planning/`에 사람이 읽을 수 있는 Markdown과 JSON으로 저장됩니다. 데이터베이스, 서버, 외부 의존성이 없습니다. 이를 통해 다음이 가능합니다.
+모든 상태는 `.gsdt-planning/`에 사람이 읽을 수 있는 Markdown과 JSON으로 저장됩니다. 데이터베이스, 서버, 외부 의존성이 없습니다. 이를 통해 다음이 가능합니다.
 - 컨텍스트 초기화(`/clear`) 이후에도 상태가 유지됩니다
 - 사람과 에이전트 모두 상태를 확인할 수 있습니다
 - 팀 가시성을 위해 git에 커밋할 수 있습니다
@@ -108,7 +108,7 @@ GSD는 사용자와 AI 코딩 에이전트(Claude Code, Gemini CLI, OpenCode, Co
 
 사용자 대면 진입점입니다. 각 파일은 YAML 전문(name, description, allowed-tools)과 워크플로우를 부트스트랩하는 프롬프트 본문을 포함합니다. 명령어는 다음과 같이 설치됩니다.
 - **Claude Code:** 커스텀 슬래시 명령어 (`/gsdt:command-name`)
-- **OpenCode:** 슬래시 명령어 (`/gsd-command-name`)
+- **Vibe Agent Team:** 슬래시 명령어 (`/gsd-command-name`)
 - **Codex:** Skills (`$gsd-command-name`)
 - **Copilot:** 슬래시 명령어 (`/gsdt:command-name`)
 - **Antigravity:** Skills
@@ -169,7 +169,7 @@ GSD는 사용자와 AI 코딩 에이전트(Claude Code, Gemini CLI, OpenCode, Co
 | `gsdt-statusline.js` | `statusLine` | 모델, 작업, 디렉터리, 컨텍스트 사용 바 표시 |
 | `gsdt-context-monitor.js` | `PostToolUse` / `AfterTool` | 잔여 35%/25% 시점에 에이전트 대면 컨텍스트 경고 주입 |
 | `gsdt-check-update.js` | `SessionStart` | 새 GSD 버전을 백그라운드에서 확인 |
-| `gsdt-prompt-guard.js` | `PreToolUse` | `.claude/.gsdt-planning/` 쓰기 작업에서 프롬프트 인젝션 패턴 스캔 (권고용) |
+| `gsdt-prompt-guard.js` | `PreToolUse` | `.gsdt-planning/` 쓰기 작업에서 프롬프트 인젝션 패턴 스캔 (권고용) |
 | `gsdt-workflow-guard.js` | `PreToolUse` | GSD 워크플로우 컨텍스트 외부의 파일 편집 감지 (권고용, `hooks.workflow_guard`로 활성화) |
 
 ### CLI Tools (`gsdt/bin/`)
@@ -361,16 +361,16 @@ UI-SPEC.md (per phase) ───────────────────
 ```
 
 다른 런타임의 동등한 경로입니다.
-- **OpenCode:** `~/.config/opencode/` 또는 `~/.opencode/`
+- **Vibe Agent Team:** `~/.config/opencode/` 또는 `~/.opencode/`
 - **Gemini CLI:** `~/.gemini/`
 - **Codex:** `~/.codex/` (명령어 대신 skills 사용)
 - **Copilot:** `~/.github/`
 - **Antigravity:** `~/.gemini/antigravity/` (전역) 또는 `./.agent/` (로컬)
 
-### 프로젝트 파일 (`.claude/.gsdt-planning/`)
+### 프로젝트 파일 (`.gsdt-planning/`)
 
 ```
-.claude/.gsdt-planning/
+.gsdt-planning/
 ├── PROJECT.md              # 프로젝트 비전, 제약, 결정, 진화 규칙
 ├── REQUIREMENTS.md         # 범위 지정된 요구 사항 (v1/v2/범위 외)
 ├── ROADMAP.md              # 상태 추적을 포함한 단계 분류
@@ -425,12 +425,12 @@ UI-SPEC.md (per phase) ───────────────────
 
 인스톨러(`bin/install.js`, ~3,000줄)는 다음을 처리합니다.
 
-1. **런타임 감지** — 대화형 프롬프트 또는 CLI 플래그 (`--claude`, `--opencode`, `--gemini`, `--codex`, `--copilot`, `--antigravity`, `--all`)
+1. **런타임 감지** — 대화형 프롬프트 또는 CLI 플래그 (`--claude`, `--vibe-agent-team` / `--opencode`, `--gemini`, `--codex`, `--copilot`, `--antigravity`, `--all`)
 2. **위치 선택** — 전역(`--global`) 또는 로컬(`--local`)
 3. **파일 배포** — commands, workflows, references, templates, agents, hooks 복사
 4. **런타임 적응** — 런타임별 파일 내용 변환.
    - Claude Code: 그대로 사용
-   - OpenCode: 에이전트 전문을 `name:`, `model: inherit`, `mode: subagent`로 변환
+   - Vibe Agent Team: 에이전트 전문을 `name:`, `model: inherit`, `mode: subagent`로 변환
    - Codex: commands에서 TOML config + skills 생성
    - Copilot: 도구 이름 매핑 (Read→read, Bash→execute 등)
    - Gemini: 훅 이벤트 이름 조정 (`PostToolUse` 대신 `AfterTool`)
@@ -490,13 +490,13 @@ Runtime Engine (Claude Code / Gemini CLI)
 ### 보안 훅 (v1.27)
 
 **Prompt Guard** (`gsdt-prompt-guard.js`).
-- `.claude/.gsdt-planning/` 파일에 Write/Edit 시 트리거됩니다
+- `.gsdt-planning/` 파일에 Write/Edit 시 트리거됩니다
 - 프롬프트 인젝션 패턴을 콘텐츠에서 스캔합니다 (역할 재정의, 지시 우회, system 태그 인젝션)
 - 권고용 — 감지를 기록하며 차단하지 않습니다
 - 패턴은 훅 독립성을 위해 인라인으로 포함됩니다 (`security.cjs`의 일부)
 
 **Workflow Guard** (`gsdt-workflow-guard.js`).
-- `.claude/.gsdt-planning/` 외부 파일에 Write/Edit 시 트리거됩니다
+- `.gsdt-planning/` 외부 파일에 Write/Edit 시 트리거됩니다
 - GSD 워크플로우 컨텍스트 외부의 편집을 감지합니다 (활성 `/gsdt:` 명령어 또는 Task 서브에이전트 없음)
 - 상태 추적 변경을 위해 `/gsdt:quick` 또는 `/gsdt:fast` 사용을 권고합니다
 - `hooks.workflow_guard: true`로 활성화 (기본값: false)
@@ -510,7 +510,7 @@ GSD는 통합된 명령어/워크플로우 아키텍처를 통해 6개의 AI 코
 | 런타임 | 명령어 형식 | 에이전트 시스템 | 설정 위치 |
 |---------|---------------|--------------|-----------------|
 | Claude Code | `/gsdt:command` | Task 생성 | `~/.claude/` |
-| OpenCode | `/gsd-command` | Subagent 모드 | `~/.config/opencode/` |
+| Vibe Agent Team | `/gsd-command` | Subagent 모드 | `~/.config/opencode/` |
 | Gemini CLI | `/gsdt:command` | Task 생성 | `~/.gemini/` |
 | Codex | `$gsd-command` | Skills | `~/.codex/` |
 | Copilot | `/gsdt:command` | 에이전트 위임 | `~/.github/` |

@@ -26,8 +26,8 @@ Version: $ARGUMENTS (optional — defaults to current milestone)
 Core planning files are resolved in-workflow (`init milestone-op`) and loaded only as needed.
 
 **Completed Work:**
-Glob: .claude/.gsdt-planning/phases/*/*-SUMMARY.md
-Glob: .claude/.gsdt-planning/phases/*/*-VERIFICATION.md
+Glob: .gsdt-planning/phases/*/*-SUMMARY.md
+Glob: .gsdt-planning/phases/*/*-VERIFICATION.md
 </context>
 
 <process>

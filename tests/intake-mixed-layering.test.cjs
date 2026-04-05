@@ -8,7 +8,7 @@ const path = require('path');
 const { runGsdTools, createTempDir, createTempProject, cleanup } = require('./helpers.cjs');
 
 function writeRoadmap(tmpDir, content) {
-  const roadmapPath = path.join(tmpDir, '.claude/.gsdt-planning', 'ROADMAP.md');
+  const roadmapPath = path.join(tmpDir, '.gsdt-planning', 'ROADMAP.md');
   fs.mkdirSync(path.dirname(roadmapPath), { recursive: true });
   fs.writeFileSync(roadmapPath, content, 'utf8');
 }
@@ -26,7 +26,7 @@ function setupInitializedProject(tmpDir, { phase2HasPlan = false } = {}) {
 **Goal:** Allow users to share generated requirement briefs
 `);
 
-  const phasesDir = path.join(tmpDir, '.claude/.gsdt-planning', 'phases');
+  const phasesDir = path.join(tmpDir, '.gsdt-planning', 'phases');
   const phase1 = path.join(phasesDir, '01-foundation');
   const phase2 = path.join(phasesDir, '02-authentication');
   const phase3 = path.join(phasesDir, '03-sharing');
@@ -191,7 +191,7 @@ describe('intake mixed layering', () => {
     assert.ok(materialize.success, `materialize failed: ${materialize.error}`);
     const output = JSON.parse(materialize.output);
 
-    assert.strictEqual(output.dispatch_command, '/gsdt:plan-phase 2 --prd .claude/.gsdt-planning/phases/02-authentication/02-INTAKE.md');
+    assert.strictEqual(output.dispatch_command, '/gsdt:plan-phase 2 --prd .gsdt-planning/phases/02-authentication/02-INTAKE.md');
     assert.strictEqual(fs.readFileSync(output.cards_path, 'utf8'), '# AI Cards\n\n- card from AI\n');
     assert.strictEqual(fs.readFileSync(output.phase_brief_path, 'utf8'), '# AI Phase Brief\n\nphase brief from AI\n');
   });

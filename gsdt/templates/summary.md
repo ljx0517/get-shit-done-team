@@ -1,6 +1,6 @@
 # Summary Template
 
-Template for `.claude/.gsdt-planning/phases/XX-name/{phase}-{plan}-SUMMARY.md` - phase completion documentation.
+Template for `.gsdt-planning/phases/XX-name/{phase}-{plan}-SUMMARY.md` - phase completion documentation.
 
 ---
 

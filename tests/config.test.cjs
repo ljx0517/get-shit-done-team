@@ -16,12 +16,12 @@ const { runGsdTools, createTempProject, cleanup } = require('./helpers.cjs');
 // ─── helpers ──────────────────────────────────────────────────────────────────
 
 function readConfig(tmpDir) {
-  const configPath = path.join(tmpDir, '.claude/.gsdt-planning', 'config.json');
+  const configPath = path.join(tmpDir, '.gsdt-planning', 'config.json');
   return JSON.parse(fs.readFileSync(configPath, 'utf-8'));
 }
 
 function writeConfig(tmpDir, obj) {
-  const configPath = path.join(tmpDir, '.claude/.gsdt-planning', 'config.json');
+  const configPath = path.join(tmpDir, '.gsdt-planning', 'config.json');
   fs.writeFileSync(configPath, JSON.stringify(obj, null, 2), 'utf-8');
 }
 
@@ -366,8 +366,8 @@ describe('config-new-project command', () => {
     // git section present with all three keys
     assert.ok(config.git && typeof config.git === 'object', 'git section should exist');
     assert.strictEqual(config.git.branching_strategy, 'none');
-    assert.strictEqual(config.git.phase_branch_template, 'gsd/phase-{phase}-{slug}');
-    assert.strictEqual(config.git.milestone_branch_template, 'gsd/{milestone}-{slug}');
+    assert.strictEqual(config.git.phase_branch_template, 'gsdt/phase-{phase}-{slug}');
+    assert.strictEqual(config.git.milestone_branch_template, 'gsdt/{milestone}-{slug}');
 
     // workflow section present with all keys
     assert.ok(config.workflow && typeof config.workflow === 'object', 'workflow section should exist');
@@ -480,7 +480,7 @@ describe('config-new-project command', () => {
     assert.ok(result.success, `Command failed: ${result.error}`);
     const out = JSON.parse(result.output);
     assert.strictEqual(out.created, true);
-    assert.strictEqual(out.path, '.claude/.gsdt-planning/config.json');
+    assert.strictEqual(out.path, '.gsdt-planning/config.json');
   });
 });
 
@@ -587,8 +587,8 @@ describe('config-get edge cases', () => {
   });
 
   test('errors when config.json contains malformed JSON', () => {
-    const configPath = path.join(tmpDir, '.claude/.gsdt-planning', 'config.json');
-    fs.mkdirSync(path.join(tmpDir, '.claude/.gsdt-planning'), { recursive: true });
+    const configPath = path.join(tmpDir, '.gsdt-planning', 'config.json');
+    fs.mkdirSync(path.join(tmpDir, '.gsdt-planning'), { recursive: true });
     fs.writeFileSync(configPath, '{not valid json', 'utf-8');
     const result = runGsdTools('config-get model_profile', tmpDir);
     assert.strictEqual(result.success, false);

@@ -1,5 +1,5 @@
 /**
- * Config reader — loads `.claude/.gsdt-planning/config.json` and merges with defaults.
+ * Config reader — loads `.gsdt-planning/config.json` and merges with defaults.
  *
  * Mirrors the default structure from `gsdt/bin/lib/config.cjs`
  * `buildNewProjectConfig()`.
@@ -42,7 +42,7 @@ export interface HooksConfig {
 export interface PathSettings {
   /** Base installation directory relative to projectDir. Default: '.claude/gsdt' */
   install_dir: string;
-  /** Planning directory name. Default: '.claude/.gsdt-planning' */
+  /** Planning directory name. Default: '.gsdt-planning' */
   planning_dir: string;
 }
 

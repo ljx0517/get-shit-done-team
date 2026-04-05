@@ -523,7 +523,7 @@ export class LayeredContextManager {
   }
 
   /**
-   * Serialize recent_history to markdown for .claude/.gsdt-planning/ persistence.
+   * Serialize recent_history to markdown for .gsdt-planning/ persistence.
    * Produces a human-readable audit trail.
    */
   toMarkdown(): string {

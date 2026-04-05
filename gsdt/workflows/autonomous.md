@@ -40,10 +40,7 @@ Parse JSON for: `milestone_version`, `milestone_name`, `phase_count`, `completed
 Display startup banner:
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► AUTONOMOUS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
+── GSD ► AUTONOMOUS ──
  Milestone: {milestone_version} — {milestone_name}
  Phases: {phase_count} total, {completed_phases} complete
 ```
@@ -73,10 +70,7 @@ Parse the JSON `phases` array.
 **If no incomplete phases remain:**
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► AUTONOMOUS ▸ COMPLETE 🎉
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
+── GSD ► AUTONOMOUS ▸ COMPLETE 🎉 ──
  All phases complete! Nothing left to do.
 ```
 
@@ -112,9 +106,7 @@ Extract `phase_name`, `goal`, `success_criteria` from each. Store for use in exe
 For the current phase, display the progress banner:
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► AUTONOMOUS ▸ Phase {N}/{T}: {Name} [████░░░░] {P}%
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSD ► AUTONOMOUS ▸ Phase {N}/{T}: {Name} [████░░░░] {P}% ──
 ```
 
 Where N = current phase number (from the ROADMAP, e.g., 6), T = total milestone phases (from `phase_count` parsed in initialize step, e.g., 8), P = percentage of all milestone phases completed so far. Calculate P as: (number of phases with `disk_status` "complete" from the latest `roadmap analyze` / T × 100). Use █ for filled and ░ for empty segments in the progress bar (8 characters wide).
@@ -423,9 +415,9 @@ Read project-level and prior phase context to avoid re-asking decided questions.
 **Read project files:**
 
 ```bash
-cat .claude/.gsdt-planning/PROJECT.md 2>/dev/null || true
-cat .claude/.gsdt-planning/REQUIREMENTS.md 2>/dev/null || true
-cat .claude/.gsdt-planning/STATE.md 2>/dev/null || true
+cat .gsdt-planning/PROJECT.md 2>/dev/null || true
+cat .gsdt-planning/REQUIREMENTS.md 2>/dev/null || true
+cat .gsdt-planning/STATE.md 2>/dev/null || true
 ```
 
 Extract from these:
@@ -436,7 +428,7 @@ Extract from these:
 **Read all prior CONTEXT.md files:**
 
 ```bash
-(find .claude/.gsdt-planning/phases -name "*-CONTEXT.md" 2>/dev/null || true) | sort
+(find .gsdt-planning/phases -name "*-CONTEXT.md" 2>/dev/null || true) | sort
 ```
 
 For each CONTEXT.md where phase number < current phase:
@@ -470,7 +462,7 @@ Lightweight codebase scan to inform grey area identification and proposals. Keep
 **Check for existing codebase maps:**
 
 ```bash
-ls .claude/.gsdt-planning/codebase/*.md 2>/dev/null || true
+ls .gsdt-planning/codebase/*.md 2>/dev/null || true
 ```
 
 **If codebase maps exist:** Read the most relevant ones (CONVENTIONS.md, STRUCTURE.md, STACK.md based on phase type). Extract reusable components, established patterns, integration points. Skip to building context below.
@@ -700,7 +692,7 @@ Re-filter incomplete phases using the same logic as discover_phases:
 Read STATE.md fresh:
 
 ```bash
-cat .claude/.gsdt-planning/STATE.md
+cat .gsdt-planning/STATE.md
 ```
 
 Check for blockers in the Blockers/Concerns section. If blockers are found, go to handle_blocker with the blocker description.
@@ -720,10 +712,7 @@ After all phases complete, run the milestone lifecycle sequence: audit → compl
 Display lifecycle transition banner:
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► AUTONOMOUS ▸ LIFECYCLE
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
+── GSD ► AUTONOMOUS ▸ LIFECYCLE ──
  All phases complete → Starting lifecycle: audit → complete → cleanup
  Milestone: {milestone_version} — {milestone_name}
 ```
@@ -737,7 +726,7 @@ Skill(skill="gsdt:audit-milestone")
 After audit completes, detect the result:
 
 ```bash
-AUDIT_FILE=".claude/.gsdt-planning/v${milestone_version}-MILESTONE-AUDIT.md"
+AUDIT_FILE=".gsdt-planning/v${milestone_version}-MILESTONE-AUDIT.md"
 AUDIT_STATUS=$(grep "^status:" "${AUDIT_FILE}" 2>/dev/null | head -1 | cut -d: -f2 | tr -d ' ')
 ```
 
@@ -793,7 +782,7 @@ Skill(skill="gsdt:complete-milestone", args="${milestone_version}")
 After complete-milestone returns, verify it produced output:
 
 ```bash
-ls .claude/.gsdt-planning/milestones/v${milestone_version}-ROADMAP.md 2>/dev/null || true
+ls .gsdt-planning/milestones/v${milestone_version}-ROADMAP.md 2>/dev/null || true
 ```
 
 If the archive file does not exist, go to handle_blocker: "Complete milestone did not produce expected archive files."
@@ -811,10 +800,7 @@ Cleanup shows its own dry-run and asks user for approval internally — this is 
 Display final completion banner:
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► AUTONOMOUS ▸ COMPLETE 🎉
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
+── GSD ► AUTONOMOUS ▸ COMPLETE 🎉 ──
  Milestone: {milestone_version} — {milestone_name}
  Status: Complete ✅
  Lifecycle: audit ✅ → complete ✅ → cleanup ✅
@@ -844,10 +830,7 @@ When any phase operation fails or a blocker is detected, present 3 options via A
 **On "Stop autonomous mode":** Display progress summary:
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► AUTONOMOUS ▸ STOPPED
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
+── GSD ► AUTONOMOUS ▸ STOPPED ──
  Completed: {list of completed phases}
  Skipped: {list of skipped phases}
  Remaining: {list of remaining phases}

@@ -1,6 +1,6 @@
 ---
 name: gsdt:new-workspace
-description: Create an isolated workspace with repo copies and independent .claude/.gsdt-planning/
+description: Create an isolated workspace with repo copies and independent .gsdt-planning/
 argument-hint: "--name <name> [--repos repo1,repo2] [--path /target] [--strategy worktree|clone] [--branch name] [--auto]"
 allowed-tools:
   - Read
@@ -19,15 +19,15 @@ allowed-tools:
 </context>
 
 <objective>
-Create a physical workspace directory containing copies of specified git repos (as worktrees or clones) with an independent `.claude/.gsdt-planning/` directory for isolated GSD sessions.
+Create a physical workspace directory containing copies of specified git repos (as worktrees or clones) with an independent `.gsdt-planning/` directory for isolated GSD sessions.
 
 **Use cases:**
 - Multi-repo orchestration: work on a subset of repos in parallel with isolated GSD state
-- Feature branch isolation: create a worktree of the current repo with its own `.claude/.gsdt-planning/`
+- Feature branch isolation: create a worktree of the current repo with its own `.gsdt-planning/`
 
 **Creates:**
 - `<path>/WORKSPACE.md` — workspace manifest
-- `<path>/.claude/.gsdt-planning/` — independent planning directory
+- `<path>/.gsdt-planning/` — independent planning directory
 - `<path>/<repo>/` — git worktree or clone for each specified repo
 
 **After this command:** `cd` into the workspace and run `/gsdt:new-project` to initialize GSD.

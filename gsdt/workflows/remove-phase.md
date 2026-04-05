@@ -66,7 +66,7 @@ Present removal summary and confirm:
 Removing Phase {target}: {Name}
 
 This will:
-- Delete: .claude/.gsdt-planning/phases/{target}-{slug}/
+- Delete: .gsdt-planning/phases/{target}-{slug}/
 - Renumber all subsequent phases
 - Update: ROADMAP.md, STATE.md
 
@@ -103,7 +103,7 @@ Extract from result: `removed`, `directory_deleted`, `renamed_directories`, `ren
 Stage and commit the removal:
 
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "chore: remove phase {target} ({original-phase-name})" --files .claude/.gsdt-planning/
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "chore: remove phase {target} ({original-phase-name})" --files .gsdt-planning/
 ```
 
 The commit message preserves the historical record of what was removed.
@@ -116,7 +116,7 @@ Present completion summary:
 Phase {target} ({original-name}) removed.
 
 Changes:
-- Deleted: .claude/.gsdt-planning/phases/{target}-{slug}/
+- Deleted: .gsdt-planning/phases/{target}-{slug}/
 - Renumbered: {N} directories and {M} files
 - Updated: ROADMAP.md, STATE.md
 - Committed: chore: remove phase {target} ({original-name})

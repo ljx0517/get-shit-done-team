@@ -6,6 +6,7 @@
 const fs = require('fs');
 const path = require('path');
 
+const { planningRoot } = require('../core.cjs');
 const { extractFrontmatter, reconstructFrontmatter } = require('../frontmatter.cjs');
 const {
   BUG_TRACK_TYPES,
@@ -356,7 +357,7 @@ async function findSolutions(baseDir, query, options = {}) {
 }
 
 async function writeToMemory(baseDir, research, solutionDocPath) {
-  const memoryPath = path.join(baseDir, '.claude/.gsdt-planning', 'compound-memory.json');
+  const memoryPath = path.join(planningRoot(baseDir), 'compound-memory.json');
   fs.mkdirSync(path.dirname(memoryPath), { recursive: true });
 
   let memory = { learnings: [] };
@@ -397,7 +398,7 @@ async function writeToMemory(baseDir, research, solutionDocPath) {
 }
 
 async function updateAntiPatterns(baseDir, research) {
-  const antiPatternsPath = path.join(baseDir, '.claude/.gsdt-planning', 'anti-patterns.md');
+  const antiPatternsPath = path.join(planningRoot(baseDir), 'anti-patterns.md');
   fs.mkdirSync(path.dirname(antiPatternsPath), { recursive: true });
 
   const dedupeKey = research.dedupe_key || buildDedupeKey(research);

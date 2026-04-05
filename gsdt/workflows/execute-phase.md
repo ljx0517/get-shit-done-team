@@ -71,7 +71,7 @@ Parse JSON for: `executor_model`, `verifier_model`, `commit_docs`, `parallelizat
 
 **If `phase_found` is false:** Error — phase directory not found.
 **If `plan_count` is 0:** Error — no plans found in phase.
-**If `state_exists` is false but `.claude/.gsdt-planning/` exists:** Offer reconstruct or continue.
+**If `state_exists` is false but `.gsdt-planning/` exists:** Offer reconstruct or continue.
 
 When `parallelization` is false, plans within a wave execute sequentially.
 
@@ -253,9 +253,9 @@ Execute each selected wave in sequence. Within a wave: parallel if `PARALLELIZAT
        <files_to_read>
        Read these files at execution start using the Read tool:
        - {phase_dir}/{plan_file} (Plan)
-       - .claude/.gsdt-planning/PROJECT.md (Project context — core value, requirements, evolution rules)
-       - .claude/.gsdt-planning/STATE.md (State)
-       - .claude/.gsdt-planning/config.json (Config, if exists)
+       - .gsdt-planning/PROJECT.md (Project context — core value, requirements, evolution rules)
+       - .gsdt-planning/STATE.md (State)
+       - .gsdt-planning/config.json (Config, if exists)
        - ./CLAUDE.md (Project instructions, if exists — follow project-specific guidelines and coding conventions)
        - .claude/skills/ or .agents/skills/ (Project skills, if either exists — list skills, read SKILL.md for each, follow relevant rules during implementation)
        </files_to_read>
@@ -510,13 +510,13 @@ For each gap that has a `debug_session:` field:
 - Update frontmatter `updated:` timestamp
 - Move to resolved directory:
 ```bash
-mkdir -p .claude/.gsdt-planning/debug/resolved
-mv .claude/.gsdt-planning/debug/{slug}.md .claude/.gsdt-planning/debug/resolved/
+mkdir -p .gsdt-planning/debug/resolved
+mv .gsdt-planning/debug/{slug}.md .gsdt-planning/debug/resolved/
 ```
 
 **6. Commit updated artifacts:**
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs(phase-${PARENT_PHASE}): resolve UAT gaps and debug sessions after ${PHASE_NUMBER} gap closure" --files .claude/.gsdt-planning/phases/*${PARENT_PHASE}*/*-UAT.md .claude/.gsdt-planning/debug/resolved/*.md
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs(phase-${PARENT_PHASE}): resolve UAT gaps and debug sessions after ${PHASE_NUMBER} gap closure" --files .gsdt-planning/phases/*${PARENT_PHASE}*/*-UAT.md .gsdt-planning/debug/resolved/*.md
 ```
 </step>
 
@@ -528,7 +528,7 @@ Run prior phases' test suites to catch cross-phase regressions BEFORE verificati
 **Step 1: Discover prior phases' test files**
 ```bash
 # Find all VERIFICATION.md files from prior phases in current milestone
-PRIOR_VERIFICATIONS=$(find .claude/.gsdt-planning/phases/ -name "*-VERIFICATION.md" ! -path "*${PHASE_NUMBER}*" 2>/dev/null)
+PRIOR_VERIFICATIONS=$(find .gsdt-planning/phases/ -name "*-VERIFICATION.md" ! -path "*${PHASE_NUMBER}*" 2>/dev/null)
 ```
 
 **Step 2: Extract test file lists from prior verifications**
@@ -825,7 +825,7 @@ These items are tracked and will appear in `/gsdt:progress` and `/gsdt:audit-uat
 ```
 
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs(phase-{X}): complete phase execution" --files .claude/.gsdt-planning/ROADMAP.md .claude/.gsdt-planning/STATE.md .claude/.gsdt-planning/REQUIREMENTS.md {phase_dir}/*-VERIFICATION.md {phase_dir}/*-ASSESS.md {phase_dir}/*-ASSESS.json
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs(phase-{X}): complete phase execution" --files .gsdt-planning/ROADMAP.md .gsdt-planning/STATE.md .gsdt-planning/REQUIREMENTS.md {phase_dir}/*-VERIFICATION.md {phase_dir}/*-ASSESS.md {phase_dir}/*-ASSESS.json
 ```
 </step>
 
@@ -835,7 +835,7 @@ node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs(phase-{X}): complete p
 PROJECT.md tracks validated requirements, decisions, and current state. Without this step,
 PROJECT.md falls behind silently over multiple phases.
 
-1. Read `.claude/.gsdt-planning/PROJECT.md`
+1. Read `.gsdt-planning/PROJECT.md`
 2. If the file exists and has a `## Validated Requirements` or `## Requirements` section:
    - Move any requirements validated by this phase from Active → Validated
    - Add a brief note: `Validated in Phase {X}: {Name}`
@@ -845,10 +845,10 @@ PROJECT.md falls behind silently over multiple phases.
 5. Commit the change:
 
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs(phase-{X}): evolve PROJECT.md after phase completion" --files .claude/.gsdt-planning/PROJECT.md
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs(phase-{X}): evolve PROJECT.md after phase completion" --files .gsdt-planning/PROJECT.md
 ```
 
-**Skip this step if** `.claude/.gsdt-planning/PROJECT.md` does not exist.
+**Skip this step if** `.gsdt-planning/PROJECT.md` does not exist.
 </step>
 
 <step name="offer_next">

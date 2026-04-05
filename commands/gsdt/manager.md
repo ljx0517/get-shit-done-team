@@ -17,7 +17,7 @@ Designed for power users who want to parallelize work across phases from one ter
 
 **Creates/Updates:**
 - No files created directly — dispatches to existing GSD commands via Skill() and background Task agents.
-- Reads `.claude/.gsdt-planning/STATE.md`, `.claude/.gsdt-planning/ROADMAP.md`, phase directories for status.
+- Reads `.gsdt-planning/STATE.md`, `.gsdt-planning/ROADMAP.md`, phase directories for status.
 
 **After:** User exits when done managing, or all phases complete and milestone lifecycle is suggested.
 </objective>

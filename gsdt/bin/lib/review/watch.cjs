@@ -6,6 +6,7 @@
 const fs = require('fs');
 const path = require('path');
 const { spawn } = require('child_process');
+const { planningRoot, planningDirDisplay } = require('../core.cjs');
 
 const ERROR_PATTERNS = [
   /error:/i, /exception/i, /panic/i,
@@ -133,7 +134,7 @@ class CompoundWatch {
     const errorContext = content.substring(0, 1000);
 
     // 记录到 auto-captures.json
-    const capturesPath = path.join(this.projectDir, '.claude/.gsdt-planning', 'auto-captures.json');
+    const capturesPath = path.join(planningRoot(this.projectDir), 'auto-captures.json');
     let captures = { entries: [] };
     if (fs.existsSync(capturesPath)) {
       try {
@@ -150,7 +151,7 @@ class CompoundWatch {
     });
 
     fs.writeFileSync(capturesPath, JSON.stringify(captures, null, 2), 'utf8');
-    console.log(`  Captured to .claude/.gsdt-planning/auto-captures.json`);
+    console.log(`  Captured to ${planningDirDisplay(this.projectDir)}/auto-captures.json`);
   }
 }
 

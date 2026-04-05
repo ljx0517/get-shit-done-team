@@ -7,9 +7,9 @@ GSDT 内部 compound pipeline，专门处理 bug/fix 学习沉淀。
 
 <paths>
 BASE_DIR={GSD_WS:-$PWD}
-EVENTS_FILE=.claude/.gsdt-planning/compound-events.json
-MEMORY_FILE=.claude/.gsdt-planning/compound-memory.json
-ANTI_PATTERNS=.claude/.gsdt-planning/anti-patterns.md
+EVENTS_FILE=.gsdt-planning/compound-events.json
+MEMORY_FILE=.gsdt-planning/compound-memory.json
+ANTI_PATTERNS=.gsdt-planning/anti-patterns.md
 DOCS_SOLUTIONS=docs/solutions
 SCHEMA_REF=gsdt/references/compound-schema.yaml
 YAML_SCHEMA_REF=gsdt/references/compound-yaml-schema.md
@@ -63,7 +63,7 @@ node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" compound dispatch \
 
 `compound.cjs` 负责:
 
-1. 规范化事件并写入 `.claude/.gsdt-planning/compound-events.json`
+1. 规范化事件并写入 `.gsdt-planning/compound-events.json`
 2. 用 `dedupe_key` 和 `problem_key` 合并重复事件
 3. 将 `candidate` 升级为 `diagnosed`
 4. 跳过已经 `compounded` 的重复事件
@@ -95,8 +95,8 @@ node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" compound dispatch \
 最终只有 `compound.cjs` 负责落盘:
 
 - `processLearnings()` -> `docs/solutions/...`
-- `writeToMemory()` -> `.claude/.gsdt-planning/compound-memory.json`
-- `updateAntiPatterns()` -> `.claude/.gsdt-planning/anti-patterns.md`
+- `writeToMemory()` -> `.gsdt-planning/compound-memory.json`
+- `updateAntiPatterns()` -> `.gsdt-planning/anti-patterns.md`
 
 ## Step 5: 输出 JSON 结果
 
@@ -121,7 +121,7 @@ node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" compound dispatch \
 - [ ] 所有入口统一走 `compound dispatch`
 - [ ] `candidate` 只记录事件，不直接写知识库
 - [ ] `diagnosed` / `resolved` 自动沉淀到 `docs/solutions/`
-- [ ] `.claude/.gsdt-planning/compound-memory.json` 与 `.claude/.gsdt-planning/anti-patterns.md` 由单写口维护
+- [ ] `.gsdt-planning/compound-memory.json` 与 `.gsdt-planning/anti-patterns.md` 由单写口维护
 - [ ] 自动模式不询问用户
 - [ ] compound 失败不阻断父工作流
 </success_criteria>

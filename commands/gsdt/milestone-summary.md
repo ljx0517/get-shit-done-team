@@ -15,7 +15,7 @@ allowed-tools:
 Generate a structured milestone summary for team onboarding and project review. Reads completed milestone artifacts (ROADMAP, REQUIREMENTS, CONTEXT, SUMMARY, VERIFICATION files) and produces a human-friendly overview of what was built, how, and why.
 
 Purpose: Enable new team members to understand a completed project by reading one document and asking follow-up questions.
-Output: MILESTONE_SUMMARY written to `.claude/.gsdt-planning/reports/`, presented inline, optional interactive Q&A.
+Output: MILESTONE_SUMMARY written to `.gsdt-planning/reports/`, presented inline, optional interactive Q&A.
 </objective>
 
 <execution_context>
@@ -24,13 +24,13 @@ Output: MILESTONE_SUMMARY written to `.claude/.gsdt-planning/reports/`, presente
 
 <context>
 **Project files:**
-- `.claude/.gsdt-planning/ROADMAP.md`
-- `.claude/.gsdt-planning/PROJECT.md`
-- `.claude/.gsdt-planning/STATE.md`
-- `.claude/.gsdt-planning/RETROSPECTIVE.md`
-- `.claude/.gsdt-planning/milestones/v{version}-ROADMAP.md` (if archived)
-- `.claude/.gsdt-planning/milestones/v{version}-REQUIREMENTS.md` (if archived)
-- `.claude/.gsdt-planning/phases/*-*/` (SUMMARY.md, VERIFICATION.md, CONTEXT.md, RESEARCH.md)
+- `.gsdt-planning/ROADMAP.md`
+- `.gsdt-planning/PROJECT.md`
+- `.gsdt-planning/STATE.md`
+- `.gsdt-planning/RETROSPECTIVE.md`
+- `.gsdt-planning/milestones/v{version}-ROADMAP.md` (if archived)
+- `.gsdt-planning/milestones/v{version}-REQUIREMENTS.md` (if archived)
+- `.gsdt-planning/phases/*-*/` (SUMMARY.md, VERIFICATION.md, CONTEXT.md, RESEARCH.md)
 
 **User input:**
 - Version: $ARGUMENTS (optional — defaults to current/latest milestone)
@@ -43,7 +43,7 @@ Read and execute the milestone-summary workflow from @~/.claude/gsdt/workflows/m
 <success_criteria>
 - Milestone version resolved (from args, STATE.md, or archive scan)
 - All available artifacts read (ROADMAP, REQUIREMENTS, CONTEXT, SUMMARY, VERIFICATION, RESEARCH, RETROSPECTIVE)
-- Summary document written to `.claude/.gsdt-planning/reports/MILESTONE_SUMMARY-v{version}.md`
+- Summary document written to `.gsdt-planning/reports/MILESTONE_SUMMARY-v{version}.md`
 - All 7 sections generated (Overview, Architecture, Phases, Decisions, Requirements, Tech Debt, Getting Started)
 - Summary presented inline to user
 - Interactive Q&A offered

@@ -1,6 +1,6 @@
 # Features Research Template
 
-Template for `.claude/.gsdt-planning/research/FEATURES.md` — feature landscape for the project domain.
+Template for `.gsdt-planning/research/FEATURES.md` — feature landscape for the project domain.
 
 <template>
 

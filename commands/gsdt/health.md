@@ -9,7 +9,7 @@ allowed-tools:
   - AskUserQuestion
 ---
 <objective>
-Validate `.claude/.gsdt-planning/` directory integrity and report actionable issues. Checks for missing files, invalid configurations, inconsistent state, and orphaned plans.
+Validate `.gsdt-planning/` directory integrity and report actionable issues. Checks for missing files, invalid configurations, inconsistent state, and orphaned plans.
 </objective>
 
 <execution_context>

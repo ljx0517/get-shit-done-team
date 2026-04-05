@@ -15,7 +15,7 @@ export interface ClassifyContext {
   needsProjectFile: boolean;  // Load PROJECT.md as 'existing_project'
   needsRoadmapFile: boolean;  // Load ROADMAP.md as 'existing_roadmap'
   needsStateFile: boolean;    // Load STATE.md as 'project_state'
-  projectExists: boolean;      // True if any .claude/.gsdt-planning files exist
+  projectExists: boolean;      // True if any .gsdt-planning files exist
 }
 
 export interface LoadedClassifyContext {

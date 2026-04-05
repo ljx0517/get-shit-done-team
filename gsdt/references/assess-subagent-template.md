@@ -53,9 +53,9 @@ Rules:
 - `safe_auto` is allowed only for local, deterministic, low-risk fixes.
 - If a finding is real but should not become auto-fix work, route it as `gated_auto`, `manual`, or `advisory` instead of defaulting to `safe_auto`.
 - Protected artifacts must never be flagged for deletion or suppression:
-  - `.claude/.gsdt-planning/ROADMAP.md`
-  - `.claude/.gsdt-planning/STATE.md`
-  - `.claude/.gsdt-planning/REQUIREMENTS.md`
+  - `.gsdt-planning/ROADMAP.md`
+  - `.gsdt-planning/STATE.md`
+  - `.gsdt-planning/REQUIREMENTS.md`
   - `{phase_dir}/*-VERIFICATION.md`
   - `{phase_dir}/*-ASSESS.md`
   - `docs/solutions/**`

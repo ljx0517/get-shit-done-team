@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** When `/gsdt:new-project` creates `.claude/.gsdt-planning/config.json`, the file contains all effective defaults — not just the 6 user-chosen keys — so developers can see every setting without reading source code.
+**Goal:** When `/gsdt:new-project` creates `.gsdt-planning/config.json`, the file contains all effective defaults — not just the 6 user-chosen keys — so developers can see every setting without reading source code.
 
 **Architecture:** Add a single JS function `buildNewProjectConfig(cwd, userChoices)` in `config.cjs` as the one source of truth for a new project's full config. Expose it as a CLI command `config-new-project`. Update the `new-project.md` workflow to call this command instead of writing a partial JSON inline.
 
@@ -219,7 +219,7 @@ describe('config-new-project command', () => {
     assert.ok(result.success, `Command failed: ${result.error}`);
     const out = JSON.parse(result.output);
     assert.strictEqual(out.created, true);
-    assert.strictEqual(out.path, '.claude/.gsdt-planning/config.json');
+    assert.strictEqual(out.path, '.gsdt-planning/config.json');
   });
 });
 ```
@@ -314,7 +314,7 @@ function buildNewProjectConfig(cwd, userChoices) {
 }
 
 /**
- * Command: create a fully-materialized .claude/.gsdt-planning/config.json for a new project.
+ * Command: create a fully-materialized .gsdt-planning/config.json for a new project.
  *
  * Accepts user-chosen settings as a JSON string (the keys the user explicitly
  * configured during /gsdt:new-project). All remaining keys are filled from
@@ -323,8 +323,8 @@ function buildNewProjectConfig(cwd, userChoices) {
  * Idempotent: if config.json already exists, returns { created: false }.
  */
 function cmdConfigNewProject(cwd, choicesJson, raw) {
-  const configPath = path.join(cwd, '.claude/.gsdt-planning', 'config.json');
-  const planningDir = path.join(cwd, '.claude/.gsdt-planning');
+  const configPath = path.join(cwd, '.gsdt-planning', 'config.json');
+  const planningDir = path.join(cwd, '.gsdt-planning');
 
   // Idempotent: don't overwrite existing config
   if (fs.existsSync(configPath)) {
@@ -342,20 +342,20 @@ function cmdConfigNewProject(cwd, choicesJson, raw) {
     }
   }
 
-  // Ensure .claude/.gsdt-planning directory exists
+  // Ensure .gsdt-planning directory exists
   try {
     if (!fs.existsSync(planningDir)) {
       fs.mkdirSync(planningDir, { recursive: true });
     }
   } catch (err) {
-    error('Failed to create .claude/.gsdt-planning directory: ' + err.message);
+    error('Failed to create .gsdt-planning directory: ' + err.message);
   }
 
   const config = buildNewProjectConfig(cwd, userChoices);
 
   try {
     fs.writeFileSync(configPath, JSON.stringify(config, null, 2), 'utf-8');
-    output({ created: true, path: '.claude/.gsdt-planning/config.json' }, raw, 'created');
+    output({ created: true, path: '.gsdt-planning/config.json' }, raw, 'created');
   } catch (err) {
     error('Failed to write config.json: ' + err.message);
   }
@@ -412,7 +412,7 @@ cd /Users/diego/Dev/get-shit-done
 node gsdt/bin/gsdt-tools.cjs config-new-project '{"mode":"interactive","granularity":"standard"}' --cwd /tmp/gsd-smoke-$(date +%s)
 ```
 
-Expected: outputs `{"created":true,"path":".claude/.gsdt-planning/config.json"}` (or similar).
+Expected: outputs `{"created":true,"path":".gsdt-planning/config.json"}` (or similar).
 
 Clean up: `rm -rf /tmp/gsd-smoke-*`
 
@@ -451,7 +451,7 @@ This is the core change. Two places need updating:
 Find the block in Step 2a that creates config.json:
 
 ```markdown
-Create `.claude/.gsdt-planning/config.json` with mode set to "yolo":
+Create `.gsdt-planning/config.json` with mode set to "yolo":
 
 ```json
 {
@@ -466,10 +466,10 @@ Create `.claude/.gsdt-planning/config.json` with mode set to "yolo":
 Replace the inline JSON write instruction with:
 
 ```markdown
-Create `.claude/.gsdt-planning/config.json` using the CLI (fills in all defaults automatically):
+Create `.gsdt-planning/config.json` using the CLI (fills in all defaults automatically):
 
 ```bash
-mkdir -p .claude/.gsdt-planning
+mkdir -p .gsdt-planning
 node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" config-new-project "$(cat <<'CHOICES'
 {
   "mode": "yolo",
@@ -498,7 +498,7 @@ The command merges your selections with all runtime defaults (`search_gitignored
 Find the block in Step 5 that creates config.json:
 
 ```markdown
-Create `.claude/.gsdt-planning/config.json` with all settings:
+Create `.gsdt-planning/config.json` with all settings:
 
 ```json
 {
@@ -512,10 +512,10 @@ Create `.claude/.gsdt-planning/config.json` with all settings:
 Replace with:
 
 ```markdown
-Create `.claude/.gsdt-planning/config.json` using the CLI (fills in all defaults automatically):
+Create `.gsdt-planning/config.json` using the CLI (fills in all defaults automatically):
 
 ```bash
-mkdir -p .claude/.gsdt-planning
+mkdir -p .gsdt-planning
 node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" config-new-project "$(cat <<'CHOICES'
 {
   "mode": "[selected: yolo|interactive]",
@@ -597,7 +597,7 @@ node /Users/diego/Dev/gsdt/gsdt/bin/gsdt-tools.cjs config-new-project '{
 
 # Verify the file has all 12 expected keys
 echo "=== Generated config.json ==="
-cat "$TMP/.claude/.gsdt-planning/config.json"
+cat "$TMP/.gsdt-planning/config.json"
 
 # Clean up
 rm -rf "$TMP"
@@ -612,11 +612,11 @@ TMP=$(mktemp -d)
 CHOICES='{"mode":"yolo","granularity":"coarse"}'
 
 node /Users/diego/Dev/gsdt/gsdt/bin/gsdt-tools.cjs config-new-project "$CHOICES" --cwd "$TMP"
-FIRST=$(cat "$TMP/.claude/.gsdt-planning/config.json")
+FIRST=$(cat "$TMP/.gsdt-planning/config.json")
 
 # Second call should be no-op
 node /Users/diego/Dev/gsdt/gsdt/bin/gsdt-tools.cjs config-new-project "$CHOICES" --cwd "$TMP"
-SECOND=$(cat "$TMP/.claude/.gsdt-planning/config.json")
+SECOND=$(cat "$TMP/.gsdt-planning/config.json")
 
 [ "$FIRST" = "$SECOND" ] && echo "IDEMPOTENT: OK" || echo "IDEMPOTENT: FAIL"
 rm -rf "$TMP"
@@ -661,7 +661,7 @@ Expected: All pass, 0 failures.
 feat: materialize all config defaults at new-project initialization
 
 **Problem:**
-`/gsdt:new-project` creates `.claude/.gsdt-planning/config.json` with only the 6 keys
+`/gsdt:new-project` creates `.gsdt-planning/config.json` with only the 6 keys
 the user explicitly chose during onboarding. Five additional keys
 (`search_gitignored`, `brave_search`, `git.branching_strategy`,
 `git.phase_branch_template`, `git.milestone_branch_template`) are resolved
@@ -694,7 +694,7 @@ exactly one place: `buildNewProjectConfig()` in `config.cjs`.
 - No new user-facing flags
 
 **Why this improves discoverability:**
-A developer opening `.claude/.gsdt-planning/config.json` for the first time can now see
+A developer opening `.gsdt-planning/config.json` for the first time can now see
 `git.branching_strategy: "none"` and immediately understand that branching
 is available and configurable, without reading the GSD source.
 ```

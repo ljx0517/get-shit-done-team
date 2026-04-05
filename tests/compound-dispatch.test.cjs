@@ -19,7 +19,7 @@ const POST_COMMIT_TEMPLATE_PATH = path.join(__dirname, '..', 'gsdt', 'hooks', 'p
 
 function createTempProject(prefix = 'gsdt-compound-dispatch-') {
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), prefix));
-  fs.mkdirSync(path.join(tmpDir, '.claude/.gsdt-planning'), { recursive: true });
+  fs.mkdirSync(path.join(tmpDir, '.gsdt-planning'), { recursive: true });
   return tmpDir;
 }
 
@@ -29,7 +29,7 @@ function cleanup(tmpDir) {
 
 function createTempGitProject(prefix = 'gsdt-compound-hook-') {
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), prefix));
-  fs.mkdirSync(path.join(tmpDir, '.claude/.gsdt-planning'), { recursive: true });
+  fs.mkdirSync(path.join(tmpDir, '.gsdt-planning'), { recursive: true });
   execSync('git init', { cwd: tmpDir, stdio: 'pipe' });
   execSync('git config user.email "test@test.com"', { cwd: tmpDir, stdio: 'pipe' });
   execSync('git config user.name "Test"', { cwd: tmpDir, stdio: 'pipe' });
@@ -116,8 +116,8 @@ describe('dispatchCompoundEvent', () => {
     assert.strictEqual(stored.events[0].status, 'diagnosed');
     assert.strictEqual(stored.events[0].compound_state, 'compounded');
 
-    assert.ok(fs.existsSync(path.join(tmpDir, '.claude/.gsdt-planning', 'compound-memory.json')));
-    assert.ok(fs.existsSync(path.join(tmpDir, '.claude/.gsdt-planning', 'anti-patterns.md')));
+    assert.ok(fs.existsSync(path.join(tmpDir, '.gsdt-planning', 'compound-memory.json')));
+    assert.ok(fs.existsSync(path.join(tmpDir, '.gsdt-planning', 'anti-patterns.md')));
   });
 
   test('skips repeat dispatch after the event has already been compounded', async () => {
@@ -228,7 +228,7 @@ describe('compound hook CLI', () => {
     const output = JSON.parse(result.output);
     assert.strictEqual(output.processed, false);
     assert.strictEqual(output.reason, 'not_relevant');
-    assert.strictEqual(fs.existsSync(path.join(tmpDir, '.claude/.gsdt-planning', 'compound-events.json')), false);
+    assert.strictEqual(fs.existsSync(path.join(tmpDir, '.gsdt-planning', 'compound-events.json')), false);
   });
 
   test('stores candidate event for bugfix commits without clear root cause clues', () => {

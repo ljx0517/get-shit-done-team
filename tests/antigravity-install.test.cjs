@@ -34,7 +34,7 @@ describe('getDirName (Antigravity)', () => {
 
   test('does not break existing runtimes', () => {
     assert.strictEqual(getDirName('claude'), '.claude');
-    assert.strictEqual(getDirName('opencode'), '.opencode');
+    assert.strictEqual(getDirName('vibeAgentTeam'), '.opencode');
     assert.strictEqual(getDirName('gemini'), '.gemini');
     assert.strictEqual(getDirName('codex'), '.codex');
     assert.strictEqual(getDirName('copilot'), '.github');

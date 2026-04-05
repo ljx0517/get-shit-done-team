@@ -1,6 +1,6 @@
 # Roadmap Template
 
-Template for `.claude/.gsdt-planning/ROADMAP.md`.
+Template for `.gsdt-planning/ROADMAP.md`.
 
 ## Initial Roadmap (v1.0 Greenfield)
 

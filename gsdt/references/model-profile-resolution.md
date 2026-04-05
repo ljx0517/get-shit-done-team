@@ -5,7 +5,7 @@ Resolve model profile once at the start of orchestration, then use it for all Ta
 ## Resolution Pattern
 
 ```bash
-MODEL_PROFILE=$(cat .claude/.gsdt-planning/config.json 2>/dev/null | grep -o '"model_profile"[[:space:]]*:[[:space:]]*"[^"]*"' | grep -o '"[^"]*"$' | tr -d '"' || echo "balanced")
+MODEL_PROFILE=$(cat .gsdt-planning/config.json 2>/dev/null | grep -o '"model_profile"[[:space:]]*:[[:space:]]*"[^"]*"' | grep -o '"[^"]*"$' | tr -d '"' || echo "balanced")
 ```
 
 Default: `balanced` if not set or config missing.
@@ -26,7 +26,7 @@ Task(
 
 **Note:** Opus-tier agents resolve to `"inherit"` (not `"opus"`). This causes the agent to use the parent session's model, avoiding conflicts with organization policies that may block specific opus versions.
 
-If `model_profile` is `"inherit"`, all agents resolve to `"inherit"` (useful for OpenCode `/model`).
+If `model_profile` is `"inherit"`, all agents resolve to `"inherit"` (useful for Vibe Agent Team / `/model`).
 
 ## Usage
 

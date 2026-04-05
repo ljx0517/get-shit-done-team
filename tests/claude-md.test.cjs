@@ -21,7 +21,7 @@ describe('generate-claude-md', () => {
 
   test('creates CLAUDE.md with workflow enforcement section', () => {
     fs.writeFileSync(
-      path.join(tmpDir, '.claude/.gsdt-planning', 'PROJECT.md'),
+      path.join(tmpDir, '.gsdt-planning', 'PROJECT.md'),
       '# Test Project\n\n## What This Is\n\nA small test project.\n'
     );
 
@@ -44,7 +44,7 @@ describe('generate-claude-md', () => {
 
   test('adds workflow enforcement section when updating an existing CLAUDE.md', () => {
     fs.writeFileSync(
-      path.join(tmpDir, '.claude/.gsdt-planning', 'PROJECT.md'),
+      path.join(tmpDir, '.gsdt-planning', 'PROJECT.md'),
       '# Test Project\n\n## What This Is\n\nA small test project.\n'
     );
     fs.writeFileSync(path.join(tmpDir, 'CLAUDE.md'), '## Local Notes\n\nKeep this intro.\n');
@@ -68,7 +68,7 @@ describe('new-project workflow includes CLAUDE.md generation', () => {
   test('new-project workflow generates CLAUDE.md before final commit', () => {
     const content = fs.readFileSync(workflowPath, 'utf-8');
     assert.ok(content.includes('generate-claude-md'));
-    assert.ok(content.includes('--files .claude/.gsdt-planning/ROADMAP.md .claude/.gsdt-planning/STATE.md .claude/.gsdt-planning/REQUIREMENTS.md CLAUDE.md'));
+    assert.ok(content.includes('--files .gsdt-planning/ROADMAP.md .gsdt-planning/STATE.md .gsdt-planning/REQUIREMENTS.md CLAUDE.md'));
   });
 
   test('new-project artifacts mention CLAUDE.md', () => {

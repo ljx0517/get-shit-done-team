@@ -4,7 +4,7 @@
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
-const { safeReadFile, loadConfig, isGitIgnored, execGit, normalizePhaseName, comparePhaseNum, getArchivedPhaseDirs, generateSlugInternal, getMilestoneInfo, getMilestonePhaseFilter, resolveModelInternal, stripShippedMilestones, extractCurrentMilestone, planningDir, planningPaths, toPosixPath, output, error, findPhaseInternal, extractOneLinerFromBody, getRoadmapPhaseInternal } = require('./core.cjs');
+const { safeReadFile, loadConfig, isGitIgnored, execGit, normalizePhaseName, comparePhaseNum, getArchivedPhaseDirs, generateSlugInternal, getMilestoneInfo, getMilestonePhaseFilter, resolveModelInternal, stripShippedMilestones, extractCurrentMilestone, planningDir, planningPaths, resolvePlanningDirName, toPosixPath, output, error, findPhaseInternal, extractOneLinerFromBody, getRoadmapPhaseInternal } = require('./core.cjs');
 const { extractFrontmatter } = require('./frontmatter.cjs');
 const { MODEL_PROFILES } = require('./model-profiles.cjs');
 
@@ -240,8 +240,8 @@ function cmdCommit(cwd, message, files, raw, amend, noVerify) {
     return;
   }
 
-  // Check if .claude/.gsdt-planning is gitignored
-  if (isGitIgnored(cwd, '.claude/.gsdt-planning')) {
+  // Check if planning dir is gitignored (default or legacy path)
+  if (isGitIgnored(cwd, '.gsdt-planning/') || isGitIgnored(cwd, '.claude/.gsdt-planning/')) {
     const result = { committed: false, hash: null, reason: 'skipped_gitignored' };
     output(result, raw, 'skipped');
     return;
@@ -285,7 +285,7 @@ function cmdCommit(cwd, message, files, raw, amend, noVerify) {
   }
 
   // Stage files
-  const filesToStage = files && files.length > 0 ? files : ['.claude/.gsdt-planning/'];
+  const filesToStage = files && files.length > 0 ? files : [`${toPosixPath(resolvePlanningDirName(cwd))}/`];
   for (const file of filesToStage) {
     const fullPath = path.join(cwd, file);
     if (!fs.existsSync(fullPath)) {
@@ -327,7 +327,7 @@ function cmdCommitToSubrepo(cwd, message, files, raw) {
   const subRepos = config.sub_repos;
 
   if (!subRepos || subRepos.length === 0) {
-    error('no sub_repos configured in .claude/.gsdt-planning/config.json');
+    error('no sub_repos configured in planning config.json');
   }
 
   if (!files || files.length === 0) {

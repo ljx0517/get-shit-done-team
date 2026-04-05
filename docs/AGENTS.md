@@ -38,7 +38,7 @@ GSD uses a multi-agent architecture where thin orchestrators (workflow files) sp
 | **Parallelism** | 4 instances (stack, features, architecture, pitfalls) |
 | **Tools** | Read, Write, Bash, Grep, Glob, WebSearch, WebFetch, mcp (context7) |
 | **Model (balanced)** | Sonnet |
-| **Produces** | `.claude/.gsdt-planning/research/STACK.md`, `FEATURES.md`, `ARCHITECTURE.md`, `PITFALLS.md` |
+| **Produces** | `.gsdt-planning/research/STACK.md`, `FEATURES.md`, `ARCHITECTURE.md`, `PITFALLS.md` |
 
 **Capabilities:**
 - Web search for current ecosystem information
@@ -143,7 +143,7 @@ GSD uses a multi-agent architecture where thin orchestrators (workflow files) sp
 | **Tools** | Read, Write, Bash |
 | **Model (balanced)** | Sonnet |
 | **Color** | Purple |
-| **Produces** | `.claude/.gsdt-planning/research/SUMMARY.md` |
+| **Produces** | `.gsdt-planning/research/SUMMARY.md` |
 
 ---
 
@@ -341,7 +341,7 @@ GSD uses a multi-agent architecture where thin orchestrators (workflow files) sp
 | **Tools** | Read, Bash, Grep, Glob, Write |
 | **Model (balanced)** | Haiku |
 | **Color** | Cyan |
-| **Produces** | `.claude/.gsdt-planning/codebase/*.md` (7 documents) |
+| **Produces** | `.gsdt-planning/codebase/*.md` (7 documents) |
 
 **Key behaviors:**
 - Read-only exploration + structured output
@@ -361,7 +361,7 @@ GSD uses a multi-agent architecture where thin orchestrators (workflow files) sp
 | **Tools** | Read, Write, Edit, Bash, Grep, Glob, WebSearch |
 | **Model (balanced)** | Sonnet |
 | **Color** | Orange |
-| **Produces** | `.claude/.gsdt-planning/debug/*.md`, knowledge-base updates |
+| **Produces** | `.gsdt-planning/debug/*.md`, knowledge-base updates |
 
 **Debug Session Lifecycle:**
 `gathering` → `investigating` → `fixing` → `verifying` → `awaiting_human_verify` → `resolved`

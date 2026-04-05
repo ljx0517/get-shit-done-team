@@ -16,7 +16,7 @@ const {
 
 function createTempProject(prefix = 'gsdt-compound-schema-') {
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), prefix));
-  fs.mkdirSync(path.join(tmpDir, '.claude/.gsdt-planning'), { recursive: true });
+  fs.mkdirSync(path.join(tmpDir, '.gsdt-planning'), { recursive: true });
   return tmpDir;
 }
 

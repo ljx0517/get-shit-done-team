@@ -8,7 +8,7 @@
 const { test, describe } = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
-const path = require('node:path');
+const path = require('path');
 
 // Read install.js source to extract the runtimeMap and parsing logic
 const installSrc = fs.readFileSync(
@@ -16,10 +16,12 @@ const installSrc = fs.readFileSync(
   'utf8'
 );
 
+const RUNTIME_VIBE_AGENT_TEAM = 'vibeAgentTeam';
+
 // Extract runtimeMap from source for validation
 const runtimeMap = {
   '1': 'claude',
-  '2': 'opencode',
+  '2': RUNTIME_VIBE_AGENT_TEAM,
   '3': 'gemini',
   '4': 'codex',
   '5': 'copilot',
@@ -27,7 +29,16 @@ const runtimeMap = {
   '7': 'cursor',
   '8': 'windsurf'
 };
-const allRuntimes = ['claude', 'opencode', 'gemini', 'codex', 'copilot', 'antigravity', 'cursor', 'windsurf'];
+const allRuntimes = [
+  'claude',
+  RUNTIME_VIBE_AGENT_TEAM,
+  'gemini',
+  'codex',
+  'copilot',
+  'antigravity',
+  'cursor',
+  'windsurf',
+];
 
 /**
  * Simulate the parsing logic from promptRuntime without requiring readline.
@@ -61,7 +72,7 @@ describe('multi-runtime selection parsing', () => {
 
   test('comma-separated choices return multiple runtimes', () => {
     assert.deepStrictEqual(parseRuntimeInput('1,4,6'), ['claude', 'codex', 'antigravity']);
-    assert.deepStrictEqual(parseRuntimeInput('2,3'), ['opencode', 'gemini']);
+    assert.deepStrictEqual(parseRuntimeInput('2,3'), [RUNTIME_VIBE_AGENT_TEAM, 'gemini']);
   });
 
   test('space-separated choices return multiple runtimes', () => {
@@ -71,7 +82,7 @@ describe('multi-runtime selection parsing', () => {
 
   test('mixed comma and space separators work', () => {
     assert.deepStrictEqual(parseRuntimeInput('1, 4, 6'), ['claude', 'codex', 'antigravity']);
-    assert.deepStrictEqual(parseRuntimeInput('2 , 5'), ['opencode', 'copilot']);
+    assert.deepStrictEqual(parseRuntimeInput('2 , 5'), [RUNTIME_VIBE_AGENT_TEAM, 'copilot']);
   });
 
   test('single choice for windsurf', () => {
@@ -105,13 +116,20 @@ describe('multi-runtime selection parsing', () => {
 
   test('preserves selection order', () => {
     assert.deepStrictEqual(parseRuntimeInput('6,1,4'), ['antigravity', 'claude', 'codex']);
-    assert.deepStrictEqual(parseRuntimeInput('7,2,5'), ['cursor', 'opencode', 'copilot']);
+    assert.deepStrictEqual(parseRuntimeInput('7,2,5'), ['cursor', RUNTIME_VIBE_AGENT_TEAM, 'copilot']);
   });
 });
 
 describe('install.js source contains multi-select support', () => {
   test('runtimeMap is defined with all 8 runtimes', () => {
     for (const [key, name] of Object.entries(runtimeMap)) {
+      if (key === '2') {
+        assert.ok(
+          installSrc.includes(`'2': RUNTIME_VIBE_AGENT_TEAM`),
+          `runtimeMap has 2 -> ${RUNTIME_VIBE_AGENT_TEAM}`
+        );
+        continue;
+      }
       assert.ok(
         installSrc.includes(`'${key}': '${name}'`),
         `runtimeMap has ${key} -> ${name}`
@@ -120,10 +138,12 @@ describe('install.js source contains multi-select support', () => {
   });
 
   test('allRuntimes array contains all runtimes', () => {
-    const match = installSrc.match(/const allRuntimes = \[([^\]]+)\]/);
+    const match = installSrc.match(/const allRuntimes = \[[\s\S]*?\];/);
     assert.ok(match, 'allRuntimes array found');
-    for (const rt of allRuntimes) {
-      assert.ok(match[1].includes(`'${rt}'`), `allRuntimes includes ${rt}`);
+    const block = match[0];
+    assert.ok(block.includes('RUNTIME_VIBE_AGENT_TEAM'), 'allRuntimes includes Vibe Agent Team runtime');
+    for (const rt of ['claude', 'gemini', 'codex', 'copilot', 'antigravity', 'cursor', 'windsurf']) {
+      assert.ok(block.includes(`'${rt}'`), `allRuntimes includes ${rt}`);
     }
   });
 

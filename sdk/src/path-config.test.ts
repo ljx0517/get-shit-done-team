@@ -4,9 +4,9 @@ import { join } from 'node:path';
 import { resolvePlanningDir } from './path-config.js';
 
 describe('resolvePlanningDir', () => {
-  it('defaults to .claude/.gsdt-planning', () => {
+  it('defaults to .gsdt-planning', () => {
     expect(resolvePlanningDir('/tmp/project')).toBe(
-      join('/tmp/project', '.claude', '.gsdt-planning'),
+      join('/tmp/project', '.gsdt-planning'),
     );
   });
 

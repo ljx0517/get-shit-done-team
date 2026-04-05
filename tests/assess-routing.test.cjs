@@ -16,10 +16,10 @@ const TOOLS_PATH = path.join(__dirname, '..', 'gsdt', 'bin', 'gsdt-tools.cjs');
 
 function createTempProject(prefix = 'gsdt-assess-routing-') {
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), prefix));
-  const phaseDir = path.join(tmpDir, '.claude/.gsdt-planning', 'phases', '01-test-phase');
+  const phaseDir = path.join(tmpDir, '.gsdt-planning', 'phases', '01-test-phase');
   fs.mkdirSync(phaseDir, { recursive: true });
   fs.writeFileSync(
-    path.join(tmpDir, '.claude/.gsdt-planning', 'ROADMAP.md'),
+    path.join(tmpDir, '.gsdt-planning', 'ROADMAP.md'),
     '# Roadmap\n\n## Milestone: v1.0 Test\n\n### Phase 1: Test Phase\n**Goal**: Stabilize assess loop\n**Depends on**: None\n**Requirements**: TEST-01\n**Success Criteria**:\n  1. Assess routes findings correctly\n'
   );
   fs.writeFileSync(

@@ -4,7 +4,7 @@
 
 **English** · [Português](README.pt-BR.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja-JP.md) · [한국어](README.ko-KR.md)
 
-**A light-weight and powerful meta-prompting, context engineering and spec-driven development system for Claude Code, OpenCode, Gemini CLI, Codex, Copilot, Cursor, Windsurf, and Antigravity.**
+**A light-weight and powerful meta-prompting, context engineering and spec-driven development system for Claude Code, Vibe Agent Team, Gemini CLI, Codex, Copilot, Cursor, Windsurf, and Antigravity.**
 
 **Solves context rot — the quality degradation that happens as Claude fills its context window.**
 
@@ -51,7 +51,7 @@ npx gsdt@latest
 
 I'm a solo developer. I don't write code — Claude Code does.
 
-Other spec-driven development tools exist; BMAD, Speckit... But they all seem to make things way more complicated than they need to be (sprint ceremonies, story points, stakeholder syncs, retrospectives, Jira workflows) or lack real big picture understanding of what you're building. I'm not a 50-person software company. I don't want to play enterprise theater. I'm just a creative person trying to build great things that work.
+Other spec-driven development tools exist; Speckit and similar suites... But they all seem to make things way more complicated than they need to be (sprint ceremonies, story points, stakeholder syncs, retrospectives, Jira workflows) or lack real big picture understanding of what you're building. I'm not a 50-person software company. I don't want to play enterprise theater. I'm just a creative person trying to build great things that work.
 
 So I built GSD. The complexity is in the system, not in your workflow. Behind the scenes: context engineering, XML prompt formatting, subagent orchestration, state management. What you see: a few commands that just work.
 
@@ -82,12 +82,12 @@ npx gsdt@latest
 ```
 
 The installer prompts you to choose:
-1. **Runtime** — Claude Code, OpenCode, Gemini, Codex, Copilot, Cursor, Windsurf, Antigravity, or all (interactive multi-select — pick multiple runtimes in a single install session)
+1. **Runtime** — Claude Code, Vibe Agent Team, Gemini, Codex, Copilot, Cursor, Windsurf, Antigravity, or all (interactive multi-select — pick multiple runtimes in a single install session)
 2. **Location** — Global (all projects) or local (current project only)
 
 Verify with:
 - Claude Code / Gemini: `/gsdt:help`
-- OpenCode: `/gsdt-help`
+- Vibe Agent Team: `/gsdt-help` (installs under `~/.config/opencode/` by default)
 - Codex: `$gsdt-help`
 - Copilot: `/gsdt:help`
 - Antigravity: `/gsdt:help`
@@ -111,8 +111,9 @@ npx gsdt@latest
 npx gsdt --claude --global   # Install to ~/.claude/
 npx gsdt --claude --local    # Install to ./.claude/
 
-# OpenCode (open source, free models)
-npx gsdt --opencode --global # Install to ~/.config/opencode/
+# Vibe Agent Team (flat command/; config under ~/.config/opencode/)
+npx gsdt --vibe-agent-team --global
+# Alias: npx gsdt --opencode --global
 
 # Gemini CLI
 npx gsdt --gemini --global   # Install to ~/.gemini/
@@ -142,7 +143,7 @@ npx gsdt --all --global      # Install to all directories
 ```
 
 Use `--global` (`-g`) or `--local` (`-l`) to skip the location prompt.
-Use `--claude`, `--opencode`, `--gemini`, `--codex`, `--copilot`, `--cursor`, `--windsurf`, `--antigravity`, or `--all` to skip the runtime prompt.
+Use `--claude`, `--vibe-agent-team` (or `--opencode`), `--gemini`, `--codex`, `--copilot`, `--cursor`, `--windsurf`, `--antigravity`, or `--all` to skip the runtime prompt.
 Use `--sdk` to also install the GSD SDK CLI (`gsdt-sdk`) for headless autonomous execution.
 
 </details>
@@ -227,7 +228,7 @@ One command, one flow. The system:
 
 You approve the roadmap. Now you're ready to build.
 
-**Creates:** `PROJECT.md`, `REQUIREMENTS.md`, `ROADMAP.md`, `STATE.md`, `.claude/.gsdt-planning/research/`
+**Creates:** `PROJECT.md`, `REQUIREMENTS.md`, `ROADMAP.md`, `STATE.md`, `.gsdt-planning/research/`
 
 ---
 
@@ -396,7 +397,7 @@ Quick mode gives you GSD guarantees (atomic commits, state tracking) with a fast
 
 - **Same agents** — Planner + executor, same quality
 - **Skips optional steps** — No research, no plan checker, no verifier by default
-- **Separate tracking** — Lives in `.claude/.gsdt-planning/quick/`, not phases
+- **Separate tracking** — Lives in `.gsdt-planning/quick/`, not phases
 
 **`--discuss` flag:** Lightweight discussion to surface gray areas before planning.
 
@@ -411,7 +412,7 @@ Flags are composable: `--discuss --research --full` gives discussion + research 
 > What do you want to do? "Add dark mode toggle to settings"
 ```
 
-**Creates:** `.claude/.gsdt-planning/quick/001-add-dark-mode-toggle/PLAN.md`, `SUMMARY.md`
+**Creates:** `.gsdt-planning/quick/001-add-dark-mode-toggle/PLAN.md`, `SUMMARY.md`
 
 ---
 
@@ -590,7 +591,7 @@ You're never locked in. The system adapts.
 | Command | What it does |
 |---------|--------------|
 | `/gsdt:review` | Cross-AI peer review of current phase or branch |
-| `/gsdt:pr-branch` | Create clean PR branch filtering `.claude/.gsdt-planning/` commits |
+| `/gsdt:pr-branch` | Create clean PR branch filtering `.gsdt-planning/` commits |
 | `/gsdt:audit-uat` | Audit verification debt — find phases missing UAT |
 
 ### Backlog & Threads
@@ -615,7 +616,7 @@ You're never locked in. The system adapts.
 | `/gsdt:intake <text>` | Quiet semantic intake — AI-assisted semantic intake with deterministic guardrails for low-interruption routing into briefs and phase planning |
 | `/gsdt:note <text>` | Zero-friction idea capture — append, list, or promote notes to todos |
 | `/gsdt:quick [--full] [--discuss] [--research]` | Execute ad-hoc task with GSD guarantees (`--full` adds plan-checking and verification, `--discuss` gathers context first, `--research` investigates approaches before planning) |
-| `/gsdt:health [--repair]` | Validate `.claude/.gsdt-planning/` directory integrity, auto-repair with `--repair` |
+| `/gsdt:health [--repair]` | Validate `.gsdt-planning/` directory integrity, auto-repair with `--repair` |
 | `/gsdt:stats` | Display project statistics — phases, plans, requirements, git metrics |
 | `/gsdt:profile-user [--questionnaire] [--refresh]` | Generate developer behavioral profile from session analysis for personalized responses |
 
@@ -625,7 +626,7 @@ You're never locked in. The system adapts.
 
 ## Configuration
 
-GSD stores project settings in `.claude/.gsdt-planning/config.json`. Configure during `/gsdt:new-project` or update later with `/gsdt:settings`. For the full config schema, workflow toggles, git branching options, and per-agent model breakdown, see the [User Guide](docs/USER-GUIDE.md#configuration-reference).
+GSD stores project settings in `.gsdt-planning/config.json`. Configure during `/gsdt:new-project` or update later with `/gsdt:settings`. For the full config schema, workflow toggles, git branching options, and per-agent model breakdown, see the [User Guide](docs/USER-GUIDE.md#configuration-reference).
 
 ### Core Settings
 
@@ -650,7 +651,7 @@ Switch profiles:
 /gsdt:set-profile budget
 ```
 
-Use `inherit` when using non-Anthropic providers (OpenRouter, local models) or to follow the current runtime model selection (e.g. OpenCode `/model`).
+Use `inherit` when using non-Anthropic providers (OpenRouter, local models) or to follow the current runtime model selection (e.g. Vibe Agent Team `/model`).
 
 Or configure via `/gsdt:settings`.
 
@@ -678,7 +679,7 @@ Use `/gsdt:settings` to toggle these, or override per-invocation:
 | Setting | Default | What it controls |
 |---------|---------|------------------|
 | `parallelization.enabled` | `true` | Run independent plans simultaneously |
-| `planning.commit_docs` | `true` | Track `.claude/.gsdt-planning/` in git |
+| `planning.commit_docs` | `true` | Track `.gsdt-planning/` in git |
 | `hooks.context_warnings` | `true` | Show context window usage warnings |
 
 ### Agent Skills
@@ -718,7 +719,7 @@ GSD includes defense-in-depth security since v1.27:
 
 - **Path traversal prevention** — All user-supplied file paths (`--text-file`, `--prd`) are validated to resolve within the project directory
 - **Prompt injection detection** — Centralized `security.cjs` module scans for injection patterns in user-supplied text before it enters planning artifacts
-- **PreToolUse prompt guard hook** — `gsdt-prompt-guard` scans writes to `.claude/.gsdt-planning/` for embedded injection vectors (advisory, not blocking)
+- **PreToolUse prompt guard hook** — `gsdt-prompt-guard` scans writes to `.gsdt-planning/` for embedded injection vectors (advisory, not blocking)
 - **Safe JSON parsing** — Malformed `--fields` arguments are caught before they corrupt state
 - **Shell argument validation** — User text is sanitized before shell interpolation
 - **CI-ready injection scanner** — `prompt-injection-scan.test.cjs` scans all agent/workflow/command files for embedded injection vectors
@@ -786,7 +787,7 @@ To remove GSD completely:
 ```bash
 # Global installs
 npx gsdt --claude --global --uninstall
-npx gsdt --opencode --global --uninstall
+npx gsdt --vibe-agent-team --global --uninstall
 npx gsdt --gemini --global --uninstall
 npx gsdt --codex --global --uninstall
 npx gsdt --copilot --global --uninstall
@@ -796,7 +797,7 @@ npx gsdt --antigravity --global --uninstall
 
 # Local installs (current project)
 npx gsdt --claude --local --uninstall
-npx gsdt --opencode --local --uninstall
+npx gsdt --vibe-agent-team --local --uninstall
 npx gsdt --gemini --local --uninstall
 npx gsdt --codex --local --uninstall
 npx gsdt --copilot --local --uninstall
@@ -811,13 +812,13 @@ This removes all GSD commands, agents, hooks, and settings while preserving your
 
 ## Community Ports
 
-OpenCode, Gemini CLI, and Codex are now natively supported via `npx gsdt`.
+Vibe Agent Team, Gemini CLI, and Codex are now natively supported via `npx gsdt`.
 
 These community ports pioneered multi-runtime support:
 
 | Project | Platform | Description |
 |---------|----------|-------------|
-| [gsdt-opencode](https://github.com/rokicool/gsdt-opencode) | OpenCode | Original OpenCode adaptation |
+| [gsdt-opencode](https://github.com/rokicool/gsdt-opencode) | Vibe Agent Team | Early community adapter (historical repo name) |
 | gsdt-gemini (archived) | Gemini CLI | Original Gemini adaptation by uberfuzzy |
 
 ---

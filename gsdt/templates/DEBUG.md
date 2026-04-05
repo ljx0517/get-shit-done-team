@@ -1,6 +1,6 @@
 # Debug Template
 
-Template for `.claude/.gsdt-planning/debug/[slug].md` — active debug session tracking.
+Template for `.gsdt-planning/debug/[slug].md` — active debug session tracking.
 
 ---
 
@@ -134,7 +134,7 @@ files_changed: []
 
 **On resolution:**
 - status → "resolved"
-- Move file to .claude/.gsdt-planning/debug/resolved/ (only after user confirms fix)
+- Move file to .gsdt-planning/debug/resolved/ (only after user confirms fix)
 
 </lifecycle>
 

@@ -42,9 +42,9 @@ Output: User model, API endpoints, and UI components.
 </execution_context>
 
 <context>
-@.claude/.gsdt-planning/PROJECT.md
-@.claude/.gsdt-planning/ROADMAP.md
-@.claude/.gsdt-planning/STATE.md
+@.gsdt-planning/PROJECT.md
+@.gsdt-planning/ROADMAP.md
+@.gsdt-planning/STATE.md
 
 # Only include SUMMARY refs if genuinely needed
 @src/relevant/source.ts
@@ -378,9 +378,9 @@ describe('parsePlan — sections', () => {
   it('extracts context references (skipping comments)', () => {
     const result = parsePlan(FULL_PLAN);
     expect(result.context_refs).toEqual([
-      '.claude/.gsdt-planning/PROJECT.md',
-      '.claude/.gsdt-planning/ROADMAP.md',
-      '.claude/.gsdt-planning/STATE.md',
+      '.gsdt-planning/PROJECT.md',
+      '.gsdt-planning/ROADMAP.md',
+      '.gsdt-planning/STATE.md',
       'src/relevant/source.ts',
     ]);
   });

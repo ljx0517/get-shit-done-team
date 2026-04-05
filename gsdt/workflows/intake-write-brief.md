@@ -14,8 +14,8 @@ Read these files if present:
 - `.claude/.gsdt-intake/readiness.json`
 - `.claude/.gsdt-intake/cards.md`
 - `.claude/.gsdt-intake/brief.md`
-- `.claude/.gsdt-planning/ROADMAP.md`
-- `.claude/.gsdt-planning/STATE.md`
+- `.gsdt-planning/ROADMAP.md`
+- `.gsdt-planning/STATE.md`
 </step>
 
 <step name="draft_artifacts">

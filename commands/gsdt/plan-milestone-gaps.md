@@ -23,7 +23,7 @@ One command creates all fix phases — no manual `/gsdt:add-phase` per gap.
 
 <context>
 **Audit results:**
-Glob: .claude/.gsdt-planning/v*-MILESTONE-AUDIT.md (use most recent)
+Glob: .gsdt-planning/v*-MILESTONE-AUDIT.md (use most recent)
 
 Original intent and current planning state are loaded on demand inside the workflow.
 </context>

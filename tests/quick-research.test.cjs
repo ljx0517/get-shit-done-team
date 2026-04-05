@@ -177,8 +177,8 @@ describe('quick task: research file in task directory', () => {
     const output = JSON.parse(result.output);
     assert.ok(output.task_dir, 'task_dir should be non-null');
     assert.ok(
-      output.task_dir.startsWith('.claude/.gsdt-planning/quick/'),
-      'task_dir should be under .claude/.gsdt-planning/quick/'
+      output.task_dir.startsWith('.gsdt-planning/quick/'),
+      'task_dir should be under .gsdt-planning/quick/'
     );
 
     const expectedResearchPath = path.join(
@@ -192,7 +192,7 @@ describe('quick task: research file in task directory', () => {
   });
 
   test('verify-path-exists detects RESEARCH.md in quick task directory', () => {
-    const quickTaskDir = path.join(tmpDir, '.claude/.gsdt-planning', 'quick', '1-test-task');
+    const quickTaskDir = path.join(tmpDir, '.gsdt-planning', 'quick', '1-test-task');
     fs.mkdirSync(quickTaskDir, { recursive: true });
     fs.writeFileSync(
       path.join(quickTaskDir, '1-RESEARCH.md'),
@@ -200,7 +200,7 @@ describe('quick task: research file in task directory', () => {
     );
 
     const result = runGsdTools(
-      'verify-path-exists .claude/.gsdt-planning/quick/1-test-task/1-RESEARCH.md',
+      'verify-path-exists .gsdt-planning/quick/1-test-task/1-RESEARCH.md',
       tmpDir
     );
     assert.ok(result.success, `Command failed: ${result.error}`);
@@ -211,11 +211,11 @@ describe('quick task: research file in task directory', () => {
   });
 
   test('verify-path-exists returns false for missing RESEARCH.md', () => {
-    const quickTaskDir = path.join(tmpDir, '.claude/.gsdt-planning', 'quick', '1-test-task');
+    const quickTaskDir = path.join(tmpDir, '.gsdt-planning', 'quick', '1-test-task');
     fs.mkdirSync(quickTaskDir, { recursive: true });
 
     const result = runGsdTools(
-      'verify-path-exists .claude/.gsdt-planning/quick/1-test-task/1-RESEARCH.md',
+      'verify-path-exists .gsdt-planning/quick/1-test-task/1-RESEARCH.md',
       tmpDir
     );
     assert.ok(result.success, `Command failed: ${result.error}`);
@@ -225,7 +225,7 @@ describe('quick task: research file in task directory', () => {
   });
 
   test('quick task directory supports all research workflow artifacts', () => {
-    const quickTaskDir = path.join(tmpDir, '.claude/.gsdt-planning', 'quick', '1-add-caching');
+    const quickTaskDir = path.join(tmpDir, '.gsdt-planning', 'quick', '1-add-caching');
     fs.mkdirSync(quickTaskDir, { recursive: true });
 
     const artifacts = [
@@ -242,7 +242,7 @@ describe('quick task: research file in task directory', () => {
 
     for (const artifact of artifacts) {
       const result = runGsdTools(
-        `verify-path-exists .claude/.gsdt-planning/quick/1-add-caching/${artifact}`,
+        `verify-path-exists .gsdt-planning/quick/1-add-caching/${artifact}`,
         tmpDir
       );
       assert.ok(result.success, `Command failed for ${artifact}: ${result.error}`);

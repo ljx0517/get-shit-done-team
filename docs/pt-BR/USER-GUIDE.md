@@ -133,7 +133,7 @@ Workstreams permitem trabalho paralelo sem colisão de estado de planejamento.
 | `/gsdt:workstreams list` | Lista workstreams |
 | `/gsdt:workstreams complete <name>` | Finaliza e arquiva workstream |
 
-`workstreams` compartilham o mesmo código/git, mas isolam artefatos de `.claude/.gsdt-planning/`.
+`workstreams` compartilham o mesmo código/git, mas isolam artefatos de `.gsdt-planning/`.
 
 ---
 
@@ -143,7 +143,7 @@ O GSD aplica defesa em profundidade:
 
 - prevenção de path traversal em entradas de arquivo
 - detecção de prompt injection em texto do usuário
-- hooks de proteção para escrita em `.claude/.gsdt-planning/`
+- hooks de proteção para escrita em `.gsdt-planning/`
 - scanner CI para padrões de injeção em agentes/workflows/comandos
 
 Para arquivos sensíveis, use deny list no Claude Code.
@@ -184,7 +184,7 @@ Para lista completa e flags avançadas, consulte [Command Reference](../COMMANDS
 
 ## Configuração
 
-Arquivo de configuração: `.claude/.gsdt-planning/config.json`
+Arquivo de configuração: `.gsdt-planning/config.json`
 
 ### Núcleo
 
@@ -261,7 +261,7 @@ claude --dangerously-skip-permissions
 
 ### "Project already initialized"
 
-`.claude/.gsdt-planning/PROJECT.md` já existe. Apague `.claude/.gsdt-planning/` se quiser reiniciar do zero.
+`.gsdt-planning/PROJECT.md` já existe. Apague `.gsdt-planning/` se quiser reiniciar do zero.
 
 ### Sessão longa degradando contexto
 
@@ -283,7 +283,7 @@ Use perfil budget:
 /gsdt:set-profile budget
 ```
 
-### Runtime não-Claude (Codex/OpenCode/Gemini)
+### Runtime não-Claude (Codex/Vibe Agent Team/Gemini)
 
 Use `resolve_model_ids: "omit"` para deixar o runtime resolver modelos padrão.
 
@@ -306,7 +306,7 @@ Use `resolve_model_ids: "omit"` para deixar o runtime resolver modelos padrão.
 ## Estrutura de arquivos do projeto
 
 ```text
-.claude/.gsdt-planning/
+.gsdt-planning/
   PROJECT.md
   REQUIREMENTS.md
   ROADMAP.md

@@ -1,6 +1,6 @@
 # PROJECT.md Template
 
-Template for `.claude/.gsdt-planning/PROJECT.md` — the living project context document.
+Template for `.gsdt-planning/PROJECT.md` — the living project context document.
 
 <template>
 
@@ -175,7 +175,7 @@ STATE.md references PROJECT.md:
 ```markdown
 ## Project Reference
 
-See: .claude/.gsdt-planning/PROJECT.md (updated [date])
+See: .gsdt-planning/PROJECT.md (updated [date])
 
 **Core value:** [One-liner from Core Value section]
 **Current focus:** [Current phase name]

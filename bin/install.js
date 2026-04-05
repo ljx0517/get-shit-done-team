@@ -21,6 +21,9 @@ const GSD_CODEX_HOOKS_OWNERSHIP_PREFIX = '# GSD codex_hooks ownership: ';
 const GSDT_INSTALL_DIR = 'gsdt';
 const GSDT_COMMANDS_DIR = 'gsdt';
 
+/** Vibe Agent Team runtime id. Config lives under ~/.config/opencode and ./.opencode (existing on-disk layout). CLI: --vibe-agent-team; --opencode is a legacy alias. */
+const RUNTIME_VIBE_AGENT_TEAM = 'vibeAgentTeam';
+
 // Copilot instructions marker constants
 const GSDT_COPILOT_INSTRUCTIONS_MARKER = '<!-- GSD Configuration \u2014 managed by get-shit-done installer -->';
 const GSD_COPILOT_INSTRUCTIONS_CLOSE_MARKER = '<!-- /GSD Configuration -->';
@@ -63,7 +66,8 @@ const pkg = require('../package.json');
 const args = process.argv.slice(2);
 const hasGlobal = args.includes('--global') || args.includes('-g');
 const hasLocal = args.includes('--local') || args.includes('-l');
-const hasOpencode = args.includes('--opencode');
+const hasVibeAgentTeam =
+  args.includes('--vibe-agent-team') || args.includes('--opencode');
 const hasClaude = args.includes('--claude');
 const hasGemini = args.includes('--gemini');
 const hasCodex = args.includes('--codex');
@@ -79,11 +83,20 @@ const hasUninstall = args.includes('--uninstall') || args.includes('-u');
 // Runtime selection - can be set by flags or interactive prompt
 let selectedRuntimes = [];
 if (hasAll) {
-  selectedRuntimes = ['claude', 'opencode', 'gemini', 'codex', 'copilot', 'antigravity', 'cursor', 'windsurf'];
+  selectedRuntimes = [
+    'claude',
+    RUNTIME_VIBE_AGENT_TEAM,
+    'gemini',
+    'codex',
+    'copilot',
+    'antigravity',
+    'cursor',
+    'windsurf',
+  ];
 } else if (hasBoth) {
-  selectedRuntimes = ['claude', 'opencode'];
+  selectedRuntimes = ['claude', RUNTIME_VIBE_AGENT_TEAM];
 } else {
-  if (hasOpencode) selectedRuntimes.push('opencode');
+  if (hasVibeAgentTeam) selectedRuntimes.push(RUNTIME_VIBE_AGENT_TEAM);
   if (hasClaude) selectedRuntimes.push('claude');
   if (hasGemini) selectedRuntimes.push('gemini');
   if (hasCodex) selectedRuntimes.push('codex');
@@ -130,7 +143,7 @@ Then re-run: npx gsdt@latest
 // Helper to get directory name for a runtime (used for local/project installs)
 function getDirName(runtime) {
   if (runtime === 'copilot') return '.github';
-  if (runtime === 'opencode') return '.opencode';
+  if (runtime === RUNTIME_VIBE_AGENT_TEAM) return '.opencode';
   if (runtime === 'gemini') return '.gemini';
   if (runtime === 'codex') return '.codex';
   if (runtime === 'antigravity') return '.agent';
@@ -142,7 +155,7 @@ function getDirName(runtime) {
 /**
  * Get the config directory path relative to home directory for a runtime
  * Used for templating hooks that use path.join(homeDir, '<configDir>', ...)
- * @param {string} runtime - 'claude', 'opencode', 'gemini', 'codex', or 'copilot'
+ * @param {string} runtime - 'claude', 'vibeAgentTeam', 'gemini', 'codex', or 'copilot'
  * @param {boolean} isGlobal - Whether this is a global install
  */
 function getConfigDirFromHome(runtime, isGlobal) {
@@ -150,10 +163,10 @@ function getConfigDirFromHome(runtime, isGlobal) {
     // Local installs use the same dir name pattern
     return `'${getDirName(runtime)}'`;
   }
-  // Global installs - OpenCode uses XDG path structure
+  // Global installs — Vibe Agent Team runtime uses XDG-style paths (see getVibeAgentTeamGlobalDir)
   if (runtime === 'copilot') return "'.copilot'";
-  if (runtime === 'opencode') {
-    // OpenCode: ~/.config/opencode -> '.config', 'opencode'
+  if (runtime === RUNTIME_VIBE_AGENT_TEAM) {
+    // Vibe Agent Team: ~/.config/opencode -> '.config', 'opencode' (path segments for templating)
     // Return as comma-separated for path.join() replacement
     return "'.config', 'opencode'";
   }
@@ -169,11 +182,10 @@ function getConfigDirFromHome(runtime, isGlobal) {
 }
 
 /**
- * Get the global config directory for OpenCode
- * OpenCode follows XDG Base Directory spec and uses ~/.config/opencode/
- * Priority: OPENCODE_CONFIG_DIR > dirname(OPENCODE_CONFIG) > XDG_CONFIG_HOME/opencode > ~/.config/opencode
+ * Global config directory for Vibe Agent Team (flat command/ + opencode.json layout).
+ * Follows XDG: OPENCODE_CONFIG_DIR > dirname(OPENCODE_CONFIG) > XDG_CONFIG_HOME/opencode > ~/.config/opencode
  */
-function getOpencodeGlobalDir() {
+function getVibeAgentTeamGlobalDir() {
   // 1. Explicit OPENCODE_CONFIG_DIR env var
   if (process.env.OPENCODE_CONFIG_DIR) {
     return expandTilde(process.env.OPENCODE_CONFIG_DIR);
@@ -195,16 +207,16 @@ function getOpencodeGlobalDir() {
 
 /**
  * Get the global config directory for a runtime
- * @param {string} runtime - 'claude', 'opencode', 'gemini', 'codex', or 'copilot'
+ * @param {string} runtime - 'claude', 'vibeAgentTeam', 'gemini', 'codex', or 'copilot'
  * @param {string|null} explicitDir - Explicit directory from --config-dir flag
  */
 function getGlobalDir(runtime, explicitDir = null) {
-  if (runtime === 'opencode') {
-    // For OpenCode, --config-dir overrides env vars
+  if (runtime === RUNTIME_VIBE_AGENT_TEAM) {
+    // For Vibe Agent Team layout, --config-dir overrides env vars
     if (explicitDir) {
       return expandTilde(explicitDir);
     }
-    return getOpencodeGlobalDir();
+    return getVibeAgentTeamGlobalDir();
   }
   
   if (runtime === 'gemini') {
@@ -294,7 +306,7 @@ const banner = '\n' +
   '\n' +
   '  Get Shit Done ' + dim + 'v' + pkg.version + reset + '\n' +
   '  A meta-prompting, context engineering and spec-driven\n' +
-  '  development system for Claude Code, OpenCode, Gemini, Codex, Copilot, Antigravity, Cursor, and Windsurf by TÂCHES.\n';
+  '  development system for Claude Code, Vibe Agent Team, Gemini, Codex, Copilot, Antigravity, Cursor, and Windsurf by TÂCHES.\n';
 
 // Parse --config-dir argument
 function parseConfigDirArg() {
@@ -332,7 +344,7 @@ if (hasUninstall) {
 
 // Show help if requested
 if (hasHelp) {
-  console.log(`  ${yellow}Usage:${reset} npx gsdt [options]\n\n  ${yellow}Options:${reset}\n    ${cyan}-g, --global${reset}              Install globally (to config directory)\n    ${cyan}-l, --local${reset}               Install locally (to current directory)\n    ${cyan}--claude${reset}                  Install for Claude Code only\n    ${cyan}--opencode${reset}                Install for OpenCode only\n    ${cyan}--gemini${reset}                  Install for Gemini only\n    ${cyan}--codex${reset}                   Install for Codex only\n    ${cyan}--copilot${reset}                 Install for Copilot only\n    ${cyan}--antigravity${reset}             Install for Antigravity only\n    ${cyan}--cursor${reset}                  Install for Cursor only\n    ${cyan}--windsurf${reset}                Install for Windsurf only\n    ${cyan}--all${reset}                     Install for all runtimes\n    ${cyan}--sdk${reset}                     Also install GSD SDK CLI (gsdt-sdk)\n    ${cyan}-u, --uninstall${reset}           Uninstall GSD (remove all GSD files)\n    ${cyan}-c, --config-dir <path>${reset}   Specify custom config directory\n    ${cyan}-h, --help${reset}                Show this help message\n    ${cyan}--force-statusline${reset}        Replace existing statusline config\n\n  ${yellow}Examples:${reset}\n    ${dim}# Interactive install (prompts for runtime and location)${reset}\n    npx gsdt\n\n    ${dim}# Install for Claude Code globally${reset}\n    npx gsdt --claude --global\n\n    ${dim}# Install for Gemini globally${reset}\n    npx gsdt --gemini --global\n\n    ${dim}# Install for Codex globally${reset}\n    npx gsdt --codex --global\n\n    ${dim}# Install for Copilot globally${reset}\n    npx gsdt --copilot --global\n\n    ${dim}# Install for Copilot locally${reset}\n    npx gsdt --copilot --local\n\n    ${dim}# Install for Antigravity globally${reset}\n    npx gsdt --antigravity --global\n\n    ${dim}# Install for Antigravity locally${reset}\n    npx gsdt --antigravity --local\n\n    ${dim}# Install for Cursor globally${reset}\n    npx gsdt --cursor --global\n\n    ${dim}# Install for Cursor locally${reset}\n    npx gsdt --cursor --local\n\n    ${dim}# Install for Windsurf globally${reset}\n    npx gsdt --windsurf --global\n\n    ${dim}# Install for Windsurf locally${reset}\n    npx gsdt --windsurf --local\n\n    ${dim}# Install for all runtimes globally${reset}\n    npx gsdt --all --global\n\n    ${dim}# Install to custom config directory${reset}\n    npx gsdt --codex --global --config-dir ~/.codex-work\n\n    ${dim}# Install to current project only${reset}\n    npx gsdt --claude --local\n\n    ${dim}# Uninstall GSD from Cursor globally${reset}\n    npx gsdt --cursor --global --uninstall\n\n  ${yellow}Notes:${reset}\n    The --config-dir option is useful when you have multiple configurations.\n    It takes priority over CLAUDE_CONFIG_DIR / GEMINI_CONFIG_DIR / CODEX_HOME / COPILOT_CONFIG_DIR / ANTIGRAVITY_CONFIG_DIR / CURSOR_CONFIG_DIR / WINDSURF_CONFIG_DIR environment variables.\n`);
+  console.log(`  ${yellow}Usage:${reset} npx gsdt [options]\n\n  ${yellow}Options:${reset}\n    ${cyan}-g, --global${reset}              Install globally (to config directory)\n    ${cyan}-l, --local${reset}               Install locally (to current directory)\n    ${cyan}--claude${reset}                  Install for Claude Code only\n    ${cyan}--vibe-agent-team${reset}           Vibe Agent Team layout (config under ~/.config/opencode)\n    ${cyan}--opencode${reset}                Alias for --vibe-agent-team\n    ${cyan}--gemini${reset}                  Install for Gemini only\n    ${cyan}--codex${reset}                   Install for Codex only\n    ${cyan}--copilot${reset}                 Install for Copilot only\n    ${cyan}--antigravity${reset}             Install for Antigravity only\n    ${cyan}--cursor${reset}                  Install for Cursor only\n    ${cyan}--windsurf${reset}                Install for Windsurf only\n    ${cyan}--all${reset}                     Install for all runtimes\n    ${cyan}--sdk${reset}                     Also install GSD SDK CLI (gsdt-sdk)\n    ${cyan}-u, --uninstall${reset}           Uninstall GSD (remove all GSD files)\n    ${cyan}-c, --config-dir <path>${reset}   Specify custom config directory\n    ${cyan}-h, --help${reset}                Show this help message\n    ${cyan}--force-statusline${reset}        Replace existing statusline config\n\n  ${yellow}Examples:${reset}\n    ${dim}# Interactive install (prompts for runtime and location)${reset}\n    npx gsdt\n\n    ${dim}# Install for Claude Code globally${reset}\n    npx gsdt --claude --global\n\n    ${dim}# Install for Gemini globally${reset}\n    npx gsdt --gemini --global\n\n    ${dim}# Install for Codex globally${reset}\n    npx gsdt --codex --global\n\n    ${dim}# Install for Copilot globally${reset}\n    npx gsdt --copilot --global\n\n    ${dim}# Install for Copilot locally${reset}\n    npx gsdt --copilot --local\n\n    ${dim}# Install for Antigravity globally${reset}\n    npx gsdt --antigravity --global\n\n    ${dim}# Install for Antigravity locally${reset}\n    npx gsdt --antigravity --local\n\n    ${dim}# Install for Cursor globally${reset}\n    npx gsdt --cursor --global\n\n    ${dim}# Install for Cursor locally${reset}\n    npx gsdt --cursor --local\n\n    ${dim}# Install for Windsurf globally${reset}\n    npx gsdt --windsurf --global\n\n    ${dim}# Install for Windsurf locally${reset}\n    npx gsdt --windsurf --local\n\n    ${dim}# Install for all runtimes globally${reset}\n    npx gsdt --all --global\n\n    ${dim}# Install to custom config directory${reset}\n    npx gsdt --codex --global --config-dir ~/.codex-work\n\n    ${dim}# Install to current project only${reset}\n    npx gsdt --claude --local\n\n    ${dim}# Uninstall GSD from Cursor globally${reset}\n    npx gsdt --cursor --global --uninstall\n\n  ${yellow}Notes:${reset}\n    The --config-dir option is useful when you have multiple configurations.\n    It takes priority over CLAUDE_CONFIG_DIR / GEMINI_CONFIG_DIR / CODEX_HOME / COPILOT_CONFIG_DIR / ANTIGRAVITY_CONFIG_DIR / CURSOR_CONFIG_DIR / WINDSURF_CONFIG_DIR environment variables.\n`);
   process.exit(0);
 }
 
@@ -357,9 +369,9 @@ function buildHookCommand(configDir, hookName) {
 }
 
 /**
- * Resolve the opencode config file path, preferring .jsonc if it exists.
+ * Resolve Vibe Agent Team config file path (opencode.json / opencode.jsonc), preferring .jsonc if it exists.
  */
-function resolveOpencodeConfigPath(configDir) {
+function resolveVibeAgentTeamConfigPath(configDir) {
   const jsoncPath = path.join(configDir, 'opencode.jsonc');
   if (fs.existsSync(jsoncPath)) {
     return jsoncPath;
@@ -393,7 +405,7 @@ const attributionCache = new Map();
 
 /**
  * Get commit attribution setting for a runtime
- * @param {string} runtime - 'claude', 'opencode', 'gemini', 'codex', or 'copilot'
+ * @param {string} runtime - 'claude', 'vibeAgentTeam', 'gemini', 'codex', or 'copilot'
  * @returns {null|undefined|string} null = remove, undefined = keep default, string = custom
  */
 function getCommitAttribution(runtime) {
@@ -404,8 +416,8 @@ function getCommitAttribution(runtime) {
 
   let result;
 
-  if (runtime === 'opencode') {
-    const config = readSettings(resolveOpencodeConfigPath(getGlobalDir('opencode', null)));
+  if (runtime === RUNTIME_VIBE_AGENT_TEAM) {
+    const config = readSettings(resolveVibeAgentTeamConfigPath(getGlobalDir(RUNTIME_VIBE_AGENT_TEAM, null)));
     result = config.disable_ai_attribution === true ? null : undefined;
   } else if (runtime === 'gemini') {
     // Gemini: check gemini settings.json for attribution config
@@ -457,12 +469,12 @@ function processAttribution(content, attribution) {
 }
 
 /**
- * Convert Claude Code frontmatter to opencode format
+ * Convert Claude Code frontmatter to Vibe Agent Team format (flat command/; opencode.json conventions)
  * - Converts 'allowed-tools:' array to 'permission:' object
  * @param {string} content - Markdown file content with YAML frontmatter
  * @returns {string} - Content with converted frontmatter
  */
-// Color name to hex mapping for opencode compatibility
+// Color name to hex mapping (opencode.json frontmatter)
 const colorNameToHex = {
   cyan: '#00FFFF',
   red: '#FF0000',
@@ -479,9 +491,8 @@ const colorNameToHex = {
   grey: '#808080',
 };
 
-// Tool name mapping from Claude Code to OpenCode
-// OpenCode uses lowercase tool names; special mappings for renamed tools
-const claudeToOpencodeTools = {
+// Tool name mapping from Claude Code to Vibe Agent Team (lowercase tool ids for flat-command runtime)
+const claudeToVibeAgentTeamTools = {
   AskUserQuestion: 'question',
   SlashCommand: 'skill',
   TodoWrite: 'todowrite',
@@ -505,14 +516,14 @@ const claudeToGeminiTools = {
 };
 
 /**
- * Convert a Claude Code tool name to OpenCode format
+ * Convert a Claude Code tool name to Vibe Agent Team format (flat-command / permission block)
  * - Applies special mappings (AskUserQuestion -> question, etc.)
  * - Converts to lowercase (except MCP tools which keep their format)
  */
-function convertToolName(claudeTool) {
+function convertVibeAgentTeamToolName(claudeTool) {
   // Check for special mapping first
-  if (claudeToOpencodeTools[claudeTool]) {
-    return claudeToOpencodeTools[claudeTool];
+  if (claudeToVibeAgentTeamTools[claudeTool]) {
+    return claudeToVibeAgentTeamTools[claudeTool];
   }
   // MCP tools (mcp__*) keep their format
   if (claudeTool.startsWith('mcp__')) {
@@ -2503,18 +2514,18 @@ function convertClaudeToGeminiAgent(content) {
   return `---\n${newFrontmatter}\n---${stripSubTags(neutralBody)}`;
 }
 
-function convertClaudeToOpencodeFrontmatter(content, { isAgent = false } = {}) {
+function convertClaudeToVibeAgentTeamFrontmatter(content, { isAgent = false } = {}) {
   // Replace tool name references in content (applies to all files)
   let convertedContent = content;
   convertedContent = convertedContent.replace(/\bAskUserQuestion\b/g, 'question');
   convertedContent = convertedContent.replace(/\bSlashCommand\b/g, 'skill');
   convertedContent = convertedContent.replace(/\bTodoWrite\b/g, 'todowrite');
-  // Replace /gsdt:command with /gsd-command for opencode (flat command structure)
+  // Replace /gsdt:command with /gsd-command for flat command/ layout
   convertedContent = convertedContent.replace(/\/gsdt:/g, '/gsd-');
-  // Replace ~/.claude and $HOME/.claude with OpenCode's config location
+  // Replace ~/.claude and $HOME/.claude with Vibe Agent Team config dir (~/.config/opencode)
   convertedContent = convertedContent.replace(/~\/\.claude\b/g, '~/.config/opencode');
   convertedContent = convertedContent.replace(/\$HOME\/\.claude\b/g, '$HOME/.config/opencode');
-  // Replace general-purpose subagent type with OpenCode's equivalent "general"
+  // Replace general-purpose subagent type with flat-runtime equivalent "general"
   convertedContent = convertedContent.replace(/subagent_type="general-purpose"/g, 'subagent_type="general"');
   // Runtime-neutral agent name replacement (#766)
   convertedContent = neutralizeAgentReferences(convertedContent, 'AGENTS.md');
@@ -2557,7 +2568,7 @@ function convertClaudeToOpencodeFrontmatter(content, { isAgent = false } = {}) {
     // Detect inline tools: field (comma-separated string)
     if (trimmed.startsWith('tools:')) {
       if (isAgent) {
-        // Agents: strip tools entirely (not supported in OpenCode agent frontmatter)
+        // Agents: strip tools entirely (not supported in this runtime's agent frontmatter)
         inSkippedArray = true;
         continue;
       }
@@ -2584,20 +2595,19 @@ function convertClaudeToOpencodeFrontmatter(content, { isAgent = false } = {}) {
       inSkippedArray = false;
     }
 
-    // For commands: remove name: field (opencode uses filename for command name)
-    // For agents: keep name: (required by OpenCode agents)
+    // For commands: remove name: field (filename is the command id)
+    // For agents: keep name: (required)
     if (!isAgent && trimmed.startsWith('name:')) {
       continue;
     }
 
-    // Strip model: field — OpenCode doesn't support Claude Code model aliases
-    // like 'haiku', 'sonnet', 'opus', or 'inherit'. Omitting lets OpenCode use
-    // its configured default model. See #1156.
+    // Strip model: field — this runtime does not support Claude-style model aliases
+    // like 'haiku', 'sonnet', 'opus', or 'inherit'. Omitting uses the runtime default. See #1156.
     if (trimmed.startsWith('model:')) {
       continue;
     }
 
-    // Convert color names to hex for opencode (commands only; agents strip color above)
+    // Convert color names to hex for commands (agents strip color above)
     if (trimmed.startsWith('color:')) {
       const colorValue = trimmed.substring(6).trim().toLowerCase();
       const hexColor = colorNameToHex[colorValue];
@@ -2632,10 +2642,9 @@ function convertClaudeToOpencodeFrontmatter(content, { isAgent = false } = {}) {
     }
   }
 
-  // For agents: add required OpenCode agent fields
-  // Note: Do NOT add 'model: inherit' — OpenCode does not recognize the 'inherit'
-  // keyword and throws ProviderModelNotFoundError. Omitting model: lets OpenCode
-  // use its default model for subagents. See #1156.
+  // For agents: add required fields for this runtime
+  // Note: Do NOT add 'model: inherit' — runtime does not recognize 'inherit'
+  // (ProviderModelNotFoundError). Omitting model: uses the default for subagents. See #1156.
   if (isAgent) {
     newLines.push('mode: subagent');
   }
@@ -2644,7 +2653,7 @@ function convertClaudeToOpencodeFrontmatter(content, { isAgent = false } = {}) {
   if (!isAgent && allowedTools.length > 0) {
     newLines.push('tools:');
     for (const tool of allowedTools) {
-      newLines.push(`  ${convertToolName(tool)}: true`);
+      newLines.push(`  ${convertVibeAgentTeamToolName(tool)}: true`);
     }
   }
 
@@ -2695,15 +2704,15 @@ function convertClaudeToGeminiToml(content) {
 }
 
 /**
- * Copy commands to a flat structure for OpenCode
- * OpenCode expects: command/gsdt-help.md (invoked as /gsdt-help)
+ * Copy commands to a flat structure for Vibe Agent Team
+ * Expected: command/gsdt-help.md (invoked as /gsdt-help)
  * Source structure: commands/gsdt/help.md
  * 
  * @param {string} srcDir - Source directory (e.g., commands/gsdt/)
  * @param {string} destDir - Destination directory (e.g., command/)
  * @param {string} prefix - Prefix for filenames (e.g., 'gsdt')
  * @param {string} pathPrefix - Path prefix for file references
- * @param {string} runtime - Target runtime ('claude' or 'opencode')
+ * @param {string} runtime - Target runtime ('claude' or 'vibeAgentTeam')
  */
 function copyFlattenedCommands(srcDir, destDir, prefix, pathPrefix, runtime) {
   if (!fs.existsSync(srcDir)) {
@@ -2740,13 +2749,13 @@ function copyFlattenedCommands(srcDir, destDir, prefix, pathPrefix, runtime) {
       const globalClaudeRegex = /~\/\.claude\//g;
       const globalClaudeHomeRegex = /\$HOME\/\.claude\//g;
       const localClaudeRegex = /\.\/\.claude\//g;
-      const opencodeDirRegex = /~\/\.opencode\//g;
+      const vibeAgentTeamDirRegex = /~\/\.opencode\//g;
       content = content.replace(globalClaudeRegex, pathPrefix);
       content = content.replace(globalClaudeHomeRegex, pathPrefix);
       content = content.replace(localClaudeRegex, `./${getDirName(runtime)}/`);
-      content = content.replace(opencodeDirRegex, pathPrefix);
+      content = content.replace(vibeAgentTeamDirRegex, pathPrefix);
       content = processAttribution(content, getCommitAttribution(runtime));
-      content = convertClaudeToOpencodeFrontmatter(content);
+      content = convertClaudeToVibeAgentTeamFrontmatter(content);
 
       fs.writeFileSync(destPath, content);
     }
@@ -3035,10 +3044,10 @@ function copyCommandsAsAntigravitySkills(srcDir, skillsDir, prefix, isGlobal = f
  * @param {string} srcDir - Source directory
  * @param {string} destDir - Destination directory
  * @param {string} pathPrefix - Path prefix for file references
- * @param {string} runtime - Target runtime ('claude', 'opencode', 'gemini', 'codex')
+ * @param {string} runtime - Target runtime ('claude', 'vibeAgentTeam', 'gemini', 'codex')
  */
 function copyWithPathReplacement(srcDir, destDir, pathPrefix, runtime, isCommand = false, isGlobal = false) {
-  const isOpencode = runtime === 'opencode';
+  const isVibeAgentTeam = runtime === RUNTIME_VIBE_AGENT_TEAM;
   const isCodex = runtime === 'codex';
   const isCopilot = runtime === 'copilot';
   const isAntigravity = runtime === 'antigravity';
@@ -3074,9 +3083,9 @@ function copyWithPathReplacement(srcDir, destDir, pathPrefix, runtime, isCommand
       }
       content = processAttribution(content, getCommitAttribution(runtime));
 
-      // Convert frontmatter for opencode compatibility
-      if (isOpencode) {
-        content = convertClaudeToOpencodeFrontmatter(content);
+      // Convert frontmatter for Vibe Agent Team runtime
+      if (isVibeAgentTeam) {
+        content = convertClaudeToVibeAgentTeamFrontmatter(content);
         fs.writeFileSync(destPath, content);
       } else if (runtime === 'gemini') {
         if (isCommand) {
@@ -3169,6 +3178,7 @@ function cleanupOrphanedHooks(settings) {
     'gsd-intel-index.js',  // Removed in v1.9.2
     'gsd-intel-session.js',  // Removed in v1.9.2
     'gsd-intel-prune.js',  // Removed in v1.9.2
+    'gsdt-check-update',  // SessionStart upgrade check disabled — avoids MODULE_NOT_FOUND when hooks/dist absent; re-enable only with working hook path
   ];
 
   let cleanedHooks = false;
@@ -3299,10 +3309,10 @@ function validateHookFields(settings) {
  * Uninstall GSD from the specified directory for a specific runtime
  * Removes only GSD-specific files/directories, preserves user content
  * @param {boolean} isGlobal - Whether to uninstall from global or local
- * @param {string} runtime - Target runtime ('claude', 'opencode', 'gemini', 'codex', 'copilot')
+ * @param {string} runtime - Target runtime ('claude', 'vibeAgentTeam', 'gemini', 'codex', 'copilot')
  */
 function uninstall(isGlobal, runtime = 'claude') {
-  const isOpencode = runtime === 'opencode';
+  const isVibeAgentTeam = runtime === RUNTIME_VIBE_AGENT_TEAM;
   const isCodex = runtime === 'codex';
   const isCopilot = runtime === 'copilot';
   const isAntigravity = runtime === 'antigravity';
@@ -3320,7 +3330,7 @@ function uninstall(isGlobal, runtime = 'claude') {
     : targetDir.replace(process.cwd(), '.');
 
   let runtimeLabel = 'Claude Code';
-  if (runtime === 'opencode') runtimeLabel = 'OpenCode';
+  if (runtime === RUNTIME_VIBE_AGENT_TEAM) runtimeLabel = 'Vibe Agent Team';
   if (runtime === 'gemini') runtimeLabel = 'Gemini';
   if (runtime === 'codex') runtimeLabel = 'Codex';
   if (runtime === 'copilot') runtimeLabel = 'Copilot';
@@ -3340,8 +3350,8 @@ function uninstall(isGlobal, runtime = 'claude') {
   let removedCount = 0;
 
   // 1. Remove GSD commands/skills
-  if (isOpencode) {
-    // OpenCode: remove command/gsd-*.md files
+  if (isVibeAgentTeam) {
+    // Vibe Agent Team: remove command/gsd-*.md files
     const commandDir = path.join(targetDir, 'command');
     if (fs.existsSync(commandDir)) {
       const files = fs.readdirSync(commandDir);
@@ -3652,12 +3662,12 @@ function uninstall(isGlobal, runtime = 'claude') {
     }
   }
 
-  // 6. For OpenCode, clean up permissions from opencode.json or opencode.jsonc
-  if (isOpencode) {
-    const opencodeConfigDir = isGlobal
-      ? getOpencodeGlobalDir()
+  // 6. Vibe Agent Team: clean up permissions from opencode.json / opencode.jsonc
+  if (isVibeAgentTeam) {
+    const vibeAgentTeamConfigDir = isGlobal
+      ? getVibeAgentTeamGlobalDir()
       : path.join(process.cwd(), '.opencode');
-    const configPath = resolveOpencodeConfigPath(opencodeConfigDir);
+    const configPath = resolveVibeAgentTeamConfigPath(vibeAgentTeamConfigDir);
     if (fs.existsSync(configPath)) {
       try {
         const config = parseJsonc(fs.readFileSync(configPath, 'utf8'));
@@ -3708,8 +3718,8 @@ function uninstall(isGlobal, runtime = 'claude') {
 
 /**
  * Parse JSONC (JSON with Comments) by stripping comments and trailing commas.
- * OpenCode supports JSONC format via jsonc-parser, so users may have comments.
- * This is a lightweight inline parser to avoid adding dependencies.
+ * opencode.json is often edited as JSONC (comments). This lightweight parser
+ * strips comments/trailing commas without adding a dependency.
  */
 function parseJsonc(content) {
   // Strip BOM if present
@@ -3768,20 +3778,20 @@ function parseJsonc(content) {
 }
 
 /**
- * Configure OpenCode permissions to allow reading GSD reference docs
- * This prevents permission prompts when GSD accesses the gsdt directory
+ * Configure Vibe Agent Team (opencode.json) permissions for gsdt reference reads
+ * Reduces permission prompts when tooling accesses the gsdt directory
  * @param {boolean} isGlobal - Whether this is a global or local install
  */
-function configureOpencodePermissions(isGlobal = true) {
+function configureVibeAgentTeamPermissions(isGlobal = true) {
   // For local installs, use ./.opencode/
   // For global installs, use ~/.config/opencode/
-  const opencodeConfigDir = isGlobal
-    ? getOpencodeGlobalDir()
+  const vibeAgentTeamConfigDir = isGlobal
+    ? getVibeAgentTeamGlobalDir()
     : path.join(process.cwd(), '.opencode');
   // Ensure config directory exists
-  fs.mkdirSync(opencodeConfigDir, { recursive: true });
+  fs.mkdirSync(vibeAgentTeamConfigDir, { recursive: true });
 
-  const configPath = resolveOpencodeConfigPath(opencodeConfigDir);
+  const configPath = resolveVibeAgentTeamConfigPath(vibeAgentTeamConfigDir);
 
   // Read existing config or create empty object
   let config = {};
@@ -3807,9 +3817,9 @@ function configureOpencodePermissions(isGlobal = true) {
   // Build the GSD path using the actual config directory
   // Use ~ shorthand if it's in the default location, otherwise use full path
   const defaultConfigDir = path.join(os.homedir(), '.config', 'opencode');
-  const gsdPath = opencodeConfigDir === defaultConfigDir
+  const gsdPath = vibeAgentTeamConfigDir === defaultConfigDir
     ? '~/.config/opencode/gsdt/*'
-    : `${opencodeConfigDir.replace(/\\/g, '/')}/gsdt/*`;
+    : `${vibeAgentTeamConfigDir.replace(/\\/g, '/')}/gsdt/*`;
   
   let modified = false;
 
@@ -3872,12 +3882,6 @@ function verifyFileInstalled(filePath, description) {
   return true;
 }
 
-/**
- * Install to the specified directory for a specific runtime
- * @param {boolean} isGlobal - Whether to install globally or locally
- * @param {string} runtime - Target runtime ('claude', 'opencode', 'gemini', 'codex')
- */
-
 // ──────────────────────────────────────────────────────
 // Local Patch Persistence
 // ──────────────────────────────────────────────────────
@@ -3917,7 +3921,7 @@ function generateManifest(dir, baseDir) {
  * Write file manifest after installation for future modification detection
  */
 function writeManifest(configDir, runtime = 'claude') {
-  const isOpencode = runtime === 'opencode';
+  const isVibeAgentTeam = runtime === RUNTIME_VIBE_AGENT_TEAM;
   const isCodex = runtime === 'codex';
   const isCopilot = runtime === 'copilot';
   const isAntigravity = runtime === 'antigravity';
@@ -3925,7 +3929,7 @@ function writeManifest(configDir, runtime = 'claude') {
   const isWindsurf = runtime === 'windsurf';
   const gsdDir = path.join(configDir, GSDT_INSTALL_DIR);
   const commandsDir = path.join(configDir, 'commands', GSDT_COMMANDS_DIR);
-  const opencodeCommandDir = path.join(configDir, 'command');
+  const vibeAgentTeamCommandDir = path.join(configDir, 'command');
   const codexSkillsDir = path.join(configDir, 'skills');
   const agentsDir = path.join(configDir, 'agents');
   const manifest = { version: pkg.version, timestamp: new Date().toISOString(), files: {} };
@@ -3934,16 +3938,16 @@ function writeManifest(configDir, runtime = 'claude') {
   for (const [rel, hash] of Object.entries(gsdHashes)) {
     manifest.files['gsdt/' + rel] = hash;
   }
-  if (!isOpencode && !isCodex && !isCopilot && !isAntigravity && !isCursor && !isWindsurf && fs.existsSync(commandsDir)) {
+  if (!isVibeAgentTeam && !isCodex && !isCopilot && !isAntigravity && !isCursor && !isWindsurf && fs.existsSync(commandsDir)) {
     const cmdHashes = generateManifest(commandsDir);
     for (const [rel, hash] of Object.entries(cmdHashes)) {
       manifest.files['commands/gsdt/' + rel] = hash;
     }
   }
-  if (isOpencode && fs.existsSync(opencodeCommandDir)) {
-    for (const file of fs.readdirSync(opencodeCommandDir)) {
+  if (isVibeAgentTeam && fs.existsSync(vibeAgentTeamCommandDir)) {
+    for (const file of fs.readdirSync(vibeAgentTeamCommandDir)) {
       if (file.startsWith('gsd-') && file.endsWith('.md')) {
-        manifest.files['command/' + file] = fileHash(path.join(opencodeCommandDir, file));
+        manifest.files['command/' + file] = fileHash(path.join(vibeAgentTeamCommandDir, file));
       }
     }
   }
@@ -4033,7 +4037,7 @@ function reportLocalPatches(configDir, runtime = 'claude') {
   try { meta = JSON.parse(fs.readFileSync(metaPath, 'utf8')); } catch { return []; }
 
   if (meta.files && meta.files.length > 0) {
-    const reapplyCommand = (runtime === 'opencode' || runtime === 'copilot')
+    const reapplyCommand = (runtime === RUNTIME_VIBE_AGENT_TEAM || runtime === 'copilot')
       ? '/gsd-reapply-patches'
       : runtime === 'codex'
         ? '$gsd-reapply-patches'
@@ -4054,8 +4058,13 @@ function reportLocalPatches(configDir, runtime = 'claude') {
   return meta.files || [];
 }
 
+/**
+ * Install GSDT to the target config directory for a runtime.
+ * @param {boolean} isGlobal - Global (~/.config/...) vs local (./.claude, ./.opencode, ...)
+ * @param {string} runtime - 'claude' | 'vibeAgentTeam' | 'gemini' | 'codex' | 'copilot' | ...
+ */
 function install(isGlobal, runtime = 'claude') {
-  const isOpencode = runtime === 'opencode';
+  const isVibeAgentTeam = runtime === RUNTIME_VIBE_AGENT_TEAM;
   const isGemini = runtime === 'gemini';
   const isCodex = runtime === 'codex';
   const isCopilot = runtime === 'copilot';
@@ -4086,7 +4095,7 @@ function install(isGlobal, runtime = 'claude') {
     : `${resolvedTarget}/`;
 
   let runtimeLabel = 'Claude Code';
-  if (isOpencode) runtimeLabel = 'OpenCode';
+  if (isVibeAgentTeam) runtimeLabel = 'Vibe Agent Team';
   if (isGemini) runtimeLabel = 'Gemini';
   if (isCodex) runtimeLabel = 'Codex';
   if (isCopilot) runtimeLabel = 'Copilot';
@@ -4105,9 +4114,9 @@ function install(isGlobal, runtime = 'claude') {
   // Clean up orphaned files from previous versions
   cleanupOrphanedFiles(targetDir);
 
-  // OpenCode uses command/ (flat), Codex uses skills/, Claude/Gemini use commands/gsdt/
-  if (isOpencode) {
-    // OpenCode: flat structure in command/ directory
+  // Vibe Agent Team uses command/ (flat), Codex uses skills/, Claude/Gemini use commands/gsdt/
+  if (isVibeAgentTeam) {
+    // Flat commands under command/
     const commandDir = path.join(targetDir, 'command');
     fs.mkdirSync(commandDir, { recursive: true });
     
@@ -4234,8 +4243,8 @@ function install(isGlobal, runtime = 'claude') {
         }
         content = processAttribution(content, getCommitAttribution(runtime));
         // Convert frontmatter for runtime compatibility (agents need different handling)
-        if (isOpencode) {
-          content = convertClaudeToOpencodeFrontmatter(content, { isAgent: true });
+        if (isVibeAgentTeam) {
+          content = convertClaudeToVibeAgentTeamFrontmatter(content, { isAgent: true });
         } else if (isGemini) {
           content = convertClaudeToGeminiAgent(content);
         } else if (isCodex) {
@@ -4289,9 +4298,10 @@ function install(isGlobal, runtime = 'claude') {
     fs.writeFileSync(pkgJsonDest, '{"type":"commonjs"}\n');
     console.log(`  ${green}✓${reset} Wrote package.json (CommonJS mode)`);
 
-    // Copy hooks from dist/ (bundled with dependencies)
+    // Copy hooks from dist/ (bundled with dependencies), or fall back to hooks/ when dist/ is not shipped (e.g. dev tree — otherwise .claude/hooks/ stays empty and SessionStart breaks).
     // Template paths for the target runtime (replaces '.claude' with correct config dir)
-    const hooksSrc = path.join(src, 'hooks', 'dist');
+    const hooksDist = path.join(src, 'hooks', 'dist');
+    const hooksSrc = fs.existsSync(hooksDist) ? hooksDist : path.join(src, 'hooks');
     if (fs.existsSync(hooksSrc)) {
       const hooksDest = path.join(targetDir, 'hooks');
       fs.mkdirSync(hooksDest, { recursive: true });
@@ -4403,20 +4413,10 @@ function install(isGlobal, runtime = 'claude') {
       const codexHooksFeature = ensureCodexHooksFeature(configContent);
       configContent = setManagedCodexHooksOwnership(codexHooksFeature.content, codexHooksFeature.ownership);
 
-      // Add SessionStart hook for update checking
-      const updateCheckScript = path.resolve(targetDir, GSDT_INSTALL_DIR, 'hooks', 'gsdt-check-update.js').replace(/\\/g, '/');
-      const hookBlock =
-        `${eol}# GSD Hooks${eol}` +
-        `[[hooks]]${eol}` +
-        `event = "SessionStart"${eol}` +
-        `command = "node ${updateCheckScript}"${eol}`;
-
-      if (hasEnabledCodexHooksFeature(configContent) && !configContent.includes('gsdt-check-update')) {
-        configContent += hookBlock;
-      }
+      // SessionStart gsdt-check-update disabled (same as Claude settings — avoids broken upgrade hook when install is partial)
 
       fs.writeFileSync(configPath, configContent, 'utf-8');
-      console.log(`  ${green}✓${reset} Configured Codex hooks (SessionStart)`);
+      console.log(`  ${green}✓${reset} Configured Codex hooks`);
     } catch (e) {
       console.warn(`  ${yellow}⚠${reset}  Could not configure Codex hooks: ${e.message}`);
     }
@@ -4455,9 +4455,6 @@ function install(isGlobal, runtime = 'claude') {
   const statuslineCommand = isGlobal
     ? buildHookCommand(targetDir, 'gsdt-statusline.js')
     : 'node ' + dirName + '/hooks/gsdt-statusline.js';
-  const updateCheckCommand = isGlobal
-    ? buildHookCommand(targetDir, 'gsdt-check-update.js')
-    : 'node ' + dirName + '/hooks/gsdt-check-update.js';
   const contextMonitorCommand = isGlobal
     ? buildHookCommand(targetDir, 'gsdt-context-monitor.js')
     : 'node ' + dirName + '/hooks/gsdt-context-monitor.js';
@@ -4476,32 +4473,13 @@ function install(isGlobal, runtime = 'claude') {
     }
   }
 
-  // Configure SessionStart hook for update checking (skip for opencode)
-  if (!isOpencode) {
+  // SessionStart gsdt-check-update intentionally not registered (upgrade check disabled — prevents MODULE_NOT_FOUND when hooks were missing; see cleanupOrphanedHooks).
+
+  if (!isVibeAgentTeam) {
     if (!settings.hooks) {
       settings.hooks = {};
     }
-    if (!settings.hooks.SessionStart) {
-      settings.hooks.SessionStart = [];
-    }
 
-    const hasGsdUpdateHook = settings.hooks.SessionStart.some(entry =>
-      entry.hooks && entry.hooks.some(h => h.command && h.command.includes('gsdt-check-update'))
-    );
-
-    if (!hasGsdUpdateHook) {
-      settings.hooks.SessionStart.push({
-        hooks: [
-          {
-            type: 'command',
-            command: updateCheckCommand
-          }
-        ]
-      });
-      console.log(`  ${green}✓${reset} Configured update check hook`);
-    }
-
-    // Configure post-tool hook for context window monitoring
     if (!settings.hooks[postToolEvent]) {
       settings.hooks[postToolEvent] = [];
     }
@@ -4577,13 +4555,13 @@ function install(isGlobal, runtime = 'claude') {
  * Apply statusline config, then print completion message
  */
 function finishInstall(settingsPath, settings, statuslineCommand, shouldInstallStatusline, runtime = 'claude', isGlobal = true) {
-  const isOpencode = runtime === 'opencode';
+  const isVibeAgentTeam = runtime === RUNTIME_VIBE_AGENT_TEAM;
   const isCodex = runtime === 'codex';
   const isCopilot = runtime === 'copilot';
   const isCursor = runtime === 'cursor';
   const isWindsurf = runtime === 'windsurf';
 
-  if (shouldInstallStatusline && !isOpencode && !isCodex && !isCopilot && !isCursor && !isWindsurf) {
+  if (shouldInstallStatusline && !isVibeAgentTeam && !isCodex && !isCopilot && !isCursor && !isWindsurf) {
     settings.statusLine = {
       type: 'command',
       command: statuslineCommand
@@ -4596,9 +4574,9 @@ function finishInstall(settingsPath, settings, statuslineCommand, shouldInstallS
     writeSettings(settingsPath, settings);
   }
 
-  // Configure OpenCode permissions
-  if (isOpencode) {
-    configureOpencodePermissions(isGlobal);
+  // Configure Vibe Agent Team permissions (opencode.json)
+  if (isVibeAgentTeam) {
+    configureVibeAgentTeamPermissions(isGlobal);
   }
 
   // For non-Claude runtimes, set resolve_model_ids: "omit" in ~/.gsdt/defaults.json
@@ -4623,7 +4601,7 @@ function finishInstall(settingsPath, settings, statuslineCommand, shouldInstallS
   }
 
   let program = 'Claude Code';
-  if (runtime === 'opencode') program = 'OpenCode';
+  if (runtime === RUNTIME_VIBE_AGENT_TEAM) program = 'Vibe Agent Team';
   if (runtime === 'gemini') program = 'Gemini';
   if (runtime === 'codex') program = 'Codex';
   if (runtime === 'copilot') program = 'Copilot';
@@ -4631,7 +4609,7 @@ function finishInstall(settingsPath, settings, statuslineCommand, shouldInstallS
   if (runtime === 'cursor') program = 'Cursor';
 
   let command = '/gsdt:new-project';
-  if (runtime === 'opencode') command = '/gsd-new-project';
+  if (runtime === RUNTIME_VIBE_AGENT_TEAM) command = '/gsd-new-project';
   if (runtime === 'codex') command = '$gsd-new-project';
   if (runtime === 'copilot') command = '/gsd-new-project';
   if (runtime === 'antigravity') command = '/gsd-new-project';
@@ -4780,7 +4758,7 @@ function promptRuntime(callback) {
 
   const runtimeMap = {
     '1': 'claude',
-    '2': 'opencode',
+    '2': RUNTIME_VIBE_AGENT_TEAM,
     '3': 'gemini',
     '4': 'codex',
     '5': 'copilot',
@@ -4788,10 +4766,19 @@ function promptRuntime(callback) {
     '7': 'cursor',
     '8': 'windsurf'
   };
-  const allRuntimes = ['claude', 'opencode', 'gemini', 'codex', 'copilot', 'antigravity', 'cursor', 'windsurf'];
+  const allRuntimes = [
+    'claude',
+    RUNTIME_VIBE_AGENT_TEAM,
+    'gemini',
+    'codex',
+    'copilot',
+    'antigravity',
+    'cursor',
+    'windsurf',
+  ];
 
   console.log(`  ${yellow}Which runtime(s) would you like to install for?${reset}\n\n  ${cyan}1${reset}) Claude Code  ${dim}(~/.claude)${reset}
-  ${cyan}2${reset}) OpenCode     ${dim}(~/.config/opencode)${reset} - open source, free models
+  ${cyan}2${reset}) Vibe Agent Team ${dim}(~/.config/opencode)${reset} — flat command/ layout
   ${cyan}3${reset}) Gemini       ${dim}(~/.gemini)${reset}
   ${cyan}4${reset}) Codex        ${dim}(~/.codex)${reset}
   ${cyan}5${reset}) Copilot      ${dim}(~/.copilot)${reset}
@@ -4940,7 +4927,7 @@ if (process.env.GSD_TEST_MODE) {
     installCodexConfig,
     install,
     convertClaudeCommandToCodexSkill,
-    convertClaudeToOpencodeFrontmatter,
+    convertClaudeToVibeAgentTeamFrontmatter,
     neutralizeAgentReferences,
     GSDT_CODEX_MARKER,
     CODEX_AGENT_SANDBOX,

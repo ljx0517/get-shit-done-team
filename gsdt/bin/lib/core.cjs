@@ -7,14 +7,51 @@ const path = require('path');
 const { execSync, execFileSync, spawnSync } = require('child_process');
 const { MODEL_PROFILES } = require('./model-profiles.cjs');
 
-const PLANNING_DIR = path.join('.claude', '.gsdt-planning');
-const PLANNING_DIR_DISPLAY = '.claude/.gsdt-planning';
+/** Default GSD planning directory at project root (avoids Cursor/IDE prompts for writes under `.claude/`). */
+const DEFAULT_PLANNING_DIR = '.gsdt-planning';
+/** Legacy location (still read when present). */
+const LEGACY_PLANNING_DIR = path.join('.claude', '.gsdt-planning');
+
+function planningDirExistsAt(absDir) {
+  try {
+    return fs.existsSync(absDir) && fs.statSync(absDir).isDirectory();
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Resolve the relative planning directory name for `cwd`.
+ * Prefers `./.gsdt-planning/` when it exists; otherwise uses `./.claude/.gsdt-planning/` if that exists (legacy).
+ * If neither exists, defaults to `./.gsdt-planning/` for new projects.
+ */
+function resolvePlanningDirName(cwd) {
+  const resolved = path.resolve(cwd);
+  const modern = path.join(resolved, DEFAULT_PLANNING_DIR);
+  const legacy = path.join(resolved, LEGACY_PLANNING_DIR);
+  const hasModern = planningDirExistsAt(modern);
+  const hasLegacy = planningDirExistsAt(legacy);
+  if (hasModern) return DEFAULT_PLANNING_DIR;
+  if (hasLegacy) return LEGACY_PLANNING_DIR;
+  return DEFAULT_PLANNING_DIR;
+}
 
 // ─── Path helpers ────────────────────────────────────────────────────────────
 
 /** Normalize a relative path to always use forward slashes (cross-platform). */
 function toPosixPath(p) {
   return p.split(path.sep).join('/');
+}
+
+/** POSIX display path for prompts and JSON (e.g. `.gsdt-planning` or `.claude/.gsdt-planning`). */
+function planningDirDisplay(cwd) {
+  return toPosixPath(resolvePlanningDirName(cwd));
+}
+
+/** True if either default or legacy planning directory exists under `resolvedDir`. */
+function hasPlanningDir(resolvedDir) {
+  return planningDirExistsAt(path.join(resolvedDir, DEFAULT_PLANNING_DIR))
+    || planningDirExistsAt(path.join(resolvedDir, LEGACY_PLANNING_DIR));
 }
 
 /**
@@ -61,10 +98,9 @@ function findProjectRoot(startDir) {
   const root = path.parse(resolved).root;
   const homedir = require('os').homedir();
 
-  // If startDir already contains .gsdt-planning/, it IS the project root.
-  // Do not walk up to a parent workspace that also has .gsdt-planning/ (#1362).
-  const ownPlanning = path.join(resolved, PLANNING_DIR);
-  if (fs.existsSync(ownPlanning) && fs.statSync(ownPlanning).isDirectory()) {
+  // If startDir already contains a planning directory, it IS the project root.
+  // Do not walk up to a parent workspace that also has planning data (#1362).
+  if (hasPlanningDir(resolved)) {
     return startDir;
   }
 
@@ -88,9 +124,8 @@ function findProjectRoot(startDir) {
     if (parent === dir) break; // filesystem root
     if (parent === homedir) break; // never go above home
 
-    const parentPlanning = path.join(parent, PLANNING_DIR);
-    if (fs.existsSync(parentPlanning) && fs.statSync(parentPlanning).isDirectory()) {
-      const configPath = path.join(parentPlanning, 'config.json');
+    if (hasPlanningDir(parent)) {
+      const configPath = path.join(parent, resolvePlanningDirName(parent), 'config.json');
       try {
         const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
         const subRepos = config.sub_repos || config.planning?.sub_repos || [];
@@ -198,7 +233,7 @@ function safeReadFile(filePath) {
 }
 
 function loadConfig(cwd) {
-  const configPath = path.join(cwd, PLANNING_DIR, 'config.json');
+  const configPath = path.join(cwd, resolvePlanningDirName(cwd), 'config.json');
   const defaults = {
     model_profile: 'balanced',
     commit_docs: true,
@@ -290,7 +325,7 @@ function loadConfig(cwd) {
         if (explicit !== undefined) return explicit;
         // Auto-detection: when no explicit value and .gsdt-planning/ is gitignored,
         // default to false instead of true
-        if (isGitIgnored(cwd, `${PLANNING_DIR_DISPLAY}/`)) return false;
+        if (isGitIgnored(cwd, '.gsdt-planning/') || isGitIgnored(cwd, '.claude/.gsdt-planning/')) return false;
         return defaults.commit_docs;
       })(),
       search_gitignored: get('search_gitignored', { section: 'planning', field: 'search_gitignored' }) ?? defaults.search_gitignored,
@@ -466,7 +501,7 @@ function execGit(cwd, args) {
 function resolveWorktreeRoot(cwd) {
   // If the current directory already has its own .gsdt-planning/, respect it.
   // This handles linked worktrees with independent planning state (e.g., Conductor workspaces).
-  if (fs.existsSync(path.join(cwd, PLANNING_DIR))) {
+  if (hasPlanningDir(path.resolve(cwd))) {
     return cwd;
   }
 
@@ -551,14 +586,15 @@ function withPlanningLock(cwd, fn) {
  * @param {string} [ws] - explicit workstream name; if omitted, checks GSD_WORKSTREAM env var
  */
 function planningDir(cwd, ws) {
+  const baseName = resolvePlanningDirName(cwd);
   if (ws === undefined) ws = process.env.GSD_WORKSTREAM || null;
-  if (!ws) return path.join(cwd, PLANNING_DIR);
-  return path.join(cwd, PLANNING_DIR, 'workstreams', ws);
+  if (!ws) return path.join(cwd, baseName);
+  return path.join(cwd, baseName, 'workstreams', ws);
 }
 
 /** Always returns the root .gsdt-planning/ path, ignoring workstreams. For shared resources. */
 function planningRoot(cwd) {
-  return path.join(cwd, PLANNING_DIR);
+  return path.join(cwd, resolvePlanningDirName(cwd));
 }
 
 /**
@@ -568,7 +604,7 @@ function planningRoot(cwd) {
  */
 function planningPaths(cwd, ws) {
   const base = planningDir(cwd, ws);
-  const root = path.join(cwd, PLANNING_DIR);
+  const root = planningRoot(cwd);
   return {
     planning: base,
     state: path.join(base, 'STATE.md'),
@@ -725,7 +761,7 @@ function findPhaseInternal(cwd, phase) {
   if (current) return current;
 
   // Search archived milestone phases (newest first)
-  const milestonesDir = path.join(cwd, PLANNING_DIR, 'milestones');
+  const milestonesDir = path.join(planningRoot(cwd), 'milestones');
   if (!fs.existsSync(milestonesDir)) return null;
 
   try {
@@ -739,7 +775,7 @@ function findPhaseInternal(cwd, phase) {
     for (const archiveName of archiveDirs) {
       const version = archiveName.match(/^(v[\d.]+)-phases$/)[1];
       const archivePath = path.join(milestonesDir, archiveName);
-      const relBase = `${PLANNING_DIR_DISPLAY}/milestones/${archiveName}`;
+      const relBase = `${planningDirDisplay(cwd)}/milestones/${archiveName}`;
       const result = searchPhaseInDir(archivePath, relBase, normalized);
       if (result) {
         result.archived = version;
@@ -752,7 +788,7 @@ function findPhaseInternal(cwd, phase) {
 }
 
 function getArchivedPhaseDirs(cwd) {
-  const milestonesDir = path.join(cwd, PLANNING_DIR, 'milestones');
+  const milestonesDir = path.join(planningRoot(cwd), 'milestones');
   const results = [];
 
   if (!fs.existsSync(milestonesDir)) return results;
@@ -775,7 +811,7 @@ function getArchivedPhaseDirs(cwd) {
         results.push({
           name: dir,
           milestone: version,
-          basePath: `${PLANNING_DIR_DISPLAY}/milestones/${archiveName}`,
+          basePath: `${planningDirDisplay(cwd)}/milestones/${archiveName}`,
           fullPath: path.join(archivePath, dir),
         });
       }
@@ -1011,7 +1047,7 @@ function resolveModelInternal(cwd, agentType) {
   }
 
   // resolve_model_ids: "omit" — return empty string so the runtime uses its configured
-  // default model. For non-Claude runtimes (OpenCode, Codex, etc.) that don't recognize
+  // default model. For non-Claude runtimes (Vibe Agent Team / opencode.json, Codex, etc.) that don't recognize
   // Claude aliases (opus/sonnet/haiku/inherit). Set automatically during install. See #1156.
   if (config.resolve_model_ids === 'omit') {
     return '';
@@ -1221,6 +1257,8 @@ module.exports = {
   MODEL_ALIAS_MAP,
   planningDir,
   planningRoot,
+  resolvePlanningDirName,
+  planningDirDisplay,
   planningPaths,
   getActiveWorkstream,
   setActiveWorkstream,

@@ -14,8 +14,8 @@ Treat `$ARGUMENTS` as the normalized units payload, which may come from inline J
 Read these files if present:
 - `.claude/.gsdt-intake/ledger.json`
 - `.claude/.gsdt-intake/readiness.json`
-- `.claude/.gsdt-planning/ROADMAP.md`
-- `.claude/.gsdt-planning/STATE.md`
+- `.gsdt-planning/ROADMAP.md`
+- `.gsdt-planning/STATE.md`
 </step>
 
 <step name="resolve_units">
