@@ -29,7 +29,7 @@ npx gsdt@latest
 
 <br>
 
-![GSD Install](assets/terminal.svg)
+![GSDT Install](assets/terminal.svg)
 
 <br>
 
@@ -552,7 +552,7 @@ lmn012o feat(08-02): create registration endpoint
 | `/gsdt:next` | 状態を自動検出し次のステップを実行 |
 | `/gsdt:help` | 全コマンドと使い方ガイドを表示 |
 | `/gsdt:update` | チェンジログプレビュー付きでGSDをアップデート |
-| `/gsdt:join-discord` | GSD Discordコミュニティに参加 |
+| `/gsdt:join-discord` | GSDT Discordコミュニティに参加 |
 | `/gsdt:manager` | 複数フェーズ管理用のインタラクティブコマンドセンター |
 
 ### ブラウンフィールド

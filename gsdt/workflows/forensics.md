@@ -1,6 +1,6 @@
 # Forensics Workflow
 
-Post-mortem investigation for failed or stuck GSD workflows. Analyzes git history,
+Post-mortem investigation for failed or stuck GSDT workflows. Analyzes git history,
 `.claude/.gsdt-planning/` artifacts, and file system state to detect anomalies and generate a
 structured diagnostic report.
 

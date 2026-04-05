@@ -61,7 +61,7 @@ mkdir -p .claude/.gsdt-planning/reports
 Write `.claude/.gsdt-planning/reports/SESSION_REPORT.md` (or `.claude/.gsdt-planning/reports/YYYYMMDD-session-report.md` if previous reports exist):
 
 ```markdown
-# GSD Session Report
+# GSDT Session Report
 
 **Generated:** [timestamp]
 **Project:** [from PROJECT.md title or directory name]

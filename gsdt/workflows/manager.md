@@ -31,7 +31,7 @@ Display startup banner:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► MANAGER
+ GSDT ► MANAGER
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
  {milestone_version} — {milestone_name}
@@ -82,7 +82,7 @@ Example output:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► DASHBOARD
+ GSDT ► DASHBOARD
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  ████████████░░░░░░░░ 60%  (3/5 phases)
  ◆ Background: Planning Phase 4
@@ -161,7 +161,7 @@ Continue:
   → Discuss Phase 35 (inline)
 ```
 
-**Auto-refresh:** If background agents are running (`is_active` is true for any phase), set a 60-second auto-refresh cycle. After presenting the action menu, if no user input is received within 60 seconds, automatically refresh the dashboard. This interval is configurable via `manager_refresh_interval` in GSD config (default: 60 seconds, set to 0 to disable).
+**Auto-refresh:** If background agents are running (`is_active` is true for any phase), set a 60-second auto-refresh cycle. After presenting the action menu, if no user input is received within 60 seconds, automatically refresh the dashboard. This interval is configurable via `manager_refresh_interval` in GSDT config (default: 60 seconds, set to 0 to disable).
 
 Present via AskUserQuestion:
 - **question:** "What would you like to do?"
@@ -216,7 +216,7 @@ Planning runs autonomously. Spawn a background agent:
 Task(
   description="Plan phase {N}: {phase_name}",
   run_in_background=true,
-  prompt="You are running the GSD plan-phase workflow for phase {N} of the project.
+  prompt="You are running the GSDT plan-phase workflow for phase {N} of the project.
 
 Working directory: {cwd}
 Phase: {N} — {phase_name}
@@ -251,7 +251,7 @@ Execution runs autonomously. Spawn a background agent:
 Task(
   description="Execute phase {N}: {phase_name}",
   run_in_background=true,
-  prompt="You are running the GSD execute-phase workflow for phase {N} of the project.
+  prompt="You are running the GSDT execute-phase workflow for phase {N} of the project.
 
 Working directory: {cwd}
 Phase: {N} — {phase_name}
@@ -328,7 +328,7 @@ Display final status with progress bar:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► SESSION END
+ GSDT ► SESSION END
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
  {milestone_version} — {milestone_name}

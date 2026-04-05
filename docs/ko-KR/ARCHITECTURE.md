@@ -1,4 +1,4 @@
-# GSD 아키텍처
+# GSDT 아키텍처
 
 > 기여자와 고급 사용자를 위한 시스템 아키텍처입니다. 사용자 문서는 [Feature Reference](FEATURES.md) 또는 [User Guide](USER-GUIDE.md)를 참조하세요.
 
@@ -168,9 +168,9 @@ GSD는 사용자와 AI 코딩 에이전트(Claude Code, Gemini CLI, OpenCode, Co
 |------|-------|---------|
 | `gsdt-statusline.js` | `statusLine` | 모델, 작업, 디렉터리, 컨텍스트 사용 바 표시 |
 | `gsdt-context-monitor.js` | `PostToolUse` / `AfterTool` | 잔여 35%/25% 시점에 에이전트 대면 컨텍스트 경고 주입 |
-| `gsdt-check-update.js` | `SessionStart` | 새 GSD 버전을 백그라운드에서 확인 |
+| `gsdt-check-update.js` | `SessionStart` | 새 GSDT 버전을 백그라운드에서 확인 |
 | `gsdt-prompt-guard.js` | `PreToolUse` | `.claude/.gsdt-planning/` 쓰기 작업에서 프롬프트 인젝션 패턴 스캔 (권고용) |
-| `gsdt-workflow-guard.js` | `PreToolUse` | GSD 워크플로우 컨텍스트 외부의 파일 편집 감지 (권고용, `hooks.workflow_guard`로 활성화) |
+| `gsdt-workflow-guard.js` | `PreToolUse` | GSDT 워크플로우 컨텍스트 외부의 파일 편집 감지 (권고용, `hooks.workflow_guard`로 활성화) |
 
 ### CLI Tools (`gsdt/bin/`)
 
@@ -439,7 +439,7 @@ UI-SPEC.md (per phase) ───────────────────
 6. **설정 통합** — 런타임의 `settings.json`에 훅 등록
 7. **패치 백업** — v1.17부터 로컬 수정 파일을 `gsdt-local-patches/`에 백업하여 `/gsdt:reapply-patches`에 사용
 8. **매니페스트 추적** — 깔끔한 제거를 위해 `gsdt-file-manifest.json` 작성
-9. **제거 모드** — `--uninstall`로 모든 GSD 파일, 훅, 설정 제거
+9. **제거 모드** — `--uninstall`로 모든 GSDT 파일, 훅, 설정 제거
 
 ### 플랫폼 처리
 
@@ -497,7 +497,7 @@ Runtime Engine (Claude Code / Gemini CLI)
 
 **Workflow Guard** (`gsdt-workflow-guard.js`).
 - `.claude/.gsdt-planning/` 외부 파일에 Write/Edit 시 트리거됩니다
-- GSD 워크플로우 컨텍스트 외부의 편집을 감지합니다 (활성 `/gsdt:` 명령어 또는 Task 서브에이전트 없음)
+- GSDT 워크플로우 컨텍스트 외부의 편집을 감지합니다 (활성 `/gsdt:` 명령어 또는 Task 서브에이전트 없음)
 - 상태 추적 변경을 위해 `/gsdt:quick` 또는 `/gsdt:fast` 사용을 권고합니다
 - `hooks.workflow_guard: true`로 활성화 (기본값: false)
 

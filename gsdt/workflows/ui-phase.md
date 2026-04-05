@@ -9,7 +9,7 @@ UI-SPEC.md locks spacing, typography, color, copywriting, and design system deci
 </required_reading>
 
 <available_agent_types>
-Valid GSD subagent types (use exact names — do not fall back to 'general-purpose'):
+Valid GSDT subagent types (use exact names — do not fall back to 'general-purpose'):
 - gsdt-ui-researcher — Researches UI/UX approaches
 - gsdt-ui-checker — Reviews UI implementation quality
 </available_agent_types>
@@ -100,7 +100,7 @@ If "Update": continue to step 5.
 Display:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► UI DESIGN CONTRACT — PHASE {N}
+ GSDT ► UI DESIGN CONTRACT — PHASE {N}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ◆ Spawning UI researcher...
@@ -162,7 +162,7 @@ Display blocker details and options. Exit workflow.
 Display:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► VERIFYING UI-SPEC
+ GSDT ► VERIFYING UI-SPEC
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ◆ Spawning UI checker...
@@ -249,7 +249,7 @@ Use AskUserQuestion for the choice.
 Display:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► UI-SPEC READY ✓
+ GSDT ► UI-SPEC READY ✓
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **Phase {N}: {Name}** — UI design contract approved

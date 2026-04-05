@@ -1,4 +1,4 @@
-# GSD Architecture
+# GSDT Architecture
 
 > System architecture for contributors and advanced users. For user-facing documentation, see [Feature Reference](FEATURES.md) or [User Guide](USER-GUIDE.md).
 
@@ -21,7 +21,7 @@
 
 ## System Overview
 
-GSD is a **meta-prompting framework** that sits between the user and AI coding agents (Claude Code, Gemini CLI, OpenCode, Codex, Copilot, Antigravity). It provides:
+GSDT is a **meta-prompting framework** that sits between the user and AI coding agents (Claude Code, Gemini CLI, OpenCode, Codex, Copilot, Antigravity). It provides:
 
 1. **Context engineering** — Structured artifacts that give the AI everything it needs per task
 2. **Multi-agent orchestration** — Thin orchestrators that spawn specialized agents with fresh context windows
@@ -168,9 +168,9 @@ Runtime hooks that integrate with the host AI agent:
 |------|-------|---------|
 | `gsdt-statusline.js` | `statusLine` | Displays model, task, directory, and context usage bar |
 | `gsdt-context-monitor.js` | `PostToolUse` / `AfterTool` | Injects agent-facing context warnings at 35%/25% remaining |
-| `gsdt-check-update.js` | `SessionStart` | Background check for new GSD versions |
+| `gsdt-check-update.js` | `SessionStart` | Background check for new GSDT versions |
 | `gsdt-prompt-guard.js` | `PreToolUse` | Scans `.claude/.gsdt-planning/` writes for prompt injection patterns (advisory) |
-| `gsdt-workflow-guard.js` | `PreToolUse` | Detects file edits outside GSD workflow context (advisory, opt-in via `hooks.workflow_guard`) |
+| `gsdt-workflow-guard.js` | `PreToolUse` | Detects file edits outside GSDT workflow context (advisory, opt-in via `hooks.workflow_guard`) |
 
 ### CLI Tools (`gsdt/bin/`)
 
@@ -439,7 +439,7 @@ The installer (`bin/install.js`, ~3,000 lines) handles:
 6. **Settings integration** — Registers hooks in runtime's `settings.json`
 7. **Patch backup** — Since v1.17, backs up locally modified files to `gsdt-local-patches/` for `/gsdt:reapply-patches`
 8. **Manifest tracking** — Writes `gsdt-file-manifest.json` for clean uninstall
-9. **Uninstall mode** — `--uninstall` removes all GSD files, hooks, and settings
+9. **Uninstall mode** — `--uninstall` removes all GSDT files, hooks, and settings
 
 ### Platform Handling
 
@@ -497,7 +497,7 @@ Debounce: 5 tool uses between repeated warnings. Severity escalation (WARNING→
 
 **Workflow Guard** (`gsdt-workflow-guard.js`):
 - Triggers on Write/Edit to non-`.claude/.gsdt-planning/` files
-- Detects edits outside GSD workflow context (no active `/gsdt:` command or Task subagent)
+- Detects edits outside GSDT workflow context (no active `/gsdt:` command or Task subagent)
 - Advises using `/gsdt:quick` or `/gsdt:fast` for state-tracked changes
 - Opt-in via `hooks.workflow_guard: true` (default: false)
 
@@ -505,7 +505,7 @@ Debounce: 5 tool uses between repeated warnings. Severity escalation (WARNING→
 
 ## Runtime Abstraction
 
-GSD supports 6 AI coding runtimes through a unified command/workflow architecture:
+GSDT supports 6 AI coding runtimes through a unified command/workflow architecture:
 
 | Runtime | Command Format | Agent System | Config Location |
 |---------|---------------|--------------|-----------------|
@@ -522,6 +522,6 @@ GSD supports 6 AI coding runtimes through a unified command/workflow architectur
 2. **Hook event names** — Claude uses `PostToolUse`, Gemini uses `AfterTool`
 3. **Agent frontmatter** — Each runtime has its own agent definition format
 4. **Path conventions** — Each runtime stores config in different directories
-5. **Model references** — `inherit` profile lets GSD defer to runtime's model selection
+5. **Model references** — `inherit` profile lets GSDT defer to runtime's model selection
 
 The installer handles all translation at install time. Workflows and agents are written in Claude Code's native format and transformed during deployment.

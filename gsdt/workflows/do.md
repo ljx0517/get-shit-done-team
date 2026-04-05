@@ -1,5 +1,5 @@
 <purpose>
-Analyze freeform text from the user and route to the most appropriate GSD command. This is a dispatcher — it never does the work itself. Match user intent to the best command, confirm the routing, and hand off.
+Analyze freeform text from the user and route to the most appropriate GSDT command. This is a dispatcher — it never does the work itself. Match user intent to the best command, confirm the routing, and hand off.
 </purpose>
 
 <required_reading>
@@ -14,7 +14,7 @@ Read all files referenced by the invoking prompt's execution_context before star
 If `$ARGUMENTS` is empty, ask via AskUserQuestion:
 
 ```
-What would you like to do? Describe the task, bug, or idea and I'll route it to the right GSD command.
+What would you like to do? Describe the task, bug, or idea and I'll route it to the right GSDT command.
 ```
 
 Wait for response before continuing.
@@ -73,7 +73,7 @@ Which approach fits better?
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► ROUTING
+ GSDT ► ROUTING
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **Input:** {first 80 chars of $ARGUMENTS}
@@ -105,7 +105,7 @@ After invoking, stop. The dispatched command handles everything from here.
 
 <success_criteria>
 - [ ] Input validated (not empty)
-- [ ] Intent matched to exactly one GSD command
+- [ ] Intent matched to exactly one GSDT command
 - [ ] Ambiguity resolved via user question (if needed)
 - [ ] Project existence checked for routes that require it
 - [ ] Routing decision displayed before dispatch

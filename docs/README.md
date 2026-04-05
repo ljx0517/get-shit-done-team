@@ -1,6 +1,6 @@
-# GSD Documentation
+# GSDT Documentation
 
-Comprehensive documentation for the Get Shit Done (GSD) framework — a meta-prompting, context engineering, and spec-driven development system for AI coding agents.
+Comprehensive documentation for the Get Shit Done (GSDT) framework — a meta-prompting, context engineering, and spec-driven development system for AI coding agents.
 
 Language versions: [English](README.md) · [Português (pt-BR)](pt-BR/README.md) · [日本語](ja-JP/README.md) · [简体中文](zh-CN/README.md)
 
@@ -24,6 +24,6 @@ Language versions: [English](README.md) · [Português (pt-BR)](pt-BR/README.md)
 - **Getting started:** [README](../README.md) → install → `/gsdt:new-project`
 - **Full workflow walkthrough:** [User Guide](USER-GUIDE.md)
 - **All commands at a glance:** [Command Reference](COMMANDS.md)
-- **Configuring GSD:** [Configuration Reference](CONFIGURATION.md)
+- **Configuring GSDT:** [Configuration Reference](CONFIGURATION.md)
 - **How the system works internally:** [Architecture](ARCHITECTURE.md)
 - **Contributing or extending:** [CLI Tools Reference](CLI-TOOLS.md) + [Agent Reference](AGENTS.md)

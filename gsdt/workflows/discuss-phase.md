@@ -994,7 +994,7 @@ node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" config-set workflow._auto_chain_act
 Display banner:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► AUTO-ADVANCING TO PLAN
+ GSDT ► AUTO-ADVANCING TO PLAN
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Context captured. Launching plan-phase...
@@ -1011,7 +1011,7 @@ This keeps the auto-advance chain flat — discuss, plan, and execute all run at
 - **PHASE COMPLETE** → Full chain succeeded. Display:
   ```
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   GSD ► PHASE ${PHASE} COMPLETE
+   GSDT ► PHASE ${PHASE} COMPLETE
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
   Auto-advance pipeline finished: discuss → plan → execute

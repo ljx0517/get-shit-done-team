@@ -7,7 +7,7 @@ Orchestrator stays lean: parse gaps, spawn agents, collect results, update UAT.
 </purpose>
 
 <available_agent_types>
-Valid GSD subagent types (use exact names — do not fall back to 'general-purpose'):
+Valid GSDT subagent types (use exact names — do not fall back to 'general-purpose'):
 - gsdt-debugger — Diagnoses and fixes issues
 </available_agent_types>
 
@@ -180,7 +180,7 @@ node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs({phase_num}): add root
 Display:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► DIAGNOSIS COMPLETE
+ GSDT ► DIAGNOSIS COMPLETE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 | Gap (Truth) | Root Cause | Files |

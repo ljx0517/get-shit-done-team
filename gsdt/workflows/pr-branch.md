@@ -1,6 +1,6 @@
 <purpose>
 Create a clean branch for pull requests by filtering out .claude/.gsdt-planning/ commits.
-The PR branch contains only code changes — reviewers don't see GSD artifacts
+The PR branch contains only code changes — reviewers don't see GSDT artifacts
 (PLAN.md, SUMMARY.md, STATE.md, CONTEXT.md, etc.).
 
 Uses git cherry-pick with path filtering to rebuild a clean history.
@@ -31,7 +31,7 @@ fi
 Display:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► PR BRANCH
+ GSDT ► PR BRANCH
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Branch: {CURRENT_BRANCH}

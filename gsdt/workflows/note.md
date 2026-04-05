@@ -99,7 +99,7 @@ If a scope has no directory or no entries, show: `(no notes)`
 1. Run the **list** logic to build the numbered index (both scopes)
 2. Find entry N from the numbered list
 3. If N is invalid or refers to an already-promoted note, tell the user and stop
-4. **Requires `.claude/.gsdt-planning/` directory** — if it doesn't exist, warn: "Todos require a GSD project. Run `/gsdt:new-project` to initialize one."
+4. **Requires `.claude/.gsdt-planning/` directory** — if it doesn't exist, warn: "Todos require a GSDT project. Run `/gsdt:new-project` to initialize one."
 5. Ensure `.claude/.gsdt-planning/todos/pending/` directory exists
 6. Generate todo ID: `{NNN}-{slug}` where NNN is the next sequential number (scan both `.claude/.gsdt-planning/todos/pending/` and `.claude/.gsdt-planning/todos/done/` for the highest existing number, increment by 1, zero-pad to 3 digits) and slug is the first ~4 meaningful words of the note text
 7. Extract the note text from the source file (body after frontmatter)

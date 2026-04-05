@@ -694,6 +694,6 @@ feat: materialize all config defaults at new-project initialization
 
 **이것이 발견성을 개선하는 이유:**
 처음으로 `.claude/.gsdt-planning/config.json`을 여는 개발자는 이제
-`git.branching_strategy: "none"`을 확인하고 GSD 소스를 읽지 않고도
+`git.branching_strategy: "none"`을 확인하고 GSDT 소스를 읽지 않고도
 브랜칭이 가능하고 구성 가능하다는 것을 즉시 이해할 수 있습니다.
 ```

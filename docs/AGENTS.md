@@ -1,4 +1,4 @@
-# GSD Agent Reference
+# GSDT Agent Reference
 
 > All 18 specialized agents — roles, tools, spawn patterns, and relationships. For architecture context, see [Architecture](ARCHITECTURE.md).
 
@@ -6,7 +6,7 @@
 
 ## Overview
 
-GSD uses a multi-agent architecture where thin orchestrators (workflow files) spawn specialized agents with fresh context windows. Each agent has a focused role, limited tool access, and produces specific artifacts.
+GSDT uses a multi-agent architecture where thin orchestrators (workflow files) spawn specialized agents with fresh context windows. Each agent has a focused role, limited tool access, and produces specific artifacts.
 
 ### Agent Categories
 
@@ -192,7 +192,7 @@ GSD uses a multi-agent architecture where thin orchestrators (workflow files) sp
 
 ### gsdt-executor
 
-**Role:** Executes GSD plans with atomic commits, deviation handling, and checkpoint protocols.
+**Role:** Executes GSDT plans with atomic commits, deviation handling, and checkpoint protocols.
 
 | Property | Value |
 |----------|-------|

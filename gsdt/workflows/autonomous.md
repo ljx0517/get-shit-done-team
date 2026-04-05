@@ -41,7 +41,7 @@ Display startup banner:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► AUTONOMOUS
+ GSDT ► AUTONOMOUS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
  Milestone: {milestone_version} — {milestone_name}
@@ -74,7 +74,7 @@ Parse the JSON `phases` array.
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► AUTONOMOUS ▸ COMPLETE 🎉
+ GSDT ► AUTONOMOUS ▸ COMPLETE 🎉
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
  All phases complete! Nothing left to do.
@@ -113,7 +113,7 @@ For the current phase, display the progress banner:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► AUTONOMOUS ▸ Phase {N}/{T}: {Name} [████░░░░] {P}%
+ GSDT ► AUTONOMOUS ▸ Phase {N}/{T}: {Name} [████░░░░] {P}%
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
@@ -721,7 +721,7 @@ Display lifecycle transition banner:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► AUTONOMOUS ▸ LIFECYCLE
+ GSDT ► AUTONOMOUS ▸ LIFECYCLE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
  All phases complete → Starting lifecycle: audit → complete → cleanup
@@ -812,7 +812,7 @@ Display final completion banner:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► AUTONOMOUS ▸ COMPLETE 🎉
+ GSDT ► AUTONOMOUS ▸ COMPLETE 🎉
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
  Milestone: {milestone_version} — {milestone_name}
@@ -845,7 +845,7 @@ When any phase operation fails or a blocker is detected, present 3 options via A
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► AUTONOMOUS ▸ STOPPED
+ GSDT ► AUTONOMOUS ▸ STOPPED
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
  Completed: {list of completed phases}

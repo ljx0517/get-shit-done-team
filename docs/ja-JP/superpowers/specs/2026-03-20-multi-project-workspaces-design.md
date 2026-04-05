@@ -6,7 +6,7 @@
 
 ## 課題
 
-GSD は作業ディレクトリごとに1つの `.claude/.gsdt-planning/` ディレクトリに紐づいています。複数の独立したプロジェクトを持つユーザー（20以上の子リポジトリを含むモノレポ構成など）や、同一リポジトリ内でフィーチャーブランチの分離が必要なユーザーは、手動でのクローンや状態管理なしに並行して GSD セッションを実行することができません。
+GSDT は作業ディレクトリごとに1つの `.claude/.gsdt-planning/` ディレクトリに紐づいています。複数の独立したプロジェクトを持つユーザー（20以上の子リポジトリを含むモノレポ構成など）や、同一リポジトリ内でフィーチャーブランチの分離が必要なユーザーは、手動でのクローンや状態管理なしに並行して GSDT セッションを実行することができません。
 
 ## 解決策
 
@@ -40,7 +40,7 @@ GSD は作業ディレクトリごとに1つの `.claude/.gsdt-planning/` ディ
 
 ### `/gsdt:list-workspaces`
 
-`~/gsdt-workspaces/*/WORKSPACE.md` をスキャンしてワークスペースマニフェストを検索します。名前、パス、リポジトリ数、GSD ステータス（PROJECT.md の有無、現在のフェーズ）をテーブル形式で表示します。
+`~/gsdt-workspaces/*/WORKSPACE.md` をスキャンしてワークスペースマニフェストを検索します。名前、パス、リポジトリ数、GSDT ステータス（PROJECT.md の有無、現在のフェーズ）をテーブル形式で表示します。
 
 ### `/gsdt:remove-workspace`
 
@@ -51,7 +51,7 @@ GSD は作業ディレクトリごとに1つの `.claude/.gsdt-planning/` ディ
 ```
 ~/gsdt-workspaces/feature-b/          # workspace root
 ├── WORKSPACE.md                      # manifest
-├── .claude/.gsdt-planning/                        # independent GSD planning directory
+├── .claude/.gsdt-planning/                        # independent GSDT planning directory
 │   ├── PROJECT.md                    # (if user ran /gsdt:new-project)
 │   ├── STATE.md
 │   └── config.json
@@ -64,7 +64,7 @@ GSD は作業ディレクトリごとに1つの `.claude/.gsdt-planning/` ディ
 主要な特性：
 - `.claude/.gsdt-planning/` はワークスペースのルートに配置され、個々のリポジトリ内には配置されない
 - 各リポジトリはワークスペースルート直下の対等なディレクトリ
-- `WORKSPACE.md` はルートにある唯一の GSD 固有ファイル（`.claude/.gsdt-planning/` を除く）
+- `WORKSPACE.md` はルートにある唯一の GSDT 固有ファイル（`.claude/.gsdt-planning/` を除く）
 - `--strategy clone` の場合も同じ構造だが、リポジトリは完全なクローンとなる
 
 ## WORKSPACE.md のフォーマット
@@ -177,9 +177,9 @@ Strategy: worktree
 
 | 決定事項 | 根拠 |
 |----------|-----------|
-| 論理的なレジストリではなく物理ディレクトリを採用 | ファイルシステムを信頼の源とする — GSD の既存の cwd ベースの検出パターンと一致する |
+| 論理的なレジストリではなく物理ディレクトリを採用 | ファイルシステムを信頼の源とする — GSDT の既存の cwd ベースの検出パターンと一致する |
 | Worktree をデフォルト戦略とする | 軽量（.git オブジェクトを共有）、作成が高速、クリーンアップが容易 |
-| `.claude/.gsdt-planning/` をワークスペースルートに配置 | 個々のリポジトリの planning から完全に分離できる。各ワークスペースは独立した GSD プロジェクトとなる |
+| `.claude/.gsdt-planning/` をワークスペースルートに配置 | 個々のリポジトリの planning から完全に分離できる。各ワークスペースは独立した GSDT プロジェクトとなる |
 | 中央レジストリを使用しない | 状態の乖離を回避する。`list-workspaces` はファイルシステムを直接スキャンする |
 | ケース B を A の特殊ケースとする | `--repos .` で同じ仕組みを再利用し、フィーチャーブランチ専用のコードが不要 |
 | デフォルトパスを `~/gsdt-workspaces/<name>` とする | `list-workspaces` がスキャンしやすい予測可能な場所に配置し、ワークスペースをソースリポジトリの外に保つ |

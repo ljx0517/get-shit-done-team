@@ -1,5 +1,5 @@
 <purpose>
-Check for GSD updates via npm, display changelog for versions between installed and latest, obtain user confirmation, and execute clean installation with cache clearing.
+Check for GSDT updates via npm, display changelog for versions between installed and latest, obtain user confirmation, and execute clean installation with cache clearing.
 </purpose>
 
 <required_reading>
@@ -9,7 +9,7 @@ Read all files referenced by the invoking prompt's execution_context before star
 <process>
 
 <step name="get_installed_version">
-Detect whether GSD is installed locally or globally by checking both locations and validating install integrity.
+Detect whether GSDT is installed locally or globally by checking both locations and validating install integrity.
 
 First, derive `PREFERRED_RUNTIME` from the invoking prompt's `execution_context` path:
 - Path contains `/.codex/` -> `codex`
@@ -130,7 +130,7 @@ If multiple runtime installs are detected and the invoking runtime cannot be det
 
 **If VERSION file missing:**
 ```
-## GSD Update
+## GSDT Update
 
 **Installed version:** Unknown
 
@@ -164,7 +164,7 @@ Compare installed vs latest:
 
 **If installed == latest:**
 ```
-## GSD Update
+## GSDT Update
 
 **Installed:** X.Y.Z
 **Latest:** X.Y.Z
@@ -176,7 +176,7 @@ Exit.
 
 **If installed > latest:**
 ```
-## GSD Update
+## GSDT Update
 
 **Installed:** X.Y.Z
 **Latest:** A.B.C
@@ -195,7 +195,7 @@ Exit.
 3. Display preview and ask for confirmation:
 
 ```
-## GSD Update Available
+## GSDT Update Available
 
 **Installed:** 1.5.10
 **Latest:** 1.5.15
@@ -215,7 +215,7 @@ Exit.
 
 ────────────────────────────────────────────────────────────
 
-⚠️  **Note:** The installer performs a clean install of GSD folders:
+⚠️  **Note:** The installer performs a clean install of GSDT folders:
 - `commands/gsdt/` will be wiped and replaced
 - `gsdt/` will be wiped and replaced
 - `agents/gsd-*` files will be replaced
@@ -230,7 +230,7 @@ Your custom files in other locations are preserved:
 - Custom hooks ✓
 - Your CLAUDE.md files ✓
 
-If you've modified any GSD files directly, they'll be automatically backed up to `gsdt-local-patches/` and can be reapplied with `/gsdt:reapply-patches` after the update.
+If you've modified any GSDT files directly, they'll be automatically backed up to `gsdt-local-patches/` and can be reapplied with `/gsdt:reapply-patches` after the update.
 ```
 
 Use AskUserQuestion:
@@ -285,7 +285,7 @@ Format completion message (changelog was already shown in confirmation step):
 
 ```
 ╔═══════════════════════════════════════════════════════════╗
-║  GSD Updated: v1.5.10 → v1.5.15                           ║
+║  GSDT Updated: v1.5.10 → v1.5.15                           ║
 ╚═══════════════════════════════════════════════════════════╝
 
 ⚠️  Restart your runtime to pick up the new commands.

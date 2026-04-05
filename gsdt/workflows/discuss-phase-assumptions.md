@@ -7,7 +7,7 @@ believe based on evidence, and ask the user only to correct what's wrong.
 </purpose>
 
 <available_agent_types>
-Valid GSD subagent types (use exact names — do not fall back to 'general-purpose'):
+Valid GSDT subagent types (use exact names — do not fall back to 'general-purpose'):
 - gsdt-assumptions-analyzer — Analyzes codebase to surface implementation assumptions
 </available_agent_types>
 
@@ -630,7 +630,7 @@ node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" config-set workflow._auto_chain_act
 Display banner:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► AUTO-ADVANCING TO PLAN
+ GSDT ► AUTO-ADVANCING TO PLAN
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Context captured (assumptions mode). Launching plan-phase...

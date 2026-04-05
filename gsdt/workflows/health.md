@@ -42,7 +42,7 @@ Parse JSON output:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD Health Check
+ GSDT Health Check
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Status: HEALTHY | DEGRADED | BROKEN

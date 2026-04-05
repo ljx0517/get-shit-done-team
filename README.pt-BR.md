@@ -27,7 +27,7 @@ npx gsdt@latest
 
 <br>
 
-![GSD Install](assets/terminal.svg)
+![GSDT Install](assets/terminal.svg)
 
 <br>
 
@@ -53,7 +53,7 @@ Sou desenvolvedor solo. Eu não escrevo código — o Claude Code escreve.
 
 Existem outras ferramentas de desenvolvimento orientado por especificação. BMAD, Speckit... Mas quase todas parecem mais complexas do que o necessário (cerimônias de sprint, story points, sync com stakeholders, retrospectivas, fluxos Jira) ou não entendem de verdade o panorama do que você está construindo. Eu não sou uma empresa de software com 50 pessoas. Não quero teatro corporativo. Só quero construir coisas boas que funcionem.
 
-Então eu criei o GSD. A complexidade fica no sistema, não no seu fluxo. Por trás: engenharia de contexto, formatação XML de prompts, orquestração de subagentes, gerenciamento de estado. O que você vê: alguns comandos que simplesmente funcionam.
+Então eu criei o GSDT. A complexidade fica no sistema, não no seu fluxo. Por trás: engenharia de contexto, formatação XML de prompts, orquestração de subagentes, gerenciamento de estado. O que você vê: alguns comandos que simplesmente funcionam.
 
 O sistema dá ao Claude tudo que ele precisa para fazer o trabalho *e* validar o resultado. Eu confio no fluxo. Ele entrega.
 
@@ -63,7 +63,7 @@ O sistema dá ao Claude tudo que ele precisa para fazer o trabalho *e* validar o
 
 Vibe coding ganhou má fama. Você descreve algo, a IA gera código, e sai um resultado inconsistente que quebra em escala.
 
-O GSD corrige isso. É a camada de engenharia de contexto que torna o Claude Code confiável.
+O GSDT corrige isso. É a camada de engenharia de contexto que torna o Claude Code confiável.
 
 ---
 
@@ -145,7 +145,7 @@ claude --dangerously-skip-permissions
 ```
 
 > [!TIP]
-> Esse é o modo pensado para o GSD: aprovar `date` e `git commit` 50 vezes mata a produtividade.
+> Esse é o modo pensado para o GSDT: aprovar `date` e `git commit` 50 vezes mata a produtividade.
 
 ---
 
@@ -224,7 +224,7 @@ Validação manual orientada para confirmar que a feature realmente funciona com
 /gsdt:new-milestone
 ```
 
-Ou deixe o GSD decidir:
+Ou deixe o GSDT decidir:
 
 ```
 /gsdt:next
@@ -308,7 +308,7 @@ Cada tarefa gera commit próprio, facilitando `git bisect`, rollback e rastreabi
 | `/gsdt:pr-branch` | Cria branch limpa para PR |
 | `/gsdt:settings` | Configura perfis e agentes |
 | `/gsdt:set-profile <profile>` | Troca perfil (quality/balanced/budget/inherit) |
-| `/gsdt:quick [--full] [--discuss] [--research]` | Execução rápida com garantias do GSD |
+| `/gsdt:quick [--full] [--discuss] [--research]` | Execução rápida com garantias do GSDT |
 | `/gsdt:health [--repair]` | Verifica e repara `.claude/.gsdt-planning/` |
 
 > Para a lista completa de comandos e opções, use `/gsdt:help`.
@@ -347,7 +347,7 @@ Troca rápida:
 
 ### Endurecimento embutido
 
-O GSD inclui proteções como:
+O GSDT inclui proteções como:
 - prevenção de path traversal
 - detecção de prompt injection
 - validação de argumentos de shell
@@ -447,6 +447,6 @@ Licença MIT. Veja [LICENSE](LICENSE).
 
 <div align="center">
 
-**Claude Code é poderoso. O GSD o torna confiável.**
+**Claude Code é poderoso. O GSDT o torna confiável.**
 
 </div>

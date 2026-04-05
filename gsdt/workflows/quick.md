@@ -1,5 +1,5 @@
 <purpose>
-Execute small, ad-hoc tasks with GSD guarantees (atomic commits, STATE.md tracking). Quick mode spawns gsdt-planner (quick mode) + gsdt-executor(s), tracks tasks in `.claude/.gsdt-planning/quick/`, and updates STATE.md's "Quick Tasks Completed" table.
+Execute small, ad-hoc tasks with GSDT guarantees (atomic commits, STATE.md tracking). Quick mode spawns gsdt-planner (quick mode) + gsdt-executor(s), tracks tasks in `.claude/.gsdt-planning/quick/`, and updates STATE.md's "Quick Tasks Completed" table.
 
 With `--discuss` flag: lightweight discussion phase before planning. Surfaces assumptions, clarifies gray areas, captures decisions in CONTEXT.md so the planner treats them as locked.
 
@@ -15,7 +15,7 @@ Read all files referenced by the invoking prompt's execution_context before star
 </required_reading>
 
 <available_agent_types>
-Valid GSD subagent types (use exact names — do not fall back to 'general-purpose'):
+Valid GSDT subagent types (use exact names — do not fall back to 'general-purpose'):
 - gsdt-phase-researcher — Researches technical approaches for a phase
 - gsdt-planner — Creates detailed plans from phase scope
 - gsdt-plan-checker — Reviews plan quality before execution
@@ -51,7 +51,7 @@ Display banner based on active flags:
 If `$DISCUSS_MODE` and `$RESEARCH_MODE` and `$FULL_MODE`:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► QUICK TASK (DISCUSS + RESEARCH + FULL)
+ GSDT ► QUICK TASK (DISCUSS + RESEARCH + FULL)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ◆ Discussion + research + plan checking + verification enabled
@@ -60,7 +60,7 @@ If `$DISCUSS_MODE` and `$RESEARCH_MODE` and `$FULL_MODE`:
 If `$DISCUSS_MODE` and `$FULL_MODE` (no research):
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► QUICK TASK (DISCUSS + FULL)
+ GSDT ► QUICK TASK (DISCUSS + FULL)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ◆ Discussion + plan checking + verification enabled
@@ -69,7 +69,7 @@ If `$DISCUSS_MODE` and `$FULL_MODE` (no research):
 If `$DISCUSS_MODE` and `$RESEARCH_MODE` (no full):
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► QUICK TASK (DISCUSS + RESEARCH)
+ GSDT ► QUICK TASK (DISCUSS + RESEARCH)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ◆ Discussion + research enabled
@@ -78,7 +78,7 @@ If `$DISCUSS_MODE` and `$RESEARCH_MODE` (no full):
 If `$RESEARCH_MODE` and `$FULL_MODE` (no discuss):
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► QUICK TASK (RESEARCH + FULL)
+ GSDT ► QUICK TASK (RESEARCH + FULL)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ◆ Research + plan checking + verification enabled
@@ -87,7 +87,7 @@ If `$RESEARCH_MODE` and `$FULL_MODE` (no discuss):
 If `$DISCUSS_MODE` only:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► QUICK TASK (DISCUSS)
+ GSDT ► QUICK TASK (DISCUSS)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ◆ Discussion phase enabled — surfacing gray areas before planning
@@ -96,7 +96,7 @@ If `$DISCUSS_MODE` only:
 If `$RESEARCH_MODE` only:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► QUICK TASK (RESEARCH)
+ GSDT ► QUICK TASK (RESEARCH)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ◆ Research phase enabled — investigating approaches before planning
@@ -105,7 +105,7 @@ If `$RESEARCH_MODE` only:
 If `$FULL_MODE` only:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► QUICK TASK (FULL MODE)
+ GSDT ► QUICK TASK (FULL MODE)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ◆ Plan checking + verification enabled
@@ -180,7 +180,7 @@ Skip this step entirely if NOT `$DISCUSS_MODE`.
 Display banner:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► DISCUSSING QUICK TASK
+ GSDT ► DISCUSSING QUICK TASK
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ◆ Surfacing gray areas for: ${DESCRIPTION}
@@ -307,7 +307,7 @@ Skip this step entirely if NOT `$RESEARCH_MODE`.
 Display banner:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► RESEARCHING QUICK TASK
+ GSDT ► RESEARCHING QUICK TASK
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ◆ Investigating approaches for: ${DESCRIPTION}
@@ -429,7 +429,7 @@ Skip this step entirely if NOT `$FULL_MODE`.
 Display banner:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► CHECKING PLAN
+ GSDT ► CHECKING PLAN
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ◆ Spawning plan checker...
@@ -584,7 +584,7 @@ Skip this step entirely if NOT `$FULL_MODE`.
 Display banner:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► VERIFYING RESULTS
+ GSDT ► VERIFYING RESULTS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ◆ Spawning verifier...
@@ -706,7 +706,7 @@ Display completion output:
 ```
 ---
 
-GSD > QUICK TASK COMPLETE (FULL MODE)
+GSDT > QUICK TASK COMPLETE (FULL MODE)
 
 Quick Task ${quick_id}: ${DESCRIPTION}
 
@@ -724,7 +724,7 @@ Ready for next task: /gsdt:quick ${GSD_WS}
 ```
 ---
 
-GSD > QUICK TASK COMPLETE
+GSDT > QUICK TASK COMPLETE
 
 Quick Task ${quick_id}: ${DESCRIPTION}
 

@@ -1,6 +1,6 @@
-# Referência de Recursos do GSD
+# Referência de Recursos do GSDT
 
-Visão em Português dos recursos centrais do GSD.  
+Visão em Português dos recursos centrais do GSDT.  
 Para catálogo completo e detalhamento exaustivo, consulte [FEATURES.md em inglês](../FEATURES.md).
 
 ---

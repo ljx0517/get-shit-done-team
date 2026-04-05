@@ -196,7 +196,7 @@ wait
 Display progress:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► CROSS-AI REVIEW — Phase {N}
+ GSDT ► CROSS-AI REVIEW — Phase {N}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ◆ Reviewing with {CLI}... (parallel)...
@@ -327,7 +327,7 @@ Display summary:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► REVIEW COMPLETE
+ GSDT ► REVIEW COMPLETE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Session: {SESSION_ID}

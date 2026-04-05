@@ -7,7 +7,7 @@ Read all files referenced by the invoking prompt's execution_context before star
 </required_reading>
 
 <available_agent_types>
-Valid GSD subagent types (use exact names — do not fall back to 'general-purpose'):
+Valid GSDT subagent types (use exact names — do not fall back to 'general-purpose'):
 - gsdt-project-researcher — Researches project-level technical decisions
 - gsdt-research-synthesizer — Synthesizes findings from parallel research agents
 - gsdt-roadmapper — Creates phased execution roadmaps
@@ -232,7 +232,7 @@ Proceed to Step 4 (skip Steps 3 and 5).
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► QUESTIONING
+ GSDT ► QUESTIONING
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
@@ -561,7 +561,7 @@ Strip the `./` prefix to get directory names (e.g., `./backend` → `backend`).
 Use AskUserQuestion:
 
 - header: "Multi-Repo Workspace"
-- question: "I detected separate git repos in this workspace. Which directories contain code that GSD should commit to?"
+- question: "I detected separate git repos in this workspace. Which directories contain code that GSDT should commit to?"
 - multiSelect: true
 - options: one option per detected directory
   - "[directory name]" — Separate git repo
@@ -598,7 +598,7 @@ Display stage banner:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► RESEARCHING
+ GSDT ► RESEARCHING
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Researching [domain] ecosystem...
@@ -820,7 +820,7 @@ Display research complete banner and key findings:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► RESEARCH COMPLETE ✓
+ GSDT ► RESEARCH COMPLETE ✓
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ## Key Findings
@@ -840,7 +840,7 @@ Display stage banner:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► DEFINING REQUIREMENTS
+ GSDT ► DEFINING REQUIREMENTS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
@@ -994,7 +994,7 @@ Display stage banner:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► CREATING ROADMAP
+ GSDT ► CREATING ROADMAP
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ◆ Spawning roadmapper...
@@ -1128,7 +1128,7 @@ Use AskUserQuestion:
 node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" generate-claude-md
 ```
 
-This ensures new projects get the default GSD workflow-enforcement guidance and current project context in `CLAUDE.md`.
+This ensures new projects get the default GSDT workflow-enforcement guidance and current project context in `CLAUDE.md`.
 
 **Commit roadmap (after approval or auto mode):**
 
@@ -1142,7 +1142,7 @@ Present completion summary:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► PROJECT INITIALIZED ✓
+ GSDT ► PROJECT INITIALIZED ✓
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **[Project Name]**
@@ -1258,7 +1258,7 @@ PHASE1_HAS_UI=$(echo "$PHASE1_SECTION" | grep -qi "UI hint.*yes" && echo "true" 
 - [ ] ROADMAP.md created with phases, requirement mappings, success criteria
 - [ ] STATE.md initialized
 - [ ] REQUIREMENTS.md traceability updated
-- [ ] CLAUDE.md generated with GSD workflow guidance
+- [ ] CLAUDE.md generated with GSDT workflow guidance
 - [ ] User knows next step is `/gsdt:discuss-phase 1`
 
 **Atomic commits:** Each phase commits its artifacts immediately. If context is lost, artifacts persist.

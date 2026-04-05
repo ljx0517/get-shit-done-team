@@ -1,4 +1,4 @@
-# Contributing to GSD
+# Contributing to GSDT
 
 ## Getting Started
 
@@ -79,7 +79,7 @@ const { createTempProject, createTempGitProject, createTempDir, cleanup, runGsdT
 
 | Helper | Creates | Use When |
 |--------|---------|----------|
-| `createTempProject(prefix?)` | tmpDir with `.claude/.gsdt-planning/phases/` | Testing GSD tools that need planning structure |
+| `createTempProject(prefix?)` | tmpDir with `.claude/.gsdt-planning/phases/` | Testing GSDT tools that need planning structure |
 | `createTempGitProject(prefix?)` | Same + git init + initial commit | Testing git-dependent features |
 | `createTempDir(prefix?)` | Bare temp directory | Testing features that don't need `.claude/.gsdt-planning/` |
 | `cleanup(tmpDir)` | Removes directory recursively | Always use in `afterEach` |

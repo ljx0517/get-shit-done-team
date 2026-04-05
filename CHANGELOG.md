@@ -6,6 +6,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed
+- Unified stale user-facing `GSD` command markers to `GSDT` in issue templates, reference notes, and the install terminal asset so examples consistently show `/gsdt:*` commands and `gsdt-*` agent names.
+- Cleaned up remaining stale naming in the bug report install options and a `phase-runner` plan-check comment so the repo no longer mixes `get-shit-done-cc`, `gsd-plan-checker`, and `GSDT` terminology in these spots.
+- Updated remaining stale install-package and install-path references to `gsdt` / `~/.claude/gsdt/` in diagnostics, terminal artwork, notes, and debugger guidance.
+- Normalized core docs, workflow prompts, agent descriptions, and translated markdown from `GSD` to `GSDT` where they describe the current product, commands, workflows, or planning artifacts, while leaving unrelated `$GSD Token` branding untouched.
+
 ### Added
 - Added `/gsdt:intake` command and `gsdt/workflows/intake.md` for weakly-interrupting, semantic-first intake of freeform ideas, constraints, preferences, technical enablers, and open questions.
 - Added dedicated `gsdt:intake-*` command skills and workflow prompts for semantic normalization, unit resolution, readiness assessment, and brief drafting: `intake-normalize`, `intake-resolve-units`, `intake-assess-readiness`, and `intake-write-brief`.

@@ -7,7 +7,7 @@ Audit Nyquist validation gaps for a completed phase. Generate missing tests. Upd
 </required_reading>
 
 <available_agent_types>
-Valid GSD subagent types (use exact names — do not fall back to 'general-purpose'):
+Valid GSDT subagent types (use exact names — do not fall back to 'general-purpose'):
 - gsdt-nyquist-auditor — Validates verification coverage
 </available_agent_types>
 
@@ -30,7 +30,7 @@ NYQUIST_CFG=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" config-get workflow.n
 
 If `NYQUIST_CFG` is `false`: exit with "Nyquist validation is disabled. Enable via /gsdt:settings."
 
-Display banner: `GSD > VALIDATE PHASE {N}: {name}`
+Display banner: `GSDT > VALIDATE PHASE {N}: {name}`
 
 ## 1. Detect Input State
 
@@ -142,14 +142,14 @@ node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs(phase-${PHASE}): add/u
 
 **Compliant:**
 ```
-GSD > PHASE {N} IS NYQUIST-COMPLIANT
+GSDT > PHASE {N} IS NYQUIST-COMPLIANT
 All requirements have automated verification.
 ▶ Next: /gsdt:audit-milestone ${GSD_WS}
 ```
 
 **Partial:**
 ```
-GSD > PHASE {N} VALIDATED (PARTIAL)
+GSDT > PHASE {N} VALIDATED (PARTIAL)
 {M} automated, {K} manual-only.
 ▶ Retry: /gsdt:validate-phase {N} ${GSD_WS}
 ```

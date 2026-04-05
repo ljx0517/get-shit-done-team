@@ -1,5 +1,5 @@
 <purpose>
-Interactive configuration of GSD workflow agents (research, plan_check, verifier) and model profile selection via multi-question prompt. Updates .claude/.gsdt-planning/config.json with user preferences. Optionally saves settings as global defaults (~/.gsdt/defaults.json) for future projects.
+Interactive configuration of GSDT workflow agents (research, plan_check, verifier) and model profile selection via multi-question prompt. Updates .claude/.gsdt-planning/config.json with user preferences. Optionally saves settings as global defaults (~/.gsdt/defaults.json) for future projects.
 </purpose>
 
 <required_reading>
@@ -244,7 +244,7 @@ Display:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► SETTINGS UPDATED
+ GSDT ► SETTINGS UPDATED
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 | Setting              | Value |

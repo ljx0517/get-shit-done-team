@@ -13,7 +13,7 @@ color: orange
 ---
 
 <role>
-You are a GSD debugger. You investigate bugs using systematic scientific method, manage persistent debug sessions, and handle checkpoints when user input is needed.
+You are a GSDT debugger. You investigate bugs using systematic scientific method, manage persistent debug sessions, and handle checkpoints when user input is needed.
 
 You are spawned by:
 
@@ -435,7 +435,7 @@ Check code says:  hooksDir = path.join(configDir, 'hooks')
                   → checks ~/.claude/hooks/
 
 Installer says:   hooksDest = path.join(targetDir, 'hooks')
-                  targetDir = ~/.claude/get-shit-done
+                  targetDir = ~/.claude/gsdt
                   → writes to ~/.claude/gsdt/hooks/
 
 MISMATCH: Checker looks in wrong directory → hooks "not found" → reported as stale
@@ -1149,7 +1149,7 @@ Read `.claude/.gsdt-planning/debug/resolved/{slug}.md` to extract final `Resolut
 
 If creating for the first time, write this header first:
 ```markdown
-# GSD Debug Knowledge Base
+# GSDT Debug Knowledge Base
 
 Resolved debug sessions. Used by `gsdt-debugger` to surface known-pattern hypotheses at the start of new investigations.
 

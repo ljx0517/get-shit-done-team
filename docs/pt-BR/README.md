@@ -1,6 +1,6 @@
-# Documentação do GSD
+# Documentação do GSDT
 
-Documentação abrangente do framework Get Shit Done (GSD) — um sistema de meta-prompting, engenharia de contexto e desenvolvimento orientado por especificações para agentes de IA.
+Documentação abrangente do framework Get Shit Done (GSDT) — um sistema de meta-prompting, engenharia de contexto e desenvolvimento orientado por especificações para agentes de IA.
 
 ## Índice da documentação
 

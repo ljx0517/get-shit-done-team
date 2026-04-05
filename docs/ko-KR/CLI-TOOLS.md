@@ -1,4 +1,4 @@
-# GSD CLI 도구 레퍼런스
+# GSDT CLI 도구 레퍼런스
 
 > `gsdt-tools.cjs`에 대한 프로그래밍 방식 API 레퍼런스입니다. 워크플로우와 에이전트가 내부적으로 사용합니다. 사용자 대면 명령어는 [Command Reference](COMMANDS.md)를 참조하세요.
 
