@@ -30,16 +30,13 @@ Parse JSON for: `milestone_version`, `milestone_name`, `phase_count`, `completed
 Display startup banner:
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSDT ► MANAGER
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSDT ► MANAGER ──
 
  {milestone_version} — {milestone_name}
  {phase_count} phases · {completed_count} complete
 
  ✓ Discuss → inline    ◆ Plan/Execute → background
  Dashboard auto-refreshes when background work is active.
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
 Proceed to dashboard step.
@@ -81,9 +78,7 @@ Use `deps_display` from init JSON for the Deps column — shows which phases thi
 Example output:
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSDT ► DASHBOARD
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSDT ► DASHBOARD ──
  ████████████░░░░░░░░ 60%  (3/5 phases)
  ◆ Background: Planning Phase 4
  | # | Phase                | Deps | D | P | E | Status              |
@@ -327,15 +322,12 @@ Classify the error:
 Display final status with progress bar:
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSDT ► SESSION END
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSDT ► SESSION END ──
 
  {milestone_version} — {milestone_name}
  {PROGRESS_BAR} {progress_pct}%  ({completed_count}/{phase_count} phases)
 
  Resume anytime: /gsdt:manager
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
 **Note:** Any background agents still running will continue to completion. Their results will be visible on next `/gsdt:manager` or `/gsdt:progress` invocation.

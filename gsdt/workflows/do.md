@@ -72,9 +72,7 @@ Which approach fits better?
 **Show the routing decision.**
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSDT ► ROUTING
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSDT ► ROUTING ──
 
 **Input:** {first 80 chars of $ARGUMENTS}
 **Routing to:** {chosen command}

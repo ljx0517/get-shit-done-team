@@ -179,9 +179,7 @@ node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs({phase_num}): add root
 
 Display:
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSDT ► DIAGNOSIS COMPLETE
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSDT ► DIAGNOSIS COMPLETE ──
 
 | Gap (Truth) | Root Cause | Files |
 |-------------|------------|-------|

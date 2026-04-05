@@ -231,9 +231,7 @@ Proceed to Step 4 (skip Steps 3 and 5).
 **Display stage banner:**
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSDT ► QUESTIONING
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSDT ► QUESTIONING ──
 ```
 
 **Open the conversation:**
@@ -597,9 +595,7 @@ Use AskUserQuestion:
 Display stage banner:
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSDT ► RESEARCHING
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSDT ► RESEARCHING ──
 
 Researching [domain] ecosystem...
 ```
@@ -819,9 +815,7 @@ Commit after writing.
 Display research complete banner and key findings:
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSDT ► RESEARCH COMPLETE ✓
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSDT ► RESEARCH COMPLETE ✓ ──
 
 ## Key Findings
 
@@ -839,9 +833,7 @@ Files: `.claude/.gsdt-planning/research/`
 Display stage banner:
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSDT ► DEFINING REQUIREMENTS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSDT ► DEFINING REQUIREMENTS ──
 ```
 
 **Load context:**
@@ -993,9 +985,7 @@ node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: define v1 requirement
 Display stage banner:
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSDT ► CREATING ROADMAP
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSDT ► CREATING ROADMAP ──
 
 ◆ Spawning roadmapper...
 ```
@@ -1141,9 +1131,7 @@ node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: create roadmap ([N] p
 Present completion summary:
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSDT ► PROJECT INITIALIZED ✓
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSDT ► PROJECT INITIALIZED ✓ ──
 
 **[Project Name]**
 
