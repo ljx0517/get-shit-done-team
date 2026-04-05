@@ -63,9 +63,7 @@ Continue to step 2.
 Display consent screen:
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSDT > PROFILE YOUR CODING STYLE
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSDT > PROFILE YOUR CODING STYLE ──
 
 Claude starts every conversation generic. A profile teaches Claude
 how YOU actually work -- not how you think you work.
@@ -400,9 +398,7 @@ If nothing changed: Display "No changes detected -- your profile is already up t
 **Display final summary:**
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSDT > PROFILE COMPLETE ✓
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSDT > PROFILE COMPLETE ✓ ──
 
 Your profile:    $HOME/.claude/gsdt/USER-PROFILE.md
 ```

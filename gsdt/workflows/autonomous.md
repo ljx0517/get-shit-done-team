@@ -40,9 +40,7 @@ Parse JSON for: `milestone_version`, `milestone_name`, `phase_count`, `completed
 Display startup banner:
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSDT ► AUTONOMOUS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSDT ► AUTONOMOUS ──
 
  Milestone: {milestone_version} — {milestone_name}
  Phases: {phase_count} total, {completed_phases} complete
@@ -73,9 +71,7 @@ Parse the JSON `phases` array.
 **If no incomplete phases remain:**
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSDT ► AUTONOMOUS ▸ COMPLETE 🎉
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSDT ► AUTONOMOUS ▸ COMPLETE 🎉 ──
 
  All phases complete! Nothing left to do.
 ```
@@ -112,9 +108,7 @@ Extract `phase_name`, `goal`, `success_criteria` from each. Store for use in exe
 For the current phase, display the progress banner:
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSDT ► AUTONOMOUS ▸ Phase {N}/{T}: {Name} [████░░░░] {P}%
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSDT ► AUTONOMOUS ▸ Phase {N}/{T}: {Name} [████░░░░] {P}% ──
 ```
 
 Where N = current phase number (from the ROADMAP, e.g., 6), T = total milestone phases (from `phase_count` parsed in initialize step, e.g., 8), P = percentage of all milestone phases completed so far. Calculate P as: (number of phases with `disk_status` "complete" from the latest `roadmap analyze` / T × 100). Use █ for filled and ░ for empty segments in the progress bar (8 characters wide).
@@ -720,9 +714,7 @@ After all phases complete, run the milestone lifecycle sequence: audit → compl
 Display lifecycle transition banner:
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSDT ► AUTONOMOUS ▸ LIFECYCLE
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSDT ► AUTONOMOUS ▸ LIFECYCLE ──
 
  All phases complete → Starting lifecycle: audit → complete → cleanup
  Milestone: {milestone_version} — {milestone_name}
@@ -811,9 +803,7 @@ Cleanup shows its own dry-run and asks user for approval internally — this is 
 Display final completion banner:
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSDT ► AUTONOMOUS ▸ COMPLETE 🎉
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSDT ► AUTONOMOUS ▸ COMPLETE 🎉 ──
 
  Milestone: {milestone_version} — {milestone_name}
  Status: Complete ✅
@@ -844,9 +834,7 @@ When any phase operation fails or a blocker is detected, present 3 options via A
 **On "Stop autonomous mode":** Display progress summary:
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSDT ► AUTONOMOUS ▸ STOPPED
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSDT ► AUTONOMOUS ▸ STOPPED ──
 
  Completed: {list of completed phases}
  Skipped: {list of skipped phases}

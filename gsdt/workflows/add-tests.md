@@ -60,9 +60,7 @@ Exit.
 
 Present banner:
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSDT ► ADD TESTS — Phase ${phase_number}: ${phase_name}
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSDT ► ADD TESTS — Phase ${phase_number}: ${phase_name} ──
 ```
 </step>
 
@@ -274,9 +272,7 @@ For each approved E2E test:
 Create a test coverage report and present to user:
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSDT ► TEST GENERATION COMPLETE
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSDT ► TEST GENERATION COMPLETE ──
 
 ## Results
 

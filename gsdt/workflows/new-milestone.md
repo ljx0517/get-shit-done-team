@@ -55,9 +55,7 @@ If the flag is absent, keep the current behavior of continuing phase numbering f
 Before writing any files, present a summary of what was gathered and ask for confirmation.
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSDT ► MILESTONE SUMMARY
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSDT ► MILESTONE SUMMARY ──
 
 **Milestone v[X.Y]: [Name]**
 
@@ -194,9 +192,7 @@ AskUserQuestion: "Research the domain ecosystem for new features before defining
 **If user chose "Research first":**
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSDT ► RESEARCHING
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSDT ► RESEARCHING ──
 
 ◆ Spawning 4 researchers in parallel...
   → Stack, Features, Architecture, Pitfalls
@@ -271,9 +267,7 @@ Commit after writing.
 
 Display key findings from SUMMARY.md:
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSDT ► RESEARCH COMPLETE ✓
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSDT ► RESEARCH COMPLETE ✓ ──
 
 **Stack additions:** [from SUMMARY.md]
 **Feature table stakes:** [from SUMMARY.md]
@@ -285,9 +279,7 @@ Display key findings from SUMMARY.md:
 ## 9. Define Requirements
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSDT ► DEFINING REQUIREMENTS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSDT ► DEFINING REQUIREMENTS ──
 ```
 
 Read PROJECT.md: core value, current milestone goals, validated requirements (what exists).
@@ -356,9 +348,7 @@ node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: define milestone v[X.
 ## 10. Create Roadmap
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSDT ► CREATING ROADMAP
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSDT ► CREATING ROADMAP ──
 
 ◆ Spawning roadmapper...
 ```
@@ -440,9 +430,7 @@ node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: create milestone v[X.
 ## 11. Done
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSDT ► MILESTONE INITIALIZED ✓
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSDT ► MILESTONE INITIALIZED ✓ ──
 
 **Milestone v[X.Y]: [Name]**
 

@@ -195,9 +195,7 @@ wait
 
 Display progress:
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSDT ► CROSS-AI REVIEW — Phase {N}
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSDT ► CROSS-AI REVIEW — Phase {N} ──
 
 ◆ Reviewing with {CLI}... (parallel)...
 ◆ All reviewers complete
@@ -326,9 +324,7 @@ node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: cross-AI review for p
 Display summary:
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSDT ► REVIEW COMPLETE
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSDT ► REVIEW COMPLETE ──
 
 Session: {SESSION_ID}
 Phase {N} reviewed by {count} AI systems.

@@ -432,9 +432,7 @@ Diagnosis runs automatically - no user prompt. Parallel agents investigate simul
 
 Display:
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSDT ► PLANNING FIXES
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSDT ► PLANNING FIXES ──
 
 ◆ Spawning planner for gap closure...
 ```
@@ -480,9 +478,7 @@ On return:
 
 Display:
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSDT ► VERIFYING FIX PLANS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSDT ► VERIFYING FIX PLANS ──
 
 ◆ Spawning plan checker...
 ```
@@ -582,9 +578,7 @@ Wait for user response.
 **Present completion and next steps:**
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSDT ► FIXES READY ✓
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSDT ► FIXES READY ✓ ──
 
 **Phase {X}: {Name}** — {N} gap(s) diagnosed, {M} fix plan(s) created
 

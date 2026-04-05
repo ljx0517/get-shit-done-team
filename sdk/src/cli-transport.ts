@@ -86,7 +86,7 @@ export class CLITransport implements TransportHandler {
         return `[${time}] [TOOL] ${event.toolName}(${truncate(JSON.stringify(event.input), 80)})`;
 
       case GSDEventType.PhaseStart:
-        return `${BOLD}${CYAN}━━━ GSD ► PHASE ${event.phaseNumber}: ${event.phaseName} ━━━${RESET}`;
+        return `${BOLD}${CYAN}── GSD ► PHASE ${event.phaseNumber}: ${event.phaseName} ──${RESET}`;
 
       case GSDEventType.PhaseComplete:
         return `[${time}] [PHASE] Phase ${event.phaseNumber} complete — success: ${event.success}, cost: ${usd(event.totalCostUsd)}, running: ${usd(this.runningCostUsd)}`;
@@ -111,10 +111,10 @@ export class CLITransport implements TransportHandler {
       }
 
       case GSDEventType.MilestoneStart:
-        return `${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}\n${BOLD}  GSD Milestone — ${event.phaseCount} phases${RESET}\n${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}`;
+        return `${BOLD}── GSD Milestone — ${event.phaseCount} phases ──${RESET}`;
 
       case GSDEventType.MilestoneComplete:
-        return `${BOLD}━━━ Milestone complete — success: ${event.success}, cost: ${usd(event.totalCostUsd)}, running: ${usd(this.runningCostUsd)} ━━━${RESET}`;
+        return `${BOLD}── Milestone complete — success: ${event.success}, cost: ${usd(event.totalCostUsd)}, running: ${usd(this.runningCostUsd)} ──${RESET}`;
 
       case GSDEventType.AssistantText:
         return `${DIM}[${time}] ${truncate(event.text, 200)}${RESET}`;

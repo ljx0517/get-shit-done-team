@@ -30,9 +30,7 @@ fi
 
 Display:
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSDT ► PR BRANCH
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSDT ► PR BRANCH ──
 
 Branch: {CURRENT_BRANCH}
 Target: {TARGET}

@@ -629,9 +629,7 @@ node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" config-set workflow._auto_chain_act
 
 Display banner:
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSDT ► AUTO-ADVANCING TO PLAN
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSDT ► AUTO-ADVANCING TO PLAN ──
 
 Context captured (assumptions mode). Launching plan-phase...
 ```

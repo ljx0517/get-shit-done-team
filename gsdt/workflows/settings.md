@@ -243,9 +243,7 @@ Write `~/.gsdt/defaults.json` with:
 Display:
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSDT ► SETTINGS UPDATED
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSDT ► SETTINGS UPDATED ──
 
 | Setting              | Value |
 |----------------------|-------|

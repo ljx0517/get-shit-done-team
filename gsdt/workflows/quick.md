@@ -50,63 +50,49 @@ Display banner based on active flags:
 
 If `$DISCUSS_MODE` and `$RESEARCH_MODE` and `$FULL_MODE`:
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSDT ► QUICK TASK (DISCUSS + RESEARCH + FULL)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSDT ► QUICK TASK (DISCUSS + RESEARCH + FULL) ──
 
 ◆ Discussion + research + plan checking + verification enabled
 ```
 
 If `$DISCUSS_MODE` and `$FULL_MODE` (no research):
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSDT ► QUICK TASK (DISCUSS + FULL)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSDT ► QUICK TASK (DISCUSS + FULL) ──
 
 ◆ Discussion + plan checking + verification enabled
 ```
 
 If `$DISCUSS_MODE` and `$RESEARCH_MODE` (no full):
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSDT ► QUICK TASK (DISCUSS + RESEARCH)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSDT ► QUICK TASK (DISCUSS + RESEARCH) ──
 
 ◆ Discussion + research enabled
 ```
 
 If `$RESEARCH_MODE` and `$FULL_MODE` (no discuss):
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSDT ► QUICK TASK (RESEARCH + FULL)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSDT ► QUICK TASK (RESEARCH + FULL) ──
 
 ◆ Research + plan checking + verification enabled
 ```
 
 If `$DISCUSS_MODE` only:
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSDT ► QUICK TASK (DISCUSS)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSDT ► QUICK TASK (DISCUSS) ──
 
 ◆ Discussion phase enabled — surfacing gray areas before planning
 ```
 
 If `$RESEARCH_MODE` only:
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSDT ► QUICK TASK (RESEARCH)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSDT ► QUICK TASK (RESEARCH) ──
 
 ◆ Research phase enabled — investigating approaches before planning
 ```
 
 If `$FULL_MODE` only:
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSDT ► QUICK TASK (FULL MODE)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSDT ► QUICK TASK (FULL MODE) ──
 
 ◆ Plan checking + verification enabled
 ```
@@ -179,9 +165,7 @@ Skip this step entirely if NOT `$DISCUSS_MODE`.
 
 Display banner:
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSDT ► DISCUSSING QUICK TASK
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSDT ► DISCUSSING QUICK TASK ──
 
 ◆ Surfacing gray areas for: ${DESCRIPTION}
 ```
@@ -306,9 +290,7 @@ Skip this step entirely if NOT `$RESEARCH_MODE`.
 
 Display banner:
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSDT ► RESEARCHING QUICK TASK
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSDT ► RESEARCHING QUICK TASK ──
 
 ◆ Investigating approaches for: ${DESCRIPTION}
 ```
@@ -428,9 +410,7 @@ Skip this step entirely if NOT `$FULL_MODE`.
 
 Display banner:
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSDT ► CHECKING PLAN
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSDT ► CHECKING PLAN ──
 
 ◆ Spawning plan checker...
 ```
@@ -583,9 +563,7 @@ Skip this step entirely if NOT `$FULL_MODE`.
 
 Display banner:
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSDT ► VERIFYING RESULTS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+── GSDT ► VERIFYING RESULTS ──
 
 ◆ Spawning verifier...
 ```
