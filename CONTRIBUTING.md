@@ -4,8 +4,8 @@
 
 ```bash
 # Clone the repo
-git clone https://github.com/gsd-build/get-shit-done.git
-cd get-shit-done
+git clone https://github.com/gsd-build/get-shit-done-team.git
+cd get-shit-done-team
 
 # Install dependencies
 npm install

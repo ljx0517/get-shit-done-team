@@ -34,8 +34,8 @@ philosophy.md
 # Installed skills
 .github/agents/gsd-*
 .github/skills/gsd-*
-.github/get-shit-done/*
-.github/skills/get-shit-done
+.github/gsdt/*
+.github/skills/gsdt*
 .github/copilot-instructions.md
 .bg-shell/
 

@@ -1346,7 +1346,7 @@ describe('Codex install hook configuration (e2e)', () => {
     const content = readCodexConfig(codexHome);
     // [features] is inserted after top-level lines, before [model] — not prepended
     assert.ok(content.includes('# first line wins\n\n[features]\ncodex_hooks = true\n'), 'inserts features after top-level lines using first newline style');
-    assert.ok(content.includes(`# GSD Agent Configuration — managed by get-shit-done installer\n`), 'writes the managed agent block using the first newline style');
+    assert.ok(content.includes(`# GSD Agent Configuration — managed by gsdt installer\n`), 'writes the managed agent block using the first newline style');
     assert.ok(content.includes('[model]\r\nname = "o3"'), 'preserves the existing CRLF model lines');
     assert.strictEqual(countMatches(content, /^codex_hooks = true$/gm), 1, 'remains idempotent on repeated installs');
     assert.strictEqual(countMatches(content, /gsdt-check-update\.js/g), 0, 'does not duplicate the GSD hook block');

@@ -1,6 +1,6 @@
  ▐▛███▜▌   Claude Code v2.1.81
 ▝▜█████▛▘  MiniMax-M2.7-highspeed · API Usage Billing
-  ▘▘ ▝▝    ~/Workspace/vibe-agent-team/get-shit-done
+  ▘▘ ▝▝    ~/Workspace/vibe-agent-team/get-shit-done-team
 
 ❯ /memory                                                                       
   ⎿  Opened memory file at ./CLAUDE.md
@@ -20,10 +20,10 @@
   ---
   核心架构
 
-  get-shit-done/
+  get-shit-done-team/
   ├── bin/install.js           # CLI 入口
   ├── commands/gsdt/          # GSDT 命令定义 (.md 文件)
-  ├── get-shit-done/
+  ├── gsdt/
   │   ├── bin/lib/            # 核心库 (Node.js)
   │   │   ├── core.cjs        # 共享工具、路径、配置
   │   │   ├── commands.cjs    # 独立工具命令
@@ -112,7 +112,7 @@
       ↓
   commands/gsdt/XXX.md ← 定义命令
       ↓
-  get-shit-done/workflows/XXX.md  ← 工作流步骤
+  gsdt/workflows/XXX.md  ← 工作流步骤
       ↓
   Spawn Agent (如 gsdt-planner, gsdt-executor)
       ↓

@@ -227,7 +227,7 @@ describe('config-new-project command', () => {
 - [ ] **ステップ 1.2: 失敗するテストを実行して失敗を確認する**
 
 ```bash
-cd /Users/diego/Dev/get-shit-done
+cd /Users/diego/Dev/get-shit-done-team
 node --test tests/config.test.cjs 2>&1 | grep -E "config-new-project|FAIL|Error"
 ```
 
@@ -367,7 +367,7 @@ function cmdConfigNewProject(cwd, choicesJson, raw) {
 - [ ] **ステップ 1.4: テストを実行してパスすることを確認する**
 
 ```bash
-cd /Users/diego/Dev/get-shit-done
+cd /Users/diego/Dev/get-shit-done-team
 node --test tests/config.test.cjs 2>&1 | tail -20
 ```
 
@@ -376,7 +376,7 @@ node --test tests/config.test.cjs 2>&1 | tail -20
 - [ ] **ステップ 1.5: コミット**
 
 ```bash
-cd /Users/diego/Dev/get-shit-done
+cd /Users/diego/Dev/get-shit-done-team
 git add gsdt/bin/lib/config.cjs tests/config.test.cjs
 git commit -m "feat: add config-new-project command for full config materialization"
 ```
@@ -408,7 +408,7 @@ git commit -m "feat: add config-new-project command for full config materializat
 - [ ] **ステップ 2.2: CLI 登録のスモークテスト**
 
 ```bash
-cd /Users/diego/Dev/get-shit-done
+cd /Users/diego/Dev/get-shit-done-team
 node gsdt/bin/gsdt-tools.cjs config-new-project '{"mode":"interactive","granularity":"standard"}' --cwd /tmp/gsd-smoke-$(date +%s)
 ```
 
@@ -419,7 +419,7 @@ node gsdt/bin/gsdt-tools.cjs config-new-project '{"mode":"interactive","granular
 - [ ] **ステップ 2.3: フルテストスイートを実行する**
 
 ```bash
-cd /Users/diego/Dev/get-shit-done
+cd /Users/diego/Dev/get-shit-done-team
 node --test tests/config.test.cjs 2>&1 | tail -10
 ```
 
@@ -428,7 +428,7 @@ node --test tests/config.test.cjs 2>&1 | tail -10
 - [ ] **ステップ 2.4: コミット**
 
 ```bash
-cd /Users/diego/Dev/get-shit-done
+cd /Users/diego/Dev/get-shit-done-team
 git add gsdt/bin/gsdt-tools.cjs
 git commit -m "feat: register config-new-project in gsdt-tools CLI router"
 ```
@@ -541,7 +541,7 @@ CHOICES
 - [ ] **ステップ 3.3: ワークフローファイルが正しく読めることを確認する**
 
 ```bash
-cd /Users/diego/Dev/get-shit-done
+cd /Users/diego/Dev/get-shit-done-team
 grep -n "config-new-project\|config\.json\|CHOICES" gsdt/workflows/new-project.md
 ```
 
@@ -550,7 +550,7 @@ grep -n "config-new-project\|config\.json\|CHOICES" gsdt/workflows/new-project.m
 - [ ] **ステップ 3.4: コミット**
 
 ```bash
-cd /Users/diego/Dev/get-shit-done
+cd /Users/diego/Dev/get-shit-done-team
 git add gsdt/workflows/new-project.md
 git commit -m "feat: use config-new-project in new-project workflow for full config materialization"
 ```
@@ -562,7 +562,7 @@ git commit -m "feat: use config-new-project in new-project workflow for full con
 - [ ] **ステップ 4.1: フルテストスイートを実行する**
 
 ```bash
-cd /Users/diego/Dev/get-shit-done
+cd /Users/diego/Dev/get-shit-done-team
 node --test tests/ 2>&1 | tail -30
 ```
 
@@ -647,7 +647,7 @@ rm -rf "$TMP"
 - [ ] **ステップ 4.5: 最終フルテストスイート + コミット**
 
 ```bash
-cd /Users/diego/Dev/get-shit-done
+cd /Users/diego/Dev/get-shit-done-team
 node --test tests/ 2>&1 | grep -E "pass|fail|error" | tail -5
 ```
 

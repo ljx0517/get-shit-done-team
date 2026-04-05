@@ -1031,12 +1031,12 @@ describe('stale hook path', () => {
       path.join(__dirname, '..', 'hooks', 'gsdt-check-update.js'), 'utf-8'
     );
     assert.ok(
-      content.includes("path.join(configDir, 'get-shit-done', 'hooks')"),
+      content.includes("path.join(configDir, 'gsdt', 'hooks')"),
       'stale hook check must look in configDir/gsdt/hooks/, not configDir/hooks/'
     );
     assert.ok(
       !content.includes("path.join(configDir, 'hooks')") ||
-      content.indexOf("path.join(configDir, 'get-shit-done', 'hooks')") <
+      content.indexOf("path.join(configDir, 'gsdt', 'hooks')") <
       content.indexOf("path.join(configDir, 'hooks')") + 100, // allow the old pattern only if corrected version exists first
       'should not use the wrong hooks path'
     );

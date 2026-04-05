@@ -227,7 +227,7 @@ describe('config-new-project command', () => {
 - [ ] **Step 1.2: Run failing tests to confirm they fail**
 
 ```bash
-cd /Users/diego/Dev/get-shit-done
+cd /Users/diego/Dev/get-shit-done-team
 node --test tests/config.test.cjs 2>&1 | grep -E "config-new-project|FAIL|Error"
 ```
 
@@ -367,7 +367,7 @@ Also add `cmdConfigNewProject` to the `module.exports` at the bottom of `config.
 - [ ] **Step 1.4: Run tests to verify they pass**
 
 ```bash
-cd /Users/diego/Dev/get-shit-done
+cd /Users/diego/Dev/get-shit-done-team
 node --test tests/config.test.cjs 2>&1 | tail -20
 ```
 
@@ -376,7 +376,7 @@ Expected: All `config-new-project` tests pass. Existing tests still pass.
 - [ ] **Step 1.5: Commit**
 
 ```bash
-cd /Users/diego/Dev/get-shit-done
+cd /Users/diego/Dev/get-shit-done-team
 git add gsdt/bin/lib/config.cjs tests/config.test.cjs
 git commit -m "feat: add config-new-project command for full config materialization"
 ```
@@ -408,7 +408,7 @@ New: `...config-ensure-section, config-new-project, init`
 - [ ] **Step 2.2: Smoke-test the CLI registration**
 
 ```bash
-cd /Users/diego/Dev/get-shit-done
+cd /Users/diego/Dev/get-shit-done-team
 node gsdt/bin/gsdt-tools.cjs config-new-project '{"mode":"interactive","granularity":"standard"}' --cwd /tmp/gsd-smoke-$(date +%s)
 ```
 
@@ -419,7 +419,7 @@ Clean up: `rm -rf /tmp/gsd-smoke-*`
 - [ ] **Step 2.3: Run full test suite**
 
 ```bash
-cd /Users/diego/Dev/get-shit-done
+cd /Users/diego/Dev/get-shit-done-team
 node --test tests/config.test.cjs 2>&1 | tail -10
 ```
 
@@ -428,7 +428,7 @@ Expected: All pass.
 - [ ] **Step 2.4: Commit**
 
 ```bash
-cd /Users/diego/Dev/get-shit-done
+cd /Users/diego/Dev/get-shit-done-team
 git add gsdt/bin/gsdt-tools.cjs
 git commit -m "feat: register config-new-project in gsdt-tools CLI router"
 ```
@@ -541,7 +541,7 @@ The command merges your selections with all runtime defaults (`search_gitignored
 - [ ] **Step 3.3: Verify the workflow file reads correctly**
 
 ```bash
-cd /Users/diego/Dev/get-shit-done
+cd /Users/diego/Dev/get-shit-done-team
 grep -n "config-new-project\|config\.json\|CHOICES" gsdt/workflows/new-project.md
 ```
 
@@ -550,7 +550,7 @@ Expected: 2 occurrences of `config-new-project` (one per step), no more inline J
 - [ ] **Step 3.4: Commit**
 
 ```bash
-cd /Users/diego/Dev/get-shit-done
+cd /Users/diego/Dev/get-shit-done-team
 git add gsdt/workflows/new-project.md
 git commit -m "feat: use config-new-project in new-project workflow for full config materialization"
 ```
@@ -562,7 +562,7 @@ git commit -m "feat: use config-new-project in new-project workflow for full con
 - [ ] **Step 4.1: Run the full test suite**
 
 ```bash
-cd /Users/diego/Dev/get-shit-done
+cd /Users/diego/Dev/get-shit-done-team
 node --test tests/ 2>&1 | tail -30
 ```
 
@@ -647,7 +647,7 @@ rm -rf "$TMP"
 - [ ] **Step 4.5: Final full test suite + commit**
 
 ```bash
-cd /Users/diego/Dev/get-shit-done
+cd /Users/diego/Dev/get-shit-done-team
 node --test tests/ 2>&1 | grep -E "pass|fail|error" | tail -5
 ```
 

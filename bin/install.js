@@ -14,7 +14,7 @@ const dim = '\x1b[2m';
 const reset = '\x1b[0m';
 
 // Codex config.toml constants
-const GSDT_CODEX_MARKER = '# GSD Agent Configuration \u2014 managed by get-shit-done installer';
+const GSDT_CODEX_MARKER = '# GSD Agent Configuration \u2014 managed by gsdt installer';
 const GSD_CODEX_HOOKS_OWNERSHIP_PREFIX = '# GSD codex_hooks ownership: ';
 
 // gsdt 安装配置 - 独立于 gsd
@@ -25,7 +25,7 @@ const GSDT_COMMANDS_DIR = 'gsdt';
 const RUNTIME_VIBE_AGENT_TEAM = 'vibeAgentTeam';
 
 // Copilot instructions marker constants
-const GSDT_COPILOT_INSTRUCTIONS_MARKER = '<!-- GSD Configuration \u2014 managed by get-shit-done installer -->';
+const GSDT_COPILOT_INSTRUCTIONS_MARKER = '<!-- GSD Configuration \u2014 managed by gsdt installer -->';
 const GSD_COPILOT_INSTRUCTIONS_CLOSE_MARKER = '<!-- /GSD Configuration -->';
 
 const CODEX_AGENT_SANDBOX = {

@@ -6,6 +6,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+- Renamed GitHub repository references from `gsd-build/get-shit-done` to `gsd-build/get-shit-done-team`, aligned local-install paths and tooling (`hooks/gsdt-check-update.js`, `profile-output.cjs`, tests, `.gitignore`, secret-scan allowlists) with the on-disk install directory `gsdt/` (see `GSDT_INSTALL_DIR`), and updated installer markers to “managed by gsdt installer”. (Jaxon)
+
 ### Fixed
 - Unified stale user-facing `GSD` command markers to `GSDT` in issue templates, reference notes, and the install terminal asset so examples consistently show `/gsdt:*` commands and `gsdt-*` agent names.
 - Cleaned up remaining stale naming in the bug report install options and a `phase-runner` plan-check comment so the repo no longer mixes `get-shit-done-cc`, `gsd-plan-checker`, and `GSDT` terminology in these spots.
