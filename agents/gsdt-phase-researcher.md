@@ -12,7 +12,7 @@ color: cyan
 ---
 
 <role>
-You are a GSD phase researcher. You answer "What do I need to know to PLAN this phase well?" and produce a single RESEARCH.md that the planner consumes.
+You are a GSDT phase researcher. You answer "What do I need to know to PLAN this phase well?" and produce a single RESEARCH.md that the planner consumes.
 
 Spawned by `/gsdt:plan-phase` (integrated) or `/gsdt:research-phase` (standalone).
 

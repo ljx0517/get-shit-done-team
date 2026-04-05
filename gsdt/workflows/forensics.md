@@ -1,7 +1,7 @@
 # Forensics Workflow
 
-Post-mortem investigation for failed or stuck GSD workflows. Analyzes git history,
-`.gsdt-planning/` artifacts, and file system state to detect anomalies and generate a
+Post-mortem investigation for failed or stuck GSDT workflows. Analyzes git history,
+`.claude/.gsdt-planning/` artifacts, and file system state to detect anomalies and generate a
 structured diagnostic report.
 
 **Principle:** This is a read-only investigation. Do not modify project files.
@@ -50,9 +50,9 @@ Record:
 ### 2b. Planning State
 
 Read these files if they exist:
-- `.gsdt-planning/STATE.md` — current milestone, phase, progress, blockers, last session
-- `.gsdt-planning/ROADMAP.md` — phase list with status
-- `.gsdt-planning/config.json` — workflow configuration
+- `.claude/.gsdt-planning/STATE.md` — current milestone, phase, progress, blockers, last session
+- `.claude/.gsdt-planning/ROADMAP.md` — phase list with status
+- `.claude/.gsdt-planning/config.json` — workflow configuration
 
 Extract:
 - Current phase and its status
@@ -61,10 +61,10 @@ Extract:
 
 ### 2c. Phase Artifacts
 
-For each phase directory in `.gsdt-planning/phases/*/`:
+For each phase directory in `.claude/.gsdt-planning/phases/*/`:
 
 ```bash
-ls .gsdt-planning/phases/*/
+ls .claude/.gsdt-planning/phases/*/
 ```
 
 For each phase, check which artifacts exist:
@@ -78,7 +78,7 @@ Track: which phases have complete artifact sets vs gaps.
 
 ### 2d. Session Reports
 
-Read `.gsdt-planning/reports/SESSION_REPORT.md` if it exists — extract last session outcomes,
+Read `.claude/.gsdt-planning/reports/SESSION_REPORT.md` if it exists — extract last session outcomes,
 work completed, token estimates.
 
 ### 2e. Git Worktree State
@@ -156,10 +156,10 @@ git log --oneline -20 | grep -iE "fix test|revert|broken|regression|fail"
 
 Create the forensics directory if needed:
 ```bash
-mkdir -p .gsdt-planning/forensics
+mkdir -p .claude/.gsdt-planning/forensics
 ```
 
-Write to `.gsdt-planning/forensics/report-$(date +%Y%m%d-%H%M%S).md`:
+Write to `.claude/.gsdt-planning/forensics/report-$(date +%Y%m%d-%H%M%S).md`:
 
 ```markdown
 # Forensic Report
@@ -225,7 +225,7 @@ Display the full forensic report inline.
 
 ## Step 6: Offer Interactive Investigation
 
-> "Report saved to `.gsdt-planning/forensics/report-{timestamp}.md`.
+> "Report saved to `.claude/.gsdt-planning/forensics/report-{timestamp}.md`.
 >
 > I can dig deeper into any finding. Want me to:
 > - Trace a specific anomaly to its root cause?
@@ -261,5 +261,5 @@ gh issue create \
 ```bash
 gsdt-tools.cjs state record-session \
   --stopped-at "Forensic investigation complete" \
-  --resume-file ".gsdt-planning/forensics/report-{timestamp}.md"
+  --resume-file ".claude/.gsdt-planning/forensics/report-{timestamp}.md"
 ```

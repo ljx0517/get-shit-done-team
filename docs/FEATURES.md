@@ -1,4 +1,4 @@
-# GSD Feature Reference
+# GSDT Feature Reference
 
 > Complete feature and function documentation with requirements. For architecture details, see [Architecture](ARCHITECTURE.md). For command syntax, see [Command Reference](COMMANDS.md).
 
@@ -88,7 +88,7 @@
 - REQ-INIT-03: System MUST extract requirements into v1 (must-have), v2 (future), and out-of-scope categories
 - REQ-INIT-04: System MUST generate a phased roadmap with requirement traceability
 - REQ-INIT-05: System MUST require user approval of the roadmap before proceeding
-- REQ-INIT-06: System MUST prevent re-initialization when `.gsdt-planning/PROJECT.md` already exists
+- REQ-INIT-06: System MUST prevent re-initialization when `.claude/.gsdt-planning/PROJECT.md` already exists
 - REQ-INIT-07: System MUST support `--auto @file.md` flag to skip interactive questions and extract from a document
 
 **Produces:**
@@ -319,7 +319,7 @@
 
 **Requirements:**
 - REQ-UIREVIEW-01: System MUST score each of the 6 pillars on a 1-4 scale
-- REQ-UIREVIEW-02: System MUST capture screenshots via Playwright CLI to `.gsdt-planning/ui-reviews/`
+- REQ-UIREVIEW-02: System MUST capture screenshots via Playwright CLI to `.claude/.gsdt-planning/ui-reviews/`
 - REQ-UIREVIEW-03: System MUST create `.gitignore` for screenshot directory
 - REQ-UIREVIEW-04: System MUST identify top 3 priority fixes
 - REQ-UIREVIEW-05: System MUST work standalone (without UI-SPEC.md) using abstract quality standards
@@ -378,7 +378,7 @@
 
 **Command:** `/gsdt:quick [--full] [--discuss] [--research]`
 
-**Purpose:** Ad-hoc task execution with GSD guarantees but a faster path.
+**Purpose:** Ad-hoc task execution with GSDT guarantees but a faster path.
 
 **Requirements:**
 - REQ-QUICK-01: System MUST accept freeform task description
@@ -388,7 +388,7 @@
 - REQ-QUICK-05: `--discuss` flag MUST run lightweight pre-planning discussion
 - REQ-QUICK-06: `--research` flag MUST spawn focused research agent before planning
 - REQ-QUICK-07: Flags MUST be composable (`--discuss --research --full`)
-- REQ-QUICK-08: System MUST track quick tasks in `.gsdt-planning/quick/YYMMDD-xxx-slug/`
+- REQ-QUICK-08: System MUST track quick tasks in `.claude/.gsdt-planning/quick/YYMMDD-xxx-slug/`
 - REQ-QUICK-09: System MUST produce atomic commits for quick task execution
 
 ---
@@ -412,11 +412,11 @@
 
 **Command:** `/gsdt:do`
 
-**Purpose:** Analyze freeform text and route to the appropriate GSD command.
+**Purpose:** Analyze freeform text and route to the appropriate GSDT command.
 
 **Requirements:**
 - REQ-DO-01: System MUST parse user intent from natural language input
-- REQ-DO-02: System MUST map intent to the best matching GSD command
+- REQ-DO-02: System MUST map intent to the best matching GSDT command
 - REQ-DO-03: System MUST confirm the routing with the user before executing
 - REQ-DO-04: System MUST handle project-exists vs no-project contexts differently
 - REQ-DO-05: System SHOULD route weakly structured discovery input to `/gsdt:intake` when semantic normalization is a better fit than direct execution
@@ -471,7 +471,7 @@
 **State Detection Logic:**
 | State | Action |
 |-------|--------|
-| No `.gsdt-planning/` directory | Suggest `/gsdt:new-project` |
+| No `.claude/.gsdt-planning/` directory | Suggest `/gsdt:new-project` |
 | Phase has no CONTEXT.md | Run `/gsdt:discuss-phase` |
 | Phase has no PLAN.md files | Run `/gsdt:plan-phase` |
 | Phase has plans but no SUMMARY.md | Run `/gsdt:execute-phase` |
@@ -547,7 +547,7 @@
 
 **Command:** `/gsdt:health [--repair]`
 
-**Purpose:** Validate `.gsdt-planning/` directory integrity and auto-repair issues.
+**Purpose:** Validate `.claude/.gsdt-planning/` directory integrity and auto-repair issues.
 
 **Requirements:**
 - REQ-HEALTH-01: System MUST check for missing required files
@@ -598,7 +598,7 @@
 - REQ-CTX-03: Context monitor MUST inject agent-facing warnings at ≤25% remaining (CRITICAL)
 - REQ-CTX-04: Warnings MUST debounce (5 tool uses between repeated warnings)
 - REQ-CTX-05: Severity escalation (WARNING→CRITICAL) MUST bypass debounce
-- REQ-CTX-06: Context monitor MUST differentiate GSD-active vs non-GSD-active projects
+- REQ-CTX-06: Context monitor MUST differentiate GSDT-active vs non-GSDT-active projects
 - REQ-CTX-07: Warnings MUST be advisory, never imperative commands that override user preferences
 - REQ-CTX-08: All hooks MUST fail silently and never block tool execution
 
@@ -638,7 +638,7 @@
 - REQ-REPORT-04: System MUST include active blockers and decisions made
 - REQ-REPORT-05: System MUST recommend next steps
 
-**Produces:** `.gsdt-planning/reports/SESSION_REPORT.md`
+**Produces:** `.claude/.gsdt-planning/reports/SESSION_REPORT.md`
 
 **Report Sections:**
 - Session overview (duration, milestone, phase)
@@ -704,11 +704,11 @@
 
 **Command:** `/gsdt:map-codebase [area]`
 
-**Purpose:** Analyze an existing codebase before starting a new project, so GSD understands what exists.
+**Purpose:** Analyze an existing codebase before starting a new project, so GSDT understands what exists.
 
 **Requirements:**
 - REQ-MAP-01: System MUST spawn parallel mapper agents for each analysis area
-- REQ-MAP-02: System MUST produce structured documents in `.gsdt-planning/codebase/`
+- REQ-MAP-02: System MUST produce structured documents in `.claude/.gsdt-planning/codebase/`
 - REQ-MAP-03: System MUST detect: tech stack, architecture patterns, coding conventions, concerns
 - REQ-MAP-04: Subsequent `/gsdt:new-project` MUST load codebase mapping and focus questions on what's being added
 - REQ-MAP-05: Optional `[area]` argument MUST scope mapping to a specific area
@@ -735,11 +735,11 @@
 **Purpose:** Systematic debugging with persistent state across context resets.
 
 **Requirements:**
-- REQ-DEBUG-01: System MUST create debug session file in `.gsdt-planning/debug/`
+- REQ-DEBUG-01: System MUST create debug session file in `.claude/.gsdt-planning/debug/`
 - REQ-DEBUG-02: System MUST track hypotheses, evidence, and eliminated theories
 - REQ-DEBUG-03: System MUST persist state so debugging survives context resets
 - REQ-DEBUG-04: System MUST require human verification before marking resolved
-- REQ-DEBUG-05: Resolved sessions MUST append to `.gsdt-planning/debug/knowledge-base.md`
+- REQ-DEBUG-05: Resolved sessions MUST append to `.claude/.gsdt-planning/debug/knowledge-base.md`
 - REQ-DEBUG-06: Knowledge base MUST be consulted on new debug sessions to prevent re-investigation
 
 **Debug Session States:** `gathering` → `investigating` → `fixing` → `verifying` → `awaiting_human_verify` → `resolved`
@@ -754,8 +754,8 @@
 
 **Requirements:**
 - REQ-TODO-01: System MUST capture todo from current conversation context
-- REQ-TODO-02: Todos MUST be stored in `.gsdt-planning/todos/pending/`
-- REQ-TODO-03: Completed todos MUST move to `.gsdt-planning/todos/done/`
+- REQ-TODO-02: Todos MUST be stored in `.claude/.gsdt-planning/todos/pending/`
+- REQ-TODO-03: Completed todos MUST move to `.claude/.gsdt-planning/todos/done/`
 - REQ-TODO-04: Check-todos MUST list all pending items with selection to work on one
 
 ---
@@ -778,7 +778,7 @@
 
 **Command:** `/gsdt:update`
 
-**Purpose:** Update GSD to the latest version with changelog preview.
+**Purpose:** Update GSDT to the latest version with changelog preview.
 
 **Requirements:**
 - REQ-UPDATE-01: System MUST check for new versions via npm
@@ -797,7 +797,7 @@
 
 **Requirements:**
 - REQ-SETTINGS-01: System MUST present current settings with toggle options
-- REQ-SETTINGS-02: System MUST update `.gsdt-planning/config.json`
+- REQ-SETTINGS-02: System MUST update `.claude/.gsdt-planning/config.json`
 - REQ-SETTINGS-03: System MUST support saving as global defaults (`~/.gsdt/defaults.json`)
 
 **Configurable Settings:**
@@ -815,7 +815,7 @@
 | `workflow.ui_safety_gate` | boolean | `true` | Prompt for ui-phase on frontend phases |
 | `workflow.node_repair` | boolean | `true` | Autonomous task repair |
 | `workflow.node_repair_budget` | number | `2` | Max repair attempts per task |
-| `planning.commit_docs` | boolean | `true` | Commit `.gsdt-planning/` files to git |
+| `planning.commit_docs` | boolean | `true` | Commit `.claude/.gsdt-planning/` files to git |
 | `planning.search_gitignored` | boolean | `false` | Include gitignored files in searches |
 | `parallelization.enabled` | boolean | `true` | Run independent plans simultaneously |
 | `git.branching_strategy` | enum | `none` | `none`, `phase`, or `milestone` |
@@ -848,8 +848,8 @@
 - REQ-GIT-04: Phase strategy MUST create one branch per phase
 - REQ-GIT-05: Milestone strategy MUST create one branch per milestone
 - REQ-GIT-06: Complete-milestone MUST offer squash merge (recommended) or merge with history
-- REQ-GIT-07: System MUST respect `commit_docs` setting for `.gsdt-planning/` files
-- REQ-GIT-08: System MUST auto-detect `.gsdt-planning/` in `.gitignore` and skip commits
+- REQ-GIT-07: System MUST respect `commit_docs` setting for `.claude/.gsdt-planning/` files
+- REQ-GIT-08: System MUST auto-detect `.claude/.gsdt-planning/` in `.gitignore` and skip commits
 
 **Commit Format:**
 ```
@@ -880,19 +880,19 @@ fix(03-01): correct auth token expiry
 
 ### 36. Multi-Runtime Support
 
-**Purpose:** Run GSD across 6 different AI coding agent runtimes.
+**Purpose:** Run GSDT across 6 different AI coding agent runtimes.
 
 **Requirements:**
-- REQ-RUNTIME-01: System MUST support Claude Code, Vibe Agent Team, Gemini CLI, Codex, Copilot, Antigravity
+- REQ-RUNTIME-01: System MUST support Claude Code, OpenCode, Gemini CLI, Codex, Copilot, Antigravity
 - REQ-RUNTIME-02: Installer MUST transform content per runtime (tool names, paths, frontmatter)
 - REQ-RUNTIME-03: Installer MUST support interactive and non-interactive (`--claude --global`) modes
 - REQ-RUNTIME-04: Installer MUST support both global and local installation
-- REQ-RUNTIME-05: Uninstall MUST cleanly remove all GSD files without affecting other configurations
+- REQ-RUNTIME-05: Uninstall MUST cleanly remove all GSDT files without affecting other configurations
 - REQ-RUNTIME-06: Installer MUST handle platform differences (Windows, macOS, Linux, WSL, Docker)
 
 **Runtime Transformations:**
 
-| Aspect | Claude Code | Vibe Agent Team | Gemini | Codex | Copilot | Antigravity |
+| Aspect | Claude Code | OpenCode | Gemini | Codex | Copilot | Antigravity |
 |--------|------------|----------|--------|-------|---------|-------------|
 | Commands | Slash commands | Slash commands | Slash commands | Skills (TOML) | Slash commands | Skills |
 | Agent format | Claude native | `mode: subagent` | Claude native | Skills | Tool mapping | Skills |
@@ -1023,7 +1023,7 @@ When verification returns `human_needed`, items are persisted as a trackable HUM
 **Requirements:**
 - REQ-FAST-01: System MUST execute the task directly in the current context without subagents
 - REQ-FAST-02: System MUST produce an atomic git commit for the change
-- REQ-FAST-03: System MUST track the task in `.gsdt-planning/quick/` for state consistency
+- REQ-FAST-03: System MUST track the task in `.claude/.gsdt-planning/quick/` for state consistency
 - REQ-FAST-04: System MUST NOT be used for tasks requiring research, multi-step planning, or verification
 
 **When to use vs `/gsdt:quick`:**
@@ -1066,8 +1066,8 @@ When verification returns `human_needed`, items are persisted as a trackable HUM
 **Produces:**
 | Artifact | Description |
 |----------|-------------|
-| `.gsdt-planning/phases/999.x-slug/` | Backlog item directory |
-| `.gsdt-planning/seeds/SEED-NNN-slug.md` | Seed with trigger conditions |
+| `.claude/.gsdt-planning/phases/999.x-slug/` | Backlog item directory |
+| `.claude/.gsdt-planning/seeds/SEED-NNN-slug.md` | Seed with trigger conditions |
 
 ---
 
@@ -1079,12 +1079,12 @@ When verification returns `human_needed`, items are persisted as a trackable HUM
 
 **Requirements:**
 - REQ-THREAD-01: System MUST support create, list, and resume modes
-- REQ-THREAD-02: Threads MUST be stored in `.gsdt-planning/threads/` as markdown files
+- REQ-THREAD-02: Threads MUST be stored in `.claude/.gsdt-planning/threads/` as markdown files
 - REQ-THREAD-03: Thread files MUST include Goal, Context, References, and Next Steps sections
 - REQ-THREAD-04: Resuming a thread MUST load its full context into the current session
 - REQ-THREAD-05: Threads MUST be promotable to phases or backlog items
 
-**Produces:** `.gsdt-planning/threads/{slug}.md` — Persistent context thread
+**Produces:** `.claude/.gsdt-planning/threads/{slug}.md` — Persistent context thread
 
 ---
 
@@ -1092,10 +1092,10 @@ When verification returns `human_needed`, items are persisted as a trackable HUM
 
 **Command:** `/gsdt:pr-branch [target branch]`
 
-**Purpose:** Create a clean branch suitable for pull requests by filtering out `.gsdt-planning/` commits. Reviewers see only code changes, not GSD planning artifacts.
+**Purpose:** Create a clean branch suitable for pull requests by filtering out `.claude/.gsdt-planning/` commits. Reviewers see only code changes, not GSDT planning artifacts.
 
 **Requirements:**
-- REQ-PRBRANCH-01: System MUST identify commits that only modify `.gsdt-planning/` files
+- REQ-PRBRANCH-01: System MUST identify commits that only modify `.claude/.gsdt-planning/` files
 - REQ-PRBRANCH-02: System MUST create a new branch with planning commits filtered out
 - REQ-PRBRANCH-03: Code changes MUST be preserved exactly as committed
 
@@ -1103,7 +1103,7 @@ When verification returns `human_needed`, items are persisted as a trackable HUM
 
 ### 46. Security Hardening
 
-**Purpose:** Defense-in-depth security for GSD's planning artifacts. Because GSD generates markdown files that become LLM system prompts, user-controlled text flowing into these files is a potential indirect prompt injection vector.
+**Purpose:** Defense-in-depth security for GSDT's planning artifacts. Because GSDT generates markdown files that become LLM system prompts, user-controlled text flowing into these files is a potential indirect prompt injection vector.
 
 **Components:**
 
@@ -1115,10 +1115,10 @@ When verification returns `human_needed`, items are persisted as a trackable HUM
 - Shell argument validation — sanitizes user text before shell interpolation
 
 **2. Prompt Injection Guard Hook** (`gsdt-prompt-guard.js`)
-PreToolUse hook that scans Write/Edit calls targeting `.gsdt-planning/` for injection patterns. Advisory-only — logs detection for awareness without blocking legitimate operations.
+PreToolUse hook that scans Write/Edit calls targeting `.claude/.gsdt-planning/` for injection patterns. Advisory-only — logs detection for awareness without blocking legitimate operations.
 
 **3. Workflow Guard Hook** (`gsdt-workflow-guard.js`)
-PreToolUse hook that detects when Claude attempts file edits outside a GSD workflow context. Advises using `/gsdt:quick` or `/gsdt:fast` instead of direct edits. Configurable via `hooks.workflow_guard` (default: false).
+PreToolUse hook that detects when Claude attempts file edits outside a GSDT workflow context. Advises using `/gsdt:quick` or `/gsdt:fast` instead of direct edits. Configurable via `hooks.workflow_guard` (default: false).
 
 **4. CI-Ready Injection Scanner** (`prompt-injection-scan.test.cjs`)
 Test suite that scans all agent, workflow, and command files for embedded injection vectors.
@@ -1134,7 +1134,7 @@ Test suite that scans all agent, workflow, and command files for embedded inject
 
 ### 47. Multi-Repo Workspace Support
 
-**Purpose:** Auto-detection and project root resolution for monorepos and multi-repo setups. Supports workspaces where `.gsdt-planning/` may need to resolve across repository boundaries.
+**Purpose:** Auto-detection and project root resolution for monorepos and multi-repo setups. Supports workspaces where `.claude/.gsdt-planning/` may need to resolve across repository boundaries.
 
 **Requirements:**
 - REQ-MULTIREPO-01: System MUST auto-detect multi-repo workspace configuration
@@ -1160,24 +1160,24 @@ Test suite that scans all agent, workflow, and command files for embedded inject
 
 **Command:** `/gsdt:forensics [description]`
 
-**Purpose:** Post-mortem investigation of failed or stuck GSD workflows.
+**Purpose:** Post-mortem investigation of failed or stuck GSDT workflows.
 
 **Requirements:**
 - REQ-FORENSICS-01: System MUST analyze git history for anomalies (stuck loops, long gaps, repeated commits)
 - REQ-FORENSICS-02: System MUST check artifact integrity (completed phases have expected files)
-- REQ-FORENSICS-03: System MUST generate a markdown report saved to `.gsdt-planning/forensics/`
+- REQ-FORENSICS-03: System MUST generate a markdown report saved to `.claude/.gsdt-planning/forensics/`
 - REQ-FORENSICS-04: System MUST offer to create a GitHub issue with findings
 - REQ-FORENSICS-05: System MUST NOT modify project files (read-only investigation)
 
 **Produces:**
 | Artifact | Description |
 |----------|-------------|
-| `.gsdt-planning/forensics/report-{timestamp}.md` | Post-mortem investigation report |
+| `.claude/.gsdt-planning/forensics/report-{timestamp}.md` | Post-mortem investigation report |
 
 **Process:**
 1. **Scan** — Analyze git history for anomalies: stuck loops, long gaps between commits, repeated identical commits
 2. **Integrity Check** — Verify completed phases have expected artifact files
-3. **Report** — Generate markdown report with findings, saved to `.gsdt-planning/forensics/`
+3. **Report** — Generate markdown report with findings, saved to `.claude/.gsdt-planning/forensics/`
 4. **Issue** — Offer to create a GitHub issue with findings for team visibility
 
 ---
@@ -1212,18 +1212,18 @@ Test suite that scans all agent, workflow, and command files for embedded inject
 **Purpose:** Parallel workstreams for concurrent work on different milestone areas.
 
 **Requirements:**
-- REQ-WS-01: System MUST isolate workstream state in separate `.gsdt-planning/workstreams/{name}/` directories
+- REQ-WS-01: System MUST isolate workstream state in separate `.claude/.gsdt-planning/workstreams/{name}/` directories
 - REQ-WS-02: System MUST validate workstream names (alphanumeric + hyphens only, no path traversal)
 - REQ-WS-03: System MUST support list, create, switch, status, progress, complete, resume subcommands
 
 **Produces:**
 | Artifact | Description |
 |----------|-------------|
-| `.gsdt-planning/workstreams/{name}/` | Isolated workstream directory structure |
+| `.claude/.gsdt-planning/workstreams/{name}/` | Isolated workstream directory structure |
 
 **Process:**
-1. **Create** — Initialize a named workstream with isolated `.gsdt-planning/workstreams/{name}/` directory
-2. **Switch** — Change active workstream context for subsequent GSD commands
+1. **Create** — Initialize a named workstream with isolated `.claude/.gsdt-planning/workstreams/{name}/` directory
+2. **Switch** — Change active workstream context for subsequent GSDT commands
 3. **Manage** — List, check status, track progress, complete, or resume workstreams
 
 ---
@@ -1306,4 +1306,4 @@ Test suite that scans all agent, workflow, and command files for embedded inject
 **Process:**
 1. **Detect** — Identify available AI CLI runtimes on the system
 2. **Prompt** — Present multi-select interface for runtime selection
-3. **Install** — Configure GSD for all selected runtimes in a single session
+3. **Install** — Configure GSDT for all selected runtimes in a single session

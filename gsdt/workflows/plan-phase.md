@@ -9,7 +9,7 @@ Read all files referenced by the invoking prompt's execution_context before star
 </required_reading>
 
 <available_agent_types>
-Valid GSD subagent types (use exact names — do not fall back to 'general-purpose'):
+Valid GSDT subagent types (use exact names — do not fall back to 'general-purpose'):
 - gsdt-phase-researcher — Researches technical approaches for a phase
 - gsdt-planner — Creates detailed plans from phase scope
 - gsdt-plan-checker — Reviews plan quality before execution
@@ -47,7 +47,7 @@ Extract `--prd <filepath>` from $ARGUMENTS. If present, set PRD_FILE to the file
 
 **If `phase_found` is false:** Validate phase exists in ROADMAP.md. If valid, create the directory using `phase_slug` and `padded_phase` from init:
 ```bash
-mkdir -p ".gsdt-planning/phases/${padded_phase}-${phase_slug}"
+mkdir -p ".claude/.gsdt-planning/phases/${padded_phase}-${phase_slug}"
 ```
 
 **Existing artifacts from init:** `has_research`, `has_plans`, `plan_count`.
@@ -95,7 +95,10 @@ fi
 
 2. Display banner:
 ```
-── GSD ► PRD EXPRESS PATH ──
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ GSDT ► PRD EXPRESS PATH
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 Using PRD: {PRD_FILE}
 Generating CONTEXT.md from requirements...
 ```
@@ -271,7 +274,10 @@ If user selects "Skip research": skip to step 6.
 
 Display banner:
 ```
-── GSD ► RESEARCHING PHASE {X} ──
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ GSDT ► RESEARCHING PHASE {X}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 ◆ Spawning researcher...
 ```
 
@@ -356,7 +362,7 @@ test -f "${PHASE_DIR}/${PADDED_PHASE}-VALIDATION.md" && echo "VALIDATION_CREATED
 
 ## 5.6. UI Design Contract Gate
 
-> Skip if `workflow.ui_phase` is explicitly `false` AND `workflow.ui_safety_gate` is explicitly `false` in `.gsdt-planning/config.json`. If keys are absent, treat as enabled.
+> Skip if `workflow.ui_phase` is explicitly `false` AND `workflow.ui_safety_gate` is explicitly `false` in `.claude/.gsdt-planning/config.json`. If keys are absent, treat as enabled.
 
 ```bash
 UI_PHASE_CFG=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" config-get workflow.ui_phase 2>/dev/null || echo "true")
@@ -458,7 +464,10 @@ Proceed to Step 8 only if user selects 2 or 3.
 
 Display banner:
 ```
-── GSD ► PLANNING PHASE {X} ──
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ GSDT ► PLANNING PHASE {X}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 ◆ Spawning planner...
 ```
 
@@ -558,7 +567,10 @@ Task(
 
 Display banner:
 ```
-── GSD ► VERIFYING PLANS ──
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ GSDT ► VERIFYING PLANS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 ◆ Spawning plan checker...
 ```
 
@@ -730,7 +742,10 @@ Check for auto-advance trigger:
 
 Display banner:
 ```
-── GSD ► AUTO-ADVANCING TO EXECUTE ──
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ GSDT ► AUTO-ADVANCING TO EXECUTE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 Plans ready. Launching execute-phase...
 ```
 
@@ -744,7 +759,10 @@ The `--no-transition` flag tells execute-phase to return status after verificati
 **Handle execute-phase return:**
 - **PHASE COMPLETE** → Display final summary:
   ```
-  ── GSD ► PHASE ${PHASE} COMPLETE ✓ ──
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   GSDT ► PHASE ${PHASE} COMPLETE ✓
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
   Auto-advance pipeline finished.
 
   Next: /gsdt:discuss-phase ${NEXT_PHASE} --auto ${GSD_WS}
@@ -765,7 +783,10 @@ Route to `<offer_next>` (existing behavior).
 <offer_next>
 Output this markdown directly (not as a code block):
 
-── GSD ► PHASE {X} PLANNED ✓ ──
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ GSDT ► PHASE {X} PLANNED ✓
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 **Phase {X}: {Name}** — {N} plan(s) in {M} wave(s)
 
 | Wave | Plans | What it builds |
@@ -789,7 +810,7 @@ Verification: {Passed | Passed with override | Skipped}
 ───────────────────────────────────────────────────────────────
 
 **Also available:**
-- cat .gsdt-planning/phases/{phase-dir}/*-PLAN.md — review plans
+- cat .claude/.gsdt-planning/phases/{phase-dir}/*-PLAN.md — review plans
 - /gsdt:plan-phase {X} --research — re-research first
 - /gsdt:review --phase {X} --all — peer review plans with external AIs
 - /gsdt:plan-phase {X} --reviews — replan incorporating review feedback
@@ -822,7 +843,7 @@ If freezes persist, try `--skip-research` to reduce the agent chain from 3 to 2 
 </windows_troubleshooting>
 
 <success_criteria>
-- [ ] .gsdt-planning/ directory validated
+- [ ] .claude/.gsdt-planning/ directory validated
 - [ ] Phase validated against roadmap
 - [ ] Phase directory created if needed
 - [ ] CONTEXT.md loaded early (step 4) and passed to ALL agents

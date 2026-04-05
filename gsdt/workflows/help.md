@@ -1,11 +1,11 @@
 <purpose>
-Display the complete GSD command reference. Output ONLY the reference content. Do NOT add project-specific analysis, git status, next-step suggestions, or any commentary beyond the reference.
+Display the complete GSDT command reference. Output ONLY the reference content. Do NOT add project-specific analysis, git status, next-step suggestions, or any commentary beyond the reference.
 </purpose>
 
 <reference>
-# GSD Command Reference
+# GSDT Command Reference
 
-**GSD** (Get Shit Done) creates hierarchical project plans optimized for solo agentic development with Claude Code.
+**GSDT** (Get Shit Done Team) creates hierarchical project plans optimized for solo agentic development with Claude Code.
 
 ## Quick Start
 
@@ -15,7 +15,7 @@ Display the complete GSD command reference. Output ONLY the reference content. D
 
 ## Staying Updated
 
-GSD evolves fast. Update periodically:
+GSDT evolves fast. Update periodically:
 
 ```bash
 npx gsdt@latest
@@ -131,9 +131,9 @@ Usage: `/gsdt:execute-phase 5 --wave 2`
 ### Smart Router
 
 **`/gsdt:do <description>`**
-Route freeform text to the right GSD command automatically.
+Route freeform text to the right GSDT command automatically.
 
-- Analyzes natural language input to find the best matching GSD command
+- Analyzes natural language input to find the best matching GSDT command
 - Acts as a dispatcher — never does the work itself
 - Resolves ambiguity by asking you to pick between top matches
 - Use when you know what you want but don't know which `/gsdt:*` command to run
@@ -145,7 +145,7 @@ Usage: `/gsdt:do I want to start a new milestone`
 ### Quick Mode
 
 **`/gsdt:quick [--full] [--discuss] [--research]`**
-Execute small, ad-hoc tasks with GSD guarantees but skip optional agents.
+Execute small, ad-hoc tasks with GSDT guarantees but skip optional agents.
 
 Quick mode uses the same system with a shorter path:
 - Spawns planner + executor (skips researcher, checker, verifier by default)
@@ -370,7 +370,7 @@ Create a clean branch for pull requests by filtering out .gsdt-planning/ commits
 
 - Classifies commits: code-only (include), planning-only (exclude), mixed (include sans .gsdt-planning/)
 - Cherry-picks code commits onto a clean branch
-- Reviewers see only code changes, no GSD artifacts
+- Reviewers see only code changes, no GSDT artifacts
 
 Usage: `/gsdt:pr-branch` or `/gsdt:pr-branch main`
 
@@ -430,7 +430,7 @@ Configure workflow toggles and model profile interactively.
 Usage: `/gsdt:settings`
 
 **`/gsdt:set-profile <profile>`**
-Quick switch model profile for GSD agents.
+Quick switch model profile for GSDT agents.
 
 - `quality` — Opus everywhere except verification
 - `balanced` — Opus for planning, Sonnet for execution (default)
@@ -455,7 +455,7 @@ Usage: `/gsdt:cleanup`
 Show this command reference.
 
 **`/gsdt:update`**
-Update GSD to latest version with changelog preview.
+Update GSDT to latest version with changelog preview.
 
 - Shows installed vs latest version comparison
 - Displays changelog entries for versions you've missed
@@ -466,10 +466,10 @@ Update GSD to latest version with changelog preview.
 Usage: `/gsdt:update`
 
 **`/gsdt:join-discord`**
-Join the GSD Discord community.
+Join the GSDT Discord community.
 
 - Get help, share what you're building, stay updated
-- Connect with other GSD users
+- Connect with other GSDT users
 
 Usage: `/gsdt:join-discord`
 

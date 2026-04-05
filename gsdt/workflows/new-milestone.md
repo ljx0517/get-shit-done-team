@@ -11,7 +11,7 @@ Read all files referenced by the invoking prompt's execution_context before star
 </required_reading>
 
 <available_agent_types>
-Valid GSD subagent types (use exact names — do not fall back to 'general-purpose'):
+Valid GSDT subagent types (use exact names — do not fall back to 'general-purpose'):
 - gsdt-project-researcher — Researches project-level technical decisions
 - gsdt-research-synthesizer — Synthesizes findings from parallel research agents
 - gsdt-roadmapper — Creates phased execution roadmaps
@@ -55,7 +55,10 @@ If the flag is absent, keep the current behavior of continuing phase numbering f
 Before writing any files, present a summary of what was gathered and ask for confirmation.
 
 ```
-── GSD ► MILESTONE SUMMARY ──
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ GSDT ► MILESTONE SUMMARY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 **Milestone v[X.Y]: [Name]**
 
 **Goal:** [One sentence]
@@ -135,7 +138,7 @@ Keep Accumulated Context section from previous milestone.
 Delete MILESTONE-CONTEXT.md if exists (consumed).
 
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: start milestone v[X.Y] [Name]" --files .gsdt-planning/PROJECT.md .gsdt-planning/STATE.md
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: start milestone v[X.Y] [Name]" --files .claude/.gsdt-planning/PROJECT.md .claude/.gsdt-planning/STATE.md
 ```
 
 ## 7. Load Context and Resolve Models
@@ -161,10 +164,10 @@ If `phase_dir_count > 0` and `phase_archive_path` is available:
 
 ```bash
 mkdir -p "${phase_archive_path}"
-find .gsdt-planning/phases -mindepth 1 -maxdepth 1 -type d -exec mv {} "${phase_archive_path}/" \;
+find .claude/.gsdt-planning/phases -mindepth 1 -maxdepth 1 -type d -exec mv {} "${phase_archive_path}/" \;
 ```
 
-Then verify `.gsdt-planning/phases/` no longer contains old milestone directories before continuing.
+Then verify `.claude/.gsdt-planning/phases/` no longer contains old milestone directories before continuing.
 
 If `phase_dir_count > 0` but `phase_archive_path` is missing:
 - Stop and explain that reset numbering is unsafe without a completed milestone archive target.
@@ -191,13 +194,16 @@ AskUserQuestion: "Research the domain ecosystem for new features before defining
 **If user chose "Research first":**
 
 ```
-── GSD ► RESEARCHING ──
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ GSDT ► RESEARCHING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 ◆ Spawning 4 researchers in parallel...
   → Stack, Features, Architecture, Pitfalls
 ```
 
 ```bash
-mkdir -p .gsdt-planning/research
+mkdir -p .claude/.gsdt-planning/research
 ```
 
 Spawn 4 parallel gsdt-project-researcher agents. Each uses this template with dimension-specific fields:
@@ -216,7 +222,7 @@ Focus ONLY on what's needed for the NEW features.
 <question>{QUESTION}</question>
 
 <files_to_read>
-- .gsdt-planning/PROJECT.md (Project context)
+- .claude/.gsdt-planning/PROJECT.md (Project context)
 </files_to_read>
 
 ${AGENT_SKILLS_RESEARCHER}
@@ -226,7 +232,7 @@ ${AGENT_SKILLS_RESEARCHER}
 <quality_gate>{GATES}</quality_gate>
 
 <output>
-Write to: .gsdt-planning/research/{FILE}
+Write to: .claude/.gsdt-planning/research/{FILE}
 Use template: ~/.claude/gsdt/templates/research-project/{FILE}
 </output>
 ", subagent_type="gsdt-project-researcher", model="{researcher_model}", description="{DIMENSION} research")
@@ -249,15 +255,15 @@ Task(prompt="
 Synthesize research outputs into SUMMARY.md.
 
 <files_to_read>
-- .gsdt-planning/research/STACK.md
-- .gsdt-planning/research/FEATURES.md
-- .gsdt-planning/research/ARCHITECTURE.md
-- .gsdt-planning/research/PITFALLS.md
+- .claude/.gsdt-planning/research/STACK.md
+- .claude/.gsdt-planning/research/FEATURES.md
+- .claude/.gsdt-planning/research/ARCHITECTURE.md
+- .claude/.gsdt-planning/research/PITFALLS.md
 </files_to_read>
 
 ${AGENT_SKILLS_SYNTHESIZER}
 
-Write to: .gsdt-planning/research/SUMMARY.md
+Write to: .claude/.gsdt-planning/research/SUMMARY.md
 Use template: ~/.claude/gsdt/templates/research-project/SUMMARY.md
 Commit after writing.
 ", subagent_type="gsdt-research-synthesizer", model="{synthesizer_model}", description="Synthesize research")
@@ -265,7 +271,10 @@ Commit after writing.
 
 Display key findings from SUMMARY.md:
 ```
-── GSD ► RESEARCH COMPLETE ✓ ──
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ GSDT ► RESEARCH COMPLETE ✓
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 **Stack additions:** [from SUMMARY.md]
 **Feature table stakes:** [from SUMMARY.md]
 **Watch Out For:** [from SUMMARY.md]
@@ -276,7 +285,9 @@ Display key findings from SUMMARY.md:
 ## 9. Define Requirements
 
 ```
-── GSD ► DEFINING REQUIREMENTS ──
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ GSDT ► DEFINING REQUIREMENTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
 Read PROJECT.md: core value, current milestone goals, validated requirements (what exists).
@@ -339,13 +350,16 @@ If "adjust": Return to scoping.
 
 **Commit requirements:**
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: define milestone v[X.Y] requirements" --files .gsdt-planning/REQUIREMENTS.md
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: define milestone v[X.Y] requirements" --files .claude/.gsdt-planning/REQUIREMENTS.md
 ```
 
 ## 10. Create Roadmap
 
 ```
-── GSD ► CREATING ROADMAP ──
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ GSDT ► CREATING ROADMAP
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 ◆ Spawning roadmapper...
 ```
 
@@ -357,11 +371,11 @@ node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: define milestone v[X.
 Task(prompt="
 <planning_context>
 <files_to_read>
-- .gsdt-planning/PROJECT.md
-- .gsdt-planning/REQUIREMENTS.md
-- .gsdt-planning/research/SUMMARY.md (if exists)
-- .gsdt-planning/config.json
-- .gsdt-planning/MILESTONES.md
+- .claude/.gsdt-planning/PROJECT.md
+- .claude/.gsdt-planning/REQUIREMENTS.md
+- .claude/.gsdt-planning/research/SUMMARY.md (if exists)
+- .claude/.gsdt-planning/config.json
+- .claude/.gsdt-planning/MILESTONES.md
 </files_to_read>
 
 ${AGENT_SKILLS_ROADMAPPER}
@@ -420,21 +434,24 @@ Success criteria:
 
 **Commit roadmap** (after approval):
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: create milestone v[X.Y] roadmap ([N] phases)" --files .gsdt-planning/ROADMAP.md .gsdt-planning/STATE.md .gsdt-planning/REQUIREMENTS.md
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: create milestone v[X.Y] roadmap ([N] phases)" --files .claude/.gsdt-planning/ROADMAP.md .claude/.gsdt-planning/STATE.md .claude/.gsdt-planning/REQUIREMENTS.md
 ```
 
 ## 11. Done
 
 ```
-── GSD ► MILESTONE INITIALIZED ✓ ──
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ GSDT ► MILESTONE INITIALIZED ✓
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 **Milestone v[X.Y]: [Name]**
 
 | Artifact       | Location                    |
 |----------------|-----------------------------|
-| Project        | `.gsdt-planning/PROJECT.md`      |
-| Research       | `.gsdt-planning/research/`       |
-| Requirements   | `.gsdt-planning/REQUIREMENTS.md` |
-| Roadmap        | `.gsdt-planning/ROADMAP.md`      |
+| Project        | `.claude/.gsdt-planning/PROJECT.md`      |
+| Research       | `.claude/.gsdt-planning/research/`       |
+| Requirements   | `.claude/.gsdt-planning/REQUIREMENTS.md` |
+| Roadmap        | `.claude/.gsdt-planning/ROADMAP.md`      |
 
 **[N] phases** | **[X] requirements** | Ready to build ✓
 

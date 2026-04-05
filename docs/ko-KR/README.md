@@ -1,6 +1,6 @@
-# GSD 문서
+# GSDT 문서
 
-Get Shit Done (GSD) 프레임워크의 종합 문서입니다. GSD는 AI 코딩 에이전트를 위한 메타 프롬프팅, 컨텍스트 엔지니어링, 스펙 기반 개발 시스템입니다.
+Get Shit Done (GSDT) 프레임워크의 종합 문서입니다. GSD는 AI 코딩 에이전트를 위한 메타 프롬프팅, 컨텍스트 엔지니어링, 스펙 기반 개발 시스템입니다.
 
 언어 버전: [English](README.md) · [Português (pt-BR)](pt-BR/README.md) · [日本語](ja-JP/README.md) · [简体中文](zh-CN/README.md) · [한국어](ko-KR/README.md)
 
@@ -24,6 +24,6 @@ Get Shit Done (GSD) 프레임워크의 종합 문서입니다. GSD는 AI 코딩 
 - **시작하기:** [README](../README.md) → 설치 → `/gsdt:new-project`
 - **전체 워크플로우 안내:** [User Guide](USER-GUIDE.md)
 - **모든 명령어 한눈에 보기:** [Command Reference](COMMANDS.md)
-- **GSD 설정하기:** [Configuration Reference](CONFIGURATION.md)
+- **GSDT 설정하기:** [Configuration Reference](CONFIGURATION.md)
 - **시스템 내부 동작 원리:** [Architecture](ARCHITECTURE.md)
 - **기여 또는 확장:** [CLI Tools Reference](CLI-TOOLS.md) + [Agent Reference](AGENTS.md)

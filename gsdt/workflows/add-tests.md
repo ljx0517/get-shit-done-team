@@ -42,7 +42,7 @@ Extract from init JSON: `phase_dir`, `phase_number`, `phase_name`.
 Verify the phase directory exists. If not:
 ```
 ERROR: Phase directory not found for phase ${PHASE_ARG}
-Ensure the phase exists in .gsdt-planning/phases/
+Ensure the phase exists in .claude/.gsdt-planning/phases/
 ```
 Exit.
 
@@ -60,7 +60,9 @@ Exit.
 
 Present banner:
 ```
-── GSD ► ADD TESTS — Phase ${phase_number}: ${phase_name} ──
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ GSDT ► ADD TESTS — Phase ${phase_number}: ${phase_name}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 </step>
 
@@ -272,7 +274,10 @@ For each approved E2E test:
 Create a test coverage report and present to user:
 
 ```
-── GSD ► TEST GENERATION COMPLETE ──
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ GSDT ► TEST GENERATION COMPLETE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 ## Results
 
 | Category | Generated | Passing | Failing | Blocked |

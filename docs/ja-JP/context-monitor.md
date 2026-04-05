@@ -54,9 +54,9 @@ additionalContext -> エージェントが警告を確認
 }
 ```
 
-## GSD との統合
+## GSDT との統合
 
-GSD の `/gsdt:pause-work` コマンドは実行状態を保存します。WARNING メッセージはこのコマンドの使用を提案し、CRITICAL メッセージは即座の状態保存を指示します。
+GSDT の `/gsdt:pause-work` コマンドは実行状態を保存します。WARNING メッセージはこのコマンドの使用を提案し、CRITICAL メッセージは即座の状態保存を指示します。
 
 ## セットアップ
 

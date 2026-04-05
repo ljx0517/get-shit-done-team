@@ -1,4 +1,4 @@
-# Referência de Configuração do GSD
+# Referência de Configuração do GSDT
 
 Configurações do projeto ficam em `.gsdt-planning/config.json`.  
 Esta versão resume os parâmetros principais em Português. Para schema completo, veja [inglês](../CONFIGURATION.md).

@@ -14,7 +14,7 @@
       │
       ▼
   ┌─────────────────────────────────────────────────────────────┐
-  │  /gsd:new-milestone                                        │
+  │  /gsdt:new-milestone                                       │
   │  - 更新 PROJECT.md (项目目标)                                │
   │  - 生成 REQUIREMENTS.md (需求)                              │
   │  - 生成 ROADMAP.md (阶段结构)                              │
@@ -23,7 +23,7 @@
       │
       ▼
   ┌─────────────────────────────────────────────────────────────┐
-  │  /gsd:plan-phase [N]                                       │
+  │  /gsdt:plan-phase [N]                                      │
   │  ┌──────────────────────────────────────────────────────┐  │
   │  │ discuss-phase → CONTEXT.md (用户偏好)                 │  │
   │  │ ui-phase → UI-SPEC.md (设计契约,可选)                │  │
@@ -31,14 +31,14 @@
   │  ┌──────────────────────────────────────────────────────┐  │
   │  │ plan-phase workflow:                                 │  │
   │  │   1. Phase Researcher → RESEARCH.md                 │  │
-  │  │   2. gsd-planner → PLAN.md 文件                     │  │
-  │  │   3. gsd-plan-checker → 验证循环 (最多3次)          │  │
+  │  │   2. gsdt-planner → PLAN.md 文件                    │  │
+  │  │   3. gsdt-plan-checker → 验证循环 (最多3次)         │  │
   │  └──────────────────────────────────────────────────────┘  │
   └─────────────────────────────────────────────────────────────┘
       │
       ▼
   ┌─────────────────────────────────────────────────────────────┐
-  │  /gsd:execute-phase                                        │
+  │  /gsdt:execute-phase                                       │
   │  ┌──────────────────────────────────────────────────────┐  │
   │  │ Wave 分析 (依赖分组)                                  │  │
   │  │   Wave 1: 无依赖的 Plan 并行执行                     │  │
@@ -47,18 +47,18 @@
   │  └──────────────────────────────────────────────────────┘  │
   │  ┌──────────────────────────────────────────────────────┐  │
   │  │ 每个 Plan 内:                                        │  │
-  │  │   gsd-executor → 生成代码 + 原子提交                 │  │
+  │  │   gsdt-executor → 生成代码 + 原子提交                │  │
   │  │   → SUMMARY.md (执行结果)                            │  │
   │  └──────────────────────────────────────────────────────┘  │
   │  ┌──────────────────────────────────────────────────────┐  │
-  │  │ gsd-verifier → VERIFICATION.md                      │  │
+  │  │ gsdt-verifier → VERIFICATION.md                     │  │
   │  └──────────────────────────────────────────────────────┘  │
   └─────────────────────────────────────────────────────────────┘
       │
       ▼
   ┌─────────────────────────────────────────────────────────────┐
-  │  /gsd:verify-work → UAT.md (用户验收测试)                  │
-  │  /gsd:ui-review → UI-REVIEW.md (视觉审计,可选)            │
+  │  /gsdt:verify-work → UAT.md (用户验收测试)                 │
+  │  /gsdt:ui-review → UI-REVIEW.md (视觉审计,可选)           │
   └─────────────────────────────────────────────────────────────┘
 
   核心数据结构
@@ -101,13 +101,13 @@
   从 Plan 生成到 Task 执行的完整链路：
 
   ┌─────────────────────────────────────────────────────────────────────┐
-  │  /gsd:execute-phase [phase]                                        │
+  │  /gsdt:execute-phase [phase]                                       │
   └─────────────────────────────┬───────────────────────────────────────┘
                                 │
                                 ▼
   ┌─────────────────────────────────────────────────────────────────────┐
   │  Step 1: discover_and_group_plans                                   │
-  │  - gsd-tools phase-plan-index → 获取所有 Plan 及其 Wave 依赖          │
+  │  - gsdt-tools phase-plan-index → 获取所有 Plan 及其 Wave 依赖         │
   │  - 跳过已有 SUMMARY.md 的 Plan (已完成)                              │
   │  - 按 Wave 分组: Wave1(无依赖) → Wave2(等Wave1) → Wave3(等Wave2)   │
   └─────────────────────────────┬───────────────────────────────────────┘
@@ -118,9 +118,9 @@
   │                                                                     │
   │  For each Wave:                                                     │
   │    1. 描述要构建的内容 (从 Plan objective 提取)                       │
-  │    2. Spawn gsd-executor agent per Plan:                           │
+  │    2. Spawn gsdt-executor agent per Plan:                          │
   │       Task(                                                        │
-  │         subagent_type="gsd-executor",                              │
+  │         subagent_type="gsdt-executor",                             │
   │         model="{executor_model}",                                  │
   │         isolation="worktree",                                       │
   │         prompt="<files_to_read>                                     │
@@ -138,7 +138,7 @@
                                 │
                                 ▼
   ┌─────────────────────────────────────────────────────────────────────┐
-  │  gsd-executor Agent 内部流程:                                        │
+  │  gsdt-executor Agent 内部流程:                                       │
   │                                                                     │
   │  1. load_plan → 解析 PLAN.md (frontmatter, tasks, criteria)         │
   │  2. record_start_time                                              │
@@ -163,7 +163,7 @@
   ┌───────────────────┬─────────────────────────────────────────────────────┐
   │       阶段        │                      触发方式                       │
   ├───────────────────┼─────────────────────────────────────────────────────┤
-  │ Orchestrator →    │ Task(subagent_type="gsd-executor", ...) — 每个 Plan │
+  │ Orchestrator →    │ Task(subagent_type="gsdt-executor", ...) — 每个 Plan │
   │ Executor          │  一个 Agent                                         │
   ├───────────────────┼─────────────────────────────────────────────────────┤
   │ Executor 内 Task  │ 顺序遍历 PLAN.md 中的 tasks 数组                    │

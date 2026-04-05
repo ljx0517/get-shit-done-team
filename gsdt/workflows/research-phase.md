@@ -5,7 +5,7 @@ Standalone research command. For most workflows, use `/gsdt:plan-phase` which in
 </purpose>
 
 <available_agent_types>
-Valid GSD subagent types (use exact names — do not fall back to 'general-purpose'):
+Valid GSDT subagent types (use exact names — do not fall back to 'general-purpose'):
 - gsdt-phase-researcher — Researches technical approaches for a phase
 </available_agent_types>
 

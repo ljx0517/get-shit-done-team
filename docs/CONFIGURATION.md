@@ -1,4 +1,4 @@
-# GSD Configuration Reference
+# GSDT Configuration Reference
 
 > Full configuration schema, workflow toggles, model profiles, and git branching options. For feature context, see [Feature Reference](FEATURES.md).
 
@@ -6,7 +6,7 @@
 
 ## Configuration File
 
-GSD stores project settings in `.gsdt-planning/config.json`. Created during `/gsdt:new-project`, updated via `/gsdt:settings`.
+GSDT stores project settings in `.claude/.gsdt-planning/config.json`. Created during `/gsdt:new-project`, updated via `/gsdt:settings`.
 
 ### Full Schema
 
@@ -119,12 +119,12 @@ All workflow toggles follow the **absent = enabled** pattern. If a key is missin
 
 | Setting | Type | Default | Description |
 |---------|------|---------|-------------|
-| `planning.commit_docs` | boolean | `true` | Whether `.gsdt-planning/` files are committed to git |
-| `planning.search_gitignored` | boolean | `false` | Add `--no-ignore` to broad searches to include `.gsdt-planning/` |
+| `planning.commit_docs` | boolean | `true` | Whether `.claude/.gsdt-planning/` files are committed to git |
+| `planning.search_gitignored` | boolean | `false` | Add `--no-ignore` to broad searches to include `.claude/.gsdt-planning/` |
 
 ### Auto-Detection
 
-If `.gsdt-planning/` is in `.gitignore`, `commit_docs` is automatically `false` regardless of config.json. This prevents git errors.
+If `.claude/.gsdt-planning/` is in `.gitignore`, `commit_docs` is automatically `false` regardless of config.json. This prevents git errors.
 
 ---
 
@@ -133,7 +133,7 @@ If `.gsdt-planning/` is in `.gitignore`, `commit_docs` is automatically `false` 
 | Setting | Type | Default | Description |
 |---------|------|---------|-------------|
 | `hooks.context_warnings` | boolean | `true` | Show context window usage warnings via context monitor hook |
-| `hooks.workflow_guard` | boolean | `false` | Warn when file edits happen outside GSD workflow context (advises using `/gsdt:quick` or `/gsdt:fast`) |
+| `hooks.workflow_guard` | boolean | `false` | Warn when file edits happen outside GSDT workflow context (advises using `/gsdt:quick` or `/gsdt:fast`) |
 
 The prompt injection guard hook (`gsdt-prompt-guard.js`) is always active and cannot be disabled — it's a security feature, not a workflow toggle.
 
@@ -142,14 +142,14 @@ The prompt injection guard hook (`gsdt-prompt-guard.js`) is always active and ca
 To keep planning artifacts out of git:
 
 1. Set `planning.commit_docs: false` and `planning.search_gitignored: true`
-2. Add `.gsdt-planning/` to `.gitignore`
-3. If previously tracked: `git rm -r --cached .gsdt-planning/ && git commit -m "chore: stop tracking planning docs"`
+2. Add `.claude/.gsdt-planning/` to `.gitignore`
+3. If previously tracked: `git rm -r --cached .claude/.gsdt-planning/ && git commit -m "chore: stop tracking planning docs"`
 
 ---
 
 ## Agent Skills Injection
 
-Inject custom skill files into GSD subagent prompts. Skills are read by agents at spawn time, giving them project-specific instructions beyond what CLAUDE.md provides.
+Inject custom skill files into GSDT subagent prompts. Skills are read by agents at spawn time, giving them project-specific instructions beyond what CLAUDE.md provides.
 
 | Setting | Type | Default | Description |
 |---------|------|---------|-------------|
@@ -157,7 +157,7 @@ Inject custom skill files into GSD subagent prompts. Skills are read by agents a
 
 ### Configuration
 
-Add an `agent_skills` section to `.gsdt-planning/config.json` mapping agent types to arrays of skill directory paths (relative to project root):
+Add an `agent_skills` section to `.claude/.gsdt-planning/config.json` mapping agent types to arrays of skill directory paths (relative to project root):
 
 ```json
 {
@@ -173,7 +173,7 @@ Each path must be a directory containing a `SKILL.md` file. Paths are validated 
 
 ### Supported Agent Types
 
-Any GSD agent type can receive skills. Common types:
+Any GSDT agent type can receive skills. Common types:
 
 - `gsdt-executor` -- executes implementation plans
 - `gsdt-planner` -- creates phase plans
@@ -342,9 +342,9 @@ Override specific agents without changing the entire profile:
 
 Valid override values: `opus`, `sonnet`, `haiku`, `inherit`, or any fully-qualified model ID (e.g., `"openai/o3"`, `"google/gemini-2.5-pro"`).
 
-### Non-Claude Runtimes (Codex, Vibe Agent Team, Gemini CLI)
+### Non-Claude Runtimes (Codex, OpenCode, Gemini CLI)
 
-When GSD is installed for a non-Claude runtime, the installer automatically sets `resolve_model_ids: "omit"` in `~/.gsdt/defaults.json`. This causes GSD to return an empty model parameter for all agents, so each agent uses whatever model the runtime is configured with. No additional setup is needed for the default case.
+When GSDT is installed for a non-Claude runtime, the installer automatically sets `resolve_model_ids: "omit"` in `~/.gsdt/defaults.json`. This causes GSDT to return an empty model parameter for all agents, so each agent uses whatever model the runtime is configured with. No additional setup is needed for the default case.
 
 If you want different agents to use different models, use `model_overrides` with fully-qualified model IDs that your runtime recognizes:
 
@@ -377,7 +377,7 @@ The intent is the same as the Claude profile tiers -- use a stronger model for p
 |-------|----------|----------|
 | `false` (default) | Returns Claude aliases (`opus`, `sonnet`, `haiku`) | Claude Code with native Anthropic API |
 | `true` | Maps aliases to full Claude model IDs (`claude-opus-4-0`) | Claude Code with API that requires full IDs |
-| `"omit"` | Returns empty string (runtime picks its default) | Non-Claude runtimes (Codex, Vibe Agent Team, Gemini CLI) |
+| `"omit"` | Returns empty string (runtime picks its default) | Non-Claude runtimes (Codex, OpenCode, Gemini CLI) |
 
 ### Profile Philosophy
 

@@ -1,6 +1,6 @@
-# Arquitetura do GSD
+# Arquitetura do GSDT
 
-Visão arquitetural do Get Shit Done (GSD) em Português.  
+Visão arquitetural do Get Shit Done (GSDT) em Português.  
 Para detalhes de implementação linha a linha, consulte [ARCHITECTURE.md em inglês](../ARCHITECTURE.md).
 
 ---
@@ -64,7 +64,7 @@ Entrada (/gsdt:comando)
 
 ## Extensibilidade
 
-GSD suporta evolução por:
+GSDT suporta evolução por:
 
 - novos comandos
 - novos tipos de agente

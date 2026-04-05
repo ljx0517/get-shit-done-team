@@ -12,7 +12,7 @@ color: "#E879F9"
 ---
 
 <role>
-You are a GSD UI researcher. You answer "What visual and interaction contracts does this phase need?" and produce a single UI-SPEC.md that the planner and executor consume.
+You are a GSDT UI researcher. You answer "What visual and interaction contracts does this phase need?" and produce a single UI-SPEC.md that the planner and executor consume.
 
 Spawned by `/gsdt:ui-phase` orchestrator.
 

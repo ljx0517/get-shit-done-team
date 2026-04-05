@@ -1,4 +1,4 @@
-# GSD 用户指南
+# GSDT 用户指南
 
 工作流、故障排除和配置的详细参考。快速入门设置请参阅 [README](README.md)。
 
@@ -99,7 +99,7 @@
 
 ### 验证架构 (Nyquist 层)
 
-在 plan-phase 研究期间，GSD 现在在任何代码编写之前将自动化测试覆盖率映射到每个阶段需求。这确保当 Claude 的执行者提交任务时，反馈机制已经存在可以在几秒钟内验证它。
+在 plan-phase 研究期间，GSDT 现在在任何代码编写之前将自动化测试覆盖率映射到每个阶段需求。这确保当 Claude 的执行者提交任务时，反馈机制已经存在可以在几秒钟内验证它。
 
 研究员检测你现有的测试基础设施，将每个需求映射到特定的测试命令，并识别在实现开始之前必须创建的任何测试脚手架（波次 0 任务）。
 
@@ -198,7 +198,7 @@
 | `/gsdt:resume-work` | 从上次会话恢复完整上下文 | 开始新会话 |
 | `/gsdt:pause-work` | 保存上下文交接 | 阶段中途停止 |
 | `/gsdt:help` | 显示所有命令 | 快速参考 |
-| `/gsdt:update` | 更新 GSD 并预览变更日志 | 检查新版本 |
+| `/gsdt:update` | 更新 GSDT 并预览变更日志 | 检查新版本 |
 | `/gsdt:join-discord` | 打开 Discord 社区邀请 | 问题或社区 |
 
 ### 阶段管理
@@ -217,7 +217,7 @@
 | 命令 | 用途 | 何时使用 |
 |---------|---------|-------------|
 | `/gsdt:map-codebase` | 分析现有代码库 | 在现有代码上运行 `/gsdt:new-project` 之前 |
-| `/gsdt:quick` | 带 GSD 保证的临时任务 | Bug 修复、小功能、配置更改 |
+| `/gsdt:quick` | 带 GSDT 保证的临时任务 | Bug 修复、小功能、配置更改 |
 | `/gsdt:debug [desc]` | 带持久状态的系统化调试 | 出问题时 |
 | `/gsdt:add-todo [desc]` | 捕获想法留待后用 | 会话期间想到什么 |
 | `/gsdt:check-todos` | 列出待处理事项 | 查看捕获的想法 |
@@ -229,7 +229,7 @@
 
 ## 配置参考
 
-GSD 在 `.gsdt-planning/config.json` 中存储项目设置。在 `/gsdt:new-project` 期间配置或稍后用 `/gsdt:settings` 更新。
+GSDT 在 `.claude/.gsdt-planning/config.json` 中存储项目设置。在 `/gsdt:new-project` 期间配置或稍后用 `/gsdt:settings` 更新。
 
 ### 完整 config.json 模式
 
@@ -268,10 +268,10 @@ GSD 在 `.gsdt-planning/config.json` 中存储项目设置。在 `/gsdt:new-proj
 
 | 设置 | 选项 | 默认值 | 控制内容 |
 |---------|---------|---------|------------------|
-| `planning.commit_docs` | `true`, `false` | `true` | `.gsdt-planning/` 文件是否提交到 git |
-| `planning.search_gitignored` | `true`, `false` | `false` | 在广泛搜索中添加 `--no-ignore` 以包含 `.gsdt-planning/` |
+| `planning.commit_docs` | `true`, `false` | `true` | `.claude/.gsdt-planning/` 文件是否提交到 git |
+| `planning.search_gitignored` | `true`, `false` | `false` | 在广泛搜索中添加 `--no-ignore` 以包含 `.claude/.gsdt-planning/` |
 
-> **注意：** 如果 `.gsdt-planning/` 在 `.gitignore` 中，无论配置值如何，`commit_docs` 自动为 `false`。
+> **注意：** 如果 `.claude/.gsdt-planning/` 在 `.gitignore` 中，无论配置值如何，`commit_docs` 自动为 `false`。
 
 ### 工作流开关
 
@@ -407,11 +407,11 @@ claude --dangerously-skip-permissions
 
 ### "项目已初始化"
 
-你运行了 `/gsdt:new-project` 但 `.gsdt-planning/PROJECT.md` 已存在。这是安全检查。如果你想重新开始，先删除 `.gsdt-planning/` 目录。
+你运行了 `/gsdt:new-project` 但 `.claude/.gsdt-planning/PROJECT.md` 已存在。这是安全检查。如果你想重新开始，先删除 `.claude/.gsdt-planning/` 目录。
 
 ### 长会话期间上下文退化
 
-在主要命令之间清除上下文窗口：Claude Code 中的 `/clear`。GSD 设计围绕全新上下文 —— 每个子代理获得干净的 200K 窗口。如果主会话质量下降，清除并使用 `/gsdt:resume-work` 或 `/gsdt:progress` 恢复状态。
+在主要命令之间清除上下文窗口：Claude Code 中的 `/clear`。GSDT 设计围绕全新上下文 —— 每个子代理获得干净的 200K 窗口。如果主会话质量下降，清除并使用 `/gsdt:resume-work` 或 `/gsdt:progress` 恢复状态。
 
 ### 计划看起来错误或不一致
 
@@ -435,15 +435,15 @@ claude --dangerously-skip-permissions
 
 ### 处理敏感/私有项目
 
-在 `/gsdt:new-project` 期间或通过 `/gsdt:settings` 设置 `commit_docs: false`。将 `.gsdt-planning/` 添加到 `.gitignore`。规划工件保留在本地，从不接触 git。
+在 `/gsdt:new-project` 期间或通过 `/gsdt:settings` 设置 `commit_docs: false`。将 `.claude/.gsdt-planning/` 添加到 `.gitignore`。规划工件保留在本地，从不接触 git。
 
-### GSD 更新覆盖了我的本地更改
+### GSDT 更新覆盖了我的本地更改
 
 从 v1.17 开始，安装程序将本地修改的文件备份到 `gsdt-local-patches/`。运行 `/gsdt:reapply-patches` 将你的更改合并回来。
 
 ### 子代理似乎失败但工作已完成
 
-存在 Claude Code 分类 bug 的已知解决方法。GSD 的编排器（execute-phase、quick）在报告失败前抽查实际输出。如果你看到失败消息但提交已创建，检查 `git log` —— 工作可能已成功。
+存在 Claude Code 分类 bug 的已知解决方法。GSDT 的编排器（execute-phase、quick）在报告失败前抽查实际输出。如果你看到失败消息但提交已创建，检查 `git log` —— 工作可能已成功。
 
 ---
 
@@ -465,10 +465,10 @@ claude --dangerously-skip-permissions
 
 ## 项目文件结构
 
-供参考，这是 GSD 在你的项目中创建的内容：
+供参考，这是 GSDT 在你的项目中创建的内容：
 
 ```
-.gsdt-planning/
+.claude/.gsdt-planning/
   PROJECT.md              # 项目愿景和上下文（始终加载）
   REQUIREMENTS.md         # 界定 v1/v2 需求及 ID
   ROADMAP.md              # 带状态跟踪的阶段分解

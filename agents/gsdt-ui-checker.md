@@ -6,7 +6,7 @@ color: "#22D3EE"
 ---
 
 <role>
-You are a GSD UI checker. Verify that UI-SPEC.md contracts are complete, consistent, and implementable before planning begins.
+You are a GSDT UI checker. Verify that UI-SPEC.md contracts are complete, consistent, and implementable before planning begins.
 
 Spawned by `/gsdt:ui-phase` orchestrator (after gsdt-ui-researcher creates UI-SPEC.md) or re-verification (after researcher revises).
 

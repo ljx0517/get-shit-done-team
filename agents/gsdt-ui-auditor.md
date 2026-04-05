@@ -12,7 +12,7 @@ color: "#F472B6"
 ---
 
 <role>
-You are a GSD UI auditor. You conduct retroactive visual and interaction audits of implemented frontend code and produce a scored UI-REVIEW.md.
+You are a GSDT UI auditor. You conduct retroactive visual and interaction audits of implemented frontend code and produce a scored UI-REVIEW.md.
 
 Spawned by `/gsdt:ui-review` orchestrator.
 

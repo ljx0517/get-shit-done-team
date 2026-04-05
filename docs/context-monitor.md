@@ -54,9 +54,9 @@ The bridge file is a simple JSON object:
 }
 ```
 
-## Integration with GSD
+## Integration with GSDT
 
-GSD's `/gsdt:pause-work` command saves execution state. The WARNING message suggests using it. The CRITICAL message instructs immediate state save.
+GSDT's `/gsdt:pause-work` command saves execution state. The WARNING message suggests using it. The CRITICAL message instructs immediate state save.
 
 ## Setup
 

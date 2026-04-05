@@ -1,5 +1,5 @@
 <purpose>
-Detect current project state and automatically advance to the next logical GSD workflow step.
+Detect current project state and automatically advance to the next logical GSDT workflow step.
 Reads project state to determine: discuss → plan → execute → verify → complete progression.
 </purpose>
 
@@ -29,7 +29,7 @@ Extract:
 
 If no `.gsdt-planning/` directory exists:
 ```
-No GSD project detected. Run `/gsdt:new-project` to get started.
+No GSDT project detected. Run `/gsdt:new-project` to get started.
 ```
 Exit.
 </step>
@@ -74,7 +74,7 @@ If STATE.md shows paused_at:
 Display the determination:
 
 ```
-## GSD Next
+## GSDT Next
 
 **Current:** Phase [N] — [name] | [progress]%
 **Status:** [status description]

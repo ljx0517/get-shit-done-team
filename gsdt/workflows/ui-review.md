@@ -1,5 +1,5 @@
 <purpose>
-Retroactive 6-pillar visual audit of implemented frontend code. Standalone command that works on any project — GSD-managed or not. Produces scored UI-REVIEW.md with actionable findings.
+Retroactive 6-pillar visual audit of implemented frontend code. Standalone command that works on any project — GSDT-managed or not. Produces scored UI-REVIEW.md with actionable findings.
 
 **Enhanced with:**
 - Session management with checkpoint/resume
@@ -14,7 +14,7 @@ Retroactive 6-pillar visual audit of implemented frontend code. Standalone comma
 </required_reading>
 
 <available_agent_types>
-Valid GSD subagent types (use exact names — do not fall back to 'general-purpose'):
+Valid GSDT subagent types (use exact names — do not fall back to 'general-purpose'):
 - gsdt-ui-auditor — Audits UI against design requirements
 </available_agent_types>
 
@@ -41,7 +41,9 @@ UI_AUDITOR_MODEL=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" resolve-model gs
 
 Display banner:
 ```
-── GSD ► UI AUDIT — PHASE {N}: {name} ──
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ GSDT ► UI AUDIT — PHASE {N}: {name}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
 ## 1. Session Management
@@ -154,7 +156,10 @@ Task(
 Display score summary:
 
 ```
-── GSD ► UI AUDIT COMPLETE ✓ ──
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ GSDT ► UI AUDIT COMPLETE ✓
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 **Phase {N}: {Name}** — Overall: {score}/24
 
 | Pillar | Score |

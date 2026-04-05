@@ -696,5 +696,5 @@ exactly one place: `buildNewProjectConfig()` in `config.cjs`.
 **Why this improves discoverability:**
 A developer opening `.gsdt-planning/config.json` for the first time can now see
 `git.branching_strategy: "none"` and immediately understand that branching
-is available and configurable, without reading the GSD source.
+is available and configurable, without reading the GSDT source.
 ```

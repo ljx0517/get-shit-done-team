@@ -1,4 +1,4 @@
-# GSD 설정 레퍼런스
+# GSDT 설정 레퍼런스
 
 > 전체 설정 스키마, 워크플로우 토글, 모델 프로필, git 브랜칭 옵션입니다. 기능에 대한 맥락은 [Feature Reference](FEATURES.md)를 참조하세요.
 
@@ -132,7 +132,7 @@ GSD는 프로젝트 설정을 `.gsdt-planning/config.json`에 저장합니다. `
 | 설정 | 타입 | 기본값 | 설명 |
 |------|------|--------|------|
 | `hooks.context_warnings` | boolean | `true` | context monitor 훅을 통해 컨텍스트 윈도우 사용 경고 표시 |
-| `hooks.workflow_guard` | boolean | `false` | GSD 워크플로우 컨텍스트 밖에서 파일 편집이 발생할 때 경고 ((`/gsdt:quick` 또는 `/gsdt:fast` 사용 권고)) |
+| `hooks.workflow_guard` | boolean | `false` | GSDT 워크플로우 컨텍스트 밖에서 파일 편집이 발생할 때 경고 ((`/gsdt:quick` 또는 `/gsdt:fast` 사용 권고)) |
 
 프롬프트 주입 방지 훅 (`gsdt-prompt-guard.js`)은 항상 활성화되며 비활성화할 수 없습니다. 워크플로우 토글이 아닌 보안 기능입니다.
 

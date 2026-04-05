@@ -1,5 +1,5 @@
 <purpose>
-Analyze freeform text from the user and route to the most appropriate GSD command. This is a dispatcher — it never does the work itself. Match user intent to the best command, confirm the routing, and hand off.
+Analyze freeform text from the user and route to the most appropriate GSDT command. This is a dispatcher — it never does the work itself. Match user intent to the best command, confirm the routing, and hand off.
 </purpose>
 
 <required_reading>
@@ -14,7 +14,7 @@ Read all files referenced by the invoking prompt's execution_context before star
 If `$ARGUMENTS` is empty, ask via AskUserQuestion:
 
 ```
-What would you like to do? Describe the task, bug, or idea and I'll route it to the right GSD command.
+What would you like to do? Describe the task, bug, or idea and I'll route it to the right GSDT command.
 ```
 
 Wait for response before continuing.
@@ -27,7 +27,7 @@ Wait for response before continuing.
 INIT=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" state load 2>/dev/null)
 ```
 
-Track whether `.gsdt-planning/` exists — some routes require it, others don't.
+Track whether `.claude/.gsdt-planning/` exists — some routes require it, others don't.
 </step>
 
 <step name="route">
@@ -55,7 +55,7 @@ Evaluate `$ARGUMENTS` against these routing rules. Apply the **first matching** 
 | Completing a milestone, shipping, releasing | `/gsdt:complete-milestone` | Milestone lifecycle |
 | A specific, actionable, small task (add feature, fix typo, update config) | `/gsdt:quick` | Self-contained, single executor |
 
-**Requires `.gsdt-planning/` directory:** All routes except `/gsdt:auto`, `/gsdt:new-project`, `/gsdt:map-codebase`, `/gsdt:help`, and `/gsdt:join-discord`. If the project doesn't exist and the route requires it, suggest `/gsdt:auto` first.
+**Requires `.claude/.gsdt-planning/` directory:** All routes except `/gsdt:auto`, `/gsdt:new-project`, `/gsdt:map-codebase`, `/gsdt:help`, and `/gsdt:join-discord`. If the project doesn't exist and the route requires it, suggest `/gsdt:auto` first.
 
 **Ambiguity handling:** If the text could reasonably match multiple routes, ask the user via AskUserQuestion with the top 2-3 options. For example:
 
@@ -72,7 +72,10 @@ Which approach fits better?
 **Show the routing decision.**
 
 ```
-── GSD ► ROUTING ──
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ GSDT ► ROUTING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 **Input:** {first 80 chars of $ARGUMENTS}
 **Routing to:** {chosen command}
 **Reason:** {one-line explanation}
@@ -102,7 +105,7 @@ After invoking, stop. The dispatched command handles everything from here.
 
 <success_criteria>
 - [ ] Input validated (not empty)
-- [ ] Intent matched to exactly one GSD command
+- [ ] Intent matched to exactly one GSDT command
 - [ ] Ambiguity resolved via user question (if needed)
 - [ ] Project existence checked for routes that require it
 - [ ] Routing decision displayed before dispatch

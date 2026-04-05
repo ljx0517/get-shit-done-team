@@ -1,4 +1,4 @@
-# GSD User Guide
+# GSDT User Guide
 
 A detailed reference for workflows, troubleshooting, and configuration. For quick-start setup, see the [README](../README.md).
 
@@ -111,7 +111,7 @@ A detailed reference for workflows, troubleshooting, and configuration. For quic
 
 ### Validation Architecture (Nyquist Layer)
 
-During plan-phase research, GSD now maps automated test coverage to each phase
+During plan-phase research, GSDT now maps automated test coverage to each phase
 requirement before any code is written. This ensures that when Claude's executor
 commits a task, a feedback mechanism already exists to verify it within seconds.
 
@@ -160,7 +160,7 @@ enabled, or after `/gsdt:audit-milestone` surfaces Nyquist compliance gaps.
 
 ### Assumptions Discussion Mode
 
-By default, `/gsdt:discuss-phase` asks open-ended questions about your implementation preferences. Assumptions mode inverts this: GSD reads your codebase first, surfaces structured assumptions about how it would build the phase, and asks only for corrections.
+By default, `/gsdt:discuss-phase` asks open-ended questions about your implementation preferences. Assumptions mode inverts this: GSDT reads your codebase first, surfaces structured assumptions about how it would build the phase, and asks only for corrections.
 
 **Enable:** Set `workflow.discuss_mode` to `'assumptions'` via `/gsdt:settings`.
 
@@ -207,13 +207,13 @@ AI-generated frontends are visually inconsistent not because Claude Code is bad 
 6. Validates against 6 dimensions (Copywriting, Visuals, Color, Typography, Spacing, Registry Safety)
 7. Revision loop if BLOCKED (max 2 iterations)
 
-**Output:** `{padded_phase}-UI-SPEC.md` in `.gsdt-planning/phases/{phase-dir}/`
+**Output:** `{padded_phase}-UI-SPEC.md` in `.claude/.gsdt-planning/phases/{phase-dir}/`
 
 ### Workflow: `/gsdt:ui-review`
 
 **When to run:** After `/gsdt:execute-phase` or `/gsdt:verify-work` — for any project with frontend code.
 
-**Standalone:** Works on any project, not just GSD-managed ones. If no UI-SPEC.md exists, audits against abstract 6-pillar standards.
+**Standalone:** Works on any project, not just GSDT-managed ones. If no UI-SPEC.md exists, audits against abstract 6-pillar standards.
 
 **6 Pillars (scored 1-4 each):**
 1. Copywriting — CTA labels, empty states, error states
@@ -243,7 +243,7 @@ For React/Next.js/Vite projects, the UI researcher offers to initialize shadcn i
 3. Run `npx shadcn init --preset {paste}`
 4. Preset encodes the entire design system — colors, border radius, fonts
 
-The preset string becomes a first-class GSD planning artifact, reproducible across phases and milestones.
+The preset string becomes a first-class GSDT planning artifact, reproducible across phases and milestones.
 
 ### Registry Safety Gate
 
@@ -255,7 +255,7 @@ Controlled by `workflow.ui_safety_gate` config toggle.
 
 ### Screenshot Storage
 
-`/gsdt:ui-review` captures screenshots via Playwright CLI to `.gsdt-planning/ui-reviews/`. A `.gitignore` is created automatically to prevent binary files from reaching git. Screenshots are cleaned up during `/gsdt:complete-milestone`.
+`/gsdt:ui-review` captures screenshots via Playwright CLI to `.claude/.gsdt-planning/ui-reviews/`. A `.gitignore` is created automatically to prevent binary files from reaching git. Screenshots are cleaned up during `/gsdt:complete-milestone`.
 
 ---
 
@@ -284,7 +284,7 @@ Seeds are forward-looking ideas with trigger conditions. Unlike backlog items, s
 
 Seeds preserve the full WHY and WHEN to surface. `/gsdt:new-milestone` scans all seeds and presents matches.
 
-**Storage:** `.gsdt-planning/seeds/SEED-NNN-slug.md`
+**Storage:** `.claude/.gsdt-planning/seeds/SEED-NNN-slug.md`
 
 ### Persistent Context Threads
 
@@ -300,13 +300,13 @@ Threads are lighter weight than `/gsdt:pause-work` — no phase state, no plan c
 
 Threads can be promoted to phases (`/gsdt:add-phase`) or backlog items (`/gsdt:add-backlog`) when they mature.
 
-**Storage:** `.gsdt-planning/threads/{slug}.md`
+**Storage:** `.claude/.gsdt-planning/threads/{slug}.md`
 
 ---
 
 ## Workstreams
 
-Workstreams let you work on multiple milestone areas concurrently without state collisions. Each workstream gets its own isolated `.gsdt-planning/` state, so switching between them doesn't clobber progress.
+Workstreams let you work on multiple milestone areas concurrently without state collisions. Each workstream gets its own isolated `.claude/.gsdt-planning/` state, so switching between them doesn't clobber progress.
 
 **When to use:** You're working on milestone features that span different concern areas (e.g., backend API and frontend dashboard) and want to plan, execute, or discuss them independently without context bleed.
 
@@ -321,7 +321,7 @@ Workstreams let you work on multiple milestone areas concurrently without state 
 
 ### How It Works
 
-Each workstream maintains its own `.gsdt-planning/` directory subtree. When you switch workstreams, GSD swaps the active planning context so that `/gsdt:progress`, `/gsdt:discuss-phase`, `/gsdt:plan-phase`, and other commands operate on that workstream's state.
+Each workstream maintains its own `.claude/.gsdt-planning/` directory subtree. When you switch workstreams, GSDT swaps the active planning context so that `/gsdt:progress`, `/gsdt:discuss-phase`, `/gsdt:plan-phase`, and other commands operate on that workstream's state.
 
 This is lighter weight than `/gsdt:new-workspace` (which creates separate repo worktrees). Workstreams share the same codebase and git history but isolate planning artifacts.
 
@@ -331,7 +331,7 @@ This is lighter weight than `/gsdt:new-workspace` (which creates separate repo w
 
 ### Defense-in-Depth (v1.27)
 
-GSD generates markdown files that become LLM system prompts. This means any user-controlled text flowing into planning artifacts is a potential indirect prompt injection vector. v1.27 introduced centralized security hardening:
+GSDT generates markdown files that become LLM system prompts. This means any user-controlled text flowing into planning artifacts is a potential indirect prompt injection vector. v1.27 introduced centralized security hardening:
 
 **Path Traversal Prevention:**
 All user-supplied file paths (`--text-file`, `--prd`) are validated to resolve within the project directory. macOS `/var` → `/private/var` symlink resolution is handled.
@@ -340,8 +340,8 @@ All user-supplied file paths (`--text-file`, `--prd`) are validated to resolve w
 The `security.cjs` module scans for known injection patterns (role overrides, instruction bypasses, system tag injections) in user-supplied text before it enters planning artifacts.
 
 **Runtime Hooks:**
-- `gsdt-prompt-guard.js` — Scans Write/Edit calls to `.gsdt-planning/` for injection patterns (always active, advisory-only)
-- `gsdt-workflow-guard.js` — Warns on file edits outside GSD workflow context (opt-in via `hooks.workflow_guard`)
+- `gsdt-prompt-guard.js` — Scans Write/Edit calls to `.claude/.gsdt-planning/` for injection patterns (always active, advisory-only)
+- `gsdt-workflow-guard.js` — Warns on file edits outside GSDT workflow context (opt-in via `hooks.workflow_guard`)
 
 **CI Scanner:**
 `prompt-injection-scan.test.cjs` scans all agent, workflow, and command files for embedded injection vectors. Run as part of the test suite.
@@ -416,7 +416,7 @@ The `security.cjs` module scans for known injection patterns (role overrides, in
 | `/gsdt:pause-work` | Save structured handoff (HANDOFF.json + continue-here.md) | Stopping mid-phase |
 | `/gsdt:session-report` | Generate session summary with work and outcomes | End of session, stakeholder sharing |
 | `/gsdt:help` | Show all commands | Quick reference |
-| `/gsdt:update` | Update GSD with changelog preview | Check for new versions |
+| `/gsdt:update` | Update GSDT with changelog preview | Check for new versions |
 | `/gsdt:join-discord` | Open Discord community invite | Questions or community |
 
 ### Phase Management
@@ -435,7 +435,7 @@ The `security.cjs` module scans for known injection patterns (role overrides, in
 | Command | Purpose | When to Use |
 |---------|---------|-------------|
 | `/gsdt:map-codebase` | Analyze existing codebase | Before `/gsdt:new-project` on existing code |
-| `/gsdt:quick` | Ad-hoc task with GSD guarantees | Bug fixes, small features, config changes |
+| `/gsdt:quick` | Ad-hoc task with GSDT guarantees | Bug fixes, small features, config changes |
 | `/gsdt:debug [desc]` | Systematic debugging with persistent state | When something breaks |
 | `/gsdt:forensics` | Diagnostic report for workflow failures | When state, artifacts, or git history seem corrupted |
 | `/gsdt:add-todo [desc]` | Capture an idea for later | Think of something during a session |
@@ -449,7 +449,7 @@ The `security.cjs` module scans for known injection patterns (role overrides, in
 | Command | Purpose | When to Use |
 |---------|---------|-------------|
 | `/gsdt:review --phase N` | Cross-AI peer review from external CLIs | Before executing, to validate plans |
-| `/gsdt:pr-branch` | Clean PR branch filtering `.gsdt-planning/` commits | Before creating PR with planning-free diff |
+| `/gsdt:pr-branch` | Clean PR branch filtering `.claude/.gsdt-planning/` commits | Before creating PR with planning-free diff |
 | `/gsdt:audit-uat` | Audit verification debt across all phases | Before milestone completion |
 
 ### Backlog & Threads
@@ -465,7 +465,7 @@ The `security.cjs` module scans for known injection patterns (role overrides, in
 
 ## Configuration Reference
 
-GSD stores project settings in `.gsdt-planning/config.json`. Configure during `/gsdt:new-project` or update later with `/gsdt:settings`.
+GSDT stores project settings in `.claude/.gsdt-planning/config.json`. Configure during `/gsdt:new-project` or update later with `/gsdt:settings`.
 
 ### Full config.json Schema
 
@@ -515,10 +515,10 @@ GSD stores project settings in `.gsdt-planning/config.json`. Configure during `/
 
 | Setting | Options | Default | What it Controls |
 |---------|---------|---------|------------------|
-| `planning.commit_docs` | `true`, `false` | `true` | Whether `.gsdt-planning/` files are committed to git |
-| `planning.search_gitignored` | `true`, `false` | `false` | Add `--no-ignore` to broad searches to include `.gsdt-planning/` |
+| `planning.commit_docs` | `true`, `false` | `true` | Whether `.claude/.gsdt-planning/` files are committed to git |
+| `planning.search_gitignored` | `true`, `false` | `false` | Add `--no-ignore` to broad searches to include `.claude/.gsdt-planning/` |
 
-> **Note:** If `.gsdt-planning/` is in `.gitignore`, `commit_docs` is automatically `false` regardless of the config value.
+> **Note:** If `.claude/.gsdt-planning/` is in `.gitignore`, `commit_docs` is automatically `false` regardless of the config value.
 
 ### Workflow Toggles
 
@@ -539,7 +539,7 @@ GSD stores project settings in `.gsdt-planning/config.json`. Configure during `/
 | Setting | Options | Default | What it Controls |
 |---------|---------|---------|------------------|
 | `hooks.context_warnings` | `true`, `false` | `true` | Context window usage warnings |
-| `hooks.workflow_guard` | `true`, `false` | `false` | Warn on file edits outside GSD workflow context |
+| `hooks.workflow_guard` | `true`, `false` | `false` | Warn on file edits outside GSDT workflow context |
 
 Disable workflow toggles to speed up phases in familiar domains or when conserving tokens.
 
@@ -590,7 +590,7 @@ Example quick-task branching:
 - **quality** -- Opus for all decision-making agents, Sonnet for read-only verification. Use when quota is available and the work is critical.
 - **balanced** -- Opus only for planning (where architecture decisions happen), Sonnet for everything else. The default for good reason.
 - **budget** -- Sonnet for anything that writes code, Haiku for research and verification. Use for high-volume work or less critical phases.
-- **inherit** -- All agents use the current session model. Best when switching models dynamically (e.g. Vibe Agent Team `/model`), or when using Claude Code with non-Anthropic providers (OpenRouter, local models) to avoid unexpected API costs. For non-Claude runtimes (Codex, Vibe Agent Team, Gemini CLI), the installer sets `resolve_model_ids: "omit"` automatically -- see [Non-Claude Runtimes](#using-non-claude-runtimes-codex-vibe-agent-team-gemini-cli).
+- **inherit** -- All agents use the current session model. Best when switching models dynamically (e.g. OpenCode `/model`), or when using Claude Code with non-Anthropic providers (OpenRouter, local models) to avoid unexpected API costs. For non-Claude runtimes (Codex, OpenCode, Gemini CLI), the installer sets `resolve_model_ids: "omit"` automatically -- see [Non-Claude Runtimes](#using-non-claude-runtimes-codex-opencode-gemini-cli).
 
 ---
 
@@ -678,16 +678,16 @@ claude --dangerously-skip-permissions
 
 ### Multi-Project Workspaces
 
-Work on multiple repos or features in parallel with isolated GSD state.
+Work on multiple repos or features in parallel with isolated GSDT state.
 
 ```bash
 # Create a workspace with repos from your monorepo
 /gsdt:new-workspace --name feature-b --repos hr-ui,ZeymoAPI
 
-# Feature branch isolation — worktree of current repo with its own .gsdt-planning/
+# Feature branch isolation — worktree of current repo with its own .claude/.gsdt-planning/
 /gsdt:new-workspace --name feature-b --repos .
 
-# Then cd into the workspace and initialize GSD
+# Then cd into the workspace and initialize GSDT
 cd ~/gsdt-workspaces/feature-b
 /gsdt:new-project
 
@@ -697,7 +697,7 @@ cd ~/gsdt-workspaces/feature-b
 ```
 
 Each workspace gets:
-- Its own `.gsdt-planning/` directory (fully independent from source repos)
+- Its own `.claude/.gsdt-planning/` directory (fully independent from source repos)
 - Git worktrees (default) or clones of specified repos
 - A `WORKSPACE.md` manifest tracking member repos
 
@@ -707,11 +707,11 @@ Each workspace gets:
 
 ### "Project already initialized"
 
-You ran `/gsdt:new-project` but `.gsdt-planning/PROJECT.md` already exists. This is a safety check. If you want to start over, delete the `.gsdt-planning/` directory first.
+You ran `/gsdt:new-project` but `.claude/.gsdt-planning/PROJECT.md` already exists. This is a safety check. If you want to start over, delete the `.claude/.gsdt-planning/` directory first.
 
 ### Context Degradation During Long Sessions
 
-Clear your context window between major commands: `/clear` in Claude Code. GSD is designed around fresh contexts -- every subagent gets a clean 200K window. If quality is dropping in the main session, clear and use `/gsdt:resume-work` or `/gsdt:progress` to restore state.
+Clear your context window between major commands: `/clear` in Claude Code. GSDT is designed around fresh contexts -- every subagent gets a clean 200K window. If quality is dropping in the main session, clear and use `/gsdt:resume-work` or `/gsdt:progress` to restore state.
 
 ### Plans Seem Wrong or Misaligned
 
@@ -733,11 +733,11 @@ Do not re-run `/gsdt:execute-phase`. Use `/gsdt:quick` for targeted fixes, or `/
 
 Switch to budget profile: `/gsdt:set-profile budget`. Disable research and plan-check agents via `/gsdt:settings` if the domain is familiar to you (or to Claude).
 
-### Using Non-Claude Runtimes (Codex, Vibe Agent Team, Gemini CLI)
+### Using Non-Claude Runtimes (Codex, OpenCode, Gemini CLI)
 
-If you installed GSD for a non-Claude runtime, the installer already configured model resolution so all agents use the runtime's default model. No manual setup is needed. Specifically, the installer sets `resolve_model_ids: "omit"` in your config, which tells GSD to skip Anthropic model ID resolution and let the runtime choose its own default model.
+If you installed GSDT for a non-Claude runtime, the installer already configured model resolution so all agents use the runtime's default model. No manual setup is needed. Specifically, the installer sets `resolve_model_ids: "omit"` in your config, which tells GSDT to skip Anthropic model ID resolution and let the runtime choose its own default model.
 
-To assign different models to different agents on a non-Claude runtime, add `model_overrides` to `.gsdt-planning/config.json` with fully-qualified model IDs that your runtime recognizes:
+To assign different models to different agents on a non-Claude runtime, add `model_overrides` to `.claude/.gsdt-planning/config.json` with fully-qualified model IDs that your runtime recognizes:
 
 ```json
 {
@@ -750,19 +750,19 @@ To assign different models to different agents on a non-Claude runtime, add `mod
 }
 ```
 
-The installer auto-configures `resolve_model_ids: "omit"` for Gemini CLI, Vibe Agent Team, and Codex. If you're manually setting up a non-Claude runtime, add it to `.gsdt-planning/config.json` yourself.
+The installer auto-configures `resolve_model_ids: "omit"` for Gemini CLI, OpenCode, and Codex. If you're manually setting up a non-Claude runtime, add it to `.claude/.gsdt-planning/config.json` yourself.
 
-See the [Configuration Reference](CONFIGURATION.md#non-claude-runtimes-codex-vibe-agent-team-gemini-cli) for the full explanation.
+See the [Configuration Reference](CONFIGURATION.md#non-claude-runtimes-codex-opencode-gemini-cli) for the full explanation.
 
 ### Using Claude Code with Non-Anthropic Providers (OpenRouter, Local)
 
-If GSD subagents call Anthropic models and you're paying through OpenRouter or a local provider, switch to the `inherit` profile: `/gsdt:set-profile inherit`. This makes all agents use your current session model instead of specific Anthropic models. See also `/gsdt:settings` → Model Profile → Inherit.
+If GSDT subagents call Anthropic models and you're paying through OpenRouter or a local provider, switch to the `inherit` profile: `/gsdt:set-profile inherit`. This makes all agents use your current session model instead of specific Anthropic models. See also `/gsdt:settings` → Model Profile → Inherit.
 
 ### Working on a Sensitive/Private Project
 
-Set `commit_docs: false` during `/gsdt:new-project` or via `/gsdt:settings`. Add `.gsdt-planning/` to your `.gitignore`. Planning artifacts stay local and never touch git.
+Set `commit_docs: false` during `/gsdt:new-project` or via `/gsdt:settings`. Add `.claude/.gsdt-planning/` to your `.gitignore`. Planning artifacts stay local and never touch git.
 
-### GSD Update Overwrote My Local Changes
+### GSDT Update Overwrote My Local Changes
 
 Since v1.17, the installer backs up locally modified files to `gsdt-local-patches/`. Run `/gsdt:reapply-patches` to merge your changes back.
 
@@ -775,15 +775,15 @@ When a workflow fails in a way that isn't obvious -- plans reference nonexistent
 - Artifact integrity (missing or malformed planning files, broken cross-references)
 - State inconsistencies (ROADMAP status vs. actual file presence, config drift)
 
-**Output:** A diagnostic report written to `.gsdt-planning/forensics/` with findings and suggested remediation steps.
+**Output:** A diagnostic report written to `.claude/.gsdt-planning/forensics/` with findings and suggested remediation steps.
 
 ### Subagent Appears to Fail but Work Was Done
 
-A known workaround exists for a Claude Code classification bug. GSD's orchestrators (execute-phase, quick) spot-check actual output before reporting failure. If you see a failure message but commits were made, check `git log` -- the work may have succeeded.
+A known workaround exists for a Claude Code classification bug. GSDT's orchestrators (execute-phase, quick) spot-check actual output before reporting failure. If you see a failure message but commits were made, check `git log` -- the work may have succeeded.
 
 ### Parallel Execution Causes Build Lock Errors
 
-If you see pre-commit hook failures, cargo lock contention, or 30+ minute execution times during parallel wave execution, this is caused by multiple agents triggering build tools simultaneously. GSD handles this automatically since v1.26 — parallel agents use `--no-verify` on commits and the orchestrator runs hooks once after each wave. If you're on an older version, add this to your project's `CLAUDE.md`:
+If you see pre-commit hook failures, cargo lock contention, or 30+ minute execution times during parallel wave execution, this is caused by multiple agents triggering build tools simultaneously. GSDT handles this automatically since v1.26 — parallel agents use `--no-verify` on commits and the orchestrator runs hooks once after each wave. If you're on an older version, add this to your project's `CLAUDE.md`:
 
 ```markdown
 ## Git Commit Rules for Agents
@@ -814,16 +814,16 @@ If the installer crashes with `EPERM: operation not permitted, scandir` on Windo
 | Update broke local changes | `/gsdt:reapply-patches` |
 | Want session summary for stakeholder | `/gsdt:session-report` |
 | Don't know what step is next | `/gsdt:next` |
-| Parallel execution build errors | Update GSD or set `parallelization.enabled: false` |
+| Parallel execution build errors | Update GSDT or set `parallelization.enabled: false` |
 
 ---
 
 ## Project File Structure
 
-For reference, here is what GSD creates in your project:
+For reference, here is what GSDT creates in your project:
 
 ```
-.gsdt-planning/
+.claude/.gsdt-planning/
   PROJECT.md              # Project vision and context (always loaded)
   REQUIREMENTS.md         # Scoped v1/v2 requirements with IDs
   ROADMAP.md              # Phase breakdown with status tracking

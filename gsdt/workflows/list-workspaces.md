@@ -1,5 +1,5 @@
 <purpose>
-List all GSD workspaces found in ~/gsdt-workspaces/ with their status.
+List all GSDT workspaces found in ~/gsdt-workspaces/ with their status.
 </purpose>
 
 <required_reading>
@@ -35,9 +35,9 @@ Done.
 Display a table:
 
 ```
-GSD Workspaces (~/gsdt-workspaces/)
+GSDT Workspaces (~/gsdt-workspaces/)
 
-| Name | Repos | Strategy | GSD Project |
+| Name | Repos | Strategy | GSDT Project |
 |------|-------|----------|-------------|
 | feature-a | 3 | worktree | Yes |
 | feature-b | 2 | clone | No |
@@ -51,6 +51,6 @@ For each workspace, show:
 - **Name** — directory name
 - **Repos** — count from init data
 - **Strategy** — from WORKSPACE.md
-- **GSD Project** — whether `.gsdt-planning/PROJECT.md` exists (Yes/No)
+- **GSDT Project** — whether `.claude/.gsdt-planning/PROJECT.md` exists (Yes/No)
 
 </process>

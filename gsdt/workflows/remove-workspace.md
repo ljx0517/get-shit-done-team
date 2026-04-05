@@ -1,5 +1,5 @@
 <purpose>
-Remove a GSD workspace, cleaning up git worktrees and deleting the workspace directory.
+Remove a GSDT workspace, cleaning up git worktrees and deleting the workspace directory.
 </purpose>
 
 <required_reading>

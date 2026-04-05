@@ -4,7 +4,7 @@
 
 [English](README.md) · [Português](README.pt-BR.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja-JP.md) · **한국어**
 
-**Claude Code, Vibe Agent Team, Gemini CLI, Codex, Copilot, Cursor, Antigravity를 위한 가볍고 강력한 메타 프롬프팅, 컨텍스트 엔지니어링, 스펙 기반 개발 시스템.**
+**Claude Code, OpenCode, Gemini CLI, Codex, Copilot, Cursor, Antigravity를 위한 가볍고 강력한 메타 프롬프팅, 컨텍스트 엔지니어링, 스펙 기반 개발 시스템.**
 
 **컨텍스트 rot를 해결합니다 — Claude의 컨텍스트 창이 채워질수록 품질이 저하되는 문제.**
 
@@ -27,7 +27,7 @@ npx gsdt@latest
 
 <br>
 
-![GSD Install](assets/terminal.svg)
+![GSDT Install](assets/terminal.svg)
 
 <br>
 
@@ -51,7 +51,7 @@ npx gsdt@latest
 
 저는 솔로 개발자입니다. 코드는 제가 아니라 Claude Code가 씁니다.
 
-스펙 기반 개발 도구가 없는 건 아닙니다. Speckit 등이 있죠. 근데 다들 필요 이상으로 복잡합니다 — 스프린트 세리머니, 스토리 포인트, 이해관계자 싱크, 회고, 지라 워크플로우. 저는 50인 규모 소프트웨어 회사가 아니에요. 기업 연극을 하고 싶지 않습니다. 그냥 좋은 걸 만들고 싶은 사람입니다.
+스펙 기반 개발 도구가 없는 건 아닙니다. BMAD, Speckit 같은 것들이 있죠. 근데 다들 필요 이상으로 복잡합니다 — 스프린트 세리머니, 스토리 포인트, 이해관계자 싱크, 회고, 지라 워크플로우. 저는 50인 규모 소프트웨어 회사가 아니에요. 기업 연극을 하고 싶지 않습니다. 그냥 좋은 걸 만들고 싶은 사람입니다.
 
 그래서 GSD를 만들었습니다. 복잡함은 시스템 안에 있습니다. 워크플로우에 있는 게 아니라. 뒤에서 컨텍스트 엔지니어링, XML 프롬프트 포맷팅, 서브에이전트 오케스트레이션, 상태 관리가 돌아갑니다. 겉에서 보이는 건 그냥 몇 가지 명령어뿐입니다.
 
@@ -82,12 +82,12 @@ npx gsdt@latest
 ```
 
 설치 중에 다음을 선택합니다:
-1. **런타임** — Claude Code, Vibe Agent Team, Gemini, Codex, Copilot, Cursor, Antigravity, 또는 전체 (대화형 다중 선택 — 한 번에 여러 런타임 선택 가능)
+1. **런타임** — Claude Code, OpenCode, Gemini, Codex, Copilot, Cursor, Antigravity, 또는 전체 (대화형 다중 선택 — 한 번에 여러 런타임 선택 가능)
 2. **위치** — 전역 (모든 프로젝트) 또는 로컬 (현재 프로젝트만)
 
 설치가 됐는지 확인하려면:
 - Claude Code / Gemini: `/gsdt:help`
-- Vibe Agent Team: `/gsdt-help` (기본 설치 위치 `~/.config/opencode/`)
+- OpenCode: `/gsdt-help`
 - Codex: `$gsdt-help`
 - Copilot: `/gsdt:help`
 - Antigravity: `/gsdt:help`
@@ -111,9 +111,8 @@ npx gsdt@latest
 npx gsdt --claude --global   # ~/.claude/에 설치
 npx gsdt --claude --local    # ./.claude/에 설치
 
-# Vibe Agent Team (flat command/; 설정은 ~/.config/opencode/)
-npx gsdt --vibe-agent-team --global
-# 별칭: npx gsdt --opencode --global
+# OpenCode (오픈소스, 무료 모델)
+npx gsdt --opencode --global # ~/.config/opencode/에 설치
 
 # Gemini CLI
 npx gsdt --gemini --global   # ~/.gemini/에 설치
@@ -139,7 +138,7 @@ npx gsdt --all --global      # 모든 디렉터리에 설치
 ```
 
 위치 프롬프트 건너뛰기: `--global` (`-g`) 또는 `--local` (`-l`).
-런타임 프롬프트 건너뛰기: `--claude`, `--vibe-agent-team` (또는 `--opencode`), `--gemini`, `--codex`, `--copilot`, `--cursor`, `--antigravity`, 또는 `--all`.
+런타임 프롬프트 건너뛰기: `--claude`, `--opencode`, `--gemini`, `--codex`, `--copilot`, `--cursor`, `--antigravity`, 또는 `--all`.
 
 </details>
 
@@ -223,7 +222,7 @@ claude --dangerously-skip-permissions
 
 로드맵을 승인하면 이제 만들 준비가 됩니다.
 
-**생성 파일:** `PROJECT.md`, `REQUIREMENTS.md`, `ROADMAP.md`, `STATE.md`, `.gsdt-planning/research/`
+**생성 파일:** `PROJECT.md`, `REQUIREMENTS.md`, `ROADMAP.md`, `STATE.md`, `.claude/.gsdt-planning/research/`
 
 ---
 
@@ -388,11 +387,11 @@ claude --dangerously-skip-permissions
 
 **전체 기획이 필요 없는 임시 작업용.**
 
-빠른 모드는 GSD 보장 (원자적 커밋, 상태 추적)을 더 빠른 경로로 제공합니다:
+빠른 모드는 GSDT 보장 (원자적 커밋, 상태 추적)을 더 빠른 경로로 제공합니다:
 
 - **같은 에이전트** — 플래너 + 실행기, 같은 품질
 - **선택적 단계 건너뛰기** — 기본적으로 리서치, 계획 확인기, 검증기 없음
-- **별도 추적** — `.gsdt-planning/quick/`에 위치, 단계와 별개
+- **별도 추적** — `.claude/.gsdt-planning/quick/`에 위치, 단계와 별개
 
 **`--discuss` 플래그:** 기획 전 회색 지대를 파악하기 위한 가벼운 논의.
 
@@ -407,7 +406,7 @@ claude --dangerously-skip-permissions
 > 뭘 하고 싶으신가요? "설정에 다크 모드 토글 추가"
 ```
 
-**생성 파일:** `.gsdt-planning/quick/001-add-dark-mode-toggle/PLAN.md`, `SUMMARY.md`
+**생성 파일:** `.claude/.gsdt-planning/quick/001-add-dark-mode-toggle/PLAN.md`, `SUMMARY.md`
 
 ---
 
@@ -530,7 +529,7 @@ lmn012o feat(08-02): create registration endpoint
 | 명령어 | 역할 |
 |---------|------------|
 | `/gsdt:new-workspace` | 저장소 복사본으로 격리된 워크스페이스 생성 (worktrees 또는 clones) |
-| `/gsdt:list-workspaces` | 모든 GSD 워크스페이스와 상태 표시 |
+| `/gsdt:list-workspaces` | 모든 GSDT 워크스페이스와 상태 표시 |
 | `/gsdt:remove-workspace` | 워크스페이스 제거 및 worktree 정리 |
 
 ### UI 디자인
@@ -547,8 +546,8 @@ lmn012o feat(08-02): create registration endpoint
 | `/gsdt:progress` | 지금 어디에 있나? 다음은? |
 | `/gsdt:next` | 상태 자동 감지 및 다음 단계 실행 |
 | `/gsdt:help` | 모든 명령어와 사용 가이드 표시 |
-| `/gsdt:update` | 변경 로그 미리보기와 함께 GSD 업데이트 |
-| `/gsdt:join-discord` | GSD Discord 커뮤니티 참여 |
+| `/gsdt:update` | 변경 로그 미리보기와 함께 GSDT 업데이트 |
+| `/gsdt:join-discord` | GSDT Discord 커뮤니티 참여 |
 | `/gsdt:manager` | 여러 단계 관리를 위한 대화형 커맨드 센터 |
 
 ### 브라운필드
@@ -580,7 +579,7 @@ lmn012o feat(08-02): create registration endpoint
 | 명령어 | 역할 |
 |---------|------------|
 | `/gsdt:review` | 현재 단계 또는 브랜치의 Cross-AI 피어 리뷰 |
-| `/gsdt:pr-branch` | `.gsdt-planning/` 커밋을 필터링한 깔끔한 PR 브랜치 생성 |
+| `/gsdt:pr-branch` | `.claude/.gsdt-planning/` 커밋을 필터링한 깔끔한 PR 브랜치 생성 |
 | `/gsdt:audit-uat` | 검증 부채 감사 — UAT가 누락된 단계 찾기 |
 
 ### 백로그 및 스레드
@@ -601,10 +600,10 @@ lmn012o feat(08-02): create registration endpoint
 | `/gsdt:add-todo [desc]` | 나중을 위한 아이디어 캡처 |
 | `/gsdt:check-todos` | 대기 중인 할 일 목록 |
 | `/gsdt:debug [desc]` | 지속적 상태를 이용한 체계적 디버깅 |
-| `/gsdt:do <text>` | 자유 형식 텍스트를 적절한 GSD 명령어로 자동 라우팅 |
+| `/gsdt:do <text>` | 자유 형식 텍스트를 적절한 GSDT 명령어로 자동 라우팅 |
 | `/gsdt:note <text>` | 마찰 없는 아이디어 캡처 — 추가, 목록, 또는 할 일로 승격 |
-| `/gsdt:quick [--full] [--discuss] [--research]` | GSD 보장과 함께 임시 작업 실행 (`--full`은 계획 확인 및 검증 추가, `--discuss`는 먼저 컨텍스트 수집, `--research`는 기획 전 접근법 조사) |
-| `/gsdt:health [--repair]` | `.gsdt-planning/` 디렉터리 무결성 검증, `--repair`로 자동 복구 |
+| `/gsdt:quick [--full] [--discuss] [--research]` | GSDT 보장과 함께 임시 작업 실행 (`--full`은 계획 확인 및 검증 추가, `--discuss`는 먼저 컨텍스트 수집, `--research`는 기획 전 접근법 조사) |
+| `/gsdt:health [--repair]` | `.claude/.gsdt-planning/` 디렉터리 무결성 검증, `--repair`로 자동 복구 |
 | `/gsdt:stats` | 프로젝트 통계 표시 — 단계, 계획, 요구사항, git 지표 |
 | `/gsdt:profile-user [--questionnaire] [--refresh]` | 개인화된 응답을 위해 세션 분석에서 개발자 행동 프로필 생성 |
 
@@ -614,7 +613,7 @@ lmn012o feat(08-02): create registration endpoint
 
 ## 설정
 
-GSD는 프로젝트 설정을 `.gsdt-planning/config.json`에 저장합니다. `/gsdt:new-project` 중에 설정하거나 나중에 `/gsdt:settings`로 업데이트할 수 있습니다. 전체 config 스키마, 워크플로우 토글, git 브랜칭 옵션, 에이전트별 모델 분석은 [사용자 가이드](docs/ko-KR/USER-GUIDE.md#configuration-reference)를 참조하세요.
+GSD는 프로젝트 설정을 `.claude/.gsdt-planning/config.json`에 저장합니다. `/gsdt:new-project` 중에 설정하거나 나중에 `/gsdt:settings`로 업데이트할 수 있습니다. 전체 config 스키마, 워크플로우 토글, git 브랜칭 옵션, 에이전트별 모델 분석은 [사용자 가이드](docs/ko-KR/USER-GUIDE.md#configuration-reference)를 참조하세요.
 
 ### 핵심 설정
 
@@ -639,7 +638,7 @@ GSD는 프로젝트 설정을 `.gsdt-planning/config.json`에 저장합니다. `
 /gsdt:set-profile budget
 ```
 
-비-Anthropic 제공업체 (OpenRouter, 로컬 모델) 사용 시 또는 현재 런타임 모델 선택을 따를 때 (예: Vibe Agent Team `/model`) `inherit`를 사용하세요.
+비-Anthropic 제공업체 (OpenRouter, 로컬 모델) 사용 시 또는 현재 런타임 모델 선택을 따를 때 (예: OpenCode `/model`) `inherit`를 사용하세요.
 
 또는 `/gsdt:settings`를 통해 설정하세요.
 
@@ -667,7 +666,7 @@ GSD는 프로젝트 설정을 `.gsdt-planning/config.json`에 저장합니다. `
 | 설정 | 기본값 | 역할 |
 |---------|---------|------------------|
 | `parallelization.enabled` | `true` | 독립 계획 동시 실행 |
-| `planning.commit_docs` | `true` | git에서 `.gsdt-planning/` 추적 |
+| `planning.commit_docs` | `true` | git에서 `.claude/.gsdt-planning/` 추적 |
 | `hooks.context_warnings` | `true` | 컨텍스트 창 사용 경고 표시 |
 
 ### Git 브랜칭
@@ -681,7 +680,7 @@ GSD는 프로젝트 설정을 `.gsdt-planning/config.json`에 저장합니다. `
 | `git.milestone_branch_template` | string | `gsd/{milestone}-{slug}` | 마일스톤 브랜치 템플릿 |
 
 **전략:**
-- **`none`** — 현재 브랜치에 커밋 (기본 GSD 동작)
+- **`none`** — 현재 브랜치에 커밋 (기본 GSDT 동작)
 - **`phase`** — 단계당 브랜치 생성, 단계 완료 시 병합
 - **`milestone`** — 전체 마일스톤을 위한 하나의 브랜치 생성, 완료 시 병합
 
@@ -697,7 +696,7 @@ GSD는 v1.27부터 심층 방어 보안을 포함합니다:
 
 - **경로 순회 방지** — 모든 사용자 제공 파일 경로(`--text-file`, `--prd`)가 프로젝트 디렉터리 내에서 해석되도록 검증
 - **프롬프트 인젝션 감지** — 중앙화된 `security.cjs` 모듈이 사용자 제공 텍스트가 기획 아티팩트에 들어가기 전 인젝션 패턴 스캔
-- **PreToolUse 프롬프트 가드 훅** — `gsdt-prompt-guard`가 `.gsdt-planning/`에 대한 쓰기에서 내장된 인젝션 벡터 스캔 (권고적, 차단하지 않음)
+- **PreToolUse 프롬프트 가드 훅** — `gsdt-prompt-guard`가 `.claude/.gsdt-planning/`에 대한 쓰기에서 내장된 인젝션 벡터 스캔 (권고적, 차단하지 않음)
 - **안전한 JSON 파싱** — 잘못된 형식의 `--fields` 인수가 상태를 손상시키기 전에 캐치
 - **셸 인수 검증** — 사용자 텍스트가 셸 보간 전에 살균됨
 - **CI 준비 인젝션 스캐너** — `prompt-injection-scan.test.cjs`가 모든 에이전트/워크플로우/명령어 파일에서 내장된 인젝션 벡터 스캔
@@ -765,7 +764,7 @@ GSD를 완전히 제거하려면:
 ```bash
 # 전역 설치
 npx gsdt --claude --global --uninstall
-npx gsdt --vibe-agent-team --global --uninstall
+npx gsdt --opencode --global --uninstall
 npx gsdt --gemini --global --uninstall
 npx gsdt --codex --global --uninstall
 npx gsdt --copilot --global --uninstall
@@ -774,7 +773,7 @@ npx gsdt --antigravity --global --uninstall
 
 # 로컬 설치 (현재 프로젝트)
 npx gsdt --claude --local --uninstall
-npx gsdt --vibe-agent-team --local --uninstall
+npx gsdt --opencode --local --uninstall
 npx gsdt --gemini --local --uninstall
 npx gsdt --codex --local --uninstall
 npx gsdt --copilot --local --uninstall
@@ -788,13 +787,13 @@ npx gsdt --antigravity --local --uninstall
 
 ## 커뮤니티 포트
 
-Vibe Agent Team, Gemini CLI, Codex는 이제 `npx gsdt`를 통해 기본 지원됩니다.
+OpenCode, Gemini CLI, Codex는 이제 `npx gsdt`를 통해 기본 지원됩니다.
 
 이 커뮤니티 포트들이 멀티 런타임 지원의 선구자였습니다:
 
 | 프로젝트 | 플랫폼 | 설명 |
 |---------|----------|-------------|
-| [gsdt-opencode](https://github.com/rokicool/gsdt-opencode) | Vibe Agent Team | 초기 커뮤니티 적응 (저장소명은 역사적) |
+| [gsdt-opencode](https://github.com/rokicool/gsdt-opencode) | OpenCode | 최초 OpenCode 적응 |
 | gsdt-gemini (아카이브됨) | Gemini CLI | uberfuzzy의 최초 Gemini 적응 |
 
 ---

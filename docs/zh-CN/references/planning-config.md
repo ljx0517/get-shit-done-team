@@ -76,7 +76,7 @@ CLI 在内部检查 `commit_docs` 配置和 gitignore 状态 —— 无需手动
 - 在应该包含 `.gsdt-planning/` 的广泛 rg 搜索中添加 `--no-ignore`
 - 仅在搜索整个仓库并期望 `.gsdt-planning/` 匹配时需要
 
-**注意：** 大多数 GSD 操作使用直接文件读取或显式路径，无论 gitignore 状态如何都有效。
+**注意：** 大多数 GSDT 操作使用直接文件读取或显式路径，无论 gitignore 状态如何都有效。
 
 </search_behavior>
 
@@ -119,7 +119,7 @@ CLI 在内部检查 `commit_docs` 配置和 gitignore 状态 —— 无需手动
 
 **当 `git.branching_strategy: "none"`（默认）：**
 - 所有工作提交到当前分支
-- 标准 GSD 行为
+- 标准 GSDT 行为
 
 **当 `git.branching_strategy: "phase"`：**
 - `execute-phase` 在执行前创建/切换到分支

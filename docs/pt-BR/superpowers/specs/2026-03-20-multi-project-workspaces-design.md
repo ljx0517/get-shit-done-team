@@ -26,14 +26,14 @@ Introduzir workspaces multi-projeto com:
 
 ## Modelo conceitual
 
-- **Workspace**: unidade isolada de execução GSD
+- **Workspace**: unidade isolada de execução GSDT
 - **Member repos**: repositórios associados ao workspace
 - **Manifest**: arquivo de metadados com estrutura e status
 
 ## Fluxo de uso
 
 1. Criar workspace com nome e repositórios alvo
-2. Inicializar/retomar fluxo GSD dentro do workspace
+2. Inicializar/retomar fluxo GSDT dentro do workspace
 3. Operar fases normalmente com estado isolado
 4. Finalizar e remover quando concluído
 

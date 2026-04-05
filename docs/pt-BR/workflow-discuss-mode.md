@@ -1,6 +1,6 @@
 # Discuss Mode (Modo de Discussão)
 
-O GSD oferece dois estilos para `/gsdt:discuss-phase`:
+O GSDT oferece dois estilos para `/gsdt:discuss-phase`:
 
 - **`standard`**: entrevista aberta para levantar preferências
 - **`assumptions`**: análise do código primeiro, seguida de confirmação/correção de suposições
@@ -45,10 +45,10 @@ Via `/gsdt:settings`, defina:
 
 ## Fluxo no modo `assumptions`
 
-1. GSD lê `PROJECT.md`, mapeamento de código e convenções
+1. GSDT lê `PROJECT.md`, mapeamento de código e convenções
 2. Gera lista estruturada de suposições
 3. Você confirma, corrige ou expande
-4. GSD escreve `CONTEXT.md` com decisões consolidadas
+4. GSDT escreve `CONTEXT.md` com decisões consolidadas
 
 ## Boas práticas
 
