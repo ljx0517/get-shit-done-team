@@ -14,6 +14,10 @@ describe('workflow.discuss_mode config', () => {
     const template = JSON.parse(
       fs.readFileSync(path.join(__dirname, '..', 'gsdt', 'templates', 'config.json'), 'utf8')
     );
+    assert.strictEqual(template.mode, 'yolo');
+    assert.strictEqual(template.granularity, 'fine');
+    assert.strictEqual(template.model_profile, 'quality');
+    assert.strictEqual(template.planning.commit_docs, true);
     assert.strictEqual(template.workflow.discuss_mode, 'discuss');
   });
 

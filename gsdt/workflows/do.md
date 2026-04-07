@@ -27,7 +27,7 @@ Wait for response before continuing.
 INIT=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" state load 2>/dev/null)
 ```
 
-Track whether `.claude/.gsdt-planning/` exists — some routes require it, others don't.
+Track whether `.gsdt-planning/` exists — some routes require it, others don't.
 </step>
 
 <step name="route">
@@ -55,7 +55,7 @@ Evaluate `$ARGUMENTS` against these routing rules. Apply the **first matching** 
 | Completing a milestone, shipping, releasing | `/gsdt:complete-milestone` | Milestone lifecycle |
 | A specific, actionable, small task (add feature, fix typo, update config) | `/gsdt:quick` | Self-contained, single executor |
 
-**Requires `.claude/.gsdt-planning/` directory:** All routes except `/gsdt:auto`, `/gsdt:new-project`, `/gsdt:map-codebase`, `/gsdt:help`, and `/gsdt:join-discord`. If the project doesn't exist and the route requires it, suggest `/gsdt:auto` first.
+**Requires `.gsdt-planning/` directory:** All routes except `/gsdt:auto`, `/gsdt:new-project`, `/gsdt:map-codebase`, `/gsdt:help`, and `/gsdt:join-discord`. If the project doesn't exist and the route requires it, suggest `/gsdt:auto` first.
 
 **Ambiguity handling:** If the text could reasonably match multiple routes, ask the user via AskUserQuestion with the top 2-3 options. For example:
 

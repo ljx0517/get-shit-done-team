@@ -235,7 +235,7 @@ function safeReadFile(filePath) {
 function loadConfig(cwd) {
   const configPath = path.join(cwd, resolvePlanningDirName(cwd), 'config.json');
   const defaults = {
-    model_profile: 'balanced',
+    model_profile: 'quality',
     commit_docs: true,
     search_gitignored: false,
     branching_strategy: 'none',
@@ -1054,11 +1054,11 @@ function resolveModelInternal(cwd, agentType) {
   }
 
   // Fall back to profile lookup
-  const profile = String(config.model_profile || 'balanced').toLowerCase();
+  const profile = String(config.model_profile || 'quality').toLowerCase();
   const agentModels = MODEL_PROFILES[agentType];
   if (!agentModels) return 'sonnet';
   if (profile === 'inherit') return 'inherit';
-  const alias = agentModels[profile] || agentModels['balanced'] || 'sonnet';
+  const alias = agentModels[profile] || agentModels['quality'] || 'sonnet';
 
   // resolve_model_ids: true — map alias to full Claude model ID
   // Prevents 404s when the Task tool passes aliases directly to the API

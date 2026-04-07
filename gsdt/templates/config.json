@@ -1,6 +1,7 @@
 {
-  "mode": "interactive",
-  "granularity": "standard",
+  "mode": "yolo",
+  "granularity": "fine",
+  "model_profile": "quality",
   "workflow": {
     "research": true,
     "plan_check": true,

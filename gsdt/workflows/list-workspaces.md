@@ -51,6 +51,6 @@ For each workspace, show:
 - **Name** — directory name
 - **Repos** — count from init data
 - **Strategy** — from WORKSPACE.md
-- **GSDT Project** — whether `.claude/.gsdt-planning/PROJECT.md` exists (Yes/No)
+- **GSDT Project** — whether `.gsdt-planning/PROJECT.md` exists (Yes/No)
 
 </process>

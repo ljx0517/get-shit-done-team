@@ -766,7 +766,9 @@ function cmdValidateHealth(cwd, options, raw) {
           case 'createConfig':
           case 'resetConfig': {
             const defaults = {
-              model_profile: 'balanced',
+              mode: 'yolo',
+              granularity: 'fine',
+              model_profile: 'quality',
               commit_docs: true,
               search_gitignored: false,
               branching_strategy: 'none',

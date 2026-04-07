@@ -21,12 +21,12 @@ Model profiles control which Claude model each GSD agent uses. This allows balan
 
 ## Profile Philosophy
 
-**quality** - Maximum reasoning power
+**quality** (default) - Maximum reasoning power
 - Opus for all decision-making agents
 - Sonnet for read-only verification
 - Use when: quota available, critical architecture work
 
-**balanced** (default) - Smart allocation
+**balanced** - Smart allocation
 - Opus only for planning (where architecture decisions happen)
 - Sonnet for execution and research (follows explicit instructions)
 - Sonnet for verification (needs reasoning, not just pattern matching)
@@ -78,7 +78,7 @@ If you're using Claude Code with OpenRouter, a local model, or any non-Anthropic
 }
 ```
 
-Without `inherit`, GSD's default `balanced` profile spawns specific Anthropic models (`opus`, `sonnet`, `haiku`) for each agent type, which can result in additional API costs through your non-Anthropic provider.
+Without `inherit`, GSD's default `quality` profile spawns specific Anthropic models (`opus`, `sonnet`, `haiku`) for each agent type, which can result in additional API costs through your non-Anthropic provider.
 
 ## Resolution Logic
 
@@ -97,7 +97,7 @@ Override specific agents without changing the entire profile:
 
 ```json
 {
-  "model_profile": "balanced",
+  "model_profile": "quality",
   "model_overrides": {
     "gsdt-executor": "opus",
     "gsdt-planner": "haiku"
@@ -114,7 +114,7 @@ Runtime: `/gsdt:set-profile <profile>`
 Per-project default: Set in `.gsdt-planning/config.json`:
 ```json
 {
-  "model_profile": "balanced"
+  "model_profile": "quality"
 }
 ```
 

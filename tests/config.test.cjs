@@ -269,7 +269,7 @@ describe('config-get command', () => {
     assert.ok(result.success, `Command failed: ${result.error}`);
 
     const output = JSON.parse(result.output);
-    assert.strictEqual(output, 'balanced');
+    assert.strictEqual(output, 'quality');
   });
 
   test('gets a nested value via dot-notation', () => {
@@ -418,7 +418,9 @@ describe('config-new-project command', () => {
     assert.ok(result.success, `Command failed: ${result.error}`);
 
     const config = readConfig(tmpDir);
-    assert.strictEqual(config.model_profile, 'balanced');
+    assert.strictEqual(config.mode, 'yolo');
+    assert.strictEqual(config.granularity, 'fine');
+    assert.strictEqual(config.model_profile, 'quality');
     assert.strictEqual(config.commit_docs, true);
     assert.strictEqual(config.parallelization, true);
     assert.strictEqual(config.search_gitignored, false);
@@ -631,7 +633,7 @@ describe('config-set-model-profile command', () => {
     assert.ok(result.success, `Command failed: ${result.error}`);
 
     const out = JSON.parse(result.output);
-    assert.strictEqual(out.previousProfile, 'balanced'); // default was balanced
+    assert.strictEqual(out.previousProfile, 'quality'); // default was quality
     assert.strictEqual(out.profile, 'budget');
   });
 

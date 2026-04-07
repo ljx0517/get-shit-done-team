@@ -1,5 +1,5 @@
 <purpose>
-Interactive configuration of GSDT workflow agents (research, plan_check, verifier) and model profile selection via multi-question prompt. Updates .claude/.gsdt-planning/config.json with user preferences. Optionally saves settings as global defaults (~/.gsdt/defaults.json) for future projects.
+Interactive configuration of GSDT workflow agents (research, plan_check, verifier) and model profile selection via multi-question prompt. Updates .gsdt-planning/config.json with user preferences. Optionally saves settings as global defaults (~/.gsdt/defaults.json) for future projects.
 </purpose>
 
 <required_reading>
@@ -17,12 +17,12 @@ INIT=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" state load)
 if [[ "$INIT" == @file:* ]]; then INIT=$(cat "${INIT#@file:}"); fi
 ```
 
-Creates `.claude/.gsdt-planning/config.json` with defaults if missing and loads current config values.
+Creates `.gsdt-planning/config.json` with defaults if missing and loads current config values.
 </step>
 
 <step name="read_current">
 ```bash
-cat .claude/.gsdt-planning/config.json
+cat .gsdt-planning/config.json
 ```
 
 Parse current values (default to `true` if not present):
@@ -189,7 +189,7 @@ Merge new settings into existing config.json:
 }
 ```
 
-Write updated config to `.claude/.gsdt-planning/config.json`.
+Write updated config to `.gsdt-planning/config.json`.
 </step>
 
 <step name="save_as_defaults">

@@ -101,7 +101,9 @@ function buildNewProjectConfig(userChoices) {
   }
 
   const hardcoded = {
-    model_profile: 'balanced',
+    mode: 'yolo',
+    granularity: 'fine',
+    model_profile: 'quality',
     commit_docs: true,
     parallelization: true,
     search_gitignored: false,
@@ -389,7 +391,7 @@ function cmdConfigSetModelProfile(cwd, profile, raw) {
 
   // Set the model profile in the config
   const { previousValue } = setConfigValue(cwd, 'model_profile', normalizedProfile, raw);
-  const previousProfile = previousValue || 'balanced';
+  const previousProfile = previousValue || 'quality';
 
   // Build result value / message and return
   const agentToModelMap = getAgentToModelMapForProfile(normalizedProfile);
