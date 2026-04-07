@@ -21,12 +21,12 @@
 
 ## 配置理念
 
-**quality** - 最大推理能力
+**quality**（默认）- 最大推理能力
 - 所有决策代理使用 Opus
 - 只读验证使用 Sonnet
 - 适用场景：有配额可用、关键架构工作
 
-**balanced**（默认）- 智能分配
+**balanced** - 智能分配
 - 仅规划（架构决策发生的地方）使用 Opus
 - 执行和研究使用 Sonnet（遵循明确指令）
 - 验证使用 Sonnet（需要推理，不仅仅是模式匹配）
@@ -54,7 +54,7 @@
 
 ```json
 {
-  "model_profile": "balanced",
+  "model_profile": "quality",
   "model_overrides": {
     "gsdt-executor": "opus",
     "gsdt-planner": "haiku"
@@ -71,7 +71,7 @@
 项目默认值：在 `.gsdt-planning/config.json` 中设置：
 ```json
 {
-  "model_profile": "balanced"
+  "model_profile": "quality"
 }
 ```
 

@@ -6,15 +6,15 @@
 
 ## Configuration File
 
-GSDT stores project settings in `.claude/.gsdt-planning/config.json`. Created during `/gsdt:new-project`, updated via `/gsdt:settings`.
+GSDT stores project settings in `.gsdt-planning/config.json`. Created during `/gsdt:new-project`, updated via `/gsdt:settings`.
 
 ### Full Schema
 
 ```json
 {
-  "mode": "interactive",
-  "granularity": "standard",
-  "model_profile": "balanced",
+  "mode": "yolo",
+  "granularity": "fine",
+  "model_profile": "quality",
   "model_overrides": {},
   "planning": {
     "commit_docs": true,
@@ -49,8 +49,8 @@ GSDT stores project settings in `.claude/.gsdt-planning/config.json`. Created du
   },
   "git": {
     "branching_strategy": "none",
-    "phase_branch_template": "gsd/phase-{phase}-{slug}",
-    "milestone_branch_template": "gsd/{milestone}-{slug}",
+    "phase_branch_template": "gsdt/phase-{phase}-{slug}",
+    "milestone_branch_template": "gsdt/{milestone}-{slug}",
     "quick_branch_template": null
   },
   "gates": {
@@ -77,9 +77,9 @@ GSDT stores project settings in `.claude/.gsdt-planning/config.json`. Created du
 
 | Setting | Type | Options | Default | Description |
 |---------|------|---------|---------|-------------|
-| `mode` | enum | `interactive`, `yolo` | `interactive` | `yolo` auto-approves decisions; `interactive` confirms at each step |
-| `granularity` | enum | `coarse`, `standard`, `fine` | `standard` | Controls phase count: `coarse` (3-5), `standard` (5-8), `fine` (8-12) |
-| `model_profile` | enum | `quality`, `balanced`, `budget`, `inherit` | `balanced` | Model tier for each agent (see [Model Profiles](#model-profiles)) |
+| `mode` | enum | `interactive`, `yolo` | `yolo` | `yolo` auto-approves decisions; `interactive` confirms at each step |
+| `granularity` | enum | `coarse`, `standard`, `fine` | `fine` | Controls phase count: `coarse` (3-5), `standard` (5-8), `fine` (8-12) |
+| `model_profile` | enum | `quality`, `balanced`, `budget`, `inherit` | `quality` | Model tier for each agent (see [Model Profiles](#model-profiles)) |
 
 > **Note:** `granularity` was renamed from `depth` in v1.22.3. Existing configs are auto-migrated.
 
@@ -119,12 +119,12 @@ All workflow toggles follow the **absent = enabled** pattern. If a key is missin
 
 | Setting | Type | Default | Description |
 |---------|------|---------|-------------|
-| `planning.commit_docs` | boolean | `true` | Whether `.claude/.gsdt-planning/` files are committed to git |
-| `planning.search_gitignored` | boolean | `false` | Add `--no-ignore` to broad searches to include `.claude/.gsdt-planning/` |
+| `planning.commit_docs` | boolean | `true` | Whether `.gsdt-planning/` files are committed to git |
+| `planning.search_gitignored` | boolean | `false` | Add `--no-ignore` to broad searches to include `.gsdt-planning/` |
 
 ### Auto-Detection
 
-If `.claude/.gsdt-planning/` is in `.gitignore`, `commit_docs` is automatically `false` regardless of config.json. This prevents git errors.
+If `.gsdt-planning/` is in `.gitignore`, `commit_docs` is automatically `false` regardless of config.json. This prevents git errors.
 
 ---
 
@@ -142,8 +142,8 @@ The prompt injection guard hook (`gsdt-prompt-guard.js`) is always active and ca
 To keep planning artifacts out of git:
 
 1. Set `planning.commit_docs: false` and `planning.search_gitignored: true`
-2. Add `.claude/.gsdt-planning/` to `.gitignore`
-3. If previously tracked: `git rm -r --cached .claude/.gsdt-planning/ && git commit -m "chore: stop tracking planning docs"`
+2. Add `.gsdt-planning/` to `.gitignore`
+3. If previously tracked: `git rm -r --cached .gsdt-planning/ && git commit -m "chore: stop tracking planning docs"`
 
 ---
 
@@ -157,7 +157,7 @@ Inject custom skill files into GSDT subagent prompts. Skills are read by agents 
 
 ### Configuration
 
-Add an `agent_skills` section to `.claude/.gsdt-planning/config.json` mapping agent types to arrays of skill directory paths (relative to project root):
+Add an `agent_skills` section to `.gsdt-planning/config.json` mapping agent types to arrays of skill directory paths (relative to project root):
 
 ```json
 {
@@ -233,8 +233,8 @@ node gsdt-tools.cjs config-set agent_skills.gsdt-executor '["skills/my-skill"]'
 | Setting | Type | Default | Description |
 |---------|------|---------|-------------|
 | `git.branching_strategy` | enum | `none` | `none`, `phase`, or `milestone` |
-| `git.phase_branch_template` | string | `gsd/phase-{phase}-{slug}` | Branch name template for phase strategy |
-| `git.milestone_branch_template` | string | `gsd/{milestone}-{slug}` | Branch name template for milestone strategy |
+| `git.phase_branch_template` | string | `gsdt/phase-{phase}-{slug}` | Branch name template for phase strategy |
+| `git.milestone_branch_template` | string | `gsdt/{milestone}-{slug}` | Branch name template for milestone strategy |
 | `git.quick_branch_template` | string or null | `null` | Optional branch name template for `/gsdt:quick` tasks |
 
 ### Strategy Comparison
@@ -258,7 +258,7 @@ Example quick-task branching:
 
 ```json
 "git": {
-  "quick_branch_template": "gsd/quick-{num}-{slug}"
+  "quick_branch_template": "gsdt/quick-{num}-{slug}"
 }
 ```
 
@@ -332,7 +332,7 @@ Override specific agents without changing the entire profile:
 
 ```json
 {
-  "model_profile": "balanced",
+  "model_profile": "quality",
   "model_overrides": {
     "gsdt-executor": "opus",
     "gsdt-planner": "haiku"

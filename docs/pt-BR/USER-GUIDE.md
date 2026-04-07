@@ -190,9 +190,9 @@ Arquivo de configuração: `.gsdt-planning/config.json`
 
 | Setting | Opções | Padrão |
 |---------|--------|--------|
-| `mode` | `interactive`, `yolo` | `interactive` |
-| `granularity` | `coarse`, `standard`, `fine` | `standard` |
-| `model_profile` | `quality`, `balanced`, `budget`, `inherit` | `balanced` |
+| `mode` | `interactive`, `yolo` | `yolo` |
+| `granularity` | `coarse`, `standard`, `fine` | `fine` |
+| `model_profile` | `quality`, `balanced`, `budget`, `inherit` | `quality` |
 
 ### Workflow
 

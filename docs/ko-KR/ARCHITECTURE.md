@@ -59,7 +59,7 @@ GSD는 사용자와 AI 코딩 에이전트(Claude Code, Gemini CLI, OpenCode, Co
 └──────────────────────┬───────────────────────────────┘
                        │
 ┌──────────────────────▼───────────────────────────────┐
-│              FILE SYSTEM (.claude/.gsdt-planning/)                 │
+│              FILE SYSTEM (.gsdt-planning/)                 │
 │   PROJECT.md | REQUIREMENTS.md | ROADMAP.md          │
 │   STATE.md | config.json | phases/ | research/       │
 └──────────────────────────────────────────────────────┘
@@ -83,7 +83,7 @@ GSD는 사용자와 AI 코딩 에이전트(Claude Code, Gemini CLI, OpenCode, Co
 
 ### 3. 파일 기반 상태
 
-모든 상태는 `.claude/.gsdt-planning/`에 사람이 읽을 수 있는 Markdown과 JSON으로 저장됩니다. 데이터베이스, 서버, 외부 의존성이 없습니다. 이를 통해 다음이 가능합니다.
+모든 상태는 `.gsdt-planning/`에 사람이 읽을 수 있는 Markdown과 JSON으로 저장됩니다. 데이터베이스, 서버, 외부 의존성이 없습니다. 이를 통해 다음이 가능합니다.
 - 컨텍스트 초기화(`/clear`) 이후에도 상태가 유지됩니다
 - 사람과 에이전트 모두 상태를 확인할 수 있습니다
 - 팀 가시성을 위해 git에 커밋할 수 있습니다
@@ -169,7 +169,7 @@ GSD는 사용자와 AI 코딩 에이전트(Claude Code, Gemini CLI, OpenCode, Co
 | `gsdt-statusline.js` | `statusLine` | 모델, 작업, 디렉터리, 컨텍스트 사용 바 표시 |
 | `gsdt-context-monitor.js` | `PostToolUse` / `AfterTool` | 잔여 35%/25% 시점에 에이전트 대면 컨텍스트 경고 주입 |
 | `gsdt-check-update.js` | `SessionStart` | 새 GSDT 버전을 백그라운드에서 확인 |
-| `gsdt-prompt-guard.js` | `PreToolUse` | `.claude/.gsdt-planning/` 쓰기 작업에서 프롬프트 인젝션 패턴 스캔 (권고용) |
+| `gsdt-prompt-guard.js` | `PreToolUse` | `.gsdt-planning/` 쓰기 작업에서 프롬프트 인젝션 패턴 스캔 (권고용) |
 | `gsdt-workflow-guard.js` | `PreToolUse` | GSDT 워크플로우 컨텍스트 외부의 파일 편집 감지 (권고용, `hooks.workflow_guard`로 활성화) |
 
 ### CLI Tools (`gsdt/bin/`)
@@ -367,10 +367,10 @@ UI-SPEC.md (per phase) ───────────────────
 - **Copilot:** `~/.github/`
 - **Antigravity:** `~/.gemini/antigravity/` (전역) 또는 `./.agent/` (로컬)
 
-### 프로젝트 파일 (`.claude/.gsdt-planning/`)
+### 프로젝트 파일 (`.gsdt-planning/`)
 
 ```
-.claude/.gsdt-planning/
+.gsdt-planning/
 ├── PROJECT.md              # 프로젝트 비전, 제약, 결정, 진화 규칙
 ├── REQUIREMENTS.md         # 범위 지정된 요구 사항 (v1/v2/범위 외)
 ├── ROADMAP.md              # 상태 추적을 포함한 단계 분류
@@ -490,13 +490,13 @@ Runtime Engine (Claude Code / Gemini CLI)
 ### 보안 훅 (v1.27)
 
 **Prompt Guard** (`gsdt-prompt-guard.js`).
-- `.claude/.gsdt-planning/` 파일에 Write/Edit 시 트리거됩니다
+- `.gsdt-planning/` 파일에 Write/Edit 시 트리거됩니다
 - 프롬프트 인젝션 패턴을 콘텐츠에서 스캔합니다 (역할 재정의, 지시 우회, system 태그 인젝션)
 - 권고용 — 감지를 기록하며 차단하지 않습니다
 - 패턴은 훅 독립성을 위해 인라인으로 포함됩니다 (`security.cjs`의 일부)
 
 **Workflow Guard** (`gsdt-workflow-guard.js`).
-- `.claude/.gsdt-planning/` 외부 파일에 Write/Edit 시 트리거됩니다
+- `.gsdt-planning/` 외부 파일에 Write/Edit 시 트리거됩니다
 - GSDT 워크플로우 컨텍스트 외부의 편집을 감지합니다 (활성 `/gsdt:` 명령어 또는 Task 서브에이전트 없음)
 - 상태 추적 변경을 위해 `/gsdt:quick` 또는 `/gsdt:fast` 사용을 권고합니다
 - `hooks.workflow_guard: true`로 활성화 (기본값: false)

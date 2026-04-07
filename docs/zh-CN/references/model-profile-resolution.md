@@ -5,10 +5,10 @@
 ## 解析模式
 
 ```bash
-MODEL_PROFILE=$(cat .gsdt-planning/config.json 2>/dev/null | grep -o '"model_profile"[[:space:]]*:[[:space:]]*"[^"]*"' | grep -o '"[^"]*"$' | tr -d '"' || echo "balanced")
+MODEL_PROFILE=$(cat .gsdt-planning/config.json 2>/dev/null | grep -o '"model_profile"[[:space:]]*:[[:space:]]*"[^"]*"' | grep -o '"[^"]*"$' | tr -d '"' || echo "quality")
 ```
 
-默认值：未设置或缺少 config 时为 `balanced`。
+默认值：未设置或缺少 config 时为 `quality`。
 
 ## 查找表
 

@@ -206,7 +206,7 @@ claude --dangerously-skip-permissions
 
 你批准路线图。现在准备好构建了。
 
-**创建：** `PROJECT.md`、`REQUIREMENTS.md`、`ROADMAP.md`、`STATE.md`、`.claude/.gsdt-planning/research/`
+**创建：** `PROJECT.md`、`REQUIREMENTS.md`、`ROADMAP.md`、`STATE.md`、`.gsdt-planning/research/`
 
 ---
 
@@ -366,7 +366,7 @@ claude --dangerously-skip-permissions
 
 - **相同代理** —— 规划者 + 执行者，相同质量
 - **跳过可选步骤** —— 无研究、无计划检查器、无验证器
-- **独立跟踪** —— 存放在 `.claude/.gsdt-planning/quick/`，不是阶段
+- **独立跟踪** —— 存放在 `.gsdt-planning/quick/`，不是阶段
 
 用于：bug 修复、小功能、配置更改、一次性任务。
 
@@ -375,7 +375,7 @@ claude --dangerously-skip-permissions
 > 你想做什么？"在设置中添加深色模式切换"
 ```
 
-**创建：** `.claude/.gsdt-planning/quick/001-add-dark-mode-toggle/PLAN.md`、`SUMMARY.md`
+**创建：** `.gsdt-planning/quick/001-add-dark-mode-toggle/PLAN.md`、`SUMMARY.md`
 
 ---
 
@@ -519,7 +519,7 @@ lmn012o feat(08-02): 创建注册端点
 | `/gsdt:check-todos` | 列出待处理事项 |
 | `/gsdt:debug [desc]` | 带持久状态的系统化调试 |
 | `/gsdt:quick [--full] [--discuss]` | 用 GSDT 保证执行临时任务（`--full` 添加计划检查和验证，`--discuss` 先收集上下文） |
-| `/gsdt:health [--repair]` | 验证 `.claude/.gsdt-planning/` 目录完整性，用 `--repair` 自动修复 |
+| `/gsdt:health [--repair]` | 验证 `.gsdt-planning/` 目录完整性，用 `--repair` 自动修复 |
 
 <sup>¹ 由 Reddit 用户 OracleGreyBeard 贡献</sup>
 
@@ -527,14 +527,14 @@ lmn012o feat(08-02): 创建注册端点
 
 ## 配置
 
-GSDT 在 `.claude/.gsdt-planning/config.json` 中存储项目设置。在 `/gsdt:new-project` 期间配置或稍后用 `/gsdt:settings` 更新。完整配置模式、工作流开关、git 分支选项和每个代理的模型分解，请参阅[用户指南](USER-GUIDE.md#配置参考)。
+GSDT 在 `.gsdt-planning/config.json` 中存储项目设置。在 `/gsdt:new-project` 期间配置或稍后用 `/gsdt:settings` 更新。完整配置模式、工作流开关、git 分支选项和每个代理的模型分解，请参阅[用户指南](USER-GUIDE.md#配置参考)。
 
 ### 核心设置
 
 | 设置 | 选项 | 默认值 | 控制内容 |
 |---------|---------|---------|------------------|
-| `mode` | `yolo`, `interactive` | `interactive` | 自动批准 vs 每步确认 |
-| `granularity` | `coarse`, `standard`, `fine` | `standard` | 阶段粒度 —— 范围切分多细（阶段 × 计划） |
+| `mode` | `interactive`, `yolo` | `yolo` | 自动批准 vs 每步确认 |
+| `granularity` | `coarse`, `standard`, `fine` | `fine` | 阶段粒度 —— 范围切分多细（阶段 × 计划） |
 
 ### 模型配置
 
@@ -542,8 +542,8 @@ GSDT 在 `.claude/.gsdt-planning/config.json` 中存储项目设置。在 `/gsdt
 
 | 配置 | 规划 | 执行 | 验证 |
 |---------|----------|-----------|--------------|
-| `quality` | Opus | Opus | Sonnet |
-| `balanced`（默认） | Opus | Sonnet | Sonnet |
+| `quality`（默认） | Opus | Opus | Sonnet |
+| `balanced` | Opus | Sonnet | Sonnet |
 | `budget` | Sonnet | Sonnet | Haiku |
 
 切换配置：
@@ -573,7 +573,7 @@ GSDT 在 `.claude/.gsdt-planning/config.json` 中存储项目设置。在 `/gsdt
 | 设置 | 默认值 | 控制内容 |
 |---------|---------|------------------|
 | `parallelization.enabled` | `true` | 同时运行独立计划 |
-| `planning.commit_docs` | `true` | 在 git 中跟踪 `.claude/.gsdt-planning/` |
+| `planning.commit_docs` | `true` | 在 git 中跟踪 `.gsdt-planning/` |
 
 ### Git 分支
 
@@ -582,8 +582,8 @@ GSDT 在 `.claude/.gsdt-planning/config.json` 中存储项目设置。在 `/gsdt
 | 设置 | 选项 | 默认值 | 作用 |
 |---------|---------|---------|--------------|
 | `git.branching_strategy` | `none`, `phase`, `milestone` | `none` | 分支创建策略 |
-| `git.phase_branch_template` | 字符串 | `gsd/phase-{phase}-{slug}` | 阶段分支模板 |
-| `git.milestone_branch_template` | 字符串 | `gsd/{milestone}-{slug}` | 里程碑分支模板 |
+| `git.phase_branch_template` | 字符串 | `gsdt/phase-{phase}-{slug}` | 阶段分支模板 |
+| `git.milestone_branch_template` | 字符串 | `gsdt/{milestone}-{slug}` | 里程碑分支模板 |
 
 **策略：**
 - **`none`** —— 提交到当前分支（默认 GSDT 行为）

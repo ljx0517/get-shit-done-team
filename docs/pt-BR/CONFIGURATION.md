@@ -9,9 +9,9 @@ Esta versão resume os parâmetros principais em Português. Para schema complet
 
 ```json
 {
-  "mode": "interactive",
-  "granularity": "standard",
-  "model_profile": "balanced",
+  "mode": "yolo",
+  "granularity": "fine",
+  "model_profile": "quality",
   "planning": {
     "commit_docs": true,
     "search_gitignored": false
@@ -24,7 +24,7 @@ Esta versão resume os parâmetros principais em Português. Para schema complet
     "ui_phase": true,
     "ui_safety_gate": true,
     "research_before_questions": false,
-    "discuss_mode": "standard",
+    "discuss_mode": "discuss",
     "skip_discuss": false
   }
 }
@@ -34,9 +34,9 @@ Esta versão resume os parâmetros principais em Português. Para schema complet
 
 | Chave | Opções | Padrão | Descrição |
 |------|--------|--------|-----------|
-| `mode` | `interactive`, `yolo` | `interactive` | `yolo` autoaprova; `interactive` confirma cada etapa |
-| `granularity` | `coarse`, `standard`, `fine` | `standard` | Granularidade de fases/planos |
-| `model_profile` | `quality`, `balanced`, `budget`, `inherit` | `balanced` | Perfil de modelos por agente |
+| `mode` | `interactive`, `yolo` | `yolo` | `yolo` autoaprova; `interactive` confirma cada etapa |
+| `granularity` | `coarse`, `standard`, `fine` | `fine` | Granularidade de fases/planos |
+| `model_profile` | `quality`, `balanced`, `budget`, `inherit` | `quality` | Perfil de modelos por agente |
 
 ## Planning
 
@@ -64,8 +64,8 @@ Esta versão resume os parâmetros principais em Português. Para schema complet
 | Chave | Opções | Padrão | Descrição |
 |------|--------|--------|-----------|
 | `git.branching_strategy` | `none`, `phase`, `milestone` | `none` | Estratégia de criação de branches |
-| `git.phase_branch_template` | string | `gsd/phase-{phase}-{slug}` | Nome para branch por fase |
-| `git.milestone_branch_template` | string | `gsd/{milestone}-{slug}` | Nome para branch de milestone |
+| `git.phase_branch_template` | string | `gsdt/phase-{phase}-{slug}` | Nome para branch por fase |
+| `git.milestone_branch_template` | string | `gsdt/{milestone}-{slug}` | Nome para branch de milestone |
 | `git.quick_branch_template` | string ou `null` | `null` | Branch opcional para `/gsdt:quick` |
 
 ## Perfis de modelo

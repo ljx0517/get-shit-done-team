@@ -12,9 +12,9 @@ GSD는 프로젝트 설정을 `.gsdt-planning/config.json`에 저장합니다. `
 
 ```json
 {
-  "mode": "interactive",
-  "granularity": "standard",
-  "model_profile": "balanced",
+  "mode": "yolo",
+  "granularity": "fine",
+  "model_profile": "quality",
   "model_overrides": {},
   "planning": {
     "commit_docs": true,
@@ -49,8 +49,8 @@ GSD는 프로젝트 설정을 `.gsdt-planning/config.json`에 저장합니다. `
   },
   "git": {
     "branching_strategy": "none",
-    "phase_branch_template": "gsd/phase-{phase}-{slug}",
-    "milestone_branch_template": "gsd/{milestone}-{slug}",
+    "phase_branch_template": "gsdt/phase-{phase}-{slug}",
+    "milestone_branch_template": "gsdt/{milestone}-{slug}",
     "quick_branch_template": null
   },
   "gates": {
@@ -76,9 +76,9 @@ GSD는 프로젝트 설정을 `.gsdt-planning/config.json`에 저장합니다. `
 
 | 설정 | 타입 | 옵션 | 기본값 | 설명 |
 |------|------|------|--------|------|
-| `mode` | enum | `interactive`, `yolo` | `interactive` | `yolo`는 결정을 자동 승인하고 `interactive`는 각 단계에서 확인을 요청합니다. |
-| `granularity` | enum | `coarse`, `standard`, `fine` | `standard` | 단계 수를 조절합니다. `coarse` (3~5), `standard` (5~8), `fine` (8~12) |
-| `model_profile` | enum | `quality`, `balanced`, `budget`, `inherit` | `balanced` | 각 에이전트의 모델 티어입니다. ([Model Profiles](#model-profiles) 참조) |
+| `mode` | enum | `interactive`, `yolo` | `yolo` | `yolo`는 결정을 자동 승인하고 `interactive`는 각 단계에서 확인을 요청합니다. |
+| `granularity` | enum | `coarse`, `standard`, `fine` | `fine` | 단계 수를 조절합니다. `coarse` (3~5), `standard` (5~8), `fine` (8~12) |
+| `model_profile` | enum | `quality`, `balanced`, `budget`, `inherit` | `quality` | 각 에이전트의 모델 티어입니다. ([Model Profiles](#model-profiles) 참조) |
 
 > **참고:** `granularity`는 v1.22.3에서 `depth`에서 이름이 변경되었습니다. 기존 설정은 자동으로 마이그레이션됩니다.
 
@@ -166,8 +166,8 @@ GSD는 프로젝트 설정을 `.gsdt-planning/config.json`에 저장합니다. `
 | 설정 | 타입 | 기본값 | 설명 |
 |------|------|--------|------|
 | `git.branching_strategy` | enum | `none` | `none`, `phase`, 또는 `milestone` |
-| `git.phase_branch_template` | string | `gsd/phase-{phase}-{slug}` | phase 전략의 브랜치 이름 템플릿 |
-| `git.milestone_branch_template` | string | `gsd/{milestone}-{slug}` | milestone 전략의 브랜치 이름 템플릿 |
+| `git.phase_branch_template` | string | `gsdt/phase-{phase}-{slug}` | phase 전략의 브랜치 이름 템플릿 |
+| `git.milestone_branch_template` | string | `gsdt/{milestone}-{slug}` | milestone 전략의 브랜치 이름 템플릿 |
 | `git.quick_branch_template` | string 또는 null | `null` | `/gsdt:quick` 태스크를 위한 선택적 브랜치 이름 템플릿 |
 
 ### 전략 비교
@@ -191,7 +191,7 @@ quick 태스크 브랜칭 예시:
 
 ```json
 "git": {
-  "quick_branch_template": "gsd/quick-{num}-{slug}"
+  "quick_branch_template": "gsdt/quick-{num}-{slug}"
 }
 ```
 
@@ -265,7 +265,7 @@ quick 태스크 브랜칭 예시:
 
 ```json
 {
-  "model_profile": "balanced",
+  "model_profile": "quality",
   "model_overrides": {
     "gsdt-executor": "opus",
     "gsdt-planner": "haiku"

@@ -87,7 +87,7 @@
 - REQ-INIT-03: 요구사항을 v1(필수), v2(향후), 범위 외 카테고리로 분류해야 합니다.
 - REQ-INIT-04: 요구사항 추적성을 갖춘 단계별 로드맵을 생성해야 합니다.
 - REQ-INIT-05: 진행 전에 사용자의 로드맵 승인을 요구해야 합니다.
-- REQ-INIT-06: `.claude/.gsdt-planning/PROJECT.md`가 이미 존재하는 경우 재초기화를 방지해야 합니다.
+- REQ-INIT-06: `.gsdt-planning/PROJECT.md`가 이미 존재하는 경우 재초기화를 방지해야 합니다.
 - REQ-INIT-07: 대화형 질문을 건너뛰고 문서에서 정보를 추출하는 `--auto @file.md` 플래그를 지원해야 합니다.
 
 **생성 산출물.**
@@ -318,7 +318,7 @@
 
 **요구사항.**
 - REQ-UIREVIEW-01: 6개 기둥 각각을 1-4 척도로 점수 매겨야 합니다.
-- REQ-UIREVIEW-02: Playwright CLI를 통해 `.claude/.gsdt-planning/ui-reviews/`에 스크린샷을 캡처해야 합니다.
+- REQ-UIREVIEW-02: Playwright CLI를 통해 `.gsdt-planning/ui-reviews/`에 스크린샷을 캡처해야 합니다.
 - REQ-UIREVIEW-03: 스크린샷 디렉토리에 `.gitignore`를 작성해야 합니다.
 - REQ-UIREVIEW-04: 우선순위 수정사항 상위 3개를 식별해야 합니다.
 - REQ-UIREVIEW-05: UI-SPEC.md 없이도 추상적인 품질 기준을 사용하여 독립적으로 작동해야 합니다.
@@ -387,7 +387,7 @@
 - REQ-QUICK-05: `--discuss` 플래그는 간단한 사전 계획 논의를 실행해야 합니다.
 - REQ-QUICK-06: `--research` 플래그는 계획 전에 집중된 연구 에이전트를 생성해야 합니다.
 - REQ-QUICK-07: 플래그는 조합 가능해야 합니다(`--discuss --research --full`).
-- REQ-QUICK-08: 빠른 작업을 `.claude/.gsdt-planning/quick/YYMMDD-xxx-slug/`에 추적해야 합니다.
+- REQ-QUICK-08: 빠른 작업을 `.gsdt-planning/quick/YYMMDD-xxx-slug/`에 추적해야 합니다.
 - REQ-QUICK-09: 빠른 작업 실행에 대한 원자적 커밋을 생성해야 합니다.
 
 ---
@@ -452,7 +452,7 @@
 **상태 감지 로직.**
 | 상태 | 액션 |
 |-------|--------|
-| `.claude/.gsdt-planning/` 디렉토리 없음 | `/gsdt:new-project` 제안 |
+| `.gsdt-planning/` 디렉토리 없음 | `/gsdt:new-project` 제안 |
 | 페이즈에 CONTEXT.md 없음 | `/gsdt:discuss-phase` 실행 |
 | 페이즈에 PLAN.md 파일 없음 | `/gsdt:plan-phase` 실행 |
 | 계획 있지만 SUMMARY.md 없음 | `/gsdt:execute-phase` 실행 |
@@ -528,7 +528,7 @@
 
 **명령어:** `/gsdt:health [--repair]`
 
-**목적:** `.claude/.gsdt-planning/` 디렉토리 무결성을 검증하고 문제를 자동으로 복구합니다.
+**목적:** `.gsdt-planning/` 디렉토리 무결성을 검증하고 문제를 자동으로 복구합니다.
 
 **요구사항.**
 - REQ-HEALTH-01: 누락된 필수 파일을 확인해야 합니다.
@@ -619,7 +619,7 @@
 - REQ-REPORT-04: 활성 블로커와 결정사항을 포함해야 합니다.
 - REQ-REPORT-05: 다음 단계를 권장해야 합니다.
 
-**생성 산출물.** `.claude/.gsdt-planning/reports/SESSION_REPORT.md`
+**생성 산출물.** `.gsdt-planning/reports/SESSION_REPORT.md`
 
 **보고서 섹션.**
 - 세션 개요(기간, 마일스톤, 페이즈)
@@ -689,7 +689,7 @@
 
 **요구사항.**
 - REQ-MAP-01: 각 분석 영역에 대한 병렬 매퍼 에이전트를 생성해야 합니다.
-- REQ-MAP-02: `.claude/.gsdt-planning/codebase/`에 구조화된 문서를 생성해야 합니다.
+- REQ-MAP-02: `.gsdt-planning/codebase/`에 구조화된 문서를 생성해야 합니다.
 - REQ-MAP-03: 기술 스택, 아키텍처 패턴, 코딩 규범, 문제점을 감지해야 합니다.
 - REQ-MAP-04: 이후 `/gsdt:new-project`는 코드베이스 매핑을 로드하고 추가하는 내용에 대한 질문에 집중해야 합니다.
 - REQ-MAP-05: 선택적 `[area]` 인수는 매핑 범위를 특정 영역으로 제한해야 합니다.
@@ -716,11 +716,11 @@
 **목적:** 컨텍스트 초기화 전반에 걸쳐 영구적인 상태로 체계적인 디버깅을 수행합니다.
 
 **요구사항.**
-- REQ-DEBUG-01: `.claude/.gsdt-planning/debug/`에 디버그 세션 파일을 작성해야 합니다.
+- REQ-DEBUG-01: `.gsdt-planning/debug/`에 디버그 세션 파일을 작성해야 합니다.
 - REQ-DEBUG-02: 가설, 증거, 제거된 이론을 추적해야 합니다.
 - REQ-DEBUG-03: 디버깅이 컨텍스트 초기화 후에도 유지되도록 상태를 저장해야 합니다.
 - REQ-DEBUG-04: 해결됨으로 표시하기 전에 사람의 확인을 요구해야 합니다.
-- REQ-DEBUG-05: 해결된 세션은 `.claude/.gsdt-planning/debug/knowledge-base.md`에 추가되어야 합니다.
+- REQ-DEBUG-05: 해결된 세션은 `.gsdt-planning/debug/knowledge-base.md`에 추가되어야 합니다.
 - REQ-DEBUG-06: 재조사를 방지하기 위해 새 디버그 세션에서 지식 베이스를 참조해야 합니다.
 
 **디버그 세션 상태.** `gathering` → `investigating` → `fixing` → `verifying` → `awaiting_human_verify` → `resolved`
@@ -735,8 +735,8 @@
 
 **요구사항.**
 - REQ-TODO-01: 현재 대화 컨텍스트에서 할 일을 캡처해야 합니다.
-- REQ-TODO-02: 할 일은 `.claude/.gsdt-planning/todos/pending/`에 저장되어야 합니다.
-- REQ-TODO-03: 완료된 할 일은 `.claude/.gsdt-planning/todos/done/`으로 이동해야 합니다.
+- REQ-TODO-02: 할 일은 `.gsdt-planning/todos/pending/`에 저장되어야 합니다.
+- REQ-TODO-03: 완료된 할 일은 `.gsdt-planning/todos/done/`으로 이동해야 합니다.
 - REQ-TODO-04: check-todos는 모든 보류 항목을 나열하고 하나를 선택하여 작업할 수 있어야 합니다.
 
 ---
@@ -778,7 +778,7 @@
 
 **요구사항.**
 - REQ-SETTINGS-01: 토글 옵션과 함께 현재 설정을 표시해야 합니다.
-- REQ-SETTINGS-02: `.claude/.gsdt-planning/config.json`을 업데이트해야 합니다.
+- REQ-SETTINGS-02: `.gsdt-planning/config.json`을 업데이트해야 합니다.
 - REQ-SETTINGS-03: 전역 기본값으로 저장하는 것을 지원해야 합니다(`~/.gsdt/defaults.json`).
 
 **구성 가능한 설정.**
@@ -796,7 +796,7 @@
 | `workflow.ui_safety_gate` | boolean | `true` | 프론트엔드 페이즈에서 ui-phase 촉구 |
 | `workflow.node_repair` | boolean | `true` | 자율적 작업 복구 |
 | `workflow.node_repair_budget` | number | `2` | 작업당 최대 복구 시도 횟수 |
-| `planning.commit_docs` | boolean | `true` | `.claude/.gsdt-planning/` 파일을 git에 커밋 |
+| `planning.commit_docs` | boolean | `true` | `.gsdt-planning/` 파일을 git에 커밋 |
 | `planning.search_gitignored` | boolean | `false` | 검색에 gitignore된 파일 포함 |
 | `parallelization.enabled` | boolean | `true` | 독립적인 계획을 동시에 실행 |
 | `git.branching_strategy` | enum | `none` | `none`, `phase`, 또는 `milestone` |
@@ -829,8 +829,8 @@
 - REQ-GIT-04: phase 전략은 페이즈당 하나의 브랜치를 생성해야 합니다.
 - REQ-GIT-05: milestone 전략은 마일스톤당 하나의 브랜치를 생성해야 합니다.
 - REQ-GIT-06: complete-milestone은 스쿼시 병합(권장) 또는 히스토리 포함 병합을 제공해야 합니다.
-- REQ-GIT-07: `.claude/.gsdt-planning/` 파일에 대한 `commit_docs` 설정을 준수해야 합니다.
-- REQ-GIT-08: `.gitignore`에서 `.claude/.gsdt-planning/`을 자동 감지하고 커밋을 건너뛰어야 합니다.
+- REQ-GIT-07: `.gsdt-planning/` 파일에 대한 `commit_docs` 설정을 준수해야 합니다.
+- REQ-GIT-08: `.gitignore`에서 `.gsdt-planning/`을 자동 감지하고 커밋을 건너뛰어야 합니다.
 
 **커밋 형식.**
 ```
@@ -1004,7 +1004,7 @@ fix(03-01): correct auth token expiry
 **요구사항.**
 - REQ-FAST-01: 하위 에이전트 없이 현재 컨텍스트에서 직접 작업을 실행해야 합니다.
 - REQ-FAST-02: 변경사항에 대한 원자적 git 커밋을 생성해야 합니다.
-- REQ-FAST-03: 상태 일관성을 위해 `.claude/.gsdt-planning/quick/`에 작업을 추적해야 합니다.
+- REQ-FAST-03: 상태 일관성을 위해 `.gsdt-planning/quick/`에 작업을 추적해야 합니다.
 - REQ-FAST-04: 연구, 다단계 계획, 또는 검증이 필요한 작업에는 사용해서는 안 됩니다.
 
 **`/gsdt:quick`과 비교하여 사용 시점.**
@@ -1047,8 +1047,8 @@ fix(03-01): correct auth token expiry
 **생성 산출물.**
 | 산출물 | 설명 |
 |----------|-------------|
-| `.claude/.gsdt-planning/phases/999.x-slug/` | 백로그 항목 디렉토리 |
-| `.claude/.gsdt-planning/seeds/SEED-NNN-slug.md` | 트리거 조건이 있는 시드 |
+| `.gsdt-planning/phases/999.x-slug/` | 백로그 항목 디렉토리 |
+| `.gsdt-planning/seeds/SEED-NNN-slug.md` | 트리거 조건이 있는 시드 |
 
 ---
 
@@ -1060,12 +1060,12 @@ fix(03-01): correct auth token expiry
 
 **요구사항.**
 - REQ-THREAD-01: 생성, 나열, 재개 모드를 지원해야 합니다.
-- REQ-THREAD-02: 스레드는 `.claude/.gsdt-planning/threads/`에 마크다운 파일로 저장되어야 합니다.
+- REQ-THREAD-02: 스레드는 `.gsdt-planning/threads/`에 마크다운 파일로 저장되어야 합니다.
 - REQ-THREAD-03: 스레드 파일은 Goal, Context, References, Next Steps 섹션을 포함해야 합니다.
 - REQ-THREAD-04: 스레드 재개는 전체 컨텍스트를 현재 세션에 로드해야 합니다.
 - REQ-THREAD-05: 스레드는 페이즈나 백로그 항목으로 승격될 수 있어야 합니다.
 
-**생성 산출물.** `.claude/.gsdt-planning/threads/{slug}.md` — 지속적 컨텍스트 스레드
+**생성 산출물.** `.gsdt-planning/threads/{slug}.md` — 지속적 컨텍스트 스레드
 
 ---
 
@@ -1073,10 +1073,10 @@ fix(03-01): correct auth token expiry
 
 **명령어:** `/gsdt:pr-branch [target branch]`
 
-**목적:** `.claude/.gsdt-planning/` 커밋을 필터링하여 풀 리퀘스트에 적합한 깔끔한 브랜치를 생성합니다. 검토자는 GSDT 계획 산출물이 아닌 코드 변경사항만 봅니다.
+**목적:** `.gsdt-planning/` 커밋을 필터링하여 풀 리퀘스트에 적합한 깔끔한 브랜치를 생성합니다. 검토자는 GSDT 계획 산출물이 아닌 코드 변경사항만 봅니다.
 
 **요구사항.**
-- REQ-PRBRANCH-01: `.claude/.gsdt-planning/` 파일만 수정하는 커밋을 식별해야 합니다.
+- REQ-PRBRANCH-01: `.gsdt-planning/` 파일만 수정하는 커밋을 식별해야 합니다.
 - REQ-PRBRANCH-02: 계획 커밋이 필터링된 새 브랜치를 생성해야 합니다.
 - REQ-PRBRANCH-03: 코드 변경사항은 커밋된 그대로 정확히 보존되어야 합니다.
 
@@ -1096,7 +1096,7 @@ fix(03-01): correct auth token expiry
 - 셸 인수 검증 — 셸 보간 전에 사용자 텍스트를 살균합니다.
 
 **2. 프롬프트 주입 가드 훅** (`gsdt-prompt-guard.js`)
-`.claude/.gsdt-planning/`을 대상으로 하는 Write/Edit 호출에서 주입 패턴을 스캔하는 PreToolUse 훅입니다. 정당한 작업을 차단하지 않고 인식을 위해 감지를 기록하는 권고 전용입니다.
+`.gsdt-planning/`을 대상으로 하는 Write/Edit 호출에서 주입 패턴을 스캔하는 PreToolUse 훅입니다. 정당한 작업을 차단하지 않고 인식을 위해 감지를 기록하는 권고 전용입니다.
 
 **3. 워크플로우 가드 훅** (`gsdt-workflow-guard.js`)
 Claude가 GSDT 워크플로우 컨텍스트 밖에서 파일 편집을 시도하는 것을 감지하는 PreToolUse 훅입니다. 직접 편집 대신 `/gsdt:quick` 또는 `/gsdt:fast` 사용을 권고합니다. `hooks.workflow_guard`로 구성 가능합니다(기본값: false).
@@ -1115,7 +1115,7 @@ Claude가 GSDT 워크플로우 컨텍스트 밖에서 파일 편집을 시도하
 
 ### 47. Multi-Repo Workspace Support
 
-**목적:** 모노저장소 및 멀티 저장소 설정에 대한 자동 감지 및 프로젝트 루트 해석. `.claude/.gsdt-planning/`이 저장소 경계를 넘어 해석되어야 하는 워크스페이스를 지원합니다.
+**목적:** 모노저장소 및 멀티 저장소 설정에 대한 자동 감지 및 프로젝트 루트 해석. `.gsdt-planning/`이 저장소 경계를 넘어 해석되어야 하는 워크스페이스를 지원합니다.
 
 **요구사항.**
 - REQ-MULTIREPO-01: 멀티 저장소 워크스페이스 구성을 자동으로 감지해야 합니다.
@@ -1146,19 +1146,19 @@ Claude가 GSDT 워크플로우 컨텍스트 밖에서 파일 편집을 시도하
 **요구사항.**
 - REQ-FORENSICS-01: git 히스토리에서 이상(막힌 루프, 긴 간격, 반복된 커밋)을 분석해야 합니다.
 - REQ-FORENSICS-02: 산출물 무결성을 확인해야 합니다(완료된 페이즈에 예상 파일이 있는지).
-- REQ-FORENSICS-03: `.claude/.gsdt-planning/forensics/`에 저장된 마크다운 보고서를 생성해야 합니다.
+- REQ-FORENSICS-03: `.gsdt-planning/forensics/`에 저장된 마크다운 보고서를 생성해야 합니다.
 - REQ-FORENSICS-04: 조사 결과로 GitHub 이슈 생성을 제안해야 합니다.
 - REQ-FORENSICS-05: 프로젝트 파일을 수정해서는 안 됩니다(읽기 전용 조사).
 
 **생성 산출물.**
 | 산출물 | 설명 |
 |----------|-------------|
-| `.claude/.gsdt-planning/forensics/report-{timestamp}.md` | 사후 조사 보고서 |
+| `.gsdt-planning/forensics/report-{timestamp}.md` | 사후 조사 보고서 |
 
 **프로세스.**
 1. **스캔** — git 히스토리에서 이상 분석: 막힌 루프, 커밋 사이의 긴 간격, 반복된 동일 커밋
 2. **무결성 확인** — 완료된 페이즈에 예상 산출물 파일이 있는지 확인
-3. **보고** — `.claude/.gsdt-planning/forensics/`에 저장된 조사 결과가 담긴 마크다운 보고서 생성
+3. **보고** — `.gsdt-planning/forensics/`에 저장된 조사 결과가 담긴 마크다운 보고서 생성
 4. **이슈** — 팀 가시성을 위해 조사 결과로 GitHub 이슈 생성 제안
 
 ---
@@ -1193,17 +1193,17 @@ Claude가 GSDT 워크플로우 컨텍스트 밖에서 파일 편집을 시도하
 **목적:** 마일스톤의 다른 영역에서 동시 작업을 위한 병렬 워크스트림.
 
 **요구사항.**
-- REQ-WS-01: 별도의 `.claude/.gsdt-planning/workstreams/{name}/` 디렉토리에 워크스트림 상태를 격리해야 합니다.
+- REQ-WS-01: 별도의 `.gsdt-planning/workstreams/{name}/` 디렉토리에 워크스트림 상태를 격리해야 합니다.
 - REQ-WS-02: 워크스트림 이름을 검증해야 합니다(영숫자 + 하이픈만, 경로 순회 없음).
 - REQ-WS-03: list, create, switch, status, progress, complete, resume 하위 명령어를 지원해야 합니다.
 
 **생성 산출물.**
 | 산출물 | 설명 |
 |----------|-------------|
-| `.claude/.gsdt-planning/workstreams/{name}/` | 격리된 워크스트림 디렉토리 구조 |
+| `.gsdt-planning/workstreams/{name}/` | 격리된 워크스트림 디렉토리 구조 |
 
 **프로세스.**
-1. **생성** — 격리된 `.claude/.gsdt-planning/workstreams/{name}/` 디렉토리로 명명된 워크스트림 초기화
+1. **생성** — 격리된 `.gsdt-planning/workstreams/{name}/` 디렉토리로 명명된 워크스트림 초기화
 2. **전환** — 이후 GSDT 명령어를 위한 활성 워크스트림 컨텍스트 변경
 3. **관리** — 워크스트림 나열, 상태 확인, 진행 상황 추적, 완료, 재개
 
