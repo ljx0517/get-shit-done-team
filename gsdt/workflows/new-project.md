@@ -21,9 +21,9 @@ Check if `--auto` flag is present in $ARGUMENTS.
 
 **If auto mode:**
 
-- Skip brownfield mapping offer (assume greenfield)
+- If brownfield mapping is needed, run `/gsdt:map-codebase --refresh` first without asking
 - Skip deep questioning (extract context from provided document)
-- Config: YOLO mode is implicit (skip that question). If `.gsdt-planning/config.json` already exists, reuse it and skip Step 2a questions. Otherwise ask granularity/git/agents in Step 2a.
+- Config: YOLO mode is implicit (skip that question). If `.gsdt-planning/config.json` already exists, reuse it and skip Step 2a questions. Otherwise lock `granularity: "fine"`, `parallelization: true`, and `commit_docs: true`, then ask only the remaining workflow-agent/model questions in Step 2a.
 - After config: run Steps 6-9 automatically with smart defaults:
   - Research: Always yes
   - Requirements: Include all table stakes + features from provided document
@@ -76,27 +76,18 @@ git init
 
 ## 2. Brownfield Offer
 
-**If auto mode:** Skip to Step 2a (auto config handling), then continue to Step 4.
+**If auto mode AND `needs_codebase_map` is false:** Skip to Step 2a (auto config handling), then continue to Step 4.
 
 **If `needs_codebase_map` is true** (from init — existing code detected but no codebase map):
 
-Use AskUserQuestion:
-
-- header: "Codebase"
-- question: "I detected existing code in this directory. Would you like to map the codebase first?"
-- options:
-  - "Map codebase first" — Run /gsdt:map-codebase to understand existing architecture (Recommended)
-  - "Skip mapping" — Proceed with project initialization
-
-**If "Map codebase first":**
-
-```
-Run `/gsdt:map-codebase` first, then return to `/gsdt:new-project`
-```
+- Do not ask whether to map the codebase first.
+- Existing project files mean GSDT needs fresh brownfield context before initialization continues.
+- Invoke a full refresh: `SlashCommand("/gsdt:map-codebase --refresh")`
+- After mapping completes, return to `/gsdt:new-project` and reuse the same arguments / idea document when present.
 
 Exit command.
 
-**If "Skip mapping" OR `needs_codebase_map` is false:** Continue to Step 3.
+**If `needs_codebase_map` is false:** Continue to Step 3.
 
 ## 2a. Auto Mode Config (auto mode only)
 
@@ -118,44 +109,13 @@ Proceed directly to Step 4.
 
 **Question path (only when config does not exist):**
 
-YOLO mode is implicit (auto = YOLO). Ask remaining config questions:
+YOLO mode is implicit (auto = YOLO). Apply these fixed defaults without asking:
 
-**Round 1 — Core settings (3 questions, no Mode question):**
+- `granularity: "fine"`
+- `parallelization: true` (`Independent plans run simultaneously`)
+- `commit_docs: true` (`Planning docs tracked in version control`)
 
-```
-AskUserQuestion([
-  {
-    header: "Granularity",
-    question: "How finely should scope be sliced into phases?",
-    multiSelect: false,
-    options: [
-      { label: "Coarse (Recommended)", description: "Fewer, broader phases (3-5 phases, 1-3 plans each)" },
-      { label: "Standard", description: "Balanced phase size (5-8 phases, 3-5 plans each)" },
-      { label: "Fine", description: "Many focused phases (8-12 phases, 5-10 plans each)" }
-    ]
-  },
-  {
-    header: "Execution",
-    question: "Run plans in parallel?",
-    multiSelect: false,
-    options: [
-      { label: "Parallel (Recommended)", description: "Independent plans run simultaneously" },
-      { label: "Sequential", description: "One plan at a time" }
-    ]
-  },
-  {
-    header: "Git Tracking",
-    question: "Commit planning docs to git?",
-    multiSelect: false,
-    options: [
-      { label: "Yes (Recommended)", description: "Planning docs tracked in version control" },
-      { label: "No", description: "Keep .gsdt-planning/ local-only (add to .gitignore)" }
-    ]
-  }
-])
-```
-
-**Round 2 — Workflow agents (same as Step 5):**
+**Ask remaining workflow-agent questions (same as Step 5):**
 
 ```
 AskUserQuestion([
@@ -200,14 +160,14 @@ AskUserQuestion([
 ])
 ```
 
-Create `.gsdt-planning/config.json` with all settings (CLI fills in remaining defaults automatically):
+Create `.gsdt-planning/config.json` with the fixed core defaults plus the selected workflow-agent settings:
 
 ```bash
 mkdir -p .gsdt-planning
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" config-new-project '{"mode":"yolo","granularity":"[selected]","parallelization":true|false,"commit_docs":true|false,"model_profile":"quality|balanced|budget|inherit","workflow":{"research":true|false,"plan_check":true|false,"verifier":true|false,"nyquist_validation":true|false,"auto_advance":true}}'
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" config-new-project '{"mode":"yolo","granularity":"fine","parallelization":true,"commit_docs":true,"model_profile":"quality|balanced|budget|inherit","workflow":{"research":true|false,"plan_check":true|false,"verifier":true|false,"nyquist_validation":true,"auto_advance":true}}'
 ```
 
-**If commit_docs = No:** Add `.gsdt-planning/` to `.gitignore`.
+Planning docs stay tracked in git in this path. Do not add `.gsdt-planning/` to `.gitignore` here.
 
 **Commit config.json:**
 
@@ -399,12 +359,12 @@ node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: initialize project" -
 
 **If auto mode:** Skip — config was collected in Step 2a. Proceed to Step 5.5.
 
-**Check for global defaults** at `~/.gsdt/defaults.json`. If the file exists, offer to use saved defaults:
+**Check for global defaults** at `~/.gsdt/defaults.json`. If the file exists, offer to use saved workflow preferences while keeping the fixed onboarding defaults (`granularity: "fine"`, `parallelization: true`, `commit_docs: true`):
 
 ```
 AskUserQuestion([
   {
-    question: "Use your saved default settings? (from ~/.gsdt/defaults.json)",
+    question: "Use your saved workflow defaults? (mode + agents/models only; fine granularity, parallel execution, and git-tracked planning docs stay fixed)",
     header: "Defaults",
     multiSelect: false,
     options: [
@@ -415,11 +375,11 @@ AskUserQuestion([
 ])
 ```
 
-If "Yes": read `~/.gsdt/defaults.json`, use those values for config.json, and skip directly to **Commit config.json** below.
+If "Yes": read `~/.gsdt/defaults.json`, use the saved `mode`, `model_profile`, workflow-agent toggles, and other non-core preferences, but force `granularity: "fine"`, `parallelization: true`, and `commit_docs: true` when creating `config.json`. Then skip directly to **Commit config.json** below.
 
 If "No" or `~/.gsdt/defaults.json` doesn't exist: proceed with the questions below.
 
-**Round 1 — Core workflow settings (4 questions):**
+**Round 1 — Core workflow settings (1 question):**
 
 ```
 questions: [
@@ -430,34 +390,6 @@ questions: [
     options: [
       { label: "YOLO (Recommended)", description: "Auto-approve, just execute" },
       { label: "Interactive", description: "Confirm at each step" }
-    ]
-  },
-  {
-    header: "Granularity",
-    question: "How finely should scope be sliced into phases?",
-    multiSelect: false,
-    options: [
-      { label: "Coarse", description: "Fewer, broader phases (3-5 phases, 1-3 plans each)" },
-      { label: "Standard", description: "Balanced phase size (5-8 phases, 3-5 plans each)" },
-      { label: "Fine", description: "Many focused phases (8-12 phases, 5-10 plans each)" }
-    ]
-  },
-  {
-    header: "Execution",
-    question: "Run plans in parallel?",
-    multiSelect: false,
-    options: [
-      { label: "Parallel (Recommended)", description: "Independent plans run simultaneously" },
-      { label: "Sequential", description: "One plan at a time" }
-    ]
-  },
-  {
-    header: "Git Tracking",
-    question: "Commit planning docs to git?",
-    multiSelect: false,
-    options: [
-      { label: "Yes (Recommended)", description: "Planning docs tracked in version control" },
-      { label: "No", description: "Keep .gsdt-planning/ local-only (add to .gitignore)" }
     ]
   }
 ]
@@ -518,23 +450,16 @@ questions: [
 ]
 ```
 
-Create `.gsdt-planning/config.json` with all settings (CLI fills in remaining defaults automatically):
+Create `.gsdt-planning/config.json` with the selected workflow settings plus the fixed onboarding defaults:
 
 ```bash
 mkdir -p .gsdt-planning
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" config-new-project '{"mode":"[yolo|interactive]","granularity":"[selected]","parallelization":true|false,"commit_docs":true|false,"model_profile":"quality|balanced|budget|inherit","workflow":{"research":true|false,"plan_check":true|false,"verifier":true|false,"nyquist_validation":[false if granularity=coarse, true otherwise]}}'
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" config-new-project '{"mode":"[yolo|interactive]","granularity":"fine","parallelization":true,"commit_docs":true,"model_profile":"quality|balanced|budget|inherit","workflow":{"research":true|false,"plan_check":true|false,"verifier":true|false,"nyquist_validation":true}}'
 ```
 
 **Note:** Run `/gsdt:settings` anytime to update model profile, workflow agents, branching strategy, and other preferences.
 
-**If commit_docs = No:**
-
-- Set `commit_docs: false` in config.json
-- Add `.gsdt-planning/` to `.gitignore` (create if needed)
-
-**If commit_docs = Yes:**
-
-- No additional gitignore entries needed
+Planning docs stay tracked in git by default in this workflow, so no additional `.gitignore` entry is needed here.
 
 **Commit config.json:**
 
