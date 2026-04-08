@@ -1,5 +1,5 @@
 <purpose>
-Interactive configuration of GSDT workflow agents (research, plan_check, verifier) and model profile selection via multi-question prompt. Updates .gsdt-planning/config.json with user preferences. Optionally saves settings as global defaults (~/.gsdt/defaults.json) for future projects.
+Interactive configuration of GSDT core strategy defaults (mode, granularity, parallelization, commit_docs), workflow agents/toggles, git branching, and model profile via multi-question prompt. Updates .gsdt-planning/config.json with user preferences. Optionally saves settings as global defaults (~/.gsdt/defaults.json) for future projects.
 </purpose>
 
 <required_reading>
@@ -25,14 +25,18 @@ Creates `.gsdt-planning/config.json` with defaults if missing and loads current 
 cat .gsdt-planning/config.json
 ```
 
-Parse current values (default to `true` if not present):
+Parse current values:
+- `mode` — overall interaction mode for config-aware workflows (default: `yolo`)
+- `granularity` — roadmap slicing depth (default: `fine`)
+- `parallelization` — whether independent plans run simultaneously (default: `true`)
+- `commit_docs` — whether planning docs stay tracked in git (default: `true` unless `.gsdt-planning/` is gitignored)
 - `workflow.research` — spawn researcher during plan-phase
 - `workflow.plan_check` — spawn plan checker during plan-phase
 - `workflow.verifier` — spawn verifier during execute-phase
 - `workflow.nyquist_validation` — validation architecture research during plan-phase (default: true if absent)
 - `workflow.ui_phase` — generate UI-SPEC.md design contracts for frontend phases (default: true if absent)
 - `workflow.ui_safety_gate` — prompt to run /gsdt:ui-phase before planning frontend phases (default: true if absent)
-- `model_profile` — which model each agent uses (default: `balanced`)
+- `model_profile` — which model each agent uses (default: `quality`)
 - `git.branching_strategy` — branching approach (default: `"none"`)
 </step>
 
@@ -41,6 +45,43 @@ Use AskUserQuestion with current values pre-selected:
 
 ```
 AskUserQuestion([
+  {
+    question: "How do you want to work?",
+    header: "Mode",
+    multiSelect: false,
+    options: [
+      { label: "YOLO (Recommended)", description: "Auto-approve, just execute" },
+      { label: "Interactive", description: "Confirm at each step" }
+    ]
+  },
+  {
+    question: "How finely should scope be sliced into phases?",
+    header: "Granularity",
+    multiSelect: false,
+    options: [
+      { label: "Coarse", description: "Fewer, broader phases (3-5 phases, 1-3 plans each)" },
+      { label: "Standard", description: "Balanced phase size (5-8 phases, 3-5 plans each)" },
+      { label: "Fine (Recommended)", description: "Many focused phases (8-12 phases, 5-10 plans each)" }
+    ]
+  },
+  {
+    question: "Run plans in parallel?",
+    header: "Execution",
+    multiSelect: false,
+    options: [
+      { label: "Parallel (Recommended)", description: "Independent plans run simultaneously" },
+      { label: "Sequential", description: "One plan at a time" }
+    ]
+  },
+  {
+    question: "Commit planning docs to git?",
+    header: "Git Tracking",
+    multiSelect: false,
+    options: [
+      { label: "Yes (Recommended)", description: "Planning docs tracked in version control" },
+      { label: "No", description: "Keep .gsdt-planning/ local-only (add to .gitignore)" }
+    ]
+  },
   {
     question: "Which model profile for agents?",
     header: "Model",
@@ -123,8 +164,8 @@ AskUserQuestion([
     multiSelect: false,
     options: [
       { label: "None (Recommended)", description: "Commit directly to current branch" },
-      { label: "Per Phase", description: "Create branch for each phase (gsd/phase-{N}-{name})" },
-      { label: "Per Milestone", description: "Create branch for entire milestone (gsd/{version}-{name})" }
+      { label: "Per Phase", description: "Create branch for each phase (gsdt/phase-{N}-{name})" },
+      { label: "Per Milestone", description: "Create branch for entire milestone (gsdt/{version}-{name})" }
     ]
   },
   {
@@ -146,6 +187,15 @@ AskUserQuestion([
     ]
   },
   {
+    question: "Discussion style for /gsdt:discuss-phase?",
+    header: "Discuss Mode",
+    multiSelect: false,
+    options: [
+      { label: "Discuss (Recommended)", description: "Ask open-ended questions one by one" },
+      { label: "Assumptions", description: "Read the codebase first, surface assumptions, and ask only for corrections" }
+    ]
+  },
+  {
     question: "Skip discuss-phase in autonomous mode? (use ROADMAP phase goals as spec)",
     header: "Skip Discuss",
     multiSelect: false,
@@ -164,6 +214,10 @@ Merge new settings into existing config.json:
 ```json
 {
   ...existing_config,
+  "mode": "yolo" | "interactive",
+  "granularity": "coarse" | "standard" | "fine",
+  "parallelization": true/false,
+  "commit_docs": true/false,
   "model_profile": "quality" | "balanced" | "budget" | "inherit",
   "workflow": {
     "research": true/false,
@@ -173,18 +227,15 @@ Merge new settings into existing config.json:
     "nyquist_validation": true/false,
     "ui_phase": true/false,
     "ui_safety_gate": true/false,
-    "text_mode": true/false,
     "research_before_questions": true/false,
     "discuss_mode": "discuss" | "assumptions",
     "skip_discuss": true/false
   },
   "git": {
-    "branching_strategy": "none" | "phase" | "milestone",
-    "quick_branch_template": <string|null>
+    "branching_strategy": "none" | "phase" | "milestone"
   },
   "hooks": {
-    "context_warnings": true/false,
-    "workflow_guard": true/false
+    "context_warnings": true/false
   }
 }
 ```
@@ -233,7 +284,12 @@ Write `~/.gsdt/defaults.json` with:
     "nyquist_validation": <current>,
     "ui_phase": <current>,
     "ui_safety_gate": <current>,
+    "research_before_questions": <current>,
+    "discuss_mode": <current>,
     "skip_discuss": <current>
+  },
+  "hooks": {
+    "context_warnings": <current>
   }
 }
 ```
@@ -247,6 +303,10 @@ Display:
 
 | Setting              | Value |
 |----------------------|-------|
+| Mode                 | {yolo/interactive} |
+| Granularity          | {coarse/standard/fine} |
+| Parallel Plans       | {On/Off} |
+| Planning Docs in Git | {On/Off} |
 | Model Profile        | {quality/balanced/budget/inherit} |
 | Plan Researcher      | {On/Off} |
 | Plan Checker         | {On/Off} |
@@ -256,11 +316,13 @@ Display:
 | UI Phase             | {On/Off} |
 | UI Safety Gate       | {On/Off} |
 | Git Branching        | {None/Per Phase/Per Milestone} |
+| Research Before Qs   | {On/Off} |
+| Discuss Mode         | {discuss/assumptions} |
 | Skip Discuss         | {On/Off} |
 | Context Warnings     | {On/Off} |
 | Saved as Defaults    | {Yes/No} |
 
-These settings apply to future /gsdt:plan-phase and /gsdt:execute-phase runs.
+These settings apply to future config-aware workflows, including /gsdt:new-project defaults, /gsdt:plan-phase, and /gsdt:execute-phase.
 
 Quick commands:
 - /gsdt:set-profile <profile> — switch model profile
@@ -274,8 +336,8 @@ Quick commands:
 
 <success_criteria>
 - [ ] Current config read
-- [ ] User presented with 10 settings (profile + 8 workflow toggles + git branching)
-- [ ] Config updated with model_profile, workflow, and git sections
+- [ ] User presented with core strategy settings plus workflow/model/git settings
+- [ ] Config updated with mode, granularity, parallelization, commit_docs, model_profile, workflow, and git sections
 - [ ] User offered to save as global defaults (~/.gsdt/defaults.json)
 - [ ] Changes confirmed to user
 </success_criteria>
