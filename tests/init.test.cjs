@@ -962,6 +962,29 @@ describe('cmdInitMapCodebase', () => {
     assert.ok(withoutLine, 'workflow should have a line about Task tool NOT being available');
     assert.ok(!withoutLine.includes('Vibe Agent Team'), 'Vibe Agent Team must NOT be listed under runtimes WITHOUT Task tool');
   });
+
+  test('map-codebase workflow supports --refresh full remap without asking', () => {
+    const workflow = fs.readFileSync(
+      path.join(__dirname, '..', 'gsdt', 'workflows', 'map-codebase.md'), 'utf8'
+    );
+    const command = fs.readFileSync(
+      path.join(__dirname, '..', 'commands', 'gsdt', 'map-codebase.md'), 'utf8'
+    );
+
+    assert.ok(command.includes('--refresh'), 'map-codebase command should advertise --refresh');
+    assert.ok(
+      workflow.includes('If `$ARGUMENTS` contains `--refresh`'),
+      'workflow should document the --refresh path'
+    );
+    assert.ok(
+      workflow.includes('Do not ask the user which refresh mode to use'),
+      'refresh path should skip interactive choice'
+    );
+    assert.ok(
+      workflow.includes('Delete .gsdt-planning/codebase/, continue to create_structure'),
+      'refresh path should force full remap'
+    );
+  });
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1000,6 +1023,29 @@ describe('cmdInitNewProject', () => {
     assert.strictEqual(output.has_package_file, true);
     assert.strictEqual(output.is_brownfield, true);
     assert.strictEqual(output.needs_codebase_map, true);
+  });
+
+  test('new-project workflow auto-runs full codebase map for brownfield repos', () => {
+    const workflow = fs.readFileSync(
+      path.join(__dirname, '..', 'gsdt', 'workflows', 'new-project.md'), 'utf8'
+    );
+
+    assert.ok(
+      workflow.includes('/gsdt:map-codebase --refresh'),
+      'brownfield path should invoke a full map-codebase refresh'
+    );
+    assert.ok(
+      workflow.includes('Do not ask whether to map the codebase first'),
+      'workflow should skip the brownfield mapping question'
+    );
+    assert.ok(
+      !workflow.includes('Would you like to map the codebase first?'),
+      'workflow should no longer ask the map-codebase opt-in question'
+    );
+    assert.ok(
+      !workflow.includes('Skip brownfield mapping offer (assume greenfield)'),
+      'auto mode should not assume brownfield repos are greenfield'
+    );
   });
 
   test('brownfield with codebase map does not need map', () => {
