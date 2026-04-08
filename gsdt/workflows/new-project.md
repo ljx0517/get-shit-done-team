@@ -68,11 +68,7 @@ Parse JSON for: `researcher_model`, `synthesizer_model`, `roadmapper_model`, `co
 
 **If `project_exists` is true:** Error — project already initialized. Use `/gsdt:progress`.
 
-**If `has_git` is false:** Initialize git:
-
-```bash
-git init
-```
+**Git初始化已移到init.cjs统一处理，支持子目录模式**
 
 ## 2. Brownfield Offer
 
@@ -353,6 +349,25 @@ Do not compress. Capture everything gathered.
 ```bash
 mkdir -p .gsdt-planning
 node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs: initialize project" --files .gsdt-planning/PROJECT.md
+```
+
+## 4.5 统一模式自动配置
+```bash
+# 子目录模式自动配置
+if [[ "$is_new_subdirectory" == "true" && "$sub_repo_name" != "" ]]; then
+  # 将新创建的子项目加入sub_repos配置
+  node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" config-set planning.sub_repos "[\"$sub_repo_name\"]"
+  # 多Repo模式下规划文档仅本地存储，不提交到Git
+  node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" config-set planning.commit_docs false
+  # 自动将规划目录加入.gitignore
+  if [ -f .gitignore ]; then
+    if ! grep -q ".gsdt-planning/" .gitignore; then
+      echo ".gsdt-planning/" >> .gitignore
+    fi
+  else
+    echo ".gsdt-planning/" > .gitignore
+  fi
+fi
 ```
 
 ## 5. Workflow Preferences

@@ -243,7 +243,34 @@ function cmdInitPlanPhase(cwd, phase, raw) {
   output(withProjectRoot(cwd, result), raw);
 }
 
-function cmdInitNewProject(cwd, raw) {
+function cmdInitNewProject(cwd, options = {}, raw) {
+  const { inPlace = false, projectName = null } = options;
+  let targetDir = cwd;
+  let isNewSubdirectory = false;
+  let subRepoName = null;
+
+  // 默认模式：创建项目子目录
+  if (!inPlace && projectName) {
+    // 生成项目slug
+    const slug = generateSlugInternal(projectName) || projectName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    if (slug) {
+      subRepoName = slug;
+      targetDir = path.join(cwd, slug);
+      fs.mkdirSync(targetDir, { recursive: true });
+      isNewSubdirectory = true;
+
+      // 在子目录初始化Git仓库
+      try {
+        require('child_process').execSync('git init', { cwd: targetDir, stdio: 'ignore' });
+        // 尝试创建空初始提交（忽略用户未配置git的情况）
+        require('child_process').execSync(
+          'git config user.name >/dev/null 2>&1 && git config user.email >/dev/null 2>&1 && git commit --allow-empty -m "Initial commit"',
+          { cwd: targetDir, stdio: 'ignore' }
+        );
+      } catch {}
+    }
+  }
+
   const config = loadConfig(cwd);
 
   // Detect Brave Search API key availability
@@ -293,10 +320,10 @@ function cmdInitNewProject(cwd, raw) {
       }
       return false;
     }
-    hasCode = findCodeFiles(cwd, 0);
+    hasCode = findCodeFiles(targetDir, 0);
   } catch { /* intentionally empty — best-effort detection */ }
 
-  hasPackageFile = pathExistsInternal(cwd, 'package.json') ||
+  hasPackageFile = pathExistsInternal(targetDir, 'package.json') ||
                    pathExistsInternal(cwd, 'requirements.txt') ||
                    pathExistsInternal(cwd, 'Cargo.toml') ||
                    pathExistsInternal(cwd, 'go.mod') ||
@@ -334,7 +361,7 @@ function cmdInitNewProject(cwd, raw) {
     needs_codebase_map: (hasCode || hasPackageFile) && !pathExistsInternal(cwd, path.join(resolvePlanningDirName(cwd), 'codebase')),
 
     // Git state
-    has_git: pathExistsInternal(cwd, '.git'),
+    has_git: pathExistsInternal(targetDir, '.git'),
 
     // Enhanced search
     brave_search_available: hasBraveSearch,
@@ -343,6 +370,12 @@ function cmdInitNewProject(cwd, raw) {
 
     // File paths
     project_path: `${planningRel(cwd)}/PROJECT.md`,
+
+    // 统一模式新增字段
+    is_in_place: inPlace,
+    project_directory: isNewSubdirectory ? path.relative(cwd, targetDir) : null,
+    is_new_subdirectory: isNewSubdirectory,
+    sub_repo_name: subRepoName,
   };
 
   output(withProjectRoot(cwd, result), raw);

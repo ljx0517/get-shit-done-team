@@ -727,7 +727,10 @@ async function runCommand(command, args, cwd, raw) {
           init.cmdInitPlanPhase(cwd, args[2], raw);
           break;
         case 'new-project':
-          init.cmdInitNewProject(cwd, raw);
+          const inPlace = args.includes('--in-place');
+          // 提取项目名称：去掉--in-place参数后的所有非选项参数
+          const projectName = args.filter((arg, idx) => idx > 1 && !arg.startsWith('--')).join(' ') || null;
+          init.cmdInitNewProject(cwd, { inPlace, projectName }, raw);
           break;
         case 'new-milestone':
           init.cmdInitNewMilestone(cwd, raw);

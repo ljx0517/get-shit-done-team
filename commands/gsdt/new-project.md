@@ -1,7 +1,7 @@
 ---
 name: gsdt:new-project
 description: Initialize a new project with deep context gathering and PROJECT.md
-argument-hint: "[--auto]"
+argument-hint: "[--auto] [--in-place] [project name]"
 allowed-tools:
   - Read
   - Bash
@@ -12,6 +12,8 @@ allowed-tools:
 <context>
 **Flags:**
 - `--auto` — Automatic mode. Reuses existing `.gsdt-planning/config.json` when present; otherwise asks config questions once, then runs research → requirements → roadmap without further interaction. Expects idea document via @ reference.
+- `--in-place` — 在当前目录直接初始化项目，不创建子目录（兼容原有单项目模式）
+- `project name` — 项目名称，默认会创建对应名称的子目录作为项目根
 </context>
 
 <objective>
