@@ -774,19 +774,19 @@
 
 **명령어:** `/gsdt:settings`
 
-**목적:** 워크플로우 토글과 모델 프로파일의 대화형 구성.
+**목적:** 핵심 전략 기본값, 워크플로우 토글, 토론 모드, 모델 프로파일의 대화형 구성.
 
 **요구사항.**
 - REQ-SETTINGS-01: 토글 옵션과 함께 현재 설정을 표시해야 합니다.
 - REQ-SETTINGS-02: `.gsdt-planning/config.json`을 업데이트해야 합니다.
-- REQ-SETTINGS-03: 전역 기본값으로 저장하는 것을 지원해야 합니다(`~/.gsdt/defaults.json`).
+- REQ-SETTINGS-03: 전역 기본값으로 저장하는 것을 지원해야 합니다(`~/.gsd/defaults.json`).
 
 **구성 가능한 설정.**
 | 설정 | 유형 | 기본값 | 설명 |
 |---------|------|---------|-------------|
-| `mode` | enum | `interactive` | `interactive` 또는 `yolo`(자동 승인) |
-| `granularity` | enum | `standard` | `coarse`, `standard`, 또는 `fine` |
-| `model_profile` | enum | `balanced` | `quality`, `balanced`, `budget`, 또는 `inherit` |
+| `mode` | enum | `yolo` | `interactive` 또는 `yolo`(자동 승인) |
+| `granularity` | enum | `fine` | `coarse`, `standard`, 또는 `fine` |
+| `model_profile` | enum | `quality` | `quality`, `balanced`, `budget`, 또는 `inherit` |
 | `workflow.research` | boolean | `true` | 계획 전 도메인 연구 |
 | `workflow.plan_check` | boolean | `true` | 계획 검증 루프 |
 | `workflow.verifier` | boolean | `true` | 실행 후 검증 |
@@ -794,12 +794,17 @@
 | `workflow.nyquist_validation` | boolean | `true` | Nyquist 테스트 커버리지 매핑 |
 | `workflow.ui_phase` | boolean | `true` | UI 설계 계약 생성 |
 | `workflow.ui_safety_gate` | boolean | `true` | 프론트엔드 페이즈에서 ui-phase 촉구 |
-| `workflow.node_repair` | boolean | `true` | 자율적 작업 복구 |
-| `workflow.node_repair_budget` | number | `2` | 작업당 최대 복구 시도 횟수 |
+| `workflow.research_before_questions` | boolean | `false` | 질문 라운드 전에 베스트 프랙티스 조사를 수행 |
+| `workflow.discuss_mode` | enum | `discuss` | 개방형 질의 vs. 코드베이스 선행 assumptions mode |
+| `workflow.skip_discuss` | boolean | `false` | autonomous mode에서 discuss-phase 건너뛰기 |
+| `hooks.context_warnings` | boolean | `true` | 컨텍스트가 차기 전에 경고 |
 | `planning.commit_docs` | boolean | `true` | `.gsdt-planning/` 파일을 git에 커밋 |
-| `planning.search_gitignored` | boolean | `false` | 검색에 gitignore된 파일 포함 |
 | `parallelization.enabled` | boolean | `true` | 독립적인 계획을 동시에 실행 |
 | `git.branching_strategy` | enum | `none` | `none`, `phase`, 또는 `milestone` |
+
+> **현재 초기화 동작:** `/gsdt:new-project`는 `granularity = fine`, `parallelization.enabled = true`, `planning.commit_docs = true`를 질문 없이 기본 주입합니다. 따라서 초기 질문은 제품과 워크플로 선택에 집중됩니다.
+
+> **고급 설정은 `config.json` / `config-set`에서 유지:** `workflow.text_mode`, `workflow.node_repair`, `workflow.node_repair_budget`, `planning.search_gitignored`, `hooks.workflow_guard`, `git.quick_branch_template`는 계속 설정 가능하지만, 현재 `/gsdt:settings` 질문지에는 노출되지 않습니다.
 
 ---
 

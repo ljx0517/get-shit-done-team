@@ -513,7 +513,7 @@ lmn012o feat(08-02): 创建注册端点
 
 | 命令 | 作用 |
 |---------|--------------|
-| `/gsdt:settings` | 配置模型配置文件和工作流代理 |
+| `/gsdt:settings` | 配置核心默认值、工作流开关、讨论模式和模型配置 |
 | `/gsdt:set-profile <profile>` | 切换模型配置文件（quality/balanced/budget） |
 | `/gsdt:add-todo [desc]` | 捕获想法留待后用 |
 | `/gsdt:check-todos` | 列出待处理事项 |

@@ -740,7 +740,7 @@ Manage parallel workstreams for concurrent work on different milestone areas.
 
 ### `/gsdt:settings`
 
-Interactive configuration of workflow toggles and model profile.
+Interactive configuration of core strategy defaults, workflow toggles, discuss mode, and model profile.
 
 ```bash
 /gsdt:settings                       # Interactive config

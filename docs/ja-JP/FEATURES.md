@@ -774,19 +774,19 @@
 
 **コマンド:** `/gsdt:settings`
 
-**目的:** ワークフロートグルとモデルプロファイルのインタラクティブな設定。
+**目的:** コア戦略の既定値、ワークフロートグル、ディスカッションモード、モデルプロファイルのインタラクティブな設定。
 
 **要件:**
 - REQ-SETTINGS-01: システムは現在の設定をトグルオプション付きで表示しなければならない
 - REQ-SETTINGS-02: システムは `.gsdt-planning/config.json` を更新しなければならない
-- REQ-SETTINGS-03: システムはグローバルデフォルト（`~/.gsdt/defaults.json`）としての保存をサポートしなければならない
+- REQ-SETTINGS-03: システムはグローバルデフォルト（`~/.gsd/defaults.json`）としての保存をサポートしなければならない
 
 **設定可能な項目:**
 | 設定 | 型 | デフォルト | 説明 |
 |------|-----|----------|------|
-| `mode` | enum | `interactive` | `interactive` または `yolo`（自動承認） |
-| `granularity` | enum | `standard` | `coarse`、`standard`、または `fine` |
-| `model_profile` | enum | `balanced` | `quality`、`balanced`、`budget`、または `inherit` |
+| `mode` | enum | `yolo` | `interactive` または `yolo`（自動承認） |
+| `granularity` | enum | `fine` | `coarse`、`standard`、または `fine` |
+| `model_profile` | enum | `quality` | `quality`、`balanced`、`budget`、または `inherit` |
 | `workflow.research` | boolean | `true` | プランニング前のドメインリサーチ |
 | `workflow.plan_check` | boolean | `true` | プラン検証ループ |
 | `workflow.verifier` | boolean | `true` | 実行後検証 |
@@ -794,12 +794,17 @@
 | `workflow.nyquist_validation` | boolean | `true` | Nyquist テストカバレッジマッピング |
 | `workflow.ui_phase` | boolean | `true` | UI デザインコントラクト生成 |
 | `workflow.ui_safety_gate` | boolean | `true` | フロントエンドフェーズで ui-phase を促す |
-| `workflow.node_repair` | boolean | `true` | 自律的なタスクリペア |
-| `workflow.node_repair_budget` | number | `2` | タスクあたりの最大リペア試行回数 |
+| `workflow.research_before_questions` | boolean | `false` | 質問ラウンド前にベストプラクティス調査を実行 |
+| `workflow.discuss_mode` | enum | `discuss` | オープンな質問形式か、コードベース先読みの assumptions mode か |
+| `workflow.skip_discuss` | boolean | `false` | autonomous mode で discuss-phase をスキップ |
+| `hooks.context_warnings` | boolean | `true` | コンテキストが埋まる前に警告 |
 | `planning.commit_docs` | boolean | `true` | `.gsdt-planning/` ファイルを git にコミット |
-| `planning.search_gitignored` | boolean | `false` | gitignore されたファイルを検索に含める |
 | `parallelization.enabled` | boolean | `true` | 独立したプランを同時実行 |
 | `git.branching_strategy` | enum | `none` | `none`、`phase`、または `milestone` |
+
+> **現在の初期化動作:** `/gsdt:new-project` は `granularity = fine`、`parallelization.enabled = true`、`planning.commit_docs = true` を質問なしで初期投入します。初期化時の質問は、製品とワークフローの選択に集中します。
+
+> **高度な設定は `config.json` / `config-set` 側:** `workflow.text_mode`、`workflow.node_repair`、`workflow.node_repair_budget`、`planning.search_gitignored`、`hooks.workflow_guard`、`git.quick_branch_template` は引き続き設定可能ですが、現在の `/gsdt:settings` 質問票には表示されません。
 
 ---
 

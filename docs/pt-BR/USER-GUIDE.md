@@ -175,7 +175,7 @@ Para arquivos sensíveis, use deny list no Claude Code.
 | `/gsdt:quick` | Tarefa ad-hoc com garantias GSDT |
 | `/gsdt:debug [desc]` | Debug sistemático |
 | `/gsdt:forensics` | Diagnóstico de workflow quebrado |
-| `/gsdt:settings` | Ajustar workflow/modelos |
+| `/gsdt:settings` | Ajustar defaults centrais, toggles, modo de discussao e perfil |
 | `/gsdt:set-profile <profile>` | Troca rápida de perfil |
 
 Para lista completa e flags avançadas, consulte [Command Reference](../COMMANDS.md).

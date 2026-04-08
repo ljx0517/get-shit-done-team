@@ -8,6 +8,8 @@
 
 GSDT stores project settings in `.gsdt-planning/config.json`. Created during `/gsdt:new-project`, updated via `/gsdt:settings`.
 
+`/gsdt:new-project` seeds three core onboarding defaults without prompting: `granularity: "fine"`, `planning.commit_docs: true`, and `parallelization.enabled: true`. This keeps setup focused on product and workflow choices instead of repeatedly asking about those baseline preferences.
+
 ### Full Schema
 
 ```json
@@ -344,7 +346,7 @@ Valid override values: `opus`, `sonnet`, `haiku`, `inherit`, or any fully-qualif
 
 ### Non-Claude Runtimes (Codex, OpenCode, Gemini CLI)
 
-When GSDT is installed for a non-Claude runtime, the installer automatically sets `resolve_model_ids: "omit"` in `~/.gsdt/defaults.json`. This causes GSDT to return an empty model parameter for all agents, so each agent uses whatever model the runtime is configured with. No additional setup is needed for the default case.
+When GSDT is installed for a non-Claude runtime, the installer automatically sets `resolve_model_ids: "omit"` in `~/.gsd/defaults.json`. This causes GSDT to return an empty model parameter for all agents, so each agent uses whatever model the runtime is configured with. No additional setup is needed for the default case.
 
 If you want different agents to use different models, use `model_overrides` with fully-qualified model IDs that your runtime recognizes:
 
@@ -404,6 +406,8 @@ The intent is the same as the Claude profile tiers -- use a stronger model for p
 
 Save settings as global defaults for future projects:
 
-**Location:** `~/.gsdt/defaults.json`
+**Location:** `~/.gsd/defaults.json`
 
 When `/gsdt:new-project` creates a new `config.json`, it reads global defaults and merges them as the starting configuration. Per-project settings always override globals.
+
+The fixed onboarding defaults still win for `granularity`, `planning.commit_docs`, and `parallelization.enabled` unless you edit the project config explicitly after initialization.

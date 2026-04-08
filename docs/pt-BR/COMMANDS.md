@@ -48,7 +48,7 @@ Para detalhes completos de flags avançadas e mudanças recentes, consulte tamb�
 | `/gsdt:quick` | Tarefas ad-hoc com garantias do GSDT |
 | `/gsdt:debug [desc]` | Debug sistemático com estado persistente |
 | `/gsdt:forensics` | Diagnóstico de falhas no workflow |
-| `/gsdt:settings` | Configuração de agentes, perfil e toggles |
+| `/gsdt:settings` | Configuração de defaults centrais, toggles, modo de discussão e perfil |
 | `/gsdt:set-profile <perfil>` | Troca rápida de perfil de modelo |
 
 ## Qualidade de Código

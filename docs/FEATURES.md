@@ -6,71 +6,74 @@
 
 ## Table of Contents
 
-- [Core Features](#core-features)
-  - [Project Initialization](#1-project-initialization)
-  - [Phase Discussion](#2-phase-discussion)
-  - [UI Design Contract](#3-ui-design-contract)
-  - [Phase Planning](#4-phase-planning)
-  - [Phase Execution](#5-phase-execution)
-  - [Work Verification](#6-work-verification)
-  - [UI Review](#7-ui-review)
-  - [Milestone Management](#8-milestone-management)
-- [Planning Features](#planning-features)
-  - [Phase Management](#9-phase-management)
-  - [Quick Mode](#10-quick-mode)
-  - [Autonomous Mode](#11-autonomous-mode)
-  - [Freeform Routing](#12-freeform-routing)
-  - [Semantic Intake](#125-semantic-intake)
-  - [Note Capture](#13-note-capture)
-  - [Auto-Advance (Next)](#14-auto-advance-next)
-- [Quality Assurance Features](#quality-assurance-features)
-  - [Nyquist Validation](#15-nyquist-validation)
-  - [Plan Checking](#16-plan-checking)
-  - [Post-Execution Verification](#17-post-execution-verification)
-  - [Node Repair](#18-node-repair)
-  - [Health Validation](#19-health-validation)
-  - [Cross-Phase Regression Gate](#20-cross-phase-regression-gate)
-  - [Requirements Coverage Gate](#21-requirements-coverage-gate)
-- [Context Engineering Features](#context-engineering-features)
-  - [Context Window Monitoring](#22-context-window-monitoring)
-  - [Session Management](#23-session-management)
-  - [Session Reporting](#24-session-reporting)
-  - [Multi-Agent Orchestration](#25-multi-agent-orchestration)
-  - [Model Profiles](#26-model-profiles)
-- [Brownfield Features](#brownfield-features)
-  - [Codebase Mapping](#27-codebase-mapping)
-- [Utility Features](#utility-features)
-  - [Debug System](#28-debug-system)
-  - [Todo Management](#29-todo-management)
-  - [Statistics Dashboard](#30-statistics-dashboard)
-  - [Update System](#31-update-system)
-  - [Settings Management](#32-settings-management)
-  - [Test Generation](#33-test-generation)
-- [Infrastructure Features](#infrastructure-features)
-  - [Git Integration](#34-git-integration)
-  - [CLI Tools](#35-cli-tools)
-  - [Multi-Runtime Support](#36-multi-runtime-support)
-  - [Hook System](#37-hook-system)
-  - [Developer Profiling](#38-developer-profiling)
-  - [Execution Hardening](#39-execution-hardening)
-  - [Verification Debt Tracking](#40-verification-debt-tracking)
-- [v1.27 Features](#v127-features)
-  - [Fast Mode](#41-fast-mode)
-  - [Cross-AI Peer Review](#42-cross-ai-peer-review)
-  - [Backlog Parking Lot](#43-backlog-parking-lot)
-  - [Persistent Context Threads](#44-persistent-context-threads)
-  - [PR Branch Filtering](#45-pr-branch-filtering)
-  - [Security Hardening](#46-security-hardening)
-  - [Multi-Repo Workspace Support](#47-multi-repo-workspace-support)
-  - [Discussion Audit Trail](#48-discussion-audit-trail)
-- [v1.28 Features](#v128-features)
-  - [Forensics](#49-forensics)
-  - [Milestone Summary](#50-milestone-summary)
-  - [Workstream Namespacing](#51-workstream-namespacing)
-  - [Manager Dashboard](#52-manager-dashboard)
-  - [Assumptions Discussion Mode](#53-assumptions-discussion-mode)
-  - [UI Phase Auto-Detection](#54-ui-phase-auto-detection)
-  - [Multi-Runtime Installer Selection](#55-multi-runtime-installer-selection)
+- [GSDT Feature Reference](#gsdt-feature-reference)
+  - [Table of Contents](#table-of-contents)
+  - [Core Features](#core-features)
+    - [1. Project Initialization](#1-project-initialization)
+    - [2. Phase Discussion](#2-phase-discussion)
+    - [3. UI Design Contract](#3-ui-design-contract)
+    - [4. Phase Planning](#4-phase-planning)
+    - [5. Phase Execution](#5-phase-execution)
+    - [6. Work Verification](#6-work-verification)
+    - [6.5. Ship](#65-ship)
+    - [7. UI Review](#7-ui-review)
+    - [8. Milestone Management](#8-milestone-management)
+  - [Planning Features](#planning-features)
+    - [9. Phase Management](#9-phase-management)
+    - [10. Quick Mode](#10-quick-mode)
+    - [11. Autonomous Mode](#11-autonomous-mode)
+    - [12. Freeform Routing](#12-freeform-routing)
+    - [12.5 Semantic Intake](#125-semantic-intake)
+    - [13. Note Capture](#13-note-capture)
+    - [14. Auto-Advance (Next)](#14-auto-advance-next)
+  - [Quality Assurance Features](#quality-assurance-features)
+    - [15. Nyquist Validation](#15-nyquist-validation)
+    - [16. Plan Checking](#16-plan-checking)
+    - [17. Post-Execution Verification](#17-post-execution-verification)
+    - [18. Node Repair](#18-node-repair)
+    - [19. Health Validation](#19-health-validation)
+    - [20. Cross-Phase Regression Gate](#20-cross-phase-regression-gate)
+    - [21. Requirements Coverage Gate](#21-requirements-coverage-gate)
+  - [Context Engineering Features](#context-engineering-features)
+    - [22. Context Window Monitoring](#22-context-window-monitoring)
+    - [23. Session Management](#23-session-management)
+    - [24. Session Reporting](#24-session-reporting)
+    - [25. Multi-Agent Orchestration](#25-multi-agent-orchestration)
+    - [26. Model Profiles](#26-model-profiles)
+  - [Brownfield Features](#brownfield-features)
+    - [27. Codebase Mapping](#27-codebase-mapping)
+  - [Utility Features](#utility-features)
+    - [28. Debug System](#28-debug-system)
+    - [29. Todo Management](#29-todo-management)
+    - [30. Statistics Dashboard](#30-statistics-dashboard)
+    - [31. Update System](#31-update-system)
+    - [32. Settings Management](#32-settings-management)
+    - [33. Test Generation](#33-test-generation)
+  - [Infrastructure Features](#infrastructure-features)
+    - [34. Git Integration](#34-git-integration)
+    - [35. CLI Tools](#35-cli-tools)
+    - [36. Multi-Runtime Support](#36-multi-runtime-support)
+    - [37. Hook System](#37-hook-system)
+    - [38. Developer Profiling](#38-developer-profiling)
+    - [39. Execution Hardening](#39-execution-hardening)
+    - [40. Verification Debt Tracking](#40-verification-debt-tracking)
+  - [v1.27 Features](#v127-features)
+    - [41. Fast Mode](#41-fast-mode)
+    - [42. Cross-AI Peer Review](#42-cross-ai-peer-review)
+    - [43. Backlog Parking Lot](#43-backlog-parking-lot)
+    - [44. Persistent Context Threads](#44-persistent-context-threads)
+    - [45. PR Branch Filtering](#45-pr-branch-filtering)
+    - [46. Security Hardening](#46-security-hardening)
+    - [47. Multi-Repo Workspace Support](#47-multi-repo-workspace-support)
+    - [48. Discussion Audit Trail](#48-discussion-audit-trail)
+  - [v1.28 Features](#v128-features)
+    - [49. Forensics](#49-forensics)
+    - [50. Milestone Summary](#50-milestone-summary)
+    - [51. Workstream Namespacing](#51-workstream-namespacing)
+    - [52. Manager Dashboard](#52-manager-dashboard)
+    - [53. Assumptions Discussion Mode](#53-assumptions-discussion-mode)
+    - [54. UI Phase Auto-Detection](#54-ui-phase-auto-detection)
+    - [55. Multi-Runtime Installer Selection](#55-multi-runtime-installer-selection)
 
 ---
 
@@ -793,19 +796,19 @@
 
 **Command:** `/gsdt:settings`
 
-**Purpose:** Interactive configuration of workflow toggles and model profile.
+**Purpose:** Interactive configuration of core strategy defaults, workflow toggles, discuss mode, and model profile.
 
 **Requirements:**
 - REQ-SETTINGS-01: System MUST present current settings with toggle options
 - REQ-SETTINGS-02: System MUST update `.gsdt-planning/config.json`
-- REQ-SETTINGS-03: System MUST support saving as global defaults (`~/.gsdt/defaults.json`)
+- REQ-SETTINGS-03: System MUST support saving as global defaults (`~/.gsd/defaults.json`)
 
 **Configurable Settings:**
 | Setting | Type | Default | Description |
 |---------|------|---------|-------------|
-| `mode` | enum | `interactive` | `interactive` or `yolo` (auto-approve) |
-| `granularity` | enum | `standard` | `coarse`, `standard`, or `fine` |
-| `model_profile` | enum | `balanced` | `quality`, `balanced`, `budget`, or `inherit` |
+| `mode` | enum | `yolo` | `interactive` or `yolo` (auto-approve) |
+| `granularity` | enum | `fine` | `coarse`, `standard`, or `fine` |
+| `model_profile` | enum | `quality` | `quality`, `balanced`, `budget`, or `inherit` |
 | `workflow.research` | boolean | `true` | Domain research before planning |
 | `workflow.plan_check` | boolean | `true` | Plan verification loop |
 | `workflow.verifier` | boolean | `true` | Post-execution verification |
@@ -813,12 +816,17 @@
 | `workflow.nyquist_validation` | boolean | `true` | Nyquist test coverage mapping |
 | `workflow.ui_phase` | boolean | `true` | UI design contract generation |
 | `workflow.ui_safety_gate` | boolean | `true` | Prompt for ui-phase on frontend phases |
-| `workflow.node_repair` | boolean | `true` | Autonomous task repair |
-| `workflow.node_repair_budget` | number | `2` | Max repair attempts per task |
+| `workflow.research_before_questions` | boolean | `false` | Run best-practice research before question rounds |
+| `workflow.discuss_mode` | enum | `discuss` | Open-ended discussion vs. codebase-first assumptions mode |
+| `workflow.skip_discuss` | boolean | `false` | Skip discuss-phase in autonomous mode |
+| `hooks.context_warnings` | boolean | `true` | Warn before the context window gets too full |
 | `planning.commit_docs` | boolean | `true` | Commit `.gsdt-planning/` files to git |
-| `planning.search_gitignored` | boolean | `false` | Include gitignored files in searches |
 | `parallelization.enabled` | boolean | `true` | Run independent plans simultaneously |
 | `git.branching_strategy` | enum | `none` | `none`, `phase`, or `milestone` |
+
+> **Current onboarding behavior:** `/gsdt:new-project` now seeds `granularity = fine`, `parallelization.enabled = true`, and `planning.commit_docs = true` without prompting, so initialization questions stay focused on product and workflow choices.
+
+> **Advanced config stays in `config.json` / `config-set`:** `workflow.text_mode`, `workflow.node_repair`, `workflow.node_repair_budget`, `planning.search_gitignored`, `hooks.workflow_guard`, and `git.quick_branch_template` are still configurable, but they are not surfaced in the current `/gsdt:settings` questionnaire.
 
 ---
 
