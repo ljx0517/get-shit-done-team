@@ -73,15 +73,15 @@ function buildNewProjectConfig(userChoices) {
   const homedir = require('os').homedir();
 
   // Detect API key availability
-  const braveKeyFile = path.join(homedir, '.gsd', 'brave_api_key');
+  const braveKeyFile = path.join(homedir, '.gsdt', 'brave_api_key');
   const hasBraveSearch = !!(process.env.BRAVE_API_KEY || fs.existsSync(braveKeyFile));
-  const firecrawlKeyFile = path.join(homedir, '.gsd', 'firecrawl_api_key');
+  const firecrawlKeyFile = path.join(homedir, '.gsdt', 'firecrawl_api_key');
   const hasFirecrawl = !!(process.env.FIRECRAWL_API_KEY || fs.existsSync(firecrawlKeyFile));
-  const exaKeyFile = path.join(homedir, '.gsd', 'exa_api_key');
+  const exaKeyFile = path.join(homedir, '.gsdt', 'exa_api_key');
   const hasExaSearch = !!(process.env.EXA_API_KEY || fs.existsSync(exaKeyFile));
 
-  // Load user-level defaults from ~/.gsd/defaults.json if available
-  const globalDefaultsPath = path.join(homedir, '.gsd', 'defaults.json');
+  // Load user-level defaults from ~/.gsdt/defaults.json if available
+  const globalDefaultsPath = path.join(homedir, '.gsdt', 'defaults.json');
   let userDefaults = {};
   try {
     if (fs.existsSync(globalDefaultsPath)) {
