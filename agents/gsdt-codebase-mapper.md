@@ -105,7 +105,7 @@ grep -r "import.*stripe\|import.*supabase\|import.*aws\|import.*@" src/ --includ
 **For arch focus:**
 ```bash
 # Directory structure
-find . -type d -not -path '*/node_modules/*' -not -path '*/.git/*' | head -50
+find . -type d -not -path '*/node_modules/*' -not -path '*/.git/*' -not -path '*/.gsdt-planning/*' -not -path '*/.claude/*' -not -path '*/.vibe-team-workspace/*' | head -50
 
 # Entry points
 ls src/index.* src/main.* src/app.* src/server.* app/page.* 2>/dev/null
@@ -122,7 +122,7 @@ cat .prettierrc 2>/dev/null
 
 # Test files and config
 ls jest.config.* vitest.config.* 2>/dev/null
-find . -name "*.test.*" -o -name "*.spec.*" | head -30
+find . -not -path '*/.gsdt-planning/*' -not -path '*/.claude/*' -not -path '*/.vibe-team-workspace/*' \( -name "*.test.*" -o -name "*.spec.*" \) | head -30
 
 # Sample source files for convention analysis
 ls src/**/*.ts 2>/dev/null | head -10

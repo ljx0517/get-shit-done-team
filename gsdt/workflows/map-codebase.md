@@ -37,6 +37,11 @@ AGENT_SKILLS_MAPPER=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" agent-skills 
 ```
 
 Extract from init JSON: `mapper_model`, `commit_docs`, `codebase_dir`, `existing_maps`, `has_maps`, `codebase_dir_exists`.
+
+Determine refresh mode from arguments:
+- If `$ARGUMENTS` contains `--refresh`, set `FORCE_REFRESH=true`.
+- Otherwise, set `FORCE_REFRESH=false`.
+- Strip `--refresh` from any focus-area text before passing focus instructions to mapper agents.
 </step>
 
 <step name="check_existing">
@@ -45,6 +50,15 @@ Check if .gsdt-planning/codebase/ already exists using `has_maps` from init cont
 If `codebase_dir_exists` is true:
 ```bash
 ls -la .gsdt-planning/codebase/
+```
+
+**If `codebase_dir_exists` is true AND `$ARGUMENTS` contains `--refresh`:**
+
+- Do not ask the user which refresh mode to use.
+- Delete .gsdt-planning/codebase/, continue to create_structure.
+
+```bash
+rm -rf .gsdt-planning/codebase
 ```
 
 **If exists:**

@@ -1,7 +1,7 @@
 ---
 name: gsdt:map-codebase
 description: Analyze codebase with parallel mapper agents to produce .gsdt-planning/codebase/ documents
-argument-hint: "[optional: specific area to map, e.g., 'api' or 'auth']"
+argument-hint: "[--refresh] [optional: specific area to map, e.g., 'api' or 'auth']"
 allowed-tools:
   - Read
   - Bash
@@ -26,6 +26,9 @@ Output: .gsdt-planning/codebase/ folder with 7 structured documents about the co
 <context>
 Focus area: $ARGUMENTS (optional - if provided, tells agents to focus on specific subsystem)
 
+Flags:
+- `--refresh` — force a full remap of `.gsdt-planning/codebase/` without asking whether to refresh, update, or skip
+
 **Load project state if exists:**
 Check for .gsdt-planning/STATE.md - loads context if project already initialized
 
@@ -49,7 +52,7 @@ Check for .gsdt-planning/STATE.md - loads context if project already initialized
 </when_to_use>
 
 <process>
-1. Check if .gsdt-planning/codebase/ already exists (offer to refresh or skip)
+1. Check if .gsdt-planning/codebase/ already exists (`--refresh` forces a full remap without prompting)
 2. Create .gsdt-planning/codebase/ directory structure
 3. Spawn 4 parallel gsdt-codebase-mapper agents:
    - Agent 1: tech focus → writes STACK.md, INTEGRATIONS.md
