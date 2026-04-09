@@ -23,7 +23,7 @@ Check if `--auto` flag is present in $ARGUMENTS.
 
 - If brownfield mapping is needed, run `/gsdt:map-codebase --refresh` first without asking
 - Skip deep questioning (extract context from provided document)
-- Config: YOLO mode is implicit (skip that question). If `.gsdt-planning/config.json` already exists, reuse it and skip Step 2a questions. Otherwise lock `granularity: "fine"`, `parallelization: true`, and `commit_docs: true`, then ask only the remaining workflow-agent/model questions in Step 2a.
+- Config: YOLO mode is implicit (skip that question). If `.gsdt-planning/config.json` already exists, reuse it and skip Step 2a questions. Otherwise apply fixed defaults: `granularity: "fine"`, `parallelization: true`, `commit_docs: true`, `workflow.research: true`, `workflow.plan_check: true`, `workflow.verifier: true`, `model_profile: "balanced"`. No questions asked — true zero-interaction.
 - After config: run Steps 6-9 automatically with smart defaults:
   - Research: Always yes
   - Requirements: Include all table stakes + features from provided document
@@ -103,64 +103,24 @@ node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" config-set workflow._auto_chain_act
 
 Proceed directly to Step 4.
 
-**Question path (only when config does not exist):**
+**Default path (only when config does not exist):**
 
-YOLO mode is implicit (auto = YOLO). Apply these fixed defaults without asking:
+YOLO mode is implicit (auto = YOLO). Apply all defaults without asking — no questions in auto mode:
 
+- `mode: "yolo"`
 - `granularity: "fine"`
 - `parallelization: true` (`Independent plans run simultaneously`)
 - `commit_docs: true` (`Planning docs tracked in version control`)
+- `workflow.research: true`
+- `workflow.plan_check: true`
+- `workflow.verifier: true`
+- `model_profile: "balanced"` (Sonnet for most agents — good quality/cost ratio)
 
-**Ask remaining workflow-agent questions (same as Step 5):**
-
-```
-AskUserQuestion([
-  {
-    header: "Research",
-    question: "Research before planning each phase? (adds tokens/time)",
-    multiSelect: false,
-    options: [
-      { label: "Yes (Recommended)", description: "Investigate domain, find patterns, surface gotchas" },
-      { label: "No", description: "Plan directly from requirements" }
-    ]
-  },
-  {
-    header: "Plan Check",
-    question: "Verify plans will achieve their goals? (adds tokens/time)",
-    multiSelect: false,
-    options: [
-      { label: "Yes (Recommended)", description: "Catch gaps before execution starts" },
-      { label: "No", description: "Execute plans without verification" }
-    ]
-  },
-  {
-    header: "Verifier",
-    question: "Verify work satisfies requirements after each phase? (adds tokens/time)",
-    multiSelect: false,
-    options: [
-      { label: "Yes (Recommended)", description: "Confirm deliverables match phase goals" },
-      { label: "No", description: "Trust execution, skip verification" }
-    ]
-  },
-  {
-    header: "AI Models",
-    question: "Which AI models for planning agents?",
-    multiSelect: false,
-    options: [
-      { label: "Balanced (Recommended)", description: "Sonnet for most agents — good quality/cost ratio" },
-      { label: "Quality", description: "Opus for research/roadmap — higher cost, deeper analysis" },
-      { label: "Budget", description: "Haiku where possible — fastest, lowest cost" },
-      { label: "Inherit", description: "Use the current session model for all agents (OpenCode /model)" }
-    ]
-  }
-])
-```
-
-Create `.gsdt-planning/config.json` with the fixed core defaults plus the selected workflow-agent settings:
+Create `.gsdt-planning/config.json` with these defaults:
 
 ```bash
 mkdir -p .gsdt-planning
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" config-new-project '{"mode":"yolo","granularity":"fine","parallelization":true,"commit_docs":true,"model_profile":"quality|balanced|budget|inherit","workflow":{"research":true|false,"plan_check":true|false,"verifier":true|false,"nyquist_validation":true,"auto_advance":true}}'
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" config-new-project '{"mode":"yolo","granularity":"fine","parallelization":true,"commit_docs":true,"model_profile":"balanced","workflow":{"research":true,"plan_check":true,"verifier":true,"nyquist_validation":true,"auto_advance":true}}'
 ```
 
 Planning docs stay tracked in git in this path. Do not add `.gsdt-planning/` to `.gitignore` here.
@@ -570,6 +530,14 @@ Task(prompt="<research_type>
 Project Research — Stack dimension for [domain].
 </research_type>
 
+<tool_hint>
+  <primary>context7</primary>
+  <secondary>webfetch</secondary>
+  <tertiary>websearch</tertiary>
+  <skip_context7>false</skip_context7>
+  <rationale>Stack research targets specific libraries. Context7 provides version-aware API documentation.</rationale>
+</tool_hint>
+
 <milestone_context>
 [greenfield OR subsequent]
 
@@ -609,6 +577,14 @@ Use template: ~/.claude/gsdt/templates/research-project/STACK.md
 Task(prompt="<research_type>
 Project Research — Features dimension for [domain].
 </research_type>
+
+<tool_hint>
+  <primary>websearch</primary>
+  <secondary>webfetch</secondary>
+  <tertiary>context7</tertiary>
+  <skip_context7>true</skip_context7>
+  <rationale>Features research is ecosystem-level: what do products in this domain do? Context7 rarely has relevant library docs for product-level feature discovery.</rationale>
+</tool_hint>
 
 <milestone_context>
 [greenfield OR subsequent]
@@ -650,6 +626,14 @@ Task(prompt="<research_type>
 Project Research — Architecture dimension for [domain].
 </research_type>
 
+<tool_hint>
+  <primary>websearch</primary>
+  <secondary>context7</secondary>
+  <tertiary>webfetch</tertiary>
+  <skip_context7>false</skip_context7>
+  <rationale>Architecture research finds system patterns via blog posts and case studies first. Context7 useful secondarily for framework-specific patterns.</rationale>
+</tool_hint>
+
 <milestone_context>
 [greenfield OR subsequent]
 
@@ -689,6 +673,14 @@ Use template: ~/.claude/gsdt/templates/research-project/ARCHITECTURE.md
 Task(prompt="<research_type>
 Project Research — Pitfalls dimension for [domain].
 </research_type>
+
+<tool_hint>
+  <primary>websearch</primary>
+  <secondary>webfetch</secondary>
+  <tertiary>context7</tertiary>
+  <skip_context7>true</skip_context7>
+  <rationale>Pitfalls research needs post-mortems, issue threads, community complaints. Context7 has library docs, not failure stories.</rationale>
+</tool_hint>
 
 <milestone_context>
 [greenfield OR subsequent]

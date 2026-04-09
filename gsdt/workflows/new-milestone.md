@@ -209,6 +209,8 @@ Spawn 4 parallel gsdt-project-researcher agents. Each uses this template with di
 Task(prompt="
 <research_type>Project Research — {DIMENSION} for [new features].</research_type>
 
+${TOOL_HINT}
+
 <milestone_context>
 SUBSEQUENT MILESTONE — Adding [target features] to existing app.
 {EXISTING_CONTEXT}
@@ -243,6 +245,7 @@ Use template: ~/.claude/gsdt/templates/research-project/{FILE}
 | CONSUMER | Specific libraries with versions for NEW capabilities, integration points, what NOT to add | Table stakes vs differentiators vs anti-features, complexity noted, dependencies on existing | Integration points, new components, data flow changes, suggested build order | Warning signs, prevention strategy, which phase should address it |
 | GATES | Versions current (verify with Context7), rationale explains WHY, integration considered | Categories clear, complexity noted, dependencies identified | Integration points identified, new vs modified explicit, build order considers deps | Pitfalls specific to adding these features, integration pitfalls covered, prevention actionable |
 | FILE | STACK.md | FEATURES.md | ARCHITECTURE.md | PITFALLS.md |
+| TOOL_HINT | `<tool_hint><primary>context7</primary><secondary>webfetch</secondary><tertiary>websearch</tertiary><skip_context7>false</skip_context7><rationale>Stack targets libraries.</rationale></tool_hint>` | `<tool_hint><primary>websearch</primary><secondary>webfetch</secondary><tertiary>context7</tertiary><skip_context7>true</skip_context7><rationale>Features is ecosystem-level.</rationale></tool_hint>` | `<tool_hint><primary>websearch</primary><secondary>context7</secondary><tertiary>webfetch</tertiary><skip_context7>false</skip_context7><rationale>Architecture finds patterns; Context7 for framework specifics.</rationale></tool_hint>` | `<tool_hint><primary>websearch</primary><secondary>webfetch</secondary><tertiary>context7</tertiary><skip_context7>true</skip_context7><rationale>Pitfalls needs post-mortems, not library docs.</rationale></tool_hint>` |
 
 After all 4 complete, spawn synthesizer:
 

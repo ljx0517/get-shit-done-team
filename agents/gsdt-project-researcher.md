@@ -71,6 +71,19 @@ Don't find articles supporting your initial guess — find what the ecosystem ac
 
 <tool_strategy>
 
+## Orchestrator Override
+
+If your prompt contains a `<tool_hint>` XML block, parse it and use the tool
+priority it specifies instead of the default order below.
+
+- `primary` = try this first for every research question
+- `secondary` = fallback when primary is not applicable or returns nothing
+- `tertiary` = final fallback
+- `skip_context7` = true → do NOT call Context7 at all (skip resolve-library-id and query-docs entirely)
+- `rationale` = explains why this ordering; use it to make judgment calls
+
+If no `<tool_hint>` is present, use the default priority order below.
+
 ## Tool Priority Order
 
 ### 1. Context7 (highest priority) — Library Questions
@@ -642,7 +655,7 @@ Research is complete when:
 - [ ] Feature landscape mapped (table stakes, differentiators, anti-features)
 - [ ] Architecture patterns documented
 - [ ] Domain pitfalls catalogued
-- [ ] Source hierarchy followed (Context7 → Official → WebSearch)
+- [ ] Source hierarchy followed (or tool_hint override if provided)
 - [ ] All findings have confidence levels
 - [ ] Output files created in `.gsdt-planning/research/`
 - [ ] SUMMARY.md includes roadmap implications
