@@ -7,6 +7,7 @@ const path = require('path');
 const { escapeRegex, loadConfig, normalizePhaseName, comparePhaseNum, findPhaseInternal, getArchivedPhaseDirs, generateSlugInternal, getMilestonePhaseFilter, stripShippedMilestones, extractCurrentMilestone, replaceInCurrentMilestone, toPosixPath, planningDir, output, error, readSubdirectories } = require('./core.cjs');
 const { extractFrontmatter } = require('./frontmatter.cjs');
 const { writeStateMd, stateExtractField, stateReplaceField, stateReplaceFieldWithFallback } = require('./state.cjs');
+const { detectCycles, validateWaveConsistency, validateFileConflicts } = require('./dag.cjs');
 
 function cmdPhasesList(cwd, options, raw) {
   const phasesDir = path.join(planningDir(cwd), 'phases');
@@ -277,10 +278,17 @@ function cmdPhasePlanIndex(cwd, phase, raw) {
       incomplete.push(planId);
     }
 
+    // Parse depends_on
+    let dependsOn = [];
+    if (fm.depends_on) {
+      dependsOn = Array.isArray(fm.depends_on) ? fm.depends_on : [fm.depends_on];
+    }
+
     const plan = {
       id: planId,
       wave,
       autonomous,
+      depends_on: dependsOn,
       objective: extractObjective(content) || fm.objective || null,
       files_modified: filesModified,
       task_count: taskCount,
@@ -297,12 +305,22 @@ function cmdPhasePlanIndex(cwd, phase, raw) {
     waves[waveKey].push(planId);
   }
 
+  // DAG validation
+  const cycle = detectCycles(plans);
+  const waveWarnings = validateWaveConsistency(plans);
+  const fileConflicts = validateFileConflicts(plans);
+
   const result = {
     phase: normalized,
     plans,
     waves,
     incomplete,
     has_checkpoints: hasCheckpoints,
+    dag_validation: {
+      cycle,
+      wave_warnings: waveWarnings,
+      file_conflicts: fileConflicts,
+    },
   };
 
   output(result, raw);

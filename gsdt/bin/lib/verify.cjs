@@ -8,6 +8,7 @@ const os = require('os');
 const { safeReadFile, loadConfig, normalizePhaseName, execGit, findPhaseInternal, getMilestoneInfo, stripShippedMilestones, extractCurrentMilestone, planningDir, planningRoot, planningDirDisplay, output, error, checkAgentsInstalled } = require('./core.cjs');
 const { extractFrontmatter, parseMustHavesBlock } = require('./frontmatter.cjs');
 const { writeStateMd } = require('./state.cjs');
+const { detectCycles, validateWaveConsistency, validateFileConflicts } = require('./dag.cjs');
 
 function cmdVerifySummary(cwd, summaryPath, checkFileCount, raw) {
   if (!summaryPath) {
@@ -876,6 +877,76 @@ function cmdValidateAgents(cwd, raw) {
   }, raw);
 }
 
+function cmdVerifyDependencyGraph(cwd, phase, raw) {
+  if (!phase) { error('phase required for verify dependency-graph'); }
+
+  const phaseInfo = findPhaseInternal(cwd, phase);
+  if (!phaseInfo || !phaseInfo.found) {
+    output({ error: 'Phase not found', phase }, raw);
+    return;
+  }
+
+  const phaseDir = path.join(cwd, phaseInfo.directory);
+  let files;
+  try { files = fs.readdirSync(phaseDir); } catch { output({ error: 'Cannot read phase directory' }, raw); return; }
+
+  const planFiles = files.filter(f => f.endsWith('-PLAN.md')).sort();
+
+  if (planFiles.length === 0) {
+    output({ valid: true, errors: [], warnings: [], plans: [], waves: {}, message: 'No plans found' }, raw, 'valid');
+    return;
+  }
+
+  const plans = [];
+  for (const planFile of planFiles) {
+    const planId = planFile.replace('-PLAN.md', '');
+    const content = fs.readFileSync(path.join(phaseDir, planFile), 'utf-8');
+    const fm = extractFrontmatter(content);
+
+    const wave = parseInt(fm.wave, 10) || 1;
+    let dependsOn = [];
+    if (fm.depends_on) {
+      dependsOn = Array.isArray(fm.depends_on) ? fm.depends_on : [fm.depends_on];
+    }
+    let filesModified = [];
+    const fmFiles = fm['files_modified'] || fm['files-modified'];
+    if (fmFiles) {
+      filesModified = Array.isArray(fmFiles) ? fmFiles : [fmFiles];
+    }
+
+    plans.push({ id: planId, wave, depends_on: dependsOn, files_modified: filesModified });
+  }
+
+  // Run validations
+  const cycle = detectCycles(plans);
+  const waveWarnings = validateWaveConsistency(plans);
+  const fileConflicts = validateFileConflicts(plans);
+
+  const errors = [];
+  if (cycle) errors.push(`Cyclic dependency detected: ${cycle}`);
+
+  const warnings = [...waveWarnings, ...fileConflicts];
+
+  // Build wave grouping
+  const waves = {};
+  for (const plan of plans) {
+    const waveKey = String(plan.wave);
+    if (!waves[waveKey]) waves[waveKey] = [];
+    waves[waveKey].push(plan.id);
+  }
+
+  output({
+    valid: errors.length === 0,
+    errors,
+    warnings,
+    plans: plans.map(p => ({ id: p.id, wave: p.wave, depends_on: p.depends_on, files_modified: p.files_modified })),
+    waves,
+    cycle,
+    wave_warnings: waveWarnings,
+    file_conflicts: fileConflicts,
+  }, raw, errors.length === 0 ? 'valid' : 'invalid');
+}
+
 module.exports = {
   cmdVerifySummary,
   cmdVerifyPlanStructure,
@@ -887,4 +958,5 @@ module.exports = {
   cmdValidateConsistency,
   cmdValidateHealth,
   cmdValidateAgents,
+  cmdVerifyDependencyGraph,
 };

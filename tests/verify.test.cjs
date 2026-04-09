@@ -1011,3 +1011,137 @@ describe('verify key-links command', () => {
     );
   });
 });
+
+// ─── verify dependency-graph ──────────────────────────────────────────────────
+
+describe('verify dependency-graph command', () => {
+  let tmpDir;
+
+  beforeEach(() => {
+    tmpDir = createTempProject();
+  });
+
+  afterEach(() => {
+    cleanup(tmpDir);
+  });
+
+  // Helper: create a PLAN.md with given frontmatter overrides
+  function writePlan(phaseDir, planId, { wave = 1, dependsOn = '[]', filesModified = '[]' } = {}) {
+    const content = [
+      '---',
+      `phase: 01-test`,
+      `plan: ${planId}`,
+      'type: execute',
+      `wave: ${wave}`,
+      `depends_on: ${dependsOn}`,
+      `files_modified: ${filesModified}`,
+      'autonomous: true',
+      'must_haves:',
+      '  truths:',
+      '    - "something is true"',
+      '---',
+      '',
+      '<tasks>',
+      '<task type="auto">',
+      '  <name>Task 1</name>',
+      '  <action>Do something</action>',
+      '  <done>Done</done>',
+      '</task>',
+      '</tasks>',
+    ].join('\n');
+    fs.writeFileSync(path.join(phaseDir, `${planId}-PLAN.md`), content);
+  }
+
+  test('returns valid for linear chain with consistent waves', () => {
+    const phaseDir = path.join(tmpDir, '.gsdt-planning', 'phases', '01-test');
+    fs.mkdirSync(phaseDir, { recursive: true });
+    writePlan(phaseDir, '01', { wave: 1 });
+    writePlan(phaseDir, '02', { wave: 2, dependsOn: '["01"]' });
+    writePlan(phaseDir, '03', { wave: 3, dependsOn: '["02"]' });
+
+    const result = runGsdTools('verify dependency-graph 01', tmpDir);
+    assert.ok(result.success, `Command failed: ${result.error}`);
+    const output = JSON.parse(result.output);
+    assert.strictEqual(output.valid, true);
+    assert.strictEqual(output.errors.length, 0);
+    assert.strictEqual(output.cycle, null);
+    assert.strictEqual(output.wave_warnings.length, 0);
+  });
+
+  test('detects cycle in 2-node loop', () => {
+    const phaseDir = path.join(tmpDir, '.gsdt-planning', 'phases', '01-test');
+    fs.mkdirSync(phaseDir, { recursive: true });
+    writePlan(phaseDir, '01', { wave: 1, dependsOn: '["02"]' });
+    writePlan(phaseDir, '02', { wave: 1, dependsOn: '["01"]' });
+
+    const result = runGsdTools('verify dependency-graph 01', tmpDir);
+    assert.ok(result.success, `Command failed: ${result.error}`);
+    const output = JSON.parse(result.output);
+    assert.strictEqual(output.valid, false);
+    assert.ok(output.cycle, 'Expected cycle to be detected');
+    assert.ok(output.cycle.includes('→'), `Expected arrow in cycle: ${output.cycle}`);
+    assert.strictEqual(output.errors.length, 1);
+  });
+
+  test('detects wave inconsistency', () => {
+    const phaseDir = path.join(tmpDir, '.gsdt-planning', 'phases', '01-test');
+    fs.mkdirSync(phaseDir, { recursive: true });
+    writePlan(phaseDir, '01', { wave: 2 });
+    writePlan(phaseDir, '02', { wave: 1, dependsOn: '["01"]' });
+
+    const result = runGsdTools('verify dependency-graph 01', tmpDir);
+    assert.ok(result.success, `Command failed: ${result.error}`);
+    const output = JSON.parse(result.output);
+    assert.strictEqual(output.valid, true); // no cycle, just warning
+    assert.strictEqual(output.wave_warnings.length, 1);
+    assert.ok(output.wave_warnings[0].includes('wave should be greater'));
+  });
+
+  test('detects file conflict in same wave', () => {
+    const phaseDir = path.join(tmpDir, '.gsdt-planning', 'phases', '01-test');
+    fs.mkdirSync(phaseDir, { recursive: true });
+    writePlan(phaseDir, '01', { wave: 1, filesModified: '["src/core.ts"]' });
+    writePlan(phaseDir, '02', { wave: 1, filesModified: '["src/core.ts"]' });
+
+    const result = runGsdTools('verify dependency-graph 01', tmpDir);
+    assert.ok(result.success, `Command failed: ${result.error}`);
+    const output = JSON.parse(result.output);
+    assert.strictEqual(output.valid, true);
+    assert.strictEqual(output.file_conflicts.length, 1);
+    assert.ok(output.file_conflicts[0].includes('multiple plans in wave 1'));
+  });
+
+  test('returns valid for diamond with no cycle', () => {
+    const phaseDir = path.join(tmpDir, '.gsdt-planning', 'phases', '01-test');
+    fs.mkdirSync(phaseDir, { recursive: true });
+    writePlan(phaseDir, '01', { wave: 1 });
+    writePlan(phaseDir, '02', { wave: 2, dependsOn: '["01"]' });
+    writePlan(phaseDir, '03', { wave: 2, dependsOn: '["01"]' });
+    writePlan(phaseDir, '04', { wave: 3, dependsOn: '["02", "03"]' });
+
+    const result = runGsdTools('verify dependency-graph 01', tmpDir);
+    assert.ok(result.success, `Command failed: ${result.error}`);
+    const output = JSON.parse(result.output);
+    assert.strictEqual(output.valid, true);
+    assert.strictEqual(output.cycle, null);
+    assert.strictEqual(output.wave_warnings.length, 0);
+    assert.deepStrictEqual(output.waves, { '1': ['01'], '2': ['02', '03'], '3': ['04'] });
+  });
+
+  test('handles phase not found', () => {
+    const result = runGsdTools('verify dependency-graph 99', tmpDir);
+    assert.ok(result.success, `Command failed: ${result.error}`);
+    const output = JSON.parse(result.output);
+    assert.ok(output.error, 'Expected error for missing phase');
+  });
+
+  test('handles empty phase directory', () => {
+    const phaseDir = path.join(tmpDir, '.gsdt-planning', 'phases', '01-empty');
+    fs.mkdirSync(phaseDir, { recursive: true });
+
+    const result = runGsdTools('verify dependency-graph 01', tmpDir);
+    assert.ok(result.success, `Command failed: ${result.error}`);
+    const output = JSON.parse(result.output);
+    assert.strictEqual(output.valid, true);
+  });
+});
