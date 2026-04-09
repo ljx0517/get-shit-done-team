@@ -1,0 +1,285 @@
+ ▐▛███▜▌   Claude Code v2.1.87
+▝▜█████▛▘  mimo-v2-pro · API Usage Billing
+  ▘▘ ▝▝    ~/…/vibe-agent-team/main/third/cli-tools/get-shit-done-team
+
+❯  分析一下代码和工作流程，从new-project 开始，关注每个环节的效率               
+
+⏺ 我来分析 GSDT 从 new-project
+  开始的完整工作流程，重点关注每个环节的效率。让我先全面了解代码结构。
+
+⏺ Explore(Explore new-project workflow)
+  ⎿  Done (18 tool uses · 117.5k tokens · 2m 12s)
+  (ctrl+o to expand)
+
+⏺ 好的，我现在对整个 new-project 工作流程有了完整的了解。让我深入分析各个环节的
+  效率，需要先查看关键代码文件来验证实际实现。
+
+⏺ 4 Explore agents finished (ctrl+o to expand)
+   ├─ Analyze research phase efficiency · 6 tool uses · 0 tokens
+   │  ⎿  Done
+   ├─ Analyze roadmap phase efficiency · 7 tool uses · 0 tokens
+   │  ⎿  Done
+   ├─ Analyze config and intake efficiency · 3 tool uses · 0 tokens
+   │  ⎿  Done
+   └─ Analyze orchestrator workflow · 2 tool uses · 0 tokens
+      ⎿  Done
+
+⏺ 现在我有了四个维度的深度分析。让我整合所有发现，给出完整的效率分析报告。
+
+  ---
+  GSDT new-project 工作流程效率分析
+
+  总览：关键路径与时间分布
+
+  Step 1 (Setup) ──→ Step 2 (Brownfield) ──→ Step 3 (Questioning) ──→ Step 4
+  (PROJECT.md)
+       │                                                                    │
+       │              ┌──────────────────────────────────────────────────────┘
+       │              ▼
+       │         Step 5 (Config) ──→ Step 5.5 (Resolve Models)
+       │              │                        │
+       │              ▼                        ▼
+       │         Step 6: Research ────────→ Step 7 (Requirements) ──→ Step 8
+  (Roadmap) ──→ Step 9
+       │              │
+       │              ├── Researcher-Stack ──┐
+       │              ├── Researcher-Feature ─┤
+       │              ├── Researcher-Arch ────┤──→ Synthesizer ──→ SUMMARY.md
+       │              └── Researcher-Pitfall ─┘
+       │
+       唯一并行点 ↑
+
+  核心发现：整个 9 步流程中，只有 Step 6 的 4 个 researcher 是并行的，其余 8 
+  步全部串行。
+
+  ---
+  一、研究阶段（Step 6）：效率问题最集中
+
+  1.1 研究者间存在大量重复工作（严重）
+
+  四个 researcher 共享相同的工具链、相同的搜索策略，但彼此完全隔离：
+  - Stack researcher 搜索 "best practices [tech] 2025" 会同时发现 feature
+  列表和架构模式
+  - Features 和 Architecture researcher 会独立重复搜索相同内容
+  - Pitfalls researcher 要做出有价值的发现，必须隐式研究其他三个维度
+
+  没有共享机制：没有共享 scratchpad、没有中间文件、没有消息传递。一个 researcher
+   发现的 URL 不能被其他 researcher 复用。
+
+  1.2 Prompt 膨胀严重（中等）
+
+  每个 researcher 加载 655 行 prompt，但实际使用：
+  - ~30 行角色指令
+  - ~100 行工具策略
+  - ~300 行未使用的输出模板（占 prompt 近一半）
+
+  4 个 researcher 总计约 1200 行重复的 <philosophy> 和
+  <verification_protocol>，浪费大量 token。
+
+  1.3 工具链不区分维度（中等）
+
+  所有 researcher 使用相同的 Context7 → WebFetch → WebSearch 优先级链。但：
+  - Features researcher 和 Pitfalls researcher 几乎不可能从
+  Context7（面向库文档）获得有用结果
+  - 它们浪费 token 在失败的 Context7 查找上，然后才降级到 WebSearch
+
+  1.4 尾部延迟问题（中等）
+
+  Synthesizer 必须等待最慢的 researcher
+  完成。没有超时机制、没有部分合成降级方案。如果 Stack 30 秒完成而 Pitfalls 需要
+   5 分钟，Stack 的发现就空等 4.5 分钟。
+
+  1.5 Synthesizer 的价值存疑（中等）
+
+  Synthesizer 的 8 步流程中：
+  - **Step 4（推导路线图影响）**是唯一真正增值的步骤
+  - Step 2-3 本质上是轻量级摘要，与直接阅读 4 个文件差别不大
+  - 没有矛盾检测：没有指令要求 "如果 STACK.md 推荐 X 但 ARCHITECTURE.md 假设
+  Y，解决冲突"
+  - 信心评估信任 researcher 的自报告，没有独立验证
+
+  ---
+  二、编排器（Orchestrator）：串行瓶颈与冗余
+
+  2.1 Step 5.5 是死代码（低）
+
+  Resolve Model Profile 在 Step 1 已经完成解析，Step 5.5 只是重新读取相同的 init
+   输出。应该直接删除。
+
+  2.2 Agent Skills 全程持有（中等）
+
+  AGENT_SKILLS_RESEARCHER、AGENT_SKILLS_SYNTHESIZER、AGENT_SKILLS_ROADMAPPER 在
+  Step 1 获取后一直携带到 Step 9，但只在 Step 6 和 Step 8 使用。这些是完整的
+  skill prompt，可能很大。应该按需获取（just-in-time）。
+
+  2.3 Step 7 准备工作可以预计算（中等）
+
+  Step 7 在 Synthesizer 完成后，重新读取 PROJECT.md 和 research/FEATURES.md
+  来准备 AskUserQuestion 的选项。如果 FEATURES.md
+  包含结构化的特性分类列表，这些选项可以在 Step 6 期间预构建，消除准备延迟。
+
+  2.4 交互模式下 Step 7 串行提问过多（中等）
+
+  每个 feature 分类一个 AskUserQuestion 调用。6 个分类 = 6 轮串行用户交互。加上
+  "Any additions?" 和 "Full review"，Step 7 可能需要 8-10
+  轮交互。可以合并为更少的综合问题。
+
+  2.5 auto 模式并非真正零交互（中等）
+
+  - Step 2a 仍然问 4 个配置问题，应该有默认值（Yes/Yes/Yes/Balanced）+ --profile
+   覆盖
+  - Step 6 research 强制开启，即使文档已包含完整研究
+  - Step 8 在 auto 模式下仍然完整展示路线图表格然后 auto-approve，应该跳过展示
+  - Step 4.5 可能触发 AskUserQuestion，违反 auto 模式的零交互契约
+
+  ---
+  三、配置系统：两套独立实现导致漂移风险
+
+  3.1 双重默认值系统（中等）
+
+  ┌────────────────────┬─────────────────────────┬────────────────┐
+  │        位置        │          函数           │      用途      │
+  ├────────────────────┼─────────────────────────┼────────────────┤
+  │ config.cjs:103-138 │ buildNewProjectConfig() │ 创建新项目配置 │
+  ├────────────────────┼─────────────────────────┼────────────────┤
+  │ core.cjs:237-258   │ loadConfig()            │ 运行时读取配置 │
+  └────────────────────┴─────────────────────────┴────────────────┘
+
+  两套默认值独立维护，存在漂移风险。例如 API key 检测只在 buildNewProjectConfig
+  中做，loadConfig 不做，导致同一用户状态产生不同结果。
+
+  3.2 loadConfig() 无缓存（中等）
+
+  每次调用都重新：
+  1. resolvePlanningDirName() — 2 次 existsSync + 1 次 statSync
+  2. 读取 config.json — readFileSync
+  3. 迁移逻辑 — 可能触发 writeFileSync
+  4. detectSubRepos() — 调用 2 次 readdirSync
+
+  resolveModelInternal 每次解析模型都调用 loadConfig。N 个 agent = N
+  次磁盘读取。简单的模块级缓存（基于 cwd 失效）即可消除。
+
+  3.3 loadConfig() 有写入副作用（低-中）
+
+  名为 "load" 的函数会写磁盘（迁移 deprecated key 时
+  writeFileSync），违反最小意外原则。并发调用可能产生竞态条件。
+
+  3.4 findProjectRoot() 内层遍历（低）
+
+  isInsideGitRepo 对每个祖先目录做线性向上遍历检查 .git。最坏情况 ~64
+  次文件系统检查。可以用 git rev-parse --show-toplevel 一次调用替代。
+
+  ---
+  四、路线图阶段（Step 8）：LLM-only 验证是最大风险
+
+  4.1 覆盖率验证依赖 LLM 自检（中高）
+
+  Roadmapper 被要求 "coverage = 100%" 但验证完全靠 LLM
+  在脑中跟踪。没有程序化后写验证步骤。
+
+  风险：15+ 个 requirement 时，LLM
+  同时设计阶段、推导成功标准、跟踪覆盖率的认知负荷会导致错误，触发 revision
+  loop（完整重新 spawn roadmapper）。
+
+  修复建议：写完 ROADMAP.md 后，用 roadmap.cjs 的 cmdRoadmapAnalyze
+  做机械验证，捕获孤立的 requirement，避免完整重新 spawn。
+
+  4.2 auto 模式下 Requirements + Roadmap 可合并（中等）
+
+  当前两个步骤各 spawn 一个 agent，roadmapper 立即读取 requirements agent
+  刚写完的文件。auto 模式没有审批门，一个合并的 requirements-and-roadmapper
+  agent 可以一次完成，节省一次 agent spawn + 重新读取。
+
+  ---
+  五、提交策略：可以更紧凑
+
+  ┌──────┬────────────────────────────────────────┬─────────────────────────┐
+  │ 步骤 │                  文件                  │        提交信息         │
+  ├──────┼────────────────────────────────────────┼─────────────────────────┤
+  │ 2a/5 │ config.json                            │ chore: add project      │
+  │      │                                        │ config                  │
+  ├──────┼────────────────────────────────────────┼─────────────────────────┤
+  │ 4    │ PROJECT.md                             │ docs: initialize        │
+  │      │                                        │ project                 │
+  ├──────┼────────────────────────────────────────┼─────────────────────────┤
+  │ 7    │ REQUIREMENTS.md                        │ docs: define v1         │
+  │      │                                        │ requirements            │
+  ├──────┼────────────────────────────────────────┼─────────────────────────┤
+  │ 8    │ ROADMAP.md, STATE.md, REQUIREMENTS.md, │ docs: create roadmap    │
+  │      │  CLAUDE.md                             │                         │
+  └──────┴────────────────────────────────────────┴─────────────────────────┘
+
+  REQUIREMENTS.md 被提交两次（Step 7 和 Step 8）。可以用混合策略：Steps 4+5
+  合并提交，Steps 7+8 合并提交，从 4 次降到 2 次，同时保留崩溃恢复能力。
+
+  ---
+  六、Intake 到 New-Project 的信息损失
+
+  Intake 系统将结构化数据（unit ID、evidence
+  数组、confidence、conflicts、phase_hint）序列化为纯 markdown brief。下游
+  new-project 必须从 markdown 重新提取语义结构。
+
+  丢失的数据：unit ID、evidence 来源、open_questions、conflicts_with、confidence
+   值、status。Brief 是显示文档，不是数据交换格式。
+
+  ---
+  七、按影响排序的改进建议
+
+  ┌───────┬───────────────────────────────┬───────────────────────┬───────┐
+  │ 优先  │            改进项             │         影响          │ 工作  │
+  │  级   │                               │                       │  量   │
+  ├───────┼───────────────────────────────┼───────────────────────┼───────┤
+  │ P0    │ 路线图写入后程序化验证覆盖率  │ 避免完整 roadmapper   │ 小    │
+  │       │                               │ re-spawn              │       │
+  ├───────┼───────────────────────────────┼───────────────────────┼───────┤
+  │ P0    │ auto 模式配置问题默认值化     │ 实现真正零交互        │ 小    │
+  ├───────┼───────────────────────────────┼───────────────────────┼───────┤
+  │ P1    │ loadConfig() 添加基于 cwd     │ 消除 N 次冗余磁盘读取 │ 小    │
+  │       │ 的缓存                        │                       │       │
+  ├───────┼───────────────────────────────┼───────────────────────┼───────┤
+  │ P1    │ 研究者 prompt                 │ 减少每个 researcher   │ 小    │
+  │       │ 精简（移除未使用模板）        │ ~300 行 token         │       │
+  ├───────┼───────────────────────────────┼───────────────────────┼───────┤
+  │ P1    │ 按需加载 agent skills（Step   │ 减少全程携带的大字符  │ 小    │
+  │       │ 6/8 时）                      │ 串                    │       │
+  ├───────┼───────────────────────────────┼───────────────────────┼───────┤
+  │ P1    │ 删除 Step 5.5                 │ 消除死代码            │ 极小  │
+  ├───────┼───────────────────────────────┼───────────────────────┼───────┤
+  │ P2    │ auto 模式合并 Requirements +  │ 节省一次 agent spawn  │ 中    │
+  │       │ Roadmap agent                 │                       │       │
+  ├───────┼───────────────────────────────┼───────────────────────┼───────┤
+  │ P2    │ 研究者维度定制工具链（Feature │ 减少无效 token 消耗   │ 小    │
+  │       │ s 不用 Context7）             │                       │       │
+  ├───────┼───────────────────────────────┼───────────────────────┼───────┤
+  │ P2    │ Step 7                        │ 改善 UX               │ 中    │
+  │       │ 问题合并（减少交互轮次）      │                       │       │
+  ├───────┼───────────────────────────────┼───────────────────────┼───────┤
+  │ P2    │ Intake brief 增加 JSON        │ 减少信息损失          │ 中    │
+  │       │ 结构化块                      │                       │       │
+  ├───────┼───────────────────────────────┼───────────────────────┼───────┤
+  │ P3    │ 统一 config                   │ 消除漂移风险          │ 中    │
+  │       │ 默认值（消除双系统）          │                       │       │
+  ├───────┼───────────────────────────────┼───────────────────────┼───────┤
+  │ P3    │ findProjectRoot 用 git        │ 减少文件系统调用      │ 小    │
+  │       │ rev-parse 替代内层遍历        │                       │       │
+  ├───────┼───────────────────────────────┼───────────────────────┼───────┤
+  │ P3    │ 提交合并（4→2 次）            │ 减少 git 开销         │ 小    │
+  └───────┴───────────────────────────────┴───────────────────────┴───────┘
+
+  ---
+  总结
+
+  GSDT 的 new-project 工作流程架构设计合理——通过 4 个并行 researcher
+  实现了唯一的大规模并行点，通过 subagent
+  隔离保证了上下文干净。但效率损失主要来自三个层面：
+
+  1. 冗余：研究者间的重复工作、prompt
+  中未使用的模板、配置系统的双套实现、loadConfig 无缓存
+  2. 串行化：synthesizer → requirements → roadmap 全部串行，synthesizer
+  等待最慢研究者
+  3. 验证缺失：路线图覆盖率纯靠 LLM 自检，auto 模式仍有不必要的交互
+
+  最高性价比的改进是 P0 级的两项：程序化路线图验证 + auto
+  模式真正零交互，这两项工作量小但直接解决实际使用中的核心痛点。
+
+✻ Brewed for 4m 43s
