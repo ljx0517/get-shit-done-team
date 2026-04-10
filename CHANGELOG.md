@@ -8,6 +8,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 - Renamed GitHub repository references from `gsd-build/get-shit-done` to `gsd-build/get-shit-done-team`, aligned local-install paths and tooling (`hooks/gsdt-check-update.js`, `profile-output.cjs`, tests, `.gitignore`, secret-scan allowlists) with the on-disk install directory `gsdt/` (see `GSDT_INSTALL_DIR`), and updated installer markers to “managed by gsdt installer”. (Jaxon)
+- Expanded the core reference docs so the documentation set now has a complete command/workflow/agent/artifact map: `docs/COMMANDS.md` gained a full cheat sheet plus advanced command entries, `docs/AGENTS.md` now covers the full 30-agent surface including Assess reviewers, `docs/CLI-TOOLS.md` now documents workstream/capture/intake/review/compound/profile subcommands, and `docs/ARCHITECTURE.md` now includes an end-to-end Mermaid command map. (Jaxon)
 
 ### Fixed
 - Unified stale user-facing `GSD` command markers to `GSDT` in issue templates, reference notes, and the install terminal asset so examples consistently show `/gsdt:*` commands and `gsdt-*` agent names.
@@ -17,6 +18,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 - Added `/gsdt:intake` command and `gsdt/workflows/intake.md` for weakly-interrupting, semantic-first intake of freeform ideas, constraints, preferences, technical enablers, and open questions.
+- Added `docs/WORKFLOWS.md` and `docs/REFERENCE-MAP.md` as dedicated references for the full internal workflow inventory plus the complete `command -> workflow -> agent -> artifact` mapping and practical reverse lookup tables. (Jaxon)
 - Added dedicated `gsdt:intake-*` command skills and workflow prompts for semantic normalization, unit resolution, readiness assessment, and brief drafting: `intake-normalize`, `intake-resolve-units`, `intake-assess-readiness`, and `intake-write-brief`.
 - Added deterministic `intake` CLI support in `intake.cjs` and `gsdt-tools.cjs` for `state`, `save-raw`, `merge`, and `decide`, including cold-start readiness, phase targeting, and existing-plan guards.
 - Added deterministic `intake render` / `intake materialize` subcommands to write `.claude/.gsdt-intake/cards.md`, `.claude/.gsdt-intake/brief.md`, and phase-scoped `*-INTAKE.md` artifacts from the ledger and readiness state.

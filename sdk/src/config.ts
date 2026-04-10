@@ -25,6 +25,7 @@ export interface WorkflowConfig {
   verifier: boolean;
   nyquist_validation: boolean;
   auto_advance: boolean;
+  auto_chain: boolean;
   node_repair: boolean;
   node_repair_budget: number;
   ui_phase: boolean;
@@ -84,6 +85,7 @@ export const CONFIG_DEFAULTS: GSDConfig = {
     verifier: true,
     nyquist_validation: true,
     auto_advance: false,
+    auto_chain: true,
     node_repair: true,
     node_repair_budget: 2,
     ui_phase: true,
