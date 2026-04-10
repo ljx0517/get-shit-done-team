@@ -72,12 +72,12 @@
 | Command | Workflow | Agent(s) | Main artifact(s) |
 |---------|----------|----------|------------------|
 | `/gsdt:auto` | `auto` | downstream command agents | capture/intake-driven downstream artifacts |
-| `/gsdt:capture` | `capture` | none fixed; uses capture CLI | `.gsdt-planning/captures/graph.md`, `state.json`, `fragments/*`, optional `idea.md` |
-| `/gsdt:intake` | `intake` | none fixed; uses intake subskills + CLI | `.gsdt-intake/ledger.json`, `readiness.json`, `cards.md`, `brief.md`, phase `*-INTAKE.md` |
+| `/gsdt:capture` | `capture` | none fixed; uses capture CLI | `.gsdt-planning/captures/graph.md`, `.gsdt-planning/captures/state.json`, `.gsdt-planning/captures/fragments/*`, optional `.gsdt-planning/captures/idea.md` |
+| `/gsdt:intake` | `intake` | none fixed; uses intake subskills + CLI | `.claude/.gsdt-intake/ledger.json`, `.claude/.gsdt-intake/readiness.json`, `.claude/.gsdt-intake/cards.md`, `.claude/.gsdt-intake/brief.md`, phase `*-INTAKE.md` |
 | `/gsdt:intake-normalize` | `intake-normalize` | none | `<intake_units_json>` |
 | `/gsdt:intake-resolve-units` | `intake-resolve-units` | none | `<intake_resolution_json>` |
 | `/gsdt:intake-assess-readiness` | `intake-assess-readiness` | none | `<intake_assessment_json>` |
-| `/gsdt:intake-write-brief` | `intake-write-brief` | none | `<intake_artifacts_json>` and downstream `.gsdt-intake/*` materialization |
+| `/gsdt:intake-write-brief` | `intake-write-brief` | none | `<intake_artifacts_json>` and downstream `.claude/.gsdt-intake/*` materialization |
 | `/gsdt:note` | `note` | none | `.gsdt-planning/notes/*.md` or `~/.claude/notes/*.md` |
 | `/gsdt:add-todo` | `add-todo` | none | `.gsdt-planning/todos/pending/*.md`, optional `STATE.md` update |
 | `/gsdt:check-todos` | `check-todos` | none | todo updates, possible `STATE.md` update and commit |
@@ -142,8 +142,8 @@ These workflows are important, but they are usually reached from other commands 
 | `reports/MILESTONE_SUMMARY-v{version}.md` | `/gsdt:milestone-summary` |
 | `codebase/*.md` | `/gsdt:map-codebase` |
 | `debug/*.md` | `/gsdt:debug` or `/gsdt:verify-work` failure diagnosis |
-| `quick/{id}-{slug}/` | `/gsdt:quick` |
-| `.gsdt-intake/*` | `/gsdt:intake` |
+| `.gsdt-planning/quick/{id}-{slug}/` | `/gsdt:quick` |
+| `.claude/.gsdt-intake/*` | `/gsdt:intake` |
 | `captures/*` | `/gsdt:capture` |
 | `notes/*.md` | `/gsdt:note` |
 | `todos/pending/*.md` | `/gsdt:add-todo` or `/gsdt:note promote` |

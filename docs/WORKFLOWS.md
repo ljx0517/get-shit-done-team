@@ -89,8 +89,10 @@ External project skills can still be injected into supported agents through `con
 | `do` | `/gsdt:do` | Route freeform text to the best GSDT command | None | Inline routing result |
 | `help` | `/gsdt:help` | Render the canonical command reference | None | Inline help output |
 | `stats` | `/gsdt:stats` | Show project statistics | None | Inline metrics output |
+| `profile-user` | `/gsdt:profile-user` | Build a developer behavior profile from session history or questionnaire | `gsdt-user-profiler` | `USER-PROFILE.md`, dev-preferences output, `CLAUDE.md` profile section |
 | `session-report` | `/gsdt:session-report` | Write a post-session summary | None | `reports/SESSION_REPORT.md` |
 | `health` | `/gsdt:health` | Validate planning-directory integrity | None | Inline diagnostics, optional repairs |
+| `settings` | `/gsdt:settings` | Edit project/global config and runtime preferences | None | `.gsdt-planning/config.json`, optional `~/.gsdt/defaults.json` |
 | `update` | `/gsdt:update` | Update GSDT and show changelog | None | Runtime update, optional patch backup |
 | `forensics` | `/gsdt:forensics` | Investigate failed or stalled workflows | None | `forensics/report-{timestamp}.md` |
 | `pr-branch` | `/gsdt:pr-branch` | Create a clean code-review branch without planning commits | None | New filtered git branch |
@@ -104,12 +106,12 @@ External project skills can still be injected into supported agents through `con
 |---------|--------------|--------------|----------------|-----------------------------|
 | `quick` | `/gsdt:quick` | Run an ad-hoc task with GSDT guarantees | `gsdt-phase-researcher`, `gsdt-planner`, `gsdt-plan-checker`, `gsdt-executor`, `gsdt-verifier` | `.gsdt-planning/quick/*`, quick `RESEARCH.md`, `PLAN.md`, `SUMMARY.md`, state updates |
 | `fast` | `/gsdt:fast` | Execute trivial tasks inline without agent overhead | None | Direct code/doc changes, optional commit |
-| `intake` | `/gsdt:intake` | Semantic-first intake from freeform text | No GSDT agents; uses intake subskills + CLI | `.gsdt-intake/ledger.json`, `cards.md`, `brief.md`, `readiness.json`, phase intake briefs |
+| `intake` | `/gsdt:intake` | Semantic-first intake from freeform text | No GSDT agents; uses intake subskills + CLI | `.claude/.gsdt-intake/ledger.json`, `.claude/.gsdt-intake/cards.md`, `.claude/.gsdt-intake/brief.md`, `.claude/.gsdt-intake/readiness.json`, phase intake briefs |
 | `intake-normalize` | `/gsdt:intake-normalize` | Convert raw text into conservative planning units | None | `<intake_units_json>` machine-readable block |
 | `intake-resolve-units` | `/gsdt:intake-resolve-units` | Resolve duplicates/conflicts between intake units | None | `<intake_resolution_json>` machine-readable block |
 | `intake-assess-readiness` | `/gsdt:intake-assess-readiness` | Recommend the next intake action conservatively | None | `<intake_assessment_json>` machine-readable block |
 | `intake-write-brief` | `/gsdt:intake-write-brief` | Draft cards and brief content from intake state | None | `<intake_artifacts_json>` machine-readable block |
-| `capture` | `/gsdt:capture` | Save freeform idea fragments into a graph model | No GSDT agents; uses capture CLI | `captures/graph.md`, `captures/state.json`, `captures/fragments/*`, optional `captures/idea.md` |
+| `capture` | `/gsdt:capture` | Save freeform idea fragments into a graph model | No GSDT agents; uses capture CLI | `.gsdt-planning/captures/graph.md`, `.gsdt-planning/captures/state.json`, `.gsdt-planning/captures/fragments/*`, optional `.gsdt-planning/captures/idea.md` |
 | `find` | `/gsdt:find` | Quick lookup for existing solution docs | None | Inline solution-doc match |
 | `add-todo` | `/gsdt:add-todo` | Capture a structured todo for later work | None | `.gsdt-planning/todos/pending/*.md`, optional state update |
 | `check-todos` | `/gsdt:check-todos` | List todos and route one into action | None | Todo state updates, optional state/git updates |
