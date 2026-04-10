@@ -59,7 +59,7 @@ describe('loadConfig', () => {
 
   test('returns defaults when config.json is missing', () => {
     const config = loadConfig(tmpDir);
-    assert.strictEqual(config.model_profile, 'balanced');
+    assert.strictEqual(config.model_profile, 'quality');
     assert.strictEqual(config.commit_docs, true);
     assert.strictEqual(config.research, true);
     assert.strictEqual(config.plan_checker, true);
@@ -106,7 +106,7 @@ describe('loadConfig', () => {
       'not valid json {{{{'
     );
     const config = loadConfig(tmpDir);
-    assert.strictEqual(config.model_profile, 'balanced');
+    assert.strictEqual(config.model_profile, 'quality');
     assert.strictEqual(config.commit_docs, true);
   });
 
@@ -277,10 +277,10 @@ describe('resolveModelInternal', () => {
       assert.strictEqual(resolveModelInternal(tmpDir, 'gsd-nonexistent'), 'sonnet');
     });
 
-    test('defaults to balanced profile when model_profile missing', () => {
+    test('defaults to quality profile when model_profile missing', () => {
       writeConfig({});
-      // balanced profile, gsdt-planner -> opus
-      assert.strictEqual(resolveModelInternal(tmpDir, 'gsdt-planner'), 'opus');
+      // quality profile, gsdt-executor -> opus
+      assert.strictEqual(resolveModelInternal(tmpDir, 'gsdt-executor'), 'opus');
     });
   });
 

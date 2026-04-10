@@ -10,8 +10,8 @@
 },
 "git": {
   "branching_strategy": "none",
-  "phase_branch_template": "gsd/phase-{phase}-{slug}",
-  "milestone_branch_template": "gsd/{milestone}-{slug}"
+  "phase_branch_template": "gsdt/phase-{phase}-{slug}",
+  "milestone_branch_template": "gsdt/{milestone}-{slug}"
 }
 ```
 
@@ -20,8 +20,8 @@
 | `commit_docs` | `true` | 是否将规划工件提交到 git |
 | `search_gitignored` | `false` | 在广泛 rg 搜索中添加 `--no-ignore` |
 | `git.branching_strategy` | `"none"` | Git 分支策略：`"none"`、`"phase"` 或 `"milestone"` |
-| `git.phase_branch_template` | `"gsd/phase-{phase}-{slug}"` | 阶段策略的分支模板 |
-| `git.milestone_branch_template` | `"gsd/{milestone}-{slug}"` | 里程碑策略的分支模板 |
+| `git.phase_branch_template` | `"gsdt/phase-{phase}-{slug}"` | 阶段策略的分支模板 |
+| `git.milestone_branch_template` | `"gsdt/{milestone}-{slug}"` | 里程碑策略的分支模板 |
 </config_schema>
 
 <commit_docs_behavior>

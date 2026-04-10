@@ -43,7 +43,7 @@ Parse JSON for: `planner_model`, `checker_model`, `commit_docs`, `phase_found`, 
 **First: Check for active UAT sessions**
 
 ```bash
-(find .claude/.gsdt-planning/phases -name "*-UAT.md" -type f 2>/dev/null || true) | head -5
+(find .gsdt-planning/phases -name "*-UAT.md" -type f 2>/dev/null || true) | head -5
 ```
 
 **If active sessions exist AND no $ARGUMENTS provided:**
@@ -186,7 +186,7 @@ skipped: 0
 [none yet]
 ```
 
-Write to `.claude/.gsdt-planning/phases/XX-name/{phase_num}-UAT.md`
+Write to `.gsdt-planning/phases/XX-name/{phase_num}-UAT.md`
 
 Proceed to `present_test`.
 </step>
@@ -353,7 +353,7 @@ Clear Current Test section:
 
 Commit the UAT file:
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "test({phase_num}): complete UAT - {passed} passed, {issues} issues" --files ".claude/.gsdt-planning/phases/XX-name/{phase_num}-UAT.md"
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "test({phase_num}): complete UAT - {passed} passed, {issues} issues" --files ".gsdt-planning/phases/XX-name/{phase_num}-UAT.md"
 ```
 
 Present summary:
@@ -394,7 +394,7 @@ Candidate event fields should include:
 - `phase: current phase`
 - `tags: [uat, verify-work, compound-candidate]`
 
-These candidate events only persist to `.claude/.gsdt-planning/compound-events.json`; they do not write solution docs yet.
+These candidate events only persist to `.gsdt-planning/compound-events.json`; they do not write solution docs yet.
 
 **If issues == 0:**
 ```
@@ -449,8 +449,8 @@ Task(
 
 <files_to_read>
 - {phase_dir}/{phase_num}-UAT.md (UAT with diagnoses)
-- .claude/.gsdt-planning/STATE.md (Project State)
-- .claude/.gsdt-planning/ROADMAP.md (Roadmap)
+- .gsdt-planning/STATE.md (Project State)
+- .gsdt-planning/ROADMAP.md (Roadmap)
 </files_to_read>
 
 ${AGENT_SKILLS_PLANNER}

@@ -229,15 +229,15 @@
 
 ## 配置参考
 
-GSDT 在 `.claude/.gsdt-planning/config.json` 中存储项目设置。在 `/gsdt:new-project` 期间配置或稍后用 `/gsdt:settings` 更新。
+GSDT 在 `.gsdt-planning/config.json` 中存储项目设置。在 `/gsdt:new-project` 期间配置或稍后用 `/gsdt:settings` 更新。
 
 ### 完整 config.json 模式
 
 ```json
 {
-  "mode": "interactive",
-  "granularity": "standard",
-  "model_profile": "balanced",
+  "mode": "yolo",
+  "granularity": "fine",
+  "model_profile": "quality",
   "planning": {
     "commit_docs": true,
     "search_gitignored": false
@@ -250,8 +250,8 @@ GSDT 在 `.claude/.gsdt-planning/config.json` 中存储项目设置。在 `/gsdt
   },
   "git": {
     "branching_strategy": "none",
-    "phase_branch_template": "gsd/phase-{phase}-{slug}",
-    "milestone_branch_template": "gsd/{milestone}-{slug}"
+    "phase_branch_template": "gsdt/phase-{phase}-{slug}",
+    "milestone_branch_template": "gsdt/{milestone}-{slug}"
   }
 }
 ```
@@ -260,18 +260,18 @@ GSDT 在 `.claude/.gsdt-planning/config.json` 中存储项目设置。在 `/gsdt
 
 | 设置 | 选项 | 默认值 | 控制内容 |
 |---------|---------|---------|------------------|
-| `mode` | `interactive`, `yolo` | `interactive` | `yolo` 自动批准决策；`interactive` 每步确认 |
-| `granularity` | `coarse`, `standard`, `fine` | `standard` | 阶段粒度：范围切分多细（3-5、5-8 或 8-12 个阶段） |
-| `model_profile` | `quality`, `balanced`, `budget` | `balanced` | 每个代理的模型层级（见下表） |
+| `mode` | `interactive`, `yolo` | `yolo` | `yolo` 自动批准决策；`interactive` 每步确认 |
+| `granularity` | `coarse`, `standard`, `fine` | `fine` | 阶段粒度：范围切分多细（3-5、5-8 或 8-12 个阶段） |
+| `model_profile` | `quality`, `balanced`, `budget` | `quality` | 每个代理的模型层级（见下表） |
 
 ### 规划设置
 
 | 设置 | 选项 | 默认值 | 控制内容 |
 |---------|---------|---------|------------------|
-| `planning.commit_docs` | `true`, `false` | `true` | `.claude/.gsdt-planning/` 文件是否提交到 git |
-| `planning.search_gitignored` | `true`, `false` | `false` | 在广泛搜索中添加 `--no-ignore` 以包含 `.claude/.gsdt-planning/` |
+| `planning.commit_docs` | `true`, `false` | `true` | `.gsdt-planning/` 文件是否提交到 git |
+| `planning.search_gitignored` | `true`, `false` | `false` | 在广泛搜索中添加 `--no-ignore` 以包含 `.gsdt-planning/` |
 
-> **注意：** 如果 `.claude/.gsdt-planning/` 在 `.gitignore` 中，无论配置值如何，`commit_docs` 自动为 `false`。
+> **注意：** 如果 `.gsdt-planning/` 在 `.gitignore` 中，无论配置值如何，`commit_docs` 自动为 `false`。
 
 ### 工作流开关
 
@@ -289,8 +289,8 @@ GSDT 在 `.claude/.gsdt-planning/config.json` 中存储项目设置。在 `/gsdt
 | 设置 | 选项 | 默认值 | 控制内容 |
 |---------|---------|---------|------------------|
 | `git.branching_strategy` | `none`, `phase`, `milestone` | `none` | 何时以及如何创建分支 |
-| `git.phase_branch_template` | 模板字符串 | `gsd/phase-{phase}-{slug}` | 阶段策略的分支名 |
-| `git.milestone_branch_template` | 模板字符串 | `gsd/{milestone}-{slug}` | 里程碑策略的分支名 |
+| `git.phase_branch_template` | 模板字符串 | `gsdt/phase-{phase}-{slug}` | 阶段策略的分支名 |
+| `git.milestone_branch_template` | 模板字符串 | `gsdt/{milestone}-{slug}` | 里程碑策略的分支名 |
 
 **分支策略说明：**
 
@@ -407,7 +407,7 @@ claude --dangerously-skip-permissions
 
 ### "项目已初始化"
 
-你运行了 `/gsdt:new-project` 但 `.claude/.gsdt-planning/PROJECT.md` 已存在。这是安全检查。如果你想重新开始，先删除 `.claude/.gsdt-planning/` 目录。
+你运行了 `/gsdt:new-project` 但 `.gsdt-planning/PROJECT.md` 已存在。这是安全检查。如果你想重新开始，先删除 `.gsdt-planning/` 目录。
 
 ### 长会话期间上下文退化
 
@@ -435,7 +435,7 @@ claude --dangerously-skip-permissions
 
 ### 处理敏感/私有项目
 
-在 `/gsdt:new-project` 期间或通过 `/gsdt:settings` 设置 `commit_docs: false`。将 `.claude/.gsdt-planning/` 添加到 `.gitignore`。规划工件保留在本地，从不接触 git。
+在 `/gsdt:new-project` 期间或通过 `/gsdt:settings` 设置 `commit_docs: false`。将 `.gsdt-planning/` 添加到 `.gitignore`。规划工件保留在本地，从不接触 git。
 
 ### GSDT 更新覆盖了我的本地更改
 
@@ -468,7 +468,7 @@ claude --dangerously-skip-permissions
 供参考，这是 GSDT 在你的项目中创建的内容：
 
 ```
-.claude/.gsdt-planning/
+.gsdt-planning/
   PROJECT.md              # 项目愿景和上下文（始终加载）
   REQUIREMENTS.md         # 界定 v1/v2 需求及 ID
   ROADMAP.md              # 带状态跟踪的阶段分解

@@ -12,9 +12,9 @@ Valid GSDT subagent types (use exact names — do not fall back to 'general-purp
 </available_agent_types>
 
 <paths>
-DEBUG_DIR=.claude/.gsdt-planning/debug
+DEBUG_DIR=.gsdt-planning/debug
 
-Debug files use the `.claude/.gsdt-planning/debug/` path (hidden directory with leading dot).
+Debug files use the `.gsdt-planning/debug/` path (hidden directory with leading dot).
 </paths>
 
 <core_principle>
@@ -90,7 +90,7 @@ For each gap, fill the debug-subagent-prompt template and spawn:
 
 ```
 Task(
-  prompt=filled_debug_subagent_prompt + "\n\n<files_to_read>\n- {phase_dir}/{phase_num}-UAT.md\n- .claude/.gsdt-planning/STATE.md\n</files_to_read>\n${AGENT_SKILLS_DEBUGGER}",
+  prompt=filled_debug_subagent_prompt + "\n\n<files_to_read>\n- {phase_dir}/{phase_num}-UAT.md\n- .gsdt-planning/STATE.md\n</files_to_read>\n${AGENT_SKILLS_DEBUGGER}",
   subagent_type="gsdt-debugger",
   isolation="worktree",
   description="Debug: {truth_short}"
@@ -163,14 +163,14 @@ For each gap in the Gaps section, add artifacts and missing fields:
   missing:
     - "Add commentCount to useEffect dependency array"
     - "Trigger re-render when new comment added"
-  debug_session: .claude/.gsdt-planning/debug/comment-not-refreshing.md
+  debug_session: .gsdt-planning/debug/comment-not-refreshing.md
 ```
 
 Update status in frontmatter to "diagnosed".
 
 Commit the updated UAT.md:
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs({phase_num}): add root causes from diagnosis" --files ".claude/.gsdt-planning/phases/XX-name/{phase_num}-UAT.md"
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs({phase_num}): add root causes from diagnosis" --files ".gsdt-planning/phases/XX-name/{phase_num}-UAT.md"
 ```
 </step>
 

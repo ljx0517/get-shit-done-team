@@ -1076,12 +1076,12 @@ describe('resolve-model command', () => {
   });
 
   test('default profile fallback when no config exists', () => {
-    // tmpDir has no config.json, so defaults to balanced profile
+    // tmpDir has no config.json, so defaults to quality profile
     const result = runGsdTools('resolve-model gsdt-executor', tmpDir);
     assert.ok(result.success, `Command failed: ${result.error}`);
 
     const output = JSON.parse(result.output);
-    assert.strictEqual(output.profile, 'balanced', 'should default to balanced profile');
+    assert.strictEqual(output.profile, 'quality', 'should default to quality profile');
     assert.ok(output.model, 'should resolve a model');
   });
 

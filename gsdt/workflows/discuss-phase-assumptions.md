@@ -150,9 +150,9 @@ Read project-level and prior phase context to avoid re-asking decided questions.
 
 **Step 1: Read project-level files**
 ```bash
-cat .claude/.gsdt-planning/PROJECT.md 2>/dev/null || true
-cat .claude/.gsdt-planning/REQUIREMENTS.md 2>/dev/null || true
-cat .claude/.gsdt-planning/STATE.md 2>/dev/null || true
+cat .gsdt-planning/PROJECT.md 2>/dev/null || true
+cat .gsdt-planning/REQUIREMENTS.md 2>/dev/null || true
+cat .gsdt-planning/STATE.md 2>/dev/null || true
 ```
 
 Extract from these:
@@ -162,7 +162,7 @@ Extract from these:
 
 **Step 2: Read all prior CONTEXT.md files**
 ```bash
-(find .claude/.gsdt-planning/phases -name "*-CONTEXT.md" 2>/dev/null || true) | sort
+(find .gsdt-planning/phases -name "*-CONTEXT.md" 2>/dev/null || true) | sort
 ```
 
 For each CONTEXT.md where phase number < current phase:
@@ -201,7 +201,7 @@ Lightweight scan of existing code to inform assumption generation.
 
 **Step 1: Check for existing codebase maps**
 ```bash
-ls .claude/.gsdt-planning/codebase/*.md 2>/dev/null || true
+ls .gsdt-planning/codebase/*.md 2>/dev/null || true
 ```
 
 **If codebase maps exist:** Read relevant ones (CONVENTIONS.md, STRUCTURE.md, STACK.md). Extract reusable components, patterns, integration points. Skip to Step 3.
@@ -558,7 +558,7 @@ node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" state record-session \
 Commit STATE.md:
 
 ```bash
-node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs(state): record phase ${PHASE} context session" --files .claude/.gsdt-planning/STATE.md
+node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs(state): record phase ${PHASE} context session" --files .gsdt-planning/STATE.md
 ```
 </step>
 
@@ -566,7 +566,7 @@ node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" commit "docs(state): record phase $
 Present summary and next steps:
 
 ```
-Created: .claude/.gsdt-planning/phases/${PADDED_PHASE}-${SLUG}/${PADDED_PHASE}-CONTEXT.md
+Created: .gsdt-planning/phases/${PADDED_PHASE}-${SLUG}/${PADDED_PHASE}-CONTEXT.md
 
 ## Decisions Captured (Assumptions Mode)
 

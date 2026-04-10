@@ -59,7 +59,7 @@ GSDT is a **meta-prompting framework** that sits between the user and AI coding 
 └──────────────────────┬───────────────────────────────┘
                        │
 ┌──────────────────────▼───────────────────────────────┐
-│              FILE SYSTEM (.claude/.gsdt-planning/)                 │
+│              FILE SYSTEM (.gsdt-planning/)                 │
 │   PROJECT.md | REQUIREMENTS.md | ROADMAP.md          │
 │   STATE.md | config.json | phases/ | research/       │
 └──────────────────────────────────────────────────────┘
@@ -118,7 +118,7 @@ Workflow files (`gsdt/workflows/*.md`) never do heavy lifting. They:
 
 ### 3. File-Based State
 
-All state lives in `.claude/.gsdt-planning/` as human-readable Markdown and JSON. No database, no server, no external dependencies. This means:
+All state lives in `.gsdt-planning/` as human-readable Markdown and JSON. No database, no server, no external dependencies. This means:
 - State survives context resets (`/clear`)
 - State is inspectable by both humans and agents
 - State can be committed to git for team visibility
@@ -204,7 +204,7 @@ Runtime hooks that integrate with the host AI agent:
 | `gsdt-statusline.js` | `statusLine` | Displays model, task, directory, and context usage bar |
 | `gsdt-context-monitor.js` | `PostToolUse` / `AfterTool` | Injects agent-facing context warnings at 35%/25% remaining |
 | `gsdt-check-update.js` | `SessionStart` | Background check for new GSDT versions |
-| `gsdt-prompt-guard.js` | `PreToolUse` | Scans `.claude/.gsdt-planning/` writes for prompt injection patterns (advisory) |
+| `gsdt-prompt-guard.js` | `PreToolUse` | Scans `.gsdt-planning/` writes for prompt injection patterns (advisory) |
 | `gsdt-workflow-guard.js` | `PreToolUse` | Detects file edits outside GSDT workflow context (advisory, opt-in via `hooks.workflow_guard`) |
 
 ### CLI Tools (`gsdt/bin/`)
@@ -402,10 +402,10 @@ Equivalent paths for other runtimes:
 - **Copilot:** `~/.github/`
 - **Antigravity:** `~/.gemini/antigravity/` (global) or `./.agent/` (local)
 
-### Project Files (`.claude/.gsdt-planning/`)
+### Project Files (`.gsdt-planning/`)
 
 ```
-.claude/.gsdt-planning/
+.gsdt-planning/
 ├── PROJECT.md              # Project vision, constraints, decisions, evolution rules
 ├── REQUIREMENTS.md         # Scoped requirements (v1/v2/out-of-scope)
 ├── ROADMAP.md              # Phase breakdown with status tracking
@@ -525,13 +525,13 @@ Debounce: 5 tool uses between repeated warnings. Severity escalation (WARNING→
 ### Security Hooks (v1.27)
 
 **Prompt Guard** (`gsdt-prompt-guard.js`):
-- Triggers on Write/Edit to `.claude/.gsdt-planning/` files
+- Triggers on Write/Edit to `.gsdt-planning/` files
 - Scans content for prompt injection patterns (role override, instruction bypass, system tag injection)
 - Advisory-only — logs detection, does not block
 - Patterns are inlined (subset of `security.cjs`) for hook independence
 
 **Workflow Guard** (`gsdt-workflow-guard.js`):
-- Triggers on Write/Edit to non-`.claude/.gsdt-planning/` files
+- Triggers on Write/Edit to non-`.gsdt-planning/` files
 - Detects edits outside GSDT workflow context (no active `/gsdt:` command or Task subagent)
 - Advises using `/gsdt:quick` or `/gsdt:fast` for state-tracked changes
 - Opt-in via `hooks.workflow_guard: true` (default: false)

@@ -209,7 +209,7 @@ function cmdResolveModel(cwd, agentType, raw) {
   }
 
   const config = loadConfig(cwd);
-  const profile = config.model_profile || 'balanced';
+  const profile = config.model_profile || 'quality';
   const model = resolveModelInternal(cwd, agentType);
 
   const agentModels = MODEL_PROFILES[agentType];
