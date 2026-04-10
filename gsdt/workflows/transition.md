@@ -436,6 +436,11 @@ ls .gsdt-planning/phases/*[X+1]*/*-CONTEXT.md 2>/dev/null || true
 
 <if mode="yolo">
 
+**Clear context before advancing:**
+```bash
+claude /clear
+```
+
 **If CONTEXT.md exists:**
 
 ```
@@ -463,6 +468,30 @@ Exit skill and invoke SlashCommand("/gsdt:discuss-phase [X+1] --auto ${GSD_WS}")
 </if>
 
 <if mode="interactive" OR="custom with gates.confirm_transition true">
+
+**Check auto_chain config:**
+```bash
+AUTO_CHAIN=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" config-get workflow.auto_chain 2>/dev/null || echo "false")
+```
+
+**If AUTO_CHAIN is "true":**
+
+⚡ **Auto-chain enabled** — clearing context and advancing to next phase...
+
+```bash
+# Execute /clear to reset conversation context
+claude /clear
+```
+
+**If CONTEXT.md does NOT exist:**
+
+Exit skill and invoke SlashCommand("/gsdt:discuss-phase [X+1] --auto ${GSD_WS}")
+
+**If CONTEXT.md exists:**
+
+Exit skill and invoke SlashCommand("/gsdt:plan-phase [X+1] --auto ${GSD_WS}")
+
+**Otherwise (AUTO_CHAIN is not "true"):**
 
 **If CONTEXT.md does NOT exist:**
 
