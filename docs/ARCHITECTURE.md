@@ -65,6 +65,41 @@ GSDT is a **meta-prompting framework** that sits between the user and AI coding 
 └──────────────────────────────────────────────────────┘
 ```
 
+## End-To-End Command Map
+
+The most common production path is easiest to understand as a `command -> workflow -> agent -> artifact` chain:
+
+```mermaid
+flowchart TD
+    A["/gsdt:new-project"] --> B["workflow: new-project"]
+    B --> C["agents: project-researcher x4 + research-synthesizer + roadmapper"]
+    C --> D["artifacts: PROJECT.md / REQUIREMENTS.md / ROADMAP.md / STATE.md / research/*"]
+
+    E["/gsdt:discuss-phase"] --> F["workflow: discuss-phase or discuss-phase-assumptions"]
+    F --> G["agents: assumptions-analyzer or advisor path"]
+    G --> H["artifacts: {phase}-CONTEXT.md / {phase}-DISCUSSION-LOG.md"]
+
+    I["/gsdt:plan-phase"] --> J["workflow: plan-phase"]
+    J --> K["agents: phase-researcher + planner + plan-checker"]
+    K --> L["artifacts: RESEARCH.md / PLAN.md / VALIDATION.md"]
+
+    M["/gsdt:execute-phase"] --> N["workflow: execute-phase"]
+    N --> O["agents: executor + verifier + assess reviewers + review-fixer"]
+    O --> P["artifacts: SUMMARY.md / VERIFICATION.md / ASSESS.md / ASSESS.json / commits"]
+
+    Q["/gsdt:verify-work"] --> R["workflow: verify-work"]
+    R --> S["agents: debugger + planner + plan-checker"]
+    S --> T["artifacts: UAT.md / debug sessions / gap-fix plans"]
+
+    U["/gsdt:ship"] --> V["workflow: ship"]
+    V --> W["agents: none"]
+    W --> X["artifacts: PR branch / PR URL / updated STATE.md"]
+
+    Y["/gsdt:intake or /gsdt:capture"] --> Z["workflow: intake or capture"]
+    Z --> AA["agents: none fixed; deterministic CLI + intake subskills"]
+    AA --> AB["artifacts: .claude/.gsdt-intake/* or .gsdt-planning/captures/*"]
+```
+
 ---
 
 ## Design Principles
@@ -113,7 +148,7 @@ User-facing entry points. Each file contains YAML frontmatter (name, description
 - **Copilot:** Slash commands (`/gsdt:command-name`)
 - **Antigravity:** Skills
 
-**Total commands:** 44
+**Total commands:** 65
 
 ### Workflows (`gsdt/workflows/*.md`)
 
@@ -124,7 +159,7 @@ Orchestration logic that commands reference. Contains the step-by-step process i
 - State update patterns
 - Error handling and recovery
 
-**Total workflows:** 46
+**Total workflows:** 66
 
 ### Agents (`agents/*.md`)
 
@@ -134,7 +169,7 @@ Specialized agent definitions with frontmatter specifying:
 - `tools` — Allowed tool access (Read, Write, Edit, Bash, Grep, Glob, WebSearch, etc.)
 - `color` — Terminal output color for visual distinction
 
-**Total agents:** 16
+**Total agents:** 30
 
 ### References (`gsdt/references/*.md`)
 

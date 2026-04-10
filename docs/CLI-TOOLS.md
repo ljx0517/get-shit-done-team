@@ -6,14 +6,14 @@
 
 ## Overview
 
-`gsdt-tools.cjs` is a Node.js CLI utility that replaces repetitive inline bash patterns across GSDT's ~50 command, workflow, and agent files. It centralizes: config parsing, model resolution, phase lookup, git commits, summary verification, state management, and template operations.
+`gsdt-tools.cjs` is a Node.js CLI utility that replaces repetitive inline bash patterns across GSDT command, workflow, and agent files. It centralizes config parsing, model resolution, phase lookup, git commits, summary verification, state management, workstreams, capture/intake I/O, review pipelines, and template operations.
 
 **Location:** `gsdt/bin/gsdt-tools.cjs`
-**Modules:** 15 domain modules in `gsdt/bin/lib/`
+**Modules:** 19 domain modules in `gsdt/bin/lib/`
 
 **Usage:**
 ```bash
-node gsdt-tools.cjs <command> [args] [--raw] [--cwd <path>]
+node gsdt-tools.cjs <command> [args] [--raw] [--cwd <path>] [--ws <name>]
 ```
 
 **Global Flags:**
@@ -21,6 +21,7 @@ node gsdt-tools.cjs <command> [args] [--raw] [--cwd <path>]
 |------|-------------|
 | `--raw` | Machine-readable output (JSON or plain text, no formatting) |
 | `--cwd <path>` | Override working directory (for sandboxed subagents) |
+| `--ws <name>` | Override active workstream for commands that resolve planning paths |
 
 ---
 
@@ -335,12 +336,176 @@ node gsdt-tools.cjs audit-uat
 
 # Git commit with config checks
 node gsdt-tools.cjs commit <message> [--files f1 f2] [--amend] [--no-verify]
+
+# Web search (requires Brave API key)
+node gsdt-tools.cjs websearch <query> [--limit N] [--freshness day|week|month]
 ```
 
 > **`--no-verify`**: Skips pre-commit hooks. Used by parallel executor agents during wave-based execution to avoid build lock contention (e.g., cargo lock fights in Rust projects). The orchestrator runs hooks once after each wave completes. Do not use `--no-verify` during sequential execution — let hooks run normally.
 
-# Web search (requires Brave API key)
-node gsdt-tools.cjs websearch <query> [--limit N] [--freshness day|week|month]
+---
+
+## Agent Skill Injection
+
+Resolve extra configured skills for a specific agent type.
+
+```bash
+node gsdt-tools.cjs agent-skills gsdt-executor
+node gsdt-tools.cjs agent-skills gsdt-planner
+```
+
+Used by workflows that support `config.agent_skills` to prepend extra project-specific instructions without hardcoding them into agent files.
+
+---
+
+## Workstream Commands
+
+Manage `.gsdt-planning/workstreams/{name}/` namespaces for parallel milestones.
+
+```bash
+# Create a workstream (migrates flat mode automatically unless disabled)
+node gsdt-tools.cjs workstream create <name> [--migrate-name <existing>] [--no-migrate]
+
+# List workstreams
+node gsdt-tools.cjs workstream list
+
+# Show one workstream
+node gsdt-tools.cjs workstream status <name>
+
+# Mark complete / archive
+node gsdt-tools.cjs workstream complete <name>
+
+# Set or get active workstream
+node gsdt-tools.cjs workstream set <name>
+node gsdt-tools.cjs workstream get
+
+# Aggregate progress
+node gsdt-tools.cjs workstream progress
+```
+
+---
+
+## Capture Commands
+
+Deterministic storage and routing support for `/gsdt:capture`.
+
+```bash
+# Save a raw capture fragment (text passed after the subcommand)
+node gsdt-tools.cjs capture save "freeform text..."
+
+# Read the current capture graph and trigger stats
+node gsdt-tools.cjs capture graph
+
+# Return the next deterministic routing decision
+node gsdt-tools.cjs capture decide
+
+# List saved fragments
+node gsdt-tools.cjs capture fragments
+```
+
+---
+
+## Intake Commands
+
+Deterministic intake storage, ledger merges, readiness, and artifact materialization for `/gsdt:intake`.
+
+```bash
+# Load the full intake state
+node gsdt-tools.cjs intake state
+
+# Save raw intake text
+node gsdt-tools.cjs intake save-raw "freeform text..."
+
+# Merge semantic units into the ledger
+node gsdt-tools.cjs intake merge [--resolution-file path] [--resolution-json json]
+
+# Score readiness and routing
+node gsdt-tools.cjs intake decide [--assessment-file path] [--assessment-json json]
+
+# Render cards + brief content without writing phase artifacts
+node gsdt-tools.cjs intake render
+
+# Materialize cards/brief and optional phase intake artifact
+node gsdt-tools.cjs intake materialize [--artifacts-file path] [--artifacts-json json]
+```
+
+---
+
+## Review Commands
+
+Unified review entrypoint for cross-AI reviews, UI audits, ship reviews, and Assess merging.
+
+```bash
+# Create/list/show review sessions
+node gsdt-tools.cjs review create-session --type cross-ai --phase 03
+node gsdt-tools.cjs review list
+node gsdt-tools.cjs review get <session-id>
+
+# Run review modes
+node gsdt-tools.cjs review cross-ai --phase 03 [--json] [--threshold 0.6]
+node gsdt-tools.cjs review ui-audit --phase 03 [--json]
+node gsdt-tools.cjs review ship --pr 123 [--json]
+node gsdt-tools.cjs review assess --phase 03 [--json] [--reviewer-output-file path]
+```
+
+Useful Assess flags:
+
+- `--reviewer-output-file PATH`
+- `--reviewer-output-json JSON`
+- `--resolved-findings-file PATH`
+- `--resolved-findings-json JSON`
+- `--skip-compound`
+
+---
+
+## Compound Commands
+
+Reusable learning-memory pipeline for bug fixes, reviewer findings, and solution docs.
+
+```bash
+# Find similar prior solutions
+node gsdt-tools.cjs compound find "query text"
+
+# Process researcher output into learnings
+node gsdt-tools.cjs compound process --researcher-output '{"key":"value"}'
+
+# Emit or dispatch a structured event
+node gsdt-tools.cjs compound dispatch --event-file event.json
+node gsdt-tools.cjs compound emit --event-json '{"source":"assess"}'
+
+# Hook integration
+node gsdt-tools.cjs compound hook --event post-commit --commit-hash <sha> --commit-msg "..."
+
+# Write memory entries or anti-pattern notes directly
+node gsdt-tools.cjs compound memory --research '{"summary":"..."}' --doc-path docs/path.md
+node gsdt-tools.cjs compound anti-pattern --research '{"summary":"..."}'
+
+# Watch for events continuously
+node gsdt-tools.cjs compound watch [--interval 5000]
+```
+
+---
+
+## Profile Pipeline Commands
+
+Read-only session analysis and artifact generation for `/gsdt:profile-user`.
+
+```bash
+# Inspect available projects and sessions
+node gsdt-tools.cjs scan-sessions [--path <sessions-dir>] [--verbose] [--json]
+
+# Extract user messages from one project
+node gsdt-tools.cjs extract-messages <project> [--session <id>] [--limit N] [--path <sessions-dir>]
+
+# Build a recency-weighted sample across projects
+node gsdt-tools.cjs profile-sample [--path <sessions-dir>] [--limit 150] [--max-per-project N] [--max-chars 500]
+
+# Turn analysis into profile artifacts
+node gsdt-tools.cjs write-profile --input analysis.json [--output USER-PROFILE.md]
+node gsdt-tools.cjs profile-questionnaire --answers answers.json
+node gsdt-tools.cjs generate-dev-preferences [--analysis analysis.json] [--output path] [--stack ts-react]
+node gsdt-tools.cjs generate-claude-profile [--analysis analysis.json] [--output path] [--global]
+node gsdt-tools.cjs generate-claude-md [--output path] [--auto] [--force]
 ```
 
 ---
@@ -364,3 +529,7 @@ node gsdt-tools.cjs websearch <query> [--limit N] [--freshness day|week|month]
 | UAT | `lib/uat.cjs` | Cross-phase UAT/verification audit |
 | Profile Output | `lib/profile-output.cjs` | Developer profile formatting |
 | Profile Pipeline | `lib/profile-pipeline.cjs` | Session analysis pipeline |
+| Review | `lib/review/index.cjs` | Review session lifecycle, cross-AI review, UI audit, ship review, assess merge |
+| Workstream | `lib/workstream.cjs` | Workstream CRUD and progress aggregation |
+| Capture | `lib/capture.cjs` | Capture fragment storage, graph I/O, routing decisions |
+| Intake | `lib/intake.cjs` | Intake ledger, readiness scoring, render/materialize pipeline |

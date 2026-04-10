@@ -1,6 +1,6 @@
 # GSDT Command Reference
 
-> Complete command syntax, flags, options, and examples. For feature details, see [Feature Reference](FEATURES.md). For workflow walkthroughs, see [User Guide](USER-GUIDE.md).
+> Complete command syntax, flags, options, and examples. For internal orchestration, see [Workflow Reference](WORKFLOWS.md). For end-to-end mapping, see [Reference Map](REFERENCE-MAP.md). For workflow walkthroughs, see [User Guide](USER-GUIDE.md).
 
 ---
 
@@ -9,6 +9,105 @@
 - **Claude Code / Gemini / Copilot:** `/gsdt:command-name [args]`
 - **OpenCode:** `/gsd-command-name [args]`
 - **Codex:** `$gsd-command-name [args]`
+
+## Full Cheat Sheet
+
+The sections below cover the detailed syntax. This cheat sheet is the fastest way to scan the entire current command surface, including advanced and operator-facing commands.
+
+### Project And Workspace Setup
+
+| Command | Purpose |
+|---------|---------|
+| `/gsdt:new-project` | Initialize project context, research, requirements, roadmap, and state |
+| `/gsdt:new-milestone` | Start the next milestone cycle on an existing project |
+| `/gsdt:new-workspace` | Create an isolated worktree/clone workspace |
+| `/gsdt:list-workspaces` | List active workspaces |
+| `/gsdt:remove-workspace` | Remove a workspace safely |
+| `/gsdt:workstreams` | Manage parallel workstreams inside a project |
+| `/gsdt:complete-milestone` | Archive a shipped milestone and tag it |
+| `/gsdt:milestone-summary` | Generate a milestone summary report |
+| `/gsdt:cleanup` | Archive old completed phase directories |
+
+### Phase Design And Planning
+
+| Command | Purpose |
+|---------|---------|
+| `/gsdt:discuss-phase` | Capture decisions and clarify the phase before planning |
+| `/gsdt:ui-phase` | Produce a UI design contract for frontend phases |
+| `/gsdt:plan-phase` | Research, plan, and validate a phase |
+| `/gsdt:research-phase` | Run standalone phase research without full planning |
+| `/gsdt:list-phase-assumptions` | Preview likely assumptions before planning |
+| `/gsdt:add-phase` | Append a new phase |
+| `/gsdt:insert-phase` | Insert a decimal phase after an existing phase |
+| `/gsdt:remove-phase` | Remove a future phase and renumber |
+| `/gsdt:plan-milestone-gaps` | Turn milestone-audit gaps into roadmap phases |
+| `/gsdt:map-codebase` | Create a brownfield map of an existing codebase |
+
+### Execution, Verification, And Shipping
+
+| Command | Purpose |
+|---------|---------|
+| `/gsdt:execute-phase` | Execute all plans for a phase |
+| `/gsdt:verify-work` | Run conversational UAT with persistent state |
+| `/gsdt:add-tests` | Generate tests for completed work |
+| `/gsdt:validate-phase` | Retroactively fill validation/test gaps |
+| `/gsdt:ui-review` | Run a visual/UI quality audit |
+| `/gsdt:review` | Run peer review with external AI CLIs |
+| `/gsdt:audit-uat` | Audit unresolved UAT items across phases |
+| `/gsdt:audit-milestone` | Audit milestone completeness and integration |
+| `/gsdt:pr-branch` | Create a clean PR branch without planning noise |
+| `/gsdt:ship` | Create a PR and finish the shipping path |
+
+### Navigation, Status, And Automation
+
+| Command | Purpose |
+|---------|---------|
+| `/gsdt:next` | Show the next best command from current state |
+| `/gsdt:progress` | Show roadmap and execution progress |
+| `/gsdt:resume-work` | Restore context after pause or `/clear` |
+| `/gsdt:pause-work` | Write handoff state for later resume |
+| `/gsdt:manager` | Open an interactive dashboard / command center |
+| `/gsdt:help` | Show the command guide |
+| `/gsdt:quick` | Run an ad-hoc task with GSDT guarantees |
+| `/gsdt:fast` | Execute trivial tasks inline with minimal overhead |
+| `/gsdt:autonomous` | Run remaining phases automatically |
+| `/gsdt:auto` | One-click autopilot from natural language input |
+| `/gsdt:do` | Route freeform text to the right command |
+| `/gsdt:session-report` | Generate a session summary report |
+| `/gsdt:stats` | Show project metrics |
+| `/gsdt:health` | Validate planning-directory integrity |
+| `/gsdt:update` | Update GSDT itself |
+| `/gsdt:reapply-patches` | Reapply local patches after an update |
+| `/gsdt:join-discord` | Show the community invite |
+
+### Capture, Intake, Todo, And Memory
+
+| Command | Purpose |
+|---------|---------|
+| `/gsdt:capture` | Save freeform fragments into the capture graph |
+| `/gsdt:intake` | Normalize freeform requirements into semantic planning state |
+| `/gsdt:intake-normalize` | Internal intake subskill: extract planning units |
+| `/gsdt:intake-resolve-units` | Internal intake subskill: resolve duplicates/conflicts |
+| `/gsdt:intake-assess-readiness` | Internal intake subskill: recommend next action |
+| `/gsdt:intake-write-brief` | Internal intake subskill: draft cards and brief content |
+| `/gsdt:note` | Zero-friction notes: append, list, promote |
+| `/gsdt:add-todo` | Capture a todo for later |
+| `/gsdt:check-todos` | Choose a pending todo to work on |
+| `/gsdt:add-backlog` | Add a backlog phase |
+| `/gsdt:review-backlog` | Curate and promote backlog phases |
+| `/gsdt:plant-seed` | Save a future idea with trigger conditions |
+| `/gsdt:thread` | Manage lightweight working threads |
+| `/gsdt:find` | Quick lookup for existing solution docs |
+
+### Diagnostics And Personalization
+
+| Command | Purpose |
+|---------|---------|
+| `/gsdt:debug` | Run structured debugging with persistent state |
+| `/gsdt:forensics` | Post-mortem a failed or stuck workflow |
+| `/gsdt:settings` | Edit global or project GSDT settings |
+| `/gsdt:set-profile` | Switch model profile quickly |
+| `/gsdt:profile-user` | Generate a developer behavior profile |
 
 ---
 
@@ -518,6 +617,40 @@ Flags are composable.
 /gsdt:quick --discuss --research --full  # All optional stages
 ```
 
+### `/gsdt:auto`
+
+One-click autopilot from natural language input.
+
+| Argument | Required | Description |
+|----------|----------|-------------|
+| `text` | Yes | Natural-language idea, requirement, or request |
+
+**Behavior:**
+- Runs the `auto` workflow end-to-end
+- Captures the raw request, decides the next action, and auto-advances when confidence is high
+- Can route into capture, intake, new-project, or phase work without the user selecting a command manually
+
+```bash
+/gsdt:auto "I want a low-friction idea capture system that can turn rough notes into plans"
+```
+
+### `/gsdt:capture`
+
+Capture freeform project fragments and infer a functionality graph.
+
+| Argument | Required | Description |
+|----------|----------|-------------|
+| `text` | Yes | Freeform project fragment |
+
+**Produces:**
+- `.gsdt-planning/captures/fragments/*.md`
+- `.gsdt-planning/captures/graph.md`
+- `.gsdt-planning/captures/state.json`
+
+```bash
+/gsdt:capture "Users should be able to create reusable project templates"
+```
+
 ### `/gsdt:autonomous`
 
 Run all remaining phases autonomously.
@@ -539,6 +672,18 @@ Route freeform text to the right GSDT command.
 /gsdt:do                             # Then describe what you want
 ```
 
+### `/gsdt:find`
+
+Find the most relevant existing solution doc quickly.
+
+| Argument | Required | Description |
+|----------|----------|-------------|
+| `query` | Yes | Problem, feature, or pattern to look up |
+
+```bash
+/gsdt:find "parallel phase execution"
+```
+
 ### `/gsdt:intake`
 
 Quiet semantic intake for freeform ideas, constraints, and phase refinements.
@@ -558,6 +703,50 @@ Quiet semantic intake for freeform ideas, constraints, and phase refinements.
 ```bash
 /gsdt:intake "I want a low-friction way to turn rough ideas into a project brief"
 /gsdt:intake "Phase 2 should only cover email/password login, not social auth yet"
+```
+
+### `/gsdt:intake-normalize`
+
+Internal intake subskill that converts raw text into conservative semantic planning units.
+
+**Output contract:** Returns only an `<intake_units_json>` block.
+
+```bash
+/gsdt:intake-normalize "Add audit logs, but only for admin actions at first"
+```
+
+### `/gsdt:intake-resolve-units`
+
+Internal intake subskill that resolves duplicates, conflicts, and canonical units.
+
+| Argument | Required | Description |
+|----------|----------|-------------|
+| `@units-json-file` | Yes | File containing normalized intake units |
+
+**Output contract:** Returns only an `<intake_resolution_json>` block.
+
+```bash
+/gsdt:intake-resolve-units @units.json
+```
+
+### `/gsdt:intake-assess-readiness`
+
+Internal intake subskill that assesses project or phase readiness and recommends the next action.
+
+**Output contract:** Returns only an `<intake_assessment_json>` block.
+
+```bash
+/gsdt:intake-assess-readiness
+```
+
+### `/gsdt:intake-write-brief`
+
+Internal intake subskill that drafts cards and brief artifacts from current intake state.
+
+**Output contract:** Returns only an `<intake_artifacts_json>` block.
+
+```bash
+/gsdt:intake-write-brief
 ```
 
 ### `/gsdt:note`

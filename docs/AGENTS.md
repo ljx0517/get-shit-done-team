@@ -1,6 +1,6 @@
 # GSDT Agent Reference
 
-> All 18 specialized agents — roles, tools, spawn patterns, and relationships. For architecture context, see [Architecture](ARCHITECTURE.md).
+> All 30 specialized agents, including the Assess reviewer family and review fixer. For architecture context, see [Architecture](ARCHITECTURE.md). For workflow routing, see [Workflow Reference](WORKFLOWS.md).
 
 ---
 
@@ -23,6 +23,22 @@ GSDT uses a multi-agent architecture where thin orchestrators (workflow files) s
 | Auditors | 2 | nyquist-auditor, ui-auditor |
 | Mappers | 1 | codebase-mapper |
 | Debuggers | 1 | debugger |
+| Profilers | 1 | user-profiler |
+| Assess Reviewers | 11 | correctness-reviewer, testing-reviewer, maintainability-reviewer, project-standards-reviewer, learnings-researcher, security-reviewer, performance-reviewer, reliability-reviewer, cli-readiness-reviewer, ui-regression-reviewer, agent-surface-reviewer |
+| Assess Fixers | 1 | review-fixer |
+
+## Capability Model And Skills
+
+GSDT uses four capability layers:
+
+| Layer | Primary location | Responsibility |
+|-------|------------------|----------------|
+| Commands | `commands/gsdt/*.md` | User-facing entrypoints |
+| Workflows | `gsdt/workflows/*.md` | Orchestration and routing |
+| Agents | `agents/*.md` | Specialized fresh-context workers |
+| CLI Tools | `gsdt/bin/gsdt-tools.cjs` | Deterministic programmatic operations |
+
+Repository-local `SKILL.md` packages are currently **not** part of this repo. Instead, agent-specific extra capabilities are injected through `config.agent_skills` and resolved programmatically with `node gsdt-tools.cjs agent-skills <agent-type>`.
 
 ---
 
@@ -398,6 +414,27 @@ Communication style, decision patterns, debugging approach, UX preferences, vend
 
 ---
 
+## Assess Reviewers And Fixer
+
+These agents are spawned by the internal `assess` workflow after `execute-phase` verification passes. Together they produce phase-scoped `ASSESS.md` / `ASSESS.json` artifacts and, when safe, can auto-apply a bounded subset of findings.
+
+| Agent | Spawned by | Role | Tools | Produces |
+|-------|------------|------|-------|----------|
+| `gsdt-correctness-reviewer` | `assess` | Always-on reviewer for logic correctness, contract mismatches, and broken transitions | Read, Bash, Grep, Glob | Findings merged into `ASSESS.md/json` |
+| `gsdt-testing-reviewer` | `assess` | Always-on reviewer for missing coverage, weak assertions, and unverified changes | Read, Bash, Grep, Glob | Findings merged into `ASSESS.md/json` |
+| `gsdt-maintainability-reviewer` | `assess` | Always-on reviewer for duplication, hidden coupling, and change-cost traps | Read, Bash, Grep, Glob | Findings merged into `ASSESS.md/json` |
+| `gsdt-project-standards-reviewer` | `assess` | Always-on reviewer for `CLAUDE.md` compliance, workflow drift, and portability gaps | Read, Bash, Grep, Glob | Findings merged into `ASSESS.md/json` |
+| `gsdt-learnings-researcher` | `assess` | Always-on reviewer that looks for known patterns and reusable compound learnings | Read, Bash, Grep, Glob | Findings merged into `ASSESS.md/json`, learnings links |
+| `gsdt-security-reviewer` | `assess` when relevant | Conditional reviewer for exploitable security issues and unsafe input handling | Read, Bash, Grep, Glob | Findings merged into `ASSESS.md/json` |
+| `gsdt-performance-reviewer` | `assess` when relevant | Conditional reviewer for avoidable regressions and repeated work | Read, Bash, Grep, Glob | Findings merged into `ASSESS.md/json` |
+| `gsdt-reliability-reviewer` | `assess` when relevant | Conditional reviewer for retries, recovery, checkpointing, and stall risks | Read, Bash, Grep, Glob | Findings merged into `ASSESS.md/json` |
+| `gsdt-cli-readiness-reviewer` | `assess` when relevant | Conditional reviewer for CLI routing, argument parsing, and machine-readable behavior | Read, Bash, Grep, Glob | Findings merged into `ASSESS.md/json` |
+| `gsdt-ui-regression-reviewer` | `assess` when relevant | Conditional reviewer for loading, empty, error, and async UI regressions | Read, Bash, Grep, Glob | Findings merged into `ASSESS.md/json` |
+| `gsdt-agent-surface-reviewer` | `assess` when relevant | Conditional reviewer for workflow/command/agent accessibility gaps | Read, Bash, Grep, Glob | Findings merged into `ASSESS.md/json` |
+| `gsdt-review-fixer` | `assess` safe-auto path | Applies only `safe_auto` findings, runs targeted verification, then returns resolved items for reassessment | Read, Write, Bash, Grep, Glob | Patched files, resolved findings fed back into `ASSESS.md/json` |
+
+---
+
 ## Agent Tool Permissions Summary
 
 | Agent | Read | Write | Edit | Bash | Grep | Glob | WebSearch | WebFetch | MCP |
@@ -420,9 +457,23 @@ Communication style, decision patterns, debugging approach, UX preferences, vend
 | codebase-mapper | ✓ | ✓ | | ✓ | ✓ | ✓ | | | |
 | debugger | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | | |
 | user-profiler | ✓ | | | | | | | | |
+| correctness-reviewer | ✓ | | | ✓ | ✓ | ✓ | | | |
+| testing-reviewer | ✓ | | | ✓ | ✓ | ✓ | | | |
+| maintainability-reviewer | ✓ | | | ✓ | ✓ | ✓ | | | |
+| project-standards-reviewer | ✓ | | | ✓ | ✓ | ✓ | | | |
+| learnings-researcher | ✓ | | | ✓ | ✓ | ✓ | | | |
+| security-reviewer | ✓ | | | ✓ | ✓ | ✓ | | | |
+| performance-reviewer | ✓ | | | ✓ | ✓ | ✓ | | | |
+| reliability-reviewer | ✓ | | | ✓ | ✓ | ✓ | | | |
+| cli-readiness-reviewer | ✓ | | | ✓ | ✓ | ✓ | | | |
+| ui-regression-reviewer | ✓ | | | ✓ | ✓ | ✓ | | | |
+| agent-surface-reviewer | ✓ | | | ✓ | ✓ | ✓ | | | |
+| review-fixer | ✓ | ✓ | | ✓ | ✓ | ✓ | | | |
 
 **Principle of Least Privilege:**
 - Checkers are read-only (no Write/Edit) — they evaluate, never modify
 - Researchers have web access — they need current ecosystem information
 - Executors have Edit — they modify code but not web access
 - Mappers have Write — they write analysis documents but not Edit (no code changes)
+- Assess reviewers are read-only — they critique phase output but never rewrite it directly
+- `gsdt-review-fixer` is the only Assess-path agent with write access, and it is limited to `safe_auto` findings
