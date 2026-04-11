@@ -58,6 +58,25 @@ Collect these inputs automatically:
 - `*-CONTEXT.md` if present
 - relevant changed files and local diff for the current phase
 
+Initialize phase context and agent skill blocks once before reviewer selection:
+
+```bash
+INIT=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" init phase-op "${PHASE_NUMBER}")
+if [[ "$INIT" == @file:* ]]; then INIT=$(cat "${INIT#@file:}"); fi
+AGENT_SKILLS_CORRECTNESS=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" agent-skills gsdt-correctness-reviewer 2>/dev/null)
+AGENT_SKILLS_TESTING=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" agent-skills gsdt-testing-reviewer 2>/dev/null)
+AGENT_SKILLS_MAINTAINABILITY=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" agent-skills gsdt-maintainability-reviewer 2>/dev/null)
+AGENT_SKILLS_PROJECT_STANDARDS=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" agent-skills gsdt-project-standards-reviewer 2>/dev/null)
+AGENT_SKILLS_LEARNINGS=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" agent-skills gsdt-learnings-researcher 2>/dev/null)
+AGENT_SKILLS_SECURITY=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" agent-skills gsdt-security-reviewer 2>/dev/null)
+AGENT_SKILLS_PERFORMANCE=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" agent-skills gsdt-performance-reviewer 2>/dev/null)
+AGENT_SKILLS_RELIABILITY=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" agent-skills gsdt-reliability-reviewer 2>/dev/null)
+AGENT_SKILLS_CLI_READINESS=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" agent-skills gsdt-cli-readiness-reviewer 2>/dev/null)
+AGENT_SKILLS_UI_REGRESSION=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" agent-skills gsdt-ui-regression-reviewer 2>/dev/null)
+AGENT_SKILLS_AGENT_SURFACE=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" agent-skills gsdt-agent-surface-reviewer 2>/dev/null)
+AGENT_SKILLS_REVIEW_FIXER=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" agent-skills gsdt-review-fixer 2>/dev/null)
+```
+
 If context is incomplete, continue in degraded mode and record the missing inputs in Coverage.
 Do not ask the user.
 
@@ -138,31 +157,36 @@ Use gsdt/references/assess-subagent-template.md.
 
 <standards-paths>
 {relevant standards paths for project-standards only}
-</standards-paths>",
+</standards-paths>
+${AGENT_SKILLS_CORRECTNESS}",
   subagent_type="gsdt-correctness-reviewer",
   description="Correctness review"
 )
 
 Task(
-  prompt="{same assess review context}",
+  prompt="{same assess review context}
+${AGENT_SKILLS_TESTING}",
   subagent_type="gsdt-testing-reviewer",
   description="Testing review"
 )
 
 Task(
-  prompt="{same assess review context}",
+  prompt="{same assess review context}
+${AGENT_SKILLS_MAINTAINABILITY}",
   subagent_type="gsdt-maintainability-reviewer",
   description="Maintainability review"
 )
 
 Task(
-  prompt="{same assess review context plus <standards-paths>}",
+  prompt="{same assess review context plus <standards-paths>}
+${AGENT_SKILLS_PROJECT_STANDARDS}",
   subagent_type="gsdt-project-standards-reviewer",
   description="Standards review"
 )
 
 Task(
-  prompt="{same assess review context}",
+  prompt="{same assess review context}
+${AGENT_SKILLS_LEARNINGS}",
   subagent_type="gsdt-learnings-researcher",
   description="Known patterns review"
 )
@@ -170,12 +194,12 @@ Task(
 
 For conditionally selected reviewers, repeat the same `Task()` pattern with:
 
-- `subagent_type="gsdt-security-reviewer"`
-- `subagent_type="gsdt-performance-reviewer"`
-- `subagent_type="gsdt-reliability-reviewer"`
-- `subagent_type="gsdt-cli-readiness-reviewer"`
-- `subagent_type="gsdt-ui-regression-reviewer"`
-- `subagent_type="gsdt-agent-surface-reviewer"`
+- `subagent_type="gsdt-security-reviewer"` + `${AGENT_SKILLS_SECURITY}`
+- `subagent_type="gsdt-performance-reviewer"` + `${AGENT_SKILLS_PERFORMANCE}`
+- `subagent_type="gsdt-reliability-reviewer"` + `${AGENT_SKILLS_RELIABILITY}`
+- `subagent_type="gsdt-cli-readiness-reviewer"` + `${AGENT_SKILLS_CLI_READINESS}`
+- `subagent_type="gsdt-ui-regression-reviewer"` + `${AGENT_SKILLS_UI_REGRESSION}`
+- `subagent_type="gsdt-agent-surface-reviewer"` + `${AGENT_SKILLS_AGENT_SURFACE}`
 
 Shared context for every reviewer:
 
@@ -223,7 +247,8 @@ Task(
 
 <assess-findings>
 {safe_auto findings only}
-</assess-findings>",
+</assess-findings>
+${AGENT_SKILLS_REVIEW_FIXER}",
   subagent_type="gsdt-review-fixer",
   description="Apply safe assess fixes"
 )

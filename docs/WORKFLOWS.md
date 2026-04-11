@@ -27,6 +27,10 @@ In practice, GSDT's capability model is:
 - `gsdt-tools.cjs` for deterministic internal commands
 
 External project skills can still be injected into supported agents through `config.agent_skills` and `node gsdt-tools.cjs agent-skills <agent-type>`.
+Use the concrete spawned agent name as `<agent-type>` (for example
+`gsdt-research-synthesizer`, `gsdt-ui-auditor`, `gsdt-advisor-researcher`,
+`gsdt-review-fixer`). Internal workflows such as `assess` and `execute-plan` also
+load `agent-skills` for their reviewer/fixer and executor subagents.
 
 ## Project, Milestone, And Workspace Workflows
 

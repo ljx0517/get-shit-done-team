@@ -134,7 +134,7 @@ Phase number from argument (required).
 ```bash
 INIT=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" init phase-op "${PHASE}")
 if [[ "$INIT" == @file:* ]]; then INIT=$(cat "${INIT#@file:}"); fi
-AGENT_SKILLS_ADVISOR=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" agent-skills gsdt-advisor 2>/dev/null)
+AGENT_SKILLS_ADVISOR_RESEARCHER=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" agent-skills gsdt-advisor-researcher 2>/dev/null)
 ```
 
 Parse JSON for: `commit_docs`, `phase_found`, `phase_dir`, `phase_number`, `phase_name`, `phase_slug`, `padded_phase`, `has_research`, `has_context`, `has_plans`, `has_verification`, `plan_count`, `roadmap_exists`, `planning_exists`.
@@ -510,7 +510,7 @@ After user selects gray areas in present_gray_areas, spawn parallel research age
      <calibration_tier>{resolved calibration tier: full_maturity | standard | minimal_decisive}</calibration_tier>
 
      Research this gray area and return a structured comparison table with rationale.
-     ${AGENT_SKILLS_ADVISOR}",
+     ${AGENT_SKILLS_ADVISOR_RESEARCHER}",
      subagent_type="general-purpose",
      model="{ADVISOR_MODEL}",
      description="Research: {area_name}"

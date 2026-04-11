@@ -690,6 +690,9 @@ Inject project-specific skills into subagents during execution.
 | `agent_skills.<agent_type>` | `string[]` | Paths to skill directories loaded into that agent type at spawn time |
 
 Skills are injected as `<agent_skills>` blocks in agent prompts, giving subagents access to project-specific knowledge.
+Use the concrete agent name as the key, matching the workflow `subagent_type` or agent file
+name exactly. Examples: `gsdt-research-synthesizer`, `gsdt-ui-auditor`,
+`gsdt-advisor-researcher`, `gsdt-review-fixer`. Legacy aliases are not resolved.
 
 ### Git Branching
 

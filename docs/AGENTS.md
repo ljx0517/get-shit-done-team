@@ -38,7 +38,11 @@ GSDT uses four capability layers:
 | Agents | `agents/*.md` | Specialized fresh-context workers |
 | CLI Tools | `gsdt/bin/gsdt-tools.cjs` | Deterministic programmatic operations |
 
-Repository-local `SKILL.md` packages are currently **not** part of this repo. Instead, agent-specific extra capabilities are injected through `config.agent_skills` and resolved programmatically with `node gsdt-tools.cjs agent-skills <agent-type>`.
+Repository-local `SKILL.md` packages are currently **not** part of this repo. Instead,
+agent-specific extra capabilities are injected through `config.agent_skills` and resolved
+programmatically with `node gsdt-tools.cjs agent-skills <agent-type>`, where
+`<agent-type>` is the concrete spawned agent name such as `gsdt-research-synthesizer`,
+`gsdt-ui-auditor`, `gsdt-advisor-researcher`, or `gsdt-review-fixer`.
 
 ---
 

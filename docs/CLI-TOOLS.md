@@ -355,6 +355,10 @@ node gsdt-tools.cjs agent-skills gsdt-planner
 ```
 
 Used by workflows that support `config.agent_skills` to prepend extra project-specific instructions without hardcoding them into agent files.
+Use the canonical concrete agent name as `<type>`: it should match the workflow
+`subagent_type` or agent file name exactly. Examples include
+`gsdt-research-synthesizer`, `gsdt-ui-auditor`, `gsdt-advisor-researcher`, and
+`gsdt-review-fixer`. Legacy aliases are not supported.
 
 ---
 

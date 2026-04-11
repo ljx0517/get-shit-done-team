@@ -175,7 +175,10 @@ Each path must be a directory containing a `SKILL.md` file. Paths are validated 
 
 ### Supported Agent Types
 
-Any GSDT agent type can receive skills. Common types:
+Use the concrete agent name exactly as it appears in workflow `subagent_type="..."` values
+or the corresponding `agents/*.md` file name. Legacy aliases are not resolved.
+
+Common types:
 
 - `gsdt-executor` -- executes implementation plans
 - `gsdt-planner` -- creates phase plans
@@ -183,13 +186,26 @@ Any GSDT agent type can receive skills. Common types:
 - `gsdt-verifier` -- post-execution verification
 - `gsdt-phase-researcher` -- phase research
 - `gsdt-project-researcher` -- new-project research
+- `gsdt-research-synthesizer` -- research synthesis
+- `gsdt-advisor-researcher` -- discuss-phase advisors
+- `gsdt-ui-auditor` -- retroactive UI review
 - `gsdt-debugger` -- diagnostic agents
 - `gsdt-codebase-mapper` -- codebase analysis
-- `gsdt-advisor` -- discuss-phase advisors
 - `gsdt-ui-researcher` -- UI design contract creation
 - `gsdt-ui-checker` -- UI spec verification
 - `gsdt-roadmapper` -- roadmap creation
-- `gsd-synthesizer` -- research synthesis
+- `gsdt-correctness-reviewer` -- assess correctness review
+- `gsdt-testing-reviewer` -- assess testing review
+- `gsdt-maintainability-reviewer` -- assess maintainability review
+- `gsdt-project-standards-reviewer` -- assess standards review
+- `gsdt-learnings-researcher` -- assess known-pattern review
+- `gsdt-security-reviewer` -- assess security review
+- `gsdt-performance-reviewer` -- assess performance review
+- `gsdt-reliability-reviewer` -- assess reliability review
+- `gsdt-cli-readiness-reviewer` -- assess CLI review
+- `gsdt-ui-regression-reviewer` -- assess UI regression review
+- `gsdt-agent-surface-reviewer` -- assess workflow/agent surface review
+- `gsdt-review-fixer` -- assess safe-auto fixes
 
 ### How It Works
 
@@ -203,7 +219,10 @@ Read these user-configured skills:
 </agent_skills>
 ```
 
-If no skills are configured, the block is omitted (zero overhead).
+If no skills are configured, the block is omitted (zero overhead). The `<type>` lookup is exact:
+use canonical agent names such as `gsdt-research-synthesizer`, `gsdt-ui-auditor`,
+`gsdt-advisor-researcher`, and `gsdt-review-fixer`. Legacy keys like `gsd-synthesizer`,
+`gsd-ui-reviewer`, and `gsdt-advisor` are not supported.
 
 ### CLI
 

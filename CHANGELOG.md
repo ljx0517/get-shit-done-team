@@ -11,6 +11,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Expanded the core reference docs so the documentation set now has a complete command/workflow/agent/artifact map: `docs/COMMANDS.md` gained a full cheat sheet plus advanced command entries, `docs/AGENTS.md` now covers the full 30-agent surface including Assess reviewers, `docs/CLI-TOOLS.md` now documents workstream/capture/intake/review/compound/profile subcommands, and `docs/ARCHITECTURE.md` now includes an end-to-end Mermaid command map. (Jaxon)
 
 ### Fixed
+- Aligned `agent-skills` workflow routing to canonical concrete agent names (`gsdt-research-synthesizer`, `gsdt-ui-auditor`, `gsdt-advisor-researcher`), added reviewer/fixer and `execute-plan` injection coverage, and locked the behavior with workflow contract tests and docs. (Jaxon)
 - Unified stale user-facing `GSD` command markers to `GSDT` in issue templates, reference notes, and the install terminal asset so examples consistently show `/gsdt:*` commands and `gsdt-*` agent names.
 - Cleaned up remaining stale naming in the bug report install options and a `phase-runner` plan-check comment so the repo no longer mixes `get-shit-done-cc`, `gsd-plan-checker`, and `GSDT` terminology in these spots.
 - Updated remaining stale install-package and install-path references to `gsdt` / `~/.claude/gsdt/` in diagnostics, terminal artwork, notes, and debugger guidance.
