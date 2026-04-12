@@ -229,7 +229,7 @@
 
 ## 配置参考
 
-GSDT 在 `.gsdt-planning/config.json` 中存储项目设置。在 `/gsdt:new-project` 期间配置或稍后用 `/gsdt:settings` 更新。
+GSDT 在仓库根目录的 `.gsdt-planning/config.json` 中存储项目设置（旧树可能为 `.claude/.gsdt-planning/config.json`）。在 `/gsdt:new-project` 期间配置或稍后用 `/gsdt:settings` 更新。路径解析见 [配置说明（英文）](../CONFIGURATION.md#configuration-file) 与 `planningRoot()`。
 
 ### 完整 config.json 模式
 

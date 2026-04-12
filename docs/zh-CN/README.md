@@ -39,7 +39,7 @@ npx gsdt@latest
 
 **被 Amazon、Google、Shopify 和 Webflow 的工程师信赖使用。**
 
-[我为什么开发这个](#我为什么开发这个) · [工作原理](#工作原理) · [命令](#命令) · [为什么有效](#为什么有效) · [用户指南](USER-GUIDE.md)
+[我为什么开发这个](#我为什么开发这个) · [工作原理](#工作原理) · [命令](#命令) · [为什么有效](#为什么有效) · [用户指南](USER-GUIDE.md) · [GSD→GSDT 迁移说明](MIGRATION-GSD-TO-GSDT.md)
 
 </div>
 
@@ -527,7 +527,9 @@ lmn012o feat(08-02): 创建注册端点
 
 ## 配置
 
-GSDT 在 `.gsdt-planning/config.json` 中存储项目设置。在 `/gsdt:new-project` 期间配置或稍后用 `/gsdt:settings` 更新。完整配置模式、工作流开关、git 分支选项和每个代理的模型分解，请参阅[用户指南](USER-GUIDE.md#配置参考)。
+GSDT 在仓库根目录的 **`.gsdt-planning/config.json`** 中存储项目设置（旧树可能仍使用 **`.claude/.gsdt-planning/config.json`**）。在 `/gsdt:new-project` 期间配置或稍后用 `/gsdt:settings` 更新。完整配置模式、工作流开关、git 分支选项和每个代理的模型分解，请参阅[用户指南](USER-GUIDE.md#配置参考)与 [配置说明（英文）](../CONFIGURATION.md)。
+
+**规划目录：** 路线图、阶段、quick、research 等默认在 **`.gsdt-planning/`**；较早项目可能仍用 **`.claude/.gsdt-planning/`**，由 `planningRoot()` 解析。详见 [`docs/CONFIGURATION.md`](../CONFIGURATION.md)。
 
 ### 核心设置
 

@@ -7,8 +7,8 @@
 ## Command Syntax
 
 - **Claude Code / Gemini / Copilot:** `/gsdt:command-name [args]`
-- **OpenCode:** `/gsd-command-name [args]`
-- **Codex:** `$gsd-command-name [args]`
+- **OpenCode:** `/gsdt-command-name [args]`
+- **Codex:** `$gsdt-command-name [args]`
 
 ## Full Cheat Sheet
 

@@ -134,9 +134,9 @@ body:
     attributes:
       label: GSD Configuration
       description: |
-        If the bug is related to planning, phases, or workflow behavior, paste your `.claude/.gsdt-planning/config.json`.
+        If the bug is related to planning, phases, or workflow behavior, paste your `.gsdt-planning/config.json` (default at repo root). Legacy trees may use `.claude/.gsdt-planning/config.json` instead.
 
-        **How to retrieve:** `cat .claude/.gsdt-planning/config.json`
+        **How to retrieve:** `cat .gsdt-planning/config.json` (or `cat .claude/.gsdt-planning/config.json` if that is where your project stores planning files)
 
         **⚠️ PII Warning:** This file may contain project-specific names. Redact if sensitive.
       render: json
@@ -148,9 +148,9 @@ body:
     attributes:
       label: GSD State (if relevant)
       description: |
-        If the bug involves incorrect state tracking or phase progression, include your `.claude/.gsdt-planning/STATE.md`.
+        If the bug involves incorrect state tracking or phase progression, include your `STATE.md` from the planning directory (default `.gsdt-planning/STATE.md`; legacy `.claude/.gsdt-planning/STATE.md`).
 
-        **How to retrieve:** `cat .claude/.gsdt-planning/STATE.md`
+        **How to retrieve:** `cat .gsdt-planning/STATE.md` (or the legacy path above if applicable)
 
         **⚠️ PII Warning:** This file contains project names, phase descriptions, and timestamps. Redact any project names or details you don't want public.
       render: markdown
@@ -218,7 +218,7 @@ body:
         - `npm list -g gsdt` — confirms installed version
         - `ls -la ~/.claude/gsdt/` — confirms installation files (Claude Code)
         - `cat ~/.claude/gsdt/gsdt-file-manifest.json` — file manifest for debugging install issues
-        - `ls -la .claude/.gsdt-planning/` — confirms planning directory state
+        - `ls -la .gsdt-planning/` — confirms planning directory state (also try `ls -la .claude/.gsdt-planning/` on legacy projects)
 
         **⚠️ PII Warning:** File listings and manifests contain your home directory path. Replace your username with `REDACTED`.
     validations:

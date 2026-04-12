@@ -4,11 +4,49 @@ All notable changes to GSD will be documented in this file.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased]
+## [1.35.0] - 2026-04-12
+
+### Added (upstream `get-shit-done` parity)
+
+- **Installer (`bin/install.js`)** — Merged upstream v1.35.0 behavior: runtimes **Cline**, **CodeBuddy**, **Qwen**; expanded interactive `promptRuntime` (14 runtimes + **15 = All**); **`--sdk`** / `installSdk` / `promptSdk` post-install flow; **`gsdt:`** Copilot CONV-07 alongside **`gsd:`**; **`GSDT_INSTALL_DIR` / `GSDT_COMMANDS_DIR`**; Codex **`gsdt-*`** agent sandbox; **`/gsdt-reapply-patches`** hints in `reportLocalPatches`; uninstall / manifest support for **`gsdt-*`** and legacy **`gsd-*`** artifacts.
+- **`gsdt-tools.cjs`** — Subcommands **`intel`**, **`docs-init`**, **`learnings`**, **`from-gsd2`** wired to `lib/intel.cjs`, `lib/docs.cjs`, `lib/learnings.cjs`, `lib/gsd2-import.cjs` (from upstream), using **`core.planningRoot(cwd)`** for `.gsdt-planning/`.
+- **Commands** — Ported missing slash commands: `undo`, `secure-phase`, `scan`, `import`, `from-gsd2`, `extract_learnings`, `explore`, `eval-review`, `docs-update`, `code-review`, `code-review-fix`, `audit-fix`, `analyze-dependencies`, `ai-integration-phase`, `intel` (normalized to **`gsdt:`** / `.gsdt-planning/` in copy).
+- **`hooks/gsdt-statusline.js`** — Milestone · status · phase in the middle slot when no in-progress todo; walks **`.gsdt-planning/STATE.md`** then **`.planning/STATE.md`**; shared update cache **`~/.cache/gsdt/gsdt-update-check.json`**.
 
 ### Changed
+
+- **Package version** — **`1.35.0`** (root and `sdk/package.json`); **`engines.node`** → **`>=22`** to match upstream.
+- **Skill / flat-command prefixes** — Non-Claude installs use the **`gsdt-`** prefix for flattened commands and skills (replacing upstream-only **`gsd-`** for this fork).
+- **Paths on disk** — **`gsdt-file-manifest.json`**, **`gsdt-local-patches/`**, **`gsdt-pristine/`** (replacing legacy `gsd-*` filenames where docs already referred to `gsdt`).
+- **Antigravity / Codex body conversion** — **`gsdt:`** → **`gsdt-`** in **`convertClaudeToAntigravityContent`**; Codex **`convertSlashCommandsToCodexSkillMentions`** now handles **`/gsdt:`** and **`/gsdt-`** invocations; **`stripCodexGsdAgentSections`** strips **`[agents.gsdt-*]`** tables; **`installCodexConfig`** discovers **`gsdt-*.md`** agents.
+- **Install verification** — Skill/command counts use **`isGsdInstallPrefixedName`** so **`gsdt-*`** installs are not reported as failed.
+- **Cursor / Windsurf** — Slash-command normalization includes **`gsdt:`** alongside **`gsd:`**.
+
+### Tests
+
+- Updated **`tests/multi-runtime-select.test.cjs`** and **`tests/copilot-install.test.cjs`** for the new runtime map and **`gsdt-*`** naming; **`tests/antigravity-install.test.cjs`**, **`tests/codex-config.test.cjs`**, **`tests/cursor-conversion.test.cjs`**, and **`tests/windsurf-conversion.test.cjs`** aligned with **`gsdt`** command and manifest behavior.
+
+### Author
+
+- Jaxon
+
+## [Unreleased]
+
+### Added
+
+- **Legacy install artifact migration** — [`bin/install.js`](bin/install.js) runs **`migrateLegacyInstallArtifacts`** before **`saveLocalPatches`**: renames **`gsd-file-manifest.json`** → **`gsdt-file-manifest.json`**, **`gsd-local-patches/`** → **`gsdt-local-patches/`**, **`gsd-pristine/`** → **`gsdt-pristine/`** when the new path is missing; if both old and new exist, logs a dim hint and does not overwrite. **`reportLocalPatches`** reads **`backup-meta.json`** from the legacy patch directory if the new one has none. **`uninstall`** also removes a leftover **`gsd-file-manifest.json`**. Cross-volume rename uses copy-then-delete. Coverage: [`tests/legacy-install-artifacts-migrate.test.cjs`](tests/legacy-install-artifacts-migrate.test.cjs). (Jaxon)
+- **Migration documentation** — Added [`docs/MIGRATION-GSD-TO-GSDT.md`](docs/MIGRATION-GSD-TO-GSDT.md) as the consolidated guide for GSD→GSDT naming, disk paths, installer behavior, runtime conversion notes, intentional legacy paths (`~/.gsd/`, GSD-2 `.gsd/`), and links to `CHANGELOG` / related docs; [`docs/zh-CN/MIGRATION-GSD-TO-GSDT.md`](docs/zh-CN/MIGRATION-GSD-TO-GSDT.md) provides a short Chinese summary; indexed from [`docs/README.md`](docs/README.md); top navigation in root [`README.md`](README.md), [`README.zh-CN.md`](README.zh-CN.md), and [`docs/zh-CN/README.md`](docs/zh-CN/README.md) links to the migration guide (Chinese README points at the zh-CN summary). Follow-up **code audit** expanded that guide: per-runtime converters in [`bin/install.js`](bin/install.js) (Codex **`$gsdt-*`** vs **`$gsd-*`**, CodeBuddy **`/gsd:`**-only skill mention helper, Cursor/Windsurf markdown), plus **`planningRoot()`** in [`gsdt/bin/lib/core.cjs`](gsdt/bin/lib/core.cjs). (Jaxon)
+
+### Changed
+
+- **Terminology: `gsd:` → `gsdt:`** — User-facing workflows ([`gsdt/workflows/capture.md`](gsdt/workflows/capture.md), [`autonomous.md`](gsdt/workflows/autonomous.md)), [`commands/gsdt/docs-update.md`](commands/gsdt/docs-update.md), [`intel.md`](commands/gsdt/intel.md), [`new-project` / `new-milestone` workflows](gsdt/workflows/), [`docs/COMMANDS.md`](docs/COMMANDS.md), [`ARCHITECTURE.md`](docs/ARCHITECTURE.md), [`CONFIGURATION.md`](docs/CONFIGURATION.md), and [`gsdt/bin/lib/docs.cjs`](gsdt/bin/lib/docs.cjs) / [`intel.cjs`](gsdt/bin/lib/intel.cjs) now use **`gsdt-*`** naming; generated-doc detection accepts both **`<!-- generated-by: gsdt-doc-writer -->`** and the legacy **`gsd-doc-writer`** marker. Cursor/Windsurf/Antigravity/Copilot tests updated to **`gsdt:`** fixtures. (Jaxon)
+- **README & translated READMEs** — Default `git.*_branch_template` examples in configuration tables now show **`gsdt/...`** prefixes (aligned with `config.cjs` defaults). **`gsdt/references/planning-config.md`**, **`docs/zh-CN/references/planning-config.md`**, **`docs/superpowers/plans/2026-03-18-materialize-new-project-config.md`**, **`gsdt/workflows/{review,update,settings}.md`**, **`gsdt/templates/copilot-instructions.md`**, **`gsdt/templates/codebase/structure.md`**, and **`docs/ARCHITECTURE.md`** (hook cache paths) updated for **`gsdt-*`** naming; temp-file examples in review workflow use **`/tmp/gsdt-review-*`**. (Jaxon)
 - Renamed GitHub repository references from `gsd-build/get-shit-done` to `gsd-build/get-shit-done-team`, aligned local-install paths and tooling (`hooks/gsdt-check-update.js`, `profile-output.cjs`, tests, `.gitignore`, secret-scan allowlists) with the on-disk install directory `gsdt/` (see `GSDT_INSTALL_DIR`), and updated installer markers to “managed by gsdt installer”. (Jaxon)
 - Expanded the core reference docs so the documentation set now has a complete command/workflow/agent/artifact map: `docs/COMMANDS.md` gained a full cheat sheet plus advanced command entries, `docs/AGENTS.md` now covers the full 30-agent surface including Assess reviewers, `docs/CLI-TOOLS.md` now documents workstream/capture/intake/review/compound/profile subcommands, and `docs/ARCHITECTURE.md` now includes an end-to-end Mermaid command map. (Jaxon)
+- **README configuration path** — Root [`README.md`](README.md) “Configuration Reference” sentence now states settings live at **`.gsdt-planning/config.json`** with a legacy **`.claude/.gsdt-planning/config.json`** note, matching `planningRoot()` and [`docs/CONFIGURATION.md`](docs/CONFIGURATION.md). Follow-up: all remaining README references to **`.claude/.gsdt-planning/`** (new-project outputs, quick mode, command tables, `commit_docs`, security hook) now use the default **`.gsdt-planning/`** path with explicit **legacy** callouts where relevant, plus a **Planning directory** paragraph linking to [`docs/CONFIGURATION.md`](docs/CONFIGURATION.md). (Jaxon)
+- **Planning path consistency (docs)** — [`CONTRIBUTING.md`](CONTRIBUTING.md) test-helper table now matches **`createTempProject()`** (`.gsdt-planning/`). [`agents/gsdt-codebase-mapper.md`](agents/gsdt-codebase-mapper.md) output paths use **`.gsdt-planning/codebase/`**. [`docs/superpowers/specs/2026-03-20-multi-project-workspaces-design.md`](docs/superpowers/specs/2026-03-20-multi-project-workspaces-design.md) uses **`.gsdt-planning/`** at the workspace root with a legacy callout. [`docs/zh-CN/README.md`](docs/zh-CN/README.md) configuration section aligned with English README + [`docs/MIGRATION-GSD-TO-GSDT.md`](docs/MIGRATION-GSD-TO-GSDT.md) planning-root wording updated. (Jaxon)
+- **Planning path consistency (full sweep)** — [`命令.txt`](命令.txt) / [`task-flow.txt`](task-flow.txt) internal notes use **`.gsdt-planning/`** with a legacy callout in `命令.txt`. [`docs/CONFIGURATION.md`](docs/CONFIGURATION.md), [`docs/USER-GUIDE.md`](docs/USER-GUIDE.md), [`docs/zh-CN/USER-GUIDE.md`](docs/zh-CN/USER-GUIDE.md), and [`docs/README.md`](docs/README.md) document default vs legacy paths and link **`planningRoot()`** / [`CONFIGURATION.md`](docs/CONFIGURATION.md). [`.github/ISSUE_TEMPLATE/bug_report.yml`](.github/ISSUE_TEMPLATE/bug_report.yml) and [`.github/workflows/security-scan.yml`](.github/workflows/security-scan.yml) prefer **`.gsdt-planning/`** while still covering legacy **`.claude/.gsdt-planning/`** in diagnostics and PR checks. [`gsdt/bin/lib/state.cjs`](gsdt/bin/lib/state.cjs) WAITING.json comment aligned with `planningDir(cwd)`. (Jaxon)
+- **Documentation locales** — Removed Japanese, Korean, and Portuguese top-level READMEs (`README.ja-JP.md`, `README.ko-KR.md`, `README.pt-BR.md`). The repository now maintains **English** (root [`README.md`](README.md), [`docs/*.md`](docs/)) and **简体中文** ([`README.zh-CN.md`](README.zh-CN.md), [`docs/zh-CN/`](docs/zh-CN/)) only; [`docs/README.md`](docs/README.md) language index updated accordingly. (Jaxon)
 
 ### Fixed
 - Unified stale user-facing `GSD` command markers to `GSDT` in issue templates, reference notes, and the install terminal asset so examples consistently show `/gsdt:*` commands and `gsdt-*` agent names.
@@ -120,7 +158,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **Multi-runtime selection** in interactive installer
 - **Text mode support** for plan-phase workflow
 - **"Follow the Indirection" debugging technique** in gsdt-debugger
-- **`--reviews` flag** for `gsd:plan-phase`
+- **`--reviews` flag** for `gsdt:plan-phase`
 - **Temp file reaper** — Prevents unbounded /tmp accumulation
 
 ### Changed
@@ -693,8 +731,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Added
 - Git branching strategy configuration with three options:
   - `none` (default): commit to current branch
-  - `phase`: create branch per phase (`gsd/phase-{N}-{slug}`)
-  - `milestone`: create branch per milestone (`gsd/{version}-{slug}`)
+  - `phase`: create branch per phase (`gsdt/phase-{N}-{slug}`)
+  - `milestone`: create branch per milestone (`gsdt/{version}-{slug}`)
 - Squash merge option at milestone completion (recommended) with merge-with-history alternative
 - Context compliance verification dimension in plan checker — flags if plans contradict user decisions
 

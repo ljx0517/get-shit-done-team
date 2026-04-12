@@ -6,7 +6,9 @@
 
 ## Configuration File
 
-GSDT stores project settings in `.gsdt-planning/config.json`. Created during `/gsdt:new-project`, updated via `/gsdt:settings`.
+GSDT stores project settings in `.gsdt-planning/config.json` at the repository root. Created during `/gsdt:new-project`, updated via `/gsdt:settings`.
+
+Older projects may still keep planning files under `.claude/.gsdt-planning/`; `planningRoot()` in `gsdt/bin/lib/core.cjs` resolves the active directory (default first, then legacy).
 
 ### Full Schema
 
@@ -187,7 +189,7 @@ Any GSDT agent type can receive skills. Common types:
 - `gsdt-ui-researcher` -- UI design contract creation
 - `gsdt-ui-checker` -- UI spec verification
 - `gsdt-roadmapper` -- roadmap creation
-- `gsd-synthesizer` -- research synthesis
+- `gsdt-research-synthesizer` -- research synthesis
 
 ### How It Works
 

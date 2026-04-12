@@ -465,7 +465,7 @@ The `security.cjs` module scans for known injection patterns (role overrides, in
 
 ## Configuration Reference
 
-GSDT stores project settings in `.gsdt-planning/config.json`. Configure during `/gsdt:new-project` or update later with `/gsdt:settings`.
+GSDT stores project settings in `.gsdt-planning/config.json` at the repository root. Configure during `/gsdt:new-project` or update later with `/gsdt:settings`. Legacy trees may use `.claude/.gsdt-planning/config.json` instead; see [Configuration Reference](CONFIGURATION.md#configuration-file) and `planningRoot()`.
 
 ### Full config.json Schema
 
