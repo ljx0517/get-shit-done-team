@@ -57,6 +57,7 @@ describe('config-ensure-section command', () => {
     assert.strictEqual(typeof config.workflow.plan_check, 'boolean');
     assert.strictEqual(typeof config.workflow.verifier, 'boolean');
     assert.strictEqual(typeof config.workflow.nyquist_validation, 'boolean');
+    assert.ok(Array.isArray(config.map_ignore), 'map_ignore should exist as an array');
     // These hardcoded defaults are always present (may be overridden by user defaults)
     assert.ok('model_profile' in config, 'model_profile should exist');
     assert.ok('brave_search' in config, 'brave_search should exist');
@@ -199,6 +200,22 @@ describe('config-set command', () => {
 
     const config = readConfig(tmpDir);
     assert.strictEqual(config.workflow.research, false);
+  });
+
+  test('sets planning.map_ignore as a JSON array', () => {
+    const result = runGsdTools(
+      ['config-set', 'planning.map_ignore', '["dist","coverage/**","apps/demo/.next"]'],
+      tmpDir
+    );
+    assert.ok(result.success, `Command failed: ${result.error}`);
+
+    const output = JSON.parse(result.output);
+    assert.strictEqual(output.updated, true);
+    assert.strictEqual(output.key, 'planning.map_ignore');
+    assert.deepStrictEqual(output.value, ['dist', 'coverage/**', 'apps/demo/.next']);
+
+    const config = readConfig(tmpDir);
+    assert.deepStrictEqual(config.planning.map_ignore, ['dist', 'coverage/**', 'apps/demo/.next']);
   });
 
   test('auto-creates nested objects for dot-notation', () => {

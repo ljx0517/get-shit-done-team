@@ -5,7 +5,7 @@
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
-const { loadConfig, resolveModelInternal, findPhaseInternal, getRoadmapPhaseInternal, pathExistsInternal, generateSlugInternal, getMilestoneInfo, getMilestonePhaseFilter, stripShippedMilestones, extractCurrentMilestone, normalizePhaseName, planningPaths, planningDir, planningRoot, resolvePlanningDirName, toPosixPath, output, error, checkAgentsInstalled } = require('./core.cjs');
+const { loadConfig, resolveMapIgnore, resolveModelInternal, findPhaseInternal, getRoadmapPhaseInternal, pathExistsInternal, generateSlugInternal, getMilestoneInfo, getMilestonePhaseFilter, stripShippedMilestones, extractCurrentMilestone, normalizePhaseName, planningPaths, planningDir, planningRoot, resolvePlanningDirName, toPosixPath, output, error, checkAgentsInstalled } = require('./core.cjs');
 
 /** POSIX relative prefix for GSD planning dir at `cwd` (`.gsdt-planning` or legacy `.claude/.gsdt-planning`). */
 function planningRel(cwd) {
@@ -570,6 +570,7 @@ function cmdInitVerifyWork(cwd, phase, raw) {
 
 function cmdInitPhaseOp(cwd, phase, raw) {
   const config = loadConfig(cwd);
+  const mapIgnore = resolveMapIgnore(cwd, config);
   let phaseInfo = findPhaseInternal(cwd, phase);
 
   // If the only disk match comes from an archived milestone, prefer the
@@ -622,6 +623,8 @@ function cmdInitPhaseOp(cwd, phase, raw) {
     brave_search: config.brave_search,
     firecrawl: config.firecrawl,
     exa_search: config.exa_search,
+    map_ignore: mapIgnore,
+    map_ignore_file_exists: fs.existsSync(path.join(cwd, '.gsdt-mapignore')),
 
     // Phase info
     phase_found: !!phaseInfo,
@@ -740,6 +743,7 @@ function cmdInitTodos(cwd, area, raw) {
 
 function cmdInitMilestoneOp(cwd, raw) {
   const config = loadConfig(cwd);
+  const mapIgnore = resolveMapIgnore(cwd, config);
   const milestone = getMilestoneInfo(cwd);
 
   // Count phases
@@ -779,6 +783,10 @@ function cmdInitMilestoneOp(cwd, raw) {
     milestone_name: milestone.name,
     milestone_slug: generateSlugInternal(milestone.name),
 
+    // Ignore rules for project-level codebase scouting
+    map_ignore: mapIgnore,
+    map_ignore_file_exists: fs.existsSync(path.join(cwd, '.gsdt-mapignore')),
+
     // Phase counts
     phase_count: phaseCount,
     completed_phases: completedPhases,
@@ -801,6 +809,7 @@ function cmdInitMilestoneOp(cwd, raw) {
 
 function cmdInitMapCodebase(cwd, raw) {
   const config = loadConfig(cwd);
+  const mapIgnore = resolveMapIgnore(cwd, config);
 
   // Check for existing codebase maps
   const codebaseDir = path.join(planningRoot(cwd), 'codebase');
@@ -817,6 +826,8 @@ function cmdInitMapCodebase(cwd, raw) {
     commit_docs: config.commit_docs,
     search_gitignored: config.search_gitignored,
     parallelization: config.parallelization,
+    map_ignore: mapIgnore,
+    map_ignore_file_exists: fs.existsSync(path.join(cwd, '.gsdt-mapignore')),
 
     // Paths
     codebase_dir: `${planningRel(cwd)}/codebase`,

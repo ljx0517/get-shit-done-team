@@ -35,6 +35,12 @@ gsdt-tools config-set workflow.discuss_mode discuss
 
 The setting is per-project (stored in `.gsdt-planning/config.json`).
 
+If your repo has generated, vendored, or demo-only directories that should not influence
+codebase-first analysis, configure `planning.map_ignore` in `.gsdt-planning/config.json`
+or create a repo-root `.gsdt-mapignore`. Both discuss modes use the same normalized ignore
+rules during their scout step, and `/gsdt:autonomous` smart discuss inherits that same
+codebase-scoping behavior.
+
 ## How Assumptions Mode Works
 
 1. **Init** — Same as discuss mode (load prior context, scout codebase, check todos)

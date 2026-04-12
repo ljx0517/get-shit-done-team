@@ -232,12 +232,70 @@ function safeReadFile(filePath) {
   }
 }
 
+function normalizeMapIgnorePattern(pattern, options = {}) {
+  const { allowRootAnchor = false } = options;
+  if (typeof pattern !== 'string') return null;
+
+  let normalized = pattern.trim().replace(/\\/g, '/');
+  if (!normalized || /[\0\r\n]/.test(normalized)) return null;
+
+  if (allowRootAnchor && normalized.startsWith('/')) {
+    normalized = normalized.replace(/^\/+/, '');
+  }
+
+  normalized = normalized.replace(/^\.\/+/, '').replace(/\/{2,}/g, '/');
+  if (!normalized || normalized === '.') return null;
+  if (normalized.startsWith('/')) return null;
+
+  const segments = normalized.split('/');
+  if (segments.some(segment => segment === '..')) return null;
+
+  if (normalized.endsWith('/') && !normalized.endsWith('/**')) {
+    normalized = normalized.replace(/\/+$/, '');
+  }
+
+  return normalized || null;
+}
+
+function normalizeMapIgnoreList(values, options = {}) {
+  if (!Array.isArray(values)) return [];
+  const normalized = [];
+  for (const value of values) {
+    const pattern = normalizeMapIgnorePattern(value, options);
+    if (pattern && !normalized.includes(pattern)) {
+      normalized.push(pattern);
+    }
+  }
+  return normalized;
+}
+
+function readMapIgnoreFile(cwd) {
+  const ignorePath = path.join(cwd, '.gsdt-mapignore');
+  const content = safeReadFile(ignorePath);
+  if (!content) return [];
+
+  return normalizeMapIgnoreList(
+    content
+      .split(/\r?\n/)
+      .map(line => line.trim())
+      .filter(line => line && !line.startsWith('#')),
+    { allowRootAnchor: true }
+  );
+}
+
+function resolveMapIgnore(cwd, config = loadConfig(cwd)) {
+  const configured = normalizeMapIgnoreList(config.map_ignore || []);
+  const filePatterns = readMapIgnoreFile(cwd);
+  return [...new Set([...configured, ...filePatterns])];
+}
+
 function loadConfig(cwd) {
   const configPath = path.join(cwd, resolvePlanningDirName(cwd), 'config.json');
   const defaults = {
     model_profile: 'quality',
     commit_docs: true,
     search_gitignored: false,
+    map_ignore: [],
     branching_strategy: 'none',
     phase_branch_template: 'gsdt/phase-{phase}-{slug}',
     milestone_branch_template: 'gsdt/{milestone}-{slug}',
@@ -329,6 +387,9 @@ function loadConfig(cwd) {
         return defaults.commit_docs;
       })(),
       search_gitignored: get('search_gitignored', { section: 'planning', field: 'search_gitignored' }) ?? defaults.search_gitignored,
+      map_ignore: normalizeMapIgnoreList(
+        get('map_ignore', { section: 'planning', field: 'map_ignore' }) ?? defaults.map_ignore
+      ),
       branching_strategy: get('branching_strategy', { section: 'git', field: 'branching_strategy' }) ?? defaults.branching_strategy,
       phase_branch_template: get('phase_branch_template', { section: 'git', field: 'phase_branch_template' }) ?? defaults.phase_branch_template,
       milestone_branch_template: get('milestone_branch_template', { section: 'git', field: 'milestone_branch_template' }) ?? defaults.milestone_branch_template,
@@ -1253,6 +1314,7 @@ module.exports = {
   withPlanningLock,
   findProjectRoot,
   detectSubRepos,
+  resolveMapIgnore,
   reapStaleTempFiles,
   MODEL_ALIAS_MAP,
   planningDir,

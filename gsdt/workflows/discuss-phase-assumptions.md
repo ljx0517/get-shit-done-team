@@ -71,7 +71,26 @@ AGENT_SKILLS_ANALYZER=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" agent-skill
 
 Parse JSON for: `commit_docs`, `phase_found`, `phase_dir`, `phase_number`, `phase_name`,
 `phase_slug`, `padded_phase`, `has_research`, `has_context`, `has_plans`, `has_verification`,
-`plan_count`, `roadmap_exists`, `planning_exists`.
+`plan_count`, `roadmap_exists`, `planning_exists`, `map_ignore`, `map_ignore_file_exists`.
+
+Prepare a reusable analyzer prompt block:
+
+- If `map_ignore` contains entries, create:
+  ```xml
+  <map_ignore>
+  Configured ignore patterns for codebase-first analysis:
+  - `dist`
+  - `coverage/**`
+  </map_ignore>
+  ```
+- If `map_ignore` is empty, create:
+  ```xml
+  <map_ignore>
+  No additional configured ignore patterns.
+  </map_ignore>
+  ```
+
+Use `${MAP_IGNORE_BLOCK}` in both `scout_codebase` guidance and the `gsdt-assumptions-analyzer` prompt.
 
 **If `roadmap_exists` is false:**
 ```
@@ -206,15 +225,17 @@ ls .gsdt-planning/codebase/*.md 2>/dev/null || true
 
 **If codebase maps exist:** Read relevant ones (CONVENTIONS.md, STRUCTURE.md, STACK.md). Extract reusable components, patterns, integration points. Skip to Step 3.
 
+If ignored directories are absent from codebase maps, treat that as expected behavior rather than missing context.
+
 **Step 2: If no codebase maps, do targeted grep**
 
-Extract key terms from phase goal, search for related files.
+Extract key terms from phase goal, search for related files while honoring `${MAP_IGNORE_BLOCK}`.
 
 ```bash
 grep -rl "{term1}\|{term2}" src/ app/ --include="*.ts" --include="*.tsx" 2>/dev/null | head -10
 ```
 
-Read the 3-5 most relevant files.
+Read the 3-5 most relevant files after filtering out ignored paths.
 
 **Step 3: Build internal `<codebase_context>`**
 
@@ -253,11 +274,12 @@ Phase goal: {roadmap_description}
 Prior decisions: {prior_decisions_summary}
 Codebase scout hints: {codebase_context_summary}
 Calibration: {calibration_tier}
+${MAP_IGNORE_BLOCK}
 
 Your job:
 1. Read ROADMAP.md phase {PHASE} description
 2. Read any prior CONTEXT.md files from earlier phases
-3. Glob/Grep for files related to: {phase_relevant_terms}
+3. Glob/Grep for files related to: {phase_relevant_terms}, excluding configured ignore patterns
 4. Read 5-15 most relevant source files
 5. Return structured assumptions
 

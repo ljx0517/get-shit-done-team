@@ -107,6 +107,24 @@ describe('init commands', () => {
     assert.strictEqual(output.uat_path, '.gsdt-planning/phases/03-api/03-UAT.md');
   });
 
+  test('init phase-op exposes normalized map_ignore rules for codebase-first workflows', () => {
+    const phaseDir = path.join(tmpDir, '.gsdt-planning', 'phases', '03-api');
+    fs.mkdirSync(phaseDir, { recursive: true });
+    fs.writeFileSync(path.join(tmpDir, '.gsdt-planning', 'config.json'), JSON.stringify({
+      planning: {
+        map_ignore: ['dist', 'coverage/**', '../outside'],
+      },
+    }, null, 2));
+    fs.writeFileSync(path.join(tmpDir, '.gsdt-mapignore'), '# comments\n/apps/demo/.next\ncoverage/**\n');
+
+    const result = runGsdTools('init phase-op 03', tmpDir);
+    assert.ok(result.success, `Command failed: ${result.error}`);
+
+    const output = JSON.parse(result.output);
+    assert.deepStrictEqual(output.map_ignore, ['dist', 'coverage/**', 'apps/demo/.next']);
+    assert.strictEqual(output.map_ignore_file_exists, true);
+  });
+
   test('init plan-phase detects has_reviews and reviews_path when REVIEWS.md exists', () => {
     const phaseDir = path.join(tmpDir, '.gsdt-planning', 'phases', '03-api');
     fs.mkdirSync(phaseDir, { recursive: true });
@@ -539,6 +557,22 @@ describe('cmdInitMilestoneOp', () => {
     assert.strictEqual(output.archive_count, 0);
     assert.deepStrictEqual(output.archived_milestones, []);
   });
+
+  test('exposes normalized map_ignore rules for project-level workflows', () => {
+    fs.writeFileSync(path.join(tmpDir, '.gsdt-planning', 'config.json'), JSON.stringify({
+      planning: {
+        map_ignore: ['dist', 'coverage/**', '../outside'],
+      },
+    }, null, 2));
+    fs.writeFileSync(path.join(tmpDir, '.gsdt-mapignore'), '# comments\n/apps/demo/.next\ncoverage/**\n');
+
+    const result = runGsdTools('init milestone-op', tmpDir);
+    assert.ok(result.success, `Command failed: ${result.error}`);
+
+    const output = JSON.parse(result.output);
+    assert.deepStrictEqual(output.map_ignore, ['dist', 'coverage/**', 'apps/demo/.next']);
+    assert.strictEqual(output.map_ignore_file_exists, true);
+  });
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -951,6 +985,28 @@ describe('cmdInitMapCodebase', () => {
     assert.strictEqual(output.codebase_dir_exists, true);
   });
 
+  test('init map-codebase exposes normalized ignore patterns from config and .gsdt-mapignore', () => {
+    fs.writeFileSync(
+      path.join(tmpDir, '.gsdt-planning', 'config.json'),
+      JSON.stringify({
+        planning: {
+          map_ignore: ['dist', 'coverage/**', '../outside'],
+        },
+      }, null, 2)
+    );
+    fs.writeFileSync(
+      path.join(tmpDir, '.gsdt-mapignore'),
+      '# Generated outputs\napps/demo/.next\ncoverage/**\n\n/docs/generated\n'
+    );
+
+    const result = runGsdTools('init map-codebase', tmpDir);
+    assert.ok(result.success, `Command failed: ${result.error}`);
+
+    const output = JSON.parse(result.output);
+    assert.deepStrictEqual(output.map_ignore, ['dist', 'coverage/**', 'apps/demo/.next', 'docs/generated']);
+    assert.strictEqual(output.map_ignore_file_exists, true);
+  });
+
   test('map-codebase workflow does not list Vibe Agent Team under runtimes without Task tool (#1316)', () => {
     const workflow = fs.readFileSync(
       path.join(__dirname, '..', 'gsdt', 'workflows', 'map-codebase.md'), 'utf8'
@@ -983,6 +1039,24 @@ describe('cmdInitMapCodebase', () => {
     assert.ok(
       workflow.includes('Delete .gsdt-planning/codebase/, continue to create_structure'),
       'refresh path should force full remap'
+    );
+  });
+
+  test('map-codebase workflow propagates map_ignore rules into mapper prompts', () => {
+    const workflow = fs.readFileSync(
+      path.join(__dirname, '..', 'gsdt', 'workflows', 'map-codebase.md'), 'utf8'
+    );
+    const agent = fs.readFileSync(
+      path.join(__dirname, '..', 'agents', 'gsdt-codebase-mapper.md'), 'utf8'
+    );
+
+    assert.ok(
+      workflow.includes('map_ignore') && workflow.includes('<map_ignore>'),
+      'workflow should parse map_ignore and pass it to mapper prompts'
+    );
+    assert.ok(
+      agent.includes('<map_ignore>') && agent.includes('ignore patterns'),
+      'mapper agent should document how configured ignore patterns are applied'
     );
   });
 });

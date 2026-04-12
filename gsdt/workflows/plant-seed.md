@@ -67,8 +67,40 @@ AskUserQuestion(
 Store as `$SCOPE`.
 </step>
 
+<step name="load_ignore_rules">
+Load merged ignore rules before broad breadcrumb search:
+
+```bash
+INIT=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" init milestone-op)
+if [[ "$INIT" == @file:* ]]; then INIT=$(cat "${INIT#@file:}"); fi
+```
+
+Parse JSON for: `map_ignore`, `map_ignore_file_exists`.
+
+Prepare a reusable scout block:
+
+- If `map_ignore` contains entries, create:
+  ```xml
+  <map_ignore>
+  Configured ignore patterns for breadcrumb search:
+  - `dist`
+  - `coverage/**`
+  </map_ignore>
+  ```
+- If `map_ignore` is empty, create:
+  ```xml
+  <map_ignore>
+  No additional configured ignore patterns.
+  </map_ignore>
+  ```
+
+Built-in exclusions for broad search still apply: `node_modules`, `.git`, `.gsdt-planning`, `.claude`, `.vibe-team-workspace`.
+</step>
+
 <step name="collect_breadcrumbs">
 Search the codebase for relevant references:
+
+Honor `${MAP_IGNORE_BLOCK}` and filter out ignored paths before storing breadcrumbs.
 
 ```bash
 # Find files related to the idea keywords

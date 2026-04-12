@@ -13,7 +13,7 @@ const {
 
 const VALID_CONFIG_KEYS = new Set([
   'mode', 'granularity', 'parallelization', 'commit_docs', 'model_profile',
-  'search_gitignored', 'brave_search', 'firecrawl', 'exa_search',
+  'search_gitignored', 'map_ignore', 'brave_search', 'firecrawl', 'exa_search',
   'workflow.research', 'workflow.plan_check', 'workflow.verifier',
   'workflow.nyquist_validation', 'workflow.ui_phase', 'workflow.ui_safety_gate',
   'workflow.auto_advance', 'workflow.node_repair', 'workflow.node_repair_budget',
@@ -23,7 +23,7 @@ const VALID_CONFIG_KEYS = new Set([
   'workflow.skip_discuss',
   'workflow._auto_chain_active',
   'git.branching_strategy', 'git.phase_branch_template', 'git.milestone_branch_template', 'git.quick_branch_template',
-  'planning.commit_docs', 'planning.search_gitignored',
+  'planning.commit_docs', 'planning.search_gitignored', 'planning.map_ignore',
   'hooks.context_warnings',
 ]);
 
@@ -107,6 +107,7 @@ function buildNewProjectConfig(userChoices) {
     commit_docs: true,
     parallelization: true,
     search_gitignored: false,
+    map_ignore: [],
     brave_search: hasBraveSearch,
     firecrawl: hasFirecrawl,
     exa_search: hasExaSearch,

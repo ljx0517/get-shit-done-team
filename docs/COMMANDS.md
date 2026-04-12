@@ -965,6 +965,8 @@ Analyze existing codebase with parallel mapper agents.
 /gsdt:map-codebase auth              # Focus on auth area
 ```
 
+Additional ignore rules can be configured through `planning.map_ignore` in `.gsdt-planning/config.json` or a repo-root `.gsdt-mapignore` file. Both are merged before mapper agents run, which is useful for generated outputs, demo apps, vendored code, and other folders that would otherwise pollute the map.
+
 ---
 
 ## Update Commands

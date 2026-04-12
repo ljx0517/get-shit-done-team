@@ -67,6 +67,7 @@ describe('loadConfig', () => {
     assert.strictEqual(config.parallelization, true);
     assert.strictEqual(config.nyquist_validation, true);
     assert.strictEqual(config.text_mode, false);
+    assert.deepStrictEqual(config.map_ignore, []);
   });
 
   test('reads model_profile from config.json', () => {
@@ -79,6 +80,16 @@ describe('loadConfig', () => {
     writeConfig({ planning: { commit_docs: false } });
     const config = loadConfig(tmpDir);
     assert.strictEqual(config.commit_docs, false);
+  });
+
+  test('reads planning.map_ignore and normalizes invalid entries away', () => {
+    writeConfig({
+      planning: {
+        map_ignore: ['dist', ' coverage/** ', '', '../outside', '/abs/path', 'docs/generated'],
+      },
+    });
+    const config = loadConfig(tmpDir);
+    assert.deepStrictEqual(config.map_ignore, ['dist', 'coverage/**', 'docs/generated']);
   });
 
   test('reads branching_strategy from git section', () => {

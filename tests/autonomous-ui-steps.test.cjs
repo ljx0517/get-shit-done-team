@@ -140,4 +140,20 @@ describe('autonomous workflow ui-phase and ui-review integration (#1375)', () =>
       );
     });
   });
+
+  describe('codebase scout ignore propagation', () => {
+    test('autonomous.md propagates map_ignore rules into smart discuss scout', () => {
+      assert.ok(
+        content.includes('map_ignore') && content.includes('<map_ignore>'),
+        'autonomous workflow should parse map_ignore rules for smart discuss scout'
+      );
+    });
+
+    test('autonomous.md applies ignore rules during targeted grep scout', () => {
+      assert.ok(
+        content.includes('ignored paths') || content.includes('honoring `${MAP_IGNORE_BLOCK}`'),
+        'autonomous workflow should honor ignore rules during codebase scouting'
+      );
+    });
+  });
 });

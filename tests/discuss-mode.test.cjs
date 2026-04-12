@@ -121,6 +121,39 @@ describe('workflow.discuss_mode config', () => {
     assert.ok(workflow.includes('--text'), 'should handle --text flag');
   });
 
+  test('assumptions workflow propagates map_ignore rules into analyzer prompt', () => {
+    const workflow = fs.readFileSync(
+      path.join(__dirname, '..', 'gsdt', 'workflows', 'discuss-phase-assumptions.md'), 'utf8'
+    );
+    const agent = fs.readFileSync(
+      path.join(__dirname, '..', 'agents', 'gsdt-assumptions-analyzer.md'), 'utf8'
+    );
+
+    assert.ok(
+      workflow.includes('map_ignore') && workflow.includes('<map_ignore>'),
+      'assumptions workflow should parse and pass map_ignore rules'
+    );
+    assert.ok(
+      agent.includes('<map_ignore>') && agent.includes('ignore patterns'),
+      'assumptions analyzer should document how configured ignore patterns are applied'
+    );
+  });
+
+  test('standard discuss workflow honors map_ignore during codebase scout', () => {
+    const workflow = fs.readFileSync(
+      path.join(__dirname, '..', 'gsdt', 'workflows', 'discuss-phase.md'), 'utf8'
+    );
+
+    assert.ok(
+      workflow.includes('map_ignore') && workflow.includes('<map_ignore>'),
+      'standard discuss workflow should parse map_ignore rules'
+    );
+    assert.ok(
+      workflow.includes('filtering out ignored paths') || workflow.includes('honoring `${MAP_IGNORE_BLOCK}`'),
+      'standard discuss workflow should apply ignore rules during scout_codebase'
+    );
+  });
+
   test('plan-phase workflow references text_mode', () => {
     const planPhase = fs.readFileSync(
       path.join(__dirname, '..', 'gsdt', 'workflows', 'plan-phase.md'), 'utf8'

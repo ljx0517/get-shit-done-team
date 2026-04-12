@@ -137,7 +137,26 @@ if [[ "$INIT" == @file:* ]]; then INIT=$(cat "${INIT#@file:}"); fi
 AGENT_SKILLS_ADVISOR_RESEARCHER=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" agent-skills gsdt-advisor-researcher 2>/dev/null)
 ```
 
-Parse JSON for: `commit_docs`, `phase_found`, `phase_dir`, `phase_number`, `phase_name`, `phase_slug`, `padded_phase`, `has_research`, `has_context`, `has_plans`, `has_verification`, `plan_count`, `roadmap_exists`, `planning_exists`.
+Parse JSON for: `commit_docs`, `phase_found`, `phase_dir`, `phase_number`, `phase_name`, `phase_slug`, `padded_phase`, `has_research`, `has_context`, `has_plans`, `has_verification`, `plan_count`, `roadmap_exists`, `planning_exists`, `map_ignore`, `map_ignore_file_exists`.
+
+Prepare a reusable scout block:
+
+- If `map_ignore` contains entries, create:
+  ```xml
+  <map_ignore>
+  Configured ignore patterns for codebase scouting:
+  - `dist`
+  - `coverage/**`
+  </map_ignore>
+  ```
+- If `map_ignore` is empty, create:
+  ```xml
+  <map_ignore>
+  No additional configured ignore patterns.
+  </map_ignore>
+  ```
+
+Use `${MAP_IGNORE_BLOCK}` in `scout_codebase` so broad exploration stays focused on source-of-truth files.
 
 **If `roadmap_exists` is false:**
 ```
@@ -319,11 +338,13 @@ ls .gsdt-planning/codebase/*.md 2>/dev/null || true
 - Established patterns (state management, styling, data fetching)
 - Integration points (where new code would connect)
 
+If ignored directories are absent from codebase maps, treat that as expected rather than missing context.
+
 Skip to Step 3 below.
 
 **Step 2: If no codebase maps, do targeted grep**
 
-Extract key terms from the phase goal (e.g., "feed" → "post", "card", "list"; "auth" → "login", "session", "token").
+Extract key terms from the phase goal (e.g., "feed" → "post", "card", "list"; "auth" → "login", "session", "token"). Honor `${MAP_IGNORE_BLOCK}` while scouting.
 
 ```bash
 # Find files related to phase goal terms
@@ -335,7 +356,7 @@ ls src/hooks/ 2>/dev/null || true
 ls src/lib/ src/utils/ 2>/dev/null || true
 ```
 
-Read the 3-5 most relevant files to understand existing patterns.
+Read the 3-5 most relevant files to understand existing patterns, filtering out ignored paths before reading or citing anything.
 
 **Step 3: Build internal codebase_context**
 

@@ -29,6 +29,11 @@ Focus area: $ARGUMENTS (optional - if provided, tells agents to focus on specifi
 Flags:
 - `--refresh` — force a full remap of `.gsdt-planning/codebase/` without asking whether to refresh, update, or skip
 
+Ignore controls:
+- `planning.map_ignore` — repo-relative paths or glob-like patterns to exclude from broad mapping
+- `.gsdt-mapignore` — optional line-based ignore file (comments start with `#`)
+- Both sources are merged before mapper agents start
+
 **Load project state if exists:**
 Check for .gsdt-planning/STATE.md - loads context if project already initialized
 
@@ -45,6 +50,7 @@ Check for .gsdt-planning/STATE.md - loads context if project already initialized
 - Onboarding to an unfamiliar codebase
 - Before major refactoring (understand current state)
 - When STATE.md references outdated codebase info
+- Repos with generated or vendored directories you want excluded from analysis
 
 **Skip map-codebase for:**
 - Greenfield projects with no code yet (nothing to map)

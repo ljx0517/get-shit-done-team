@@ -406,7 +406,26 @@ Run smart discuss for the current phase. Proposes grey area answers in batch tab
 PHASE_STATE=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" init phase-op ${PHASE_NUM})
 ```
 
-Parse from JSON: `phase_dir`, `phase_slug`, `padded_phase`, `phase_name`.
+Parse from JSON: `phase_dir`, `phase_slug`, `padded_phase`, `phase_name`, `map_ignore`, `map_ignore_file_exists`.
+
+Prepare a reusable scout block:
+
+- If `map_ignore` contains entries, create:
+  ```xml
+  <map_ignore>
+  Configured ignore patterns for autonomous codebase scouting:
+  - `dist`
+  - `coverage/**`
+  </map_ignore>
+  ```
+- If `map_ignore` is empty, create:
+  ```xml
+  <map_ignore>
+  No additional configured ignore patterns.
+  </map_ignore>
+  ```
+
+Use `${MAP_IGNORE_BLOCK}` throughout Smart Discuss's scout step.
 
 ---
 
@@ -467,18 +486,18 @@ Lightweight codebase scan to inform grey area identification and proposals. Keep
 ls .gsdt-planning/codebase/*.md 2>/dev/null || true
 ```
 
-**If codebase maps exist:** Read the most relevant ones (CONVENTIONS.md, STRUCTURE.md, STACK.md based on phase type). Extract reusable components, established patterns, integration points. Skip to building context below.
+**If codebase maps exist:** Read the most relevant ones (CONVENTIONS.md, STRUCTURE.md, STACK.md based on phase type). Extract reusable components, established patterns, integration points. If ignored directories are absent from those maps, treat that as expected. Skip to building context below.
 
 **If no codebase maps, do targeted grep:**
 
-Extract key terms from the phase goal. Search for related files:
+Extract key terms from the phase goal. Search for related files while honoring `${MAP_IGNORE_BLOCK}`:
 
 ```bash
 grep -rl "{term1}\|{term2}" src/ app/ --include="*.ts" --include="*.tsx" --include="*.js" --include="*.jsx" 2>/dev/null | head -10 || true
 ls src/components/ src/hooks/ src/lib/ src/utils/ 2>/dev/null || true
 ```
 
-Read the 3-5 most relevant files to understand existing patterns.
+Read the 3-5 most relevant files to understand existing patterns, filtering out ignored paths before reading or citing them.
 
 **Build internal codebase_context** (do not write to file):
 - **Reusable assets** — existing components, hooks, utilities usable in this phase

@@ -36,12 +36,31 @@ if [[ "$INIT" == @file:* ]]; then INIT=$(cat "${INIT#@file:}"); fi
 AGENT_SKILLS_MAPPER=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" agent-skills gsdt-codebase-mapper 2>/dev/null)
 ```
 
-Extract from init JSON: `mapper_model`, `commit_docs`, `codebase_dir`, `existing_maps`, `has_maps`, `codebase_dir_exists`.
+Extract from init JSON: `mapper_model`, `commit_docs`, `codebase_dir`, `existing_maps`, `has_maps`, `codebase_dir_exists`, `map_ignore`, `map_ignore_file_exists`.
 
 Determine refresh mode from arguments:
 - If `$ARGUMENTS` contains `--refresh`, set `FORCE_REFRESH=true`.
 - Otherwise, set `FORCE_REFRESH=false`.
 - Strip `--refresh` from any focus-area text before passing focus instructions to mapper agents.
+
+Prepare a reusable mapper prompt block:
+
+- If `map_ignore` contains entries, create:
+  ```xml
+  <map_ignore>
+  Configured ignore patterns for broad exploration:
+  - `dist`
+  - `coverage/**`
+  </map_ignore>
+  ```
+- If `map_ignore` is empty, create:
+  ```xml
+  <map_ignore>
+  No additional configured ignore patterns.
+  </map_ignore>
+  ```
+
+Pass `${MAP_IGNORE_BLOCK}` to every spawned mapper prompt and honor the same exclusions during sequential mapping.
 </step>
 
 <step name="check_existing">
@@ -136,6 +155,7 @@ Write these documents to .gsdt-planning/codebase/:
 - INTEGRATIONS.md - External APIs, databases, auth providers, webhooks
 
 Explore thoroughly. Write documents directly using templates. Return confirmation only.
+${MAP_IGNORE_BLOCK}
 ${AGENT_SKILLS_MAPPER}"
 )
 ```
@@ -157,6 +177,7 @@ Write these documents to .gsdt-planning/codebase/:
 - STRUCTURE.md - Directory layout, key locations, naming conventions
 
 Explore thoroughly. Write documents directly using templates. Return confirmation only.
+${MAP_IGNORE_BLOCK}
 ${AGENT_SKILLS_MAPPER}"
 )
 ```
@@ -178,6 +199,7 @@ Write these documents to .gsdt-planning/codebase/:
 - TESTING.md - Framework, structure, mocking, coverage
 
 Explore thoroughly. Write documents directly using templates. Return confirmation only.
+${MAP_IGNORE_BLOCK}
 ${AGENT_SKILLS_MAPPER}"
 )
 ```
@@ -198,6 +220,7 @@ Write this document to .gsdt-planning/codebase/:
 - CONCERNS.md - Tech debt, bugs, security, performance, fragile areas
 
 Explore thoroughly. Write document directly using template. Return confirmation only.
+${MAP_IGNORE_BLOCK}
 ${AGENT_SKILLS_MAPPER}"
 )
 ```
@@ -266,6 +289,8 @@ Perform all 4 mapping passes sequentially:
 - Write `.gsdt-planning/codebase/CONCERNS.md` — Tech debt, bugs, security, performance, fragile areas
 
 Use the same document templates as the `gsdt-codebase-mapper` agent. Include actual file paths formatted with backticks.
+
+Honor the configured `${MAP_IGNORE_BLOCK}` rules during each sequential pass. Do not read or cite ignored paths unless the user explicitly asks about the ignore configuration itself.
 
 Continue to verify_output.
 </step>

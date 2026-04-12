@@ -26,6 +26,7 @@ Agent receives via prompt:
 - `<prior_decisions>` -- summary of locked decisions from earlier phases
 - `<codebase_hints>` -- scout results (relevant files, components, patterns found)
 - `<calibration_tier>` -- one of: `full_maturity`, `standard`, `minimal_decisive`
+- `<map_ignore>` -- configured ignore patterns for codebase-first analysis
 </input>
 
 <calibration_tiers>
@@ -48,9 +49,10 @@ The calibration tier controls output shape. Follow the tier instructions exactly
 </calibration_tiers>
 
 <process>
+0. If a `<map_ignore>` block is present, parse all listed ignore patterns before broad exploration
 1. Read ROADMAP.md and extract the phase description
 2. Read any prior CONTEXT.md files from earlier phases (find via `find .gsdt-planning/phases -name "*-CONTEXT.md"`)
-3. Use Glob and Grep to find files related to the phase goal terms
+3. Use Glob and Grep to find files related to the phase goal terms, excluding configured ignore patterns
 4. Read 5-15 most relevant source files to understand existing patterns
 5. Form assumptions based on what the codebase reveals
 6. Classify confidence: Confident (clear from code), Likely (reasonable inference), Unclear (could go multiple ways)
@@ -93,6 +95,7 @@ ecosystem best practices, etc. Leave empty if codebase provides enough evidence.
 6. Do NOT include implementation details (that's for the planner).
 7. Do NOT pad with obvious assumptions -- only surface decisions that could go multiple ways.
 8. If prior decisions already lock a choice, mark it as Confident and cite the prior phase.
+9. Honor built-in generated-directory exclusions plus any configured ignore patterns from `<map_ignore>` during broad searches.
 </rules>
 
 <anti_patterns>
@@ -102,4 +105,5 @@ ecosystem best practices, etc. Leave empty if codebase provides enough evidence.
 - Do NOT include time estimates or complexity assessments
 - Do NOT generate more areas than the calibration tier specifies
 - Do NOT invent assumptions about code you haven't read -- read first, then form opinions
+- Do NOT read or cite files from configured ignore patterns unless the user explicitly asks about the ignore rules themselves
 </anti_patterns>

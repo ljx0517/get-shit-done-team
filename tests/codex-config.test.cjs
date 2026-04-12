@@ -93,11 +93,16 @@ describe('getCodexSkillAdapterHeader', () => {
   test('section B maps AskUserQuestion parameters', () => {
     const result = getCodexSkillAdapterHeader('gsd-discuss-phase');
     assert.ok(result.includes('request_user_input'), 'maps to request_user_input');
-    assert.ok(result.includes('header'), 'maps header parameter');
-    assert.ok(result.includes('question'), 'maps question parameter');
+    assert.ok(result.includes('title'), 'maps title parameter');
+    assert.ok(result.includes('questions[]'), 'documents questions array');
+    assert.ok(result.includes('id'), 'maps question id');
+    assert.ok(result.includes('prompt'), 'maps question prompt');
     assert.ok(result.includes('label'), 'maps options label');
     assert.ok(result.includes('description'), 'maps options description');
-    assert.ok(result.includes('multiSelect'), 'documents multiSelect workaround');
+    assert.ok(result.includes('allow_multiple'), 'documents multi-select flag');
+    assert.ok(!result.includes('`header` → `header`'), 'does not keep legacy header mapping');
+    assert.ok(!result.includes('`question` → `question`'), 'does not keep legacy question mapping');
+    assert.ok(!result.includes('multiSelect'), 'does not reference legacy multiSelect flag');
     assert.ok(result.includes('Execute mode'), 'documents Execute mode fallback');
   });
 

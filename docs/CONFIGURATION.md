@@ -20,7 +20,8 @@ GSDT stores project settings in `.gsdt-planning/config.json`. Created during `/g
   "model_overrides": {},
   "planning": {
     "commit_docs": true,
-    "search_gitignored": false
+    "search_gitignored": false,
+    "map_ignore": []
   },
   "workflow": {
     "research": true,
@@ -123,10 +124,46 @@ All workflow toggles follow the **absent = enabled** pattern. If a key is missin
 |---------|------|---------|-------------|
 | `planning.commit_docs` | boolean | `true` | Whether `.gsdt-planning/` files are committed to git |
 | `planning.search_gitignored` | boolean | `false` | Add `--no-ignore` to broad searches to include `.gsdt-planning/` |
+| `planning.map_ignore` | string[] | `[]` | Repo-relative paths or glob-like patterns that codebase-first workflows should skip during broad exploration |
 
 ### Auto-Detection
 
 If `.gsdt-planning/` is in `.gitignore`, `commit_docs` is automatically `false` regardless of config.json. This prevents git errors.
+
+### Codebase Mapping Ignore Rules
+
+Use `planning.map_ignore` for project-local exclusions you want codebase-first agents to honor without teaching them each time:
+
+```json
+{
+  "planning": {
+    "map_ignore": [
+      "dist",
+      "coverage/**",
+      "apps/demo/.next",
+      "docs/generated"
+    ]
+  }
+}
+```
+
+You can also create a repo-root `.gsdt-mapignore` file for line-based rules:
+
+```text
+# Generated outputs
+dist
+coverage/**
+/apps/demo/.next
+docs/generated
+```
+
+Behavior:
+
+- `planning.map_ignore` and `.gsdt-mapignore` are merged before codebase-first workflows run
+- Current consumers include `/gsdt:map-codebase`, both `/gsdt:discuss-phase` scout modes, `/gsdt:autonomous` smart discuss, and `/gsdt:plant-seed` breadcrumb search
+- Patterns are interpreted as repo-relative exclusions for broad exploration
+- Blank lines and `#` comments in `.gsdt-mapignore` are ignored
+- Absolute paths and path traversal entries are discarded during normalization
 
 ---
 
