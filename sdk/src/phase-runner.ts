@@ -20,7 +20,7 @@ import type {
 } from './types.js';
 import { PhaseStepType, PhaseType, GSDEventType } from './types.js';
 import type { GSDConfig } from './config.js';
-import type { GSDTools } from './gsd-tools.js';
+import type { GSDTools } from './gsdt-tools.js';
 import type { GSDEventStream } from './event-stream.js';
 import type { PromptFactory } from './phase-prompt.js';
 import type { ContextEngine } from './context-engine.js';

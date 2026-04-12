@@ -45,16 +45,15 @@ jobs:
         env:
           BASE_REF: ${{ github.base_ref }}
         run: |
-          # Ensure .claude/.gsdt-planning/ runtime data is not committed in PRs
-          # (The GSD repo itself has .claude/.gsdt-planning/ in .gitignore, but PRs
-          # from forks or misconfigured clones might include it)
-          PLANNING_FILES=$(git diff --name-only --diff-filter=ACMR "origin/$BASE_REF"...HEAD | grep '^\.claude/.gsdt-planning/' || true)
+          # Ensure local planning runtime data is not committed in PRs (default `.gsdt-planning/`,
+          # legacy `.claude/.gsdt-planning/`). Both are in .gitignore for this repo; forks may still commit them by mistake.
+          PLANNING_FILES=$(git diff --name-only --diff-filter=ACMR "origin/$BASE_REF"...HEAD | grep -E '^\.gsdt-planning/|^\.claude/\.gsdt-planning/' || true)
           if [ -n "$PLANNING_FILES" ]; then
-            echo "FAIL: .claude/.gsdt-planning/ runtime data must not be committed to PRs"
-            echo "The following .claude/.gsdt-planning/ files were found in this PR:"
+            echo "FAIL: planning directory runtime data must not be committed to PRs"
+            echo "The following paths were found in this PR:"
             echo "$PLANNING_FILES"
             echo ""
-            echo "Add .claude/.gsdt-planning/ to your .gitignore and remove these files from the commit."
+            echo "Add .gsdt-planning/ and .claude/.gsdt-planning/ to your .gitignore and remove these files from the commit."
             exit 1
           fi
           echo "planning-dir-check: clean"

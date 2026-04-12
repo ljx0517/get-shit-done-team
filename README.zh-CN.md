@@ -2,7 +2,7 @@
 
 # GET SHIT DONE
 
-[English](README.md) · [Português](README.pt-BR.md) · **简体中文** · [日本語](README.ja-JP.md)
+[English](README.md) · **简体中文**
 
 **一个轻量但强大的元提示、上下文工程与规格驱动开发系统，适用于 Claude Code、OpenCode、Gemini CLI、Codex、Copilot、Cursor 和 Antigravity。**
 
@@ -41,7 +41,7 @@ npx gsdt@latest
 
 **已被 Amazon、Google、Shopify 和 Webflow 的工程师采用。**
 
-[我为什么做这个](#我为什么做这个) · [它是怎么工作的](#它是怎么工作的) · [命令](#命令) · [为什么它有效](#为什么它有效) · [用户指南](docs/USER-GUIDE.md)
+[我为什么做这个](#我为什么做这个) · [它是怎么工作的](#它是怎么工作的) · [命令](#命令) · [为什么它有效](#为什么它有效) · [用户指南](docs/USER-GUIDE.md) · [GSD→GSDT 迁移说明](docs/zh-CN/MIGRATION-GSD-TO-GSDT.md)
 
 </div>
 
@@ -566,7 +566,7 @@ lmn012o feat(08-02): create registration endpoint
 | 命令 | 作用 |
 |------|------|
 | `/gsdt:review` | 对当前阶段或分支进行跨 AI 同行评审 |
-| `/gsdt:pr-branch` | 创建过滤 `.gsdt-planning/` 提交的干净 PR 分支 |
+| `/gsdt:pr-branch` | 创建过滤涉及规划目录提交的干净 PR 分支（`.gsdt-planning/`；旧路径 `.claude/.gsdt-planning/`） |
 | `/gsdt:audit-uat` | 审计验证债务——找出缺少 UAT 的阶段 |
 
 ### 积压
@@ -595,7 +595,7 @@ lmn012o feat(08-02): create registration endpoint
 | `/gsdt:do <text>` | 将自由文本自动路由到正确的 GSDT 命令 |
 | `/gsdt:note <text>` | 零摩擦想法捕捉——追加、列出或提升为待办 |
 | `/gsdt:quick [--full] [--discuss] [--research]` | 以 GSDT 保障执行临时任务（`--full` 增加计划检查和验证，`--discuss` 先补上下文，`--research` 在规划前先调研） |
-| `/gsdt:health [--repair]` | 校验 `.gsdt-planning/` 目录完整性，带 `--repair` 时自动修复 |
+| `/gsdt:health [--repair]` | 校验 `.gsdt-planning/` 目录完整性（兼容旧路径 `.claude/.gsdt-planning/`），带 `--repair` 时自动修复 |
 | `/gsdt:stats` | 显示项目统计——阶段、计划、需求、git 指标 |
 | `/gsdt:profile-user [--questionnaire] [--refresh]` | 从会话分析生成开发者行为档案，用于个性化响应 |
 
@@ -605,7 +605,9 @@ lmn012o feat(08-02): create registration endpoint
 
 ## 配置
 
-GSDT 将项目设置保存在 `.gsdt-planning/config.json`。你可以在 `/gsdt:new-project` 时配置，也可以稍后通过 `/gsdt:settings` 修改。完整的配置 schema、工作流开关、git branching 选项以及各代理的模型分配，请查看[用户指南](docs/USER-GUIDE.md#configuration-reference)。
+GSDT 将项目设置保存在仓库根目录的 **`.gsdt-planning/config.json`**（旧树可能仍使用 **`.claude/.gsdt-planning/config.json`**）。你可以在 `/gsdt:new-project` 时配置，也可以稍后通过 `/gsdt:settings` 修改。完整的配置 schema、工作流开关、git branching 选项以及各代理的模型分配，请查看[用户指南](docs/USER-GUIDE.md#configuration-reference)与 [配置说明](docs/CONFIGURATION.md)。
+
+**规划目录：** 路线图、阶段、quick、research 等产物默认位于 **`.gsdt-planning/`**。较早的项目可能仍使用 **`.claude/.gsdt-planning/`**；`planningRoot()` 会解析两者。路径与解析顺序以 [`docs/CONFIGURATION.md`](docs/CONFIGURATION.md) 为准。
 
 ### 核心设置
 
@@ -657,7 +659,7 @@ GSDT 将项目设置保存在 `.gsdt-planning/config.json`。你可以在 `/gsdt
 | Setting | Default | 作用 |
 |---------|---------|------|
 | `parallelization.enabled` | `true` | 是否并行执行独立计划 |
-| `planning.commit_docs` | `true` | 是否将 `.gsdt-planning/` 纳入 git 跟踪 |
+| `planning.commit_docs` | `true` | 是否将 `.gsdt-planning/` 纳入 git 跟踪（旧路径：`.claude/.gsdt-planning/`） |
 | `hooks.context_warnings` | `true` | 显示上下文窗口使用量警告 |
 
 ### Git 分支策略
@@ -667,8 +669,8 @@ GSDT 将项目设置保存在 `.gsdt-planning/config.json`。你可以在 `/gsdt
 | Setting | Options | Default | 作用 |
 |---------|---------|---------|------|
 | `git.branching_strategy` | `none`, `phase`, `milestone` | `none` | 分支创建策略 |
-| `git.phase_branch_template` | string | `gsd/phase-{phase}-{slug}` | phase 分支模板 |
-| `git.milestone_branch_template` | string | `gsd/{milestone}-{slug}` | milestone 分支模板 |
+| `git.phase_branch_template` | string | `gsdt/phase-{phase}-{slug}` | phase 分支模板 |
+| `git.milestone_branch_template` | string | `gsdt/{milestone}-{slug}` | milestone 分支模板 |
 
 **策略说明：**
 - **`none`**：直接提交到当前分支（GSDT 默认行为）

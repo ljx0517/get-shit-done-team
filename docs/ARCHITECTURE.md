@@ -143,8 +143,8 @@ Multiple layers prevent common failure modes:
 
 User-facing entry points. Each file contains YAML frontmatter (name, description, allowed-tools) and a prompt body that bootstraps the workflow. Commands are installed as:
 - **Claude Code:** Custom slash commands (`/gsdt:command-name`)
-- **OpenCode:** Slash commands (`/gsd-command-name`)
-- **Codex:** Skills (`$gsd-command-name`)
+- **OpenCode:** Slash commands (`/gsdt-command-name`)
+- **Codex:** Skills (`$gsdt-command-name`)
 - **Copilot:** Slash commands (`/gsdt:command-name`)
 - **Antigravity:** Skills
 
@@ -501,7 +501,7 @@ Runtime Engine (Claude Code / Gemini CLI)
     │
     └── SessionStart event ──► gsdt-check-update.js
         Reads: VERSION file
-        Writes: ~/.claude/cache/gsd-update-check.json (spawns background process)
+        Writes: `<config>/cache/gsd-update-check.json` (legacy filename; SessionStart hook). Statusline also uses `~/.cache/gsdt/gsdt-update-check.json`.
 ```
 
 ### Context Monitor Thresholds
@@ -545,9 +545,9 @@ GSDT supports 6 AI coding runtimes through a unified command/workflow architectu
 | Runtime | Command Format | Agent System | Config Location |
 |---------|---------------|--------------|-----------------|
 | Claude Code | `/gsdt:command` | Task spawning | `~/.claude/` |
-| OpenCode | `/gsd-command` | Subagent mode | `~/.config/opencode/` |
+| OpenCode | `/gsdt-command` | Subagent mode | `~/.config/opencode/` |
 | Gemini CLI | `/gsdt:command` | Task spawning | `~/.gemini/` |
-| Codex | `$gsd-command` | Skills | `~/.codex/` |
+| Codex | `$gsdt-command` | Skills | `~/.codex/` |
 | Copilot | `/gsdt:command` | Agent delegation | `~/.github/` |
 | Antigravity | Skills | Skills | `~/.gemini/antigravity/` |
 

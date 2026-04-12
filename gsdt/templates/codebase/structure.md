@@ -126,7 +126,7 @@ Template for `.gsdt-planning/codebase/STRUCTURE.md` - captures physical file org
 gsdt/
 ├── bin/                # Executable entry points
 ├── commands/           # Slash command definitions
-│   └── gsd/           # GSD-specific commands
+│   └── gsdt/          # GSDT-specific commands
 ├── gsdt/     # Skill resources
 │   ├── references/    # Principle documents
 │   ├── templates/     # File templates

@@ -963,7 +963,7 @@ function cmdStateBeginPhase(cwd, phaseNumber, phaseName, planCount, raw) {
 /**
  * Write a WAITING.json signal file when GSD hits a decision point.
  * External watchers (fswatch, polling, orchestrators) can detect this.
- * File is written to .claude/.gsdt-planning/WAITING.json (or .gsdt/WAITING.json if .gsdt exists).
+ * File is written under `planningDir(cwd)` as `WAITING.json` (default `.gsdt-planning/`; legacy `.claude/.gsdt-planning/`), unless `.gsdt/` exists at cwd (then `.gsdt/WAITING.json`).
  * Fixes #1034.
  */
 function cmdSignalWaiting(cwd, type, question, options, phase, raw) {

@@ -2,7 +2,7 @@
 
 # GET SHIT DONE
 
-**English** · [Português](README.pt-BR.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja-JP.md) · [한국어](README.ko-KR.md)
+**English** · [简体中文](README.zh-CN.md)
 
 **A light-weight and powerful meta-prompting, context engineering and spec-driven development system for Claude Code, OpenCode, Gemini CLI, Codex, Copilot, Cursor, Windsurf, and Antigravity.**
 
@@ -41,7 +41,7 @@ npx gsdt@latest
 
 **Trusted by engineers at Amazon, Google, Shopify, and Webflow.**
 
-[Why I Built This](#why-i-built-this) · [How It Works](#how-it-works) · [Commands](#commands) · [Why It Works](#why-it-works) · [User Guide](docs/USER-GUIDE.md)
+[Why I Built This](#why-i-built-this) · [How It Works](#how-it-works) · [Commands](#commands) · [Why It Works](#why-it-works) · [User Guide](docs/USER-GUIDE.md) · [GSD→GSDT migration](docs/MIGRATION-GSD-TO-GSDT.md)
 
 </div>
 
@@ -590,7 +590,7 @@ You're never locked in. The system adapts.
 | Command | What it does |
 |---------|--------------|
 | `/gsdt:review` | Cross-AI peer review of current phase or branch |
-| `/gsdt:pr-branch` | Create clean PR branch filtering `.gsdt-planning/` commits |
+| `/gsdt:pr-branch` | Create clean PR branch filtering commits touching the planning directory (`.gsdt-planning/`; legacy `.claude/.gsdt-planning/`) |
 | `/gsdt:audit-uat` | Audit verification debt — find phases missing UAT |
 
 ### Backlog & Threads
@@ -615,7 +615,7 @@ You're never locked in. The system adapts.
 | `/gsdt:intake <text>` | Quiet semantic intake — AI-assisted semantic intake with deterministic guardrails for low-interruption routing into briefs and phase planning |
 | `/gsdt:note <text>` | Zero-friction idea capture — append, list, or promote notes to todos |
 | `/gsdt:quick [--full] [--discuss] [--research]` | Execute ad-hoc task with GSDT guarantees (`--full` adds plan-checking and verification, `--discuss` gathers context first, `--research` investigates approaches before planning) |
-| `/gsdt:health [--repair]` | Validate `.gsdt-planning/` directory integrity, auto-repair with `--repair` |
+| `/gsdt:health [--repair]` | Validate `.gsdt-planning/` directory integrity (legacy `.claude/.gsdt-planning/` supported), auto-repair with `--repair` |
 | `/gsdt:stats` | Display project statistics — phases, plans, requirements, git metrics |
 | `/gsdt:profile-user [--questionnaire] [--refresh]` | Generate developer behavioral profile from session analysis for personalized responses |
 
@@ -625,7 +625,9 @@ You're never locked in. The system adapts.
 
 ## Configuration
 
-GSDT stores project settings in `.gsdt-planning/config.json`. Configure during `/gsdt:new-project` or update later with `/gsdt:settings`. For the full config schema, workflow toggles, git branching options, and per-agent model breakdown, see the [User Guide](docs/USER-GUIDE.md#configuration-reference).
+GSDT stores project settings in **`.gsdt-planning/config.json`** at the repository root (legacy trees may use **`.claude/.gsdt-planning/config.json`**). Configure during `/gsdt:new-project` or update later with `/gsdt:settings`. For the full config schema, workflow toggles, git branching options, and per-agent model breakdown, see the [User Guide](docs/USER-GUIDE.md#configuration-reference) and [Configuration Reference](docs/CONFIGURATION.md).
+
+**Planning directory:** Roadmap, phases, quick work, and research artifacts default to **`.gsdt-planning/`** at the repository root. Older projects may still use **`.claude/.gsdt-planning/`**; `planningRoot()` accepts either. Paths and resolution order are documented in [`docs/CONFIGURATION.md`](docs/CONFIGURATION.md).
 
 ### Core Settings
 
@@ -678,7 +680,7 @@ Use `/gsdt:settings` to toggle these, or override per-invocation:
 | Setting | Default | What it controls |
 |---------|---------|------------------|
 | `parallelization.enabled` | `true` | Run independent plans simultaneously |
-| `planning.commit_docs` | `true` | Track `.gsdt-planning/` in git |
+| `planning.commit_docs` | `true` | Track `.gsdt-planning/` in git (legacy: `.claude/.gsdt-planning/`) |
 | `hooks.context_warnings` | `true` | Show context window usage warnings |
 
 ### Agent Skills
@@ -690,9 +692,6 @@ Inject project-specific skills into subagents during execution.
 | `agent_skills.<agent_type>` | `string[]` | Paths to skill directories loaded into that agent type at spawn time |
 
 Skills are injected as `<agent_skills>` blocks in agent prompts, giving subagents access to project-specific knowledge.
-Use the concrete agent name as the key, matching the workflow `subagent_type` or agent file
-name exactly. Examples: `gsdt-research-synthesizer`, `gsdt-ui-auditor`,
-`gsdt-advisor-researcher`, `gsdt-review-fixer`. Legacy aliases are not resolved.
 
 ### Git Branching
 
@@ -701,8 +700,8 @@ Control how GSDT handles branches during execution.
 | Setting | Options | Default | What it does |
 |---------|---------|---------|--------------|
 | `git.branching_strategy` | `none`, `phase`, `milestone` | `none` | Branch creation strategy |
-| `git.phase_branch_template` | string | `gsd/phase-{phase}-{slug}` | Template for phase branches |
-| `git.milestone_branch_template` | string | `gsd/{milestone}-{slug}` | Template for milestone branches |
+| `git.phase_branch_template` | string | `gsdt/phase-{phase}-{slug}` | Template for phase branches |
+| `git.milestone_branch_template` | string | `gsdt/{milestone}-{slug}` | Template for milestone branches |
 
 **Strategies:**
 - **`none`** — Commits to current branch (default GSDT behavior)
@@ -721,7 +720,7 @@ GSDT includes defense-in-depth security since v1.27:
 
 - **Path traversal prevention** — All user-supplied file paths (`--text-file`, `--prd`) are validated to resolve within the project directory
 - **Prompt injection detection** — Centralized `security.cjs` module scans for injection patterns in user-supplied text before it enters planning artifacts
-- **PreToolUse prompt guard hook** — `gsdt-prompt-guard` scans writes to `.gsdt-planning/` for embedded injection vectors (advisory, not blocking)
+- **PreToolUse prompt guard hook** — `gsdt-prompt-guard` scans writes under the planning directory (`.gsdt-planning/`; legacy `.claude/.gsdt-planning/`) for embedded injection vectors (advisory, not blocking)
 - **Safe JSON parsing** — Malformed `--fields` arguments are caught before they corrupt state
 - **Shell argument validation** — User text is sanitized before shell interpolation
 - **CI-ready injection scanner** — `prompt-injection-scan.test.cjs` scans all agent/workflow/command files for embedded injection vectors

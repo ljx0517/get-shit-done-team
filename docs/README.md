@@ -2,12 +2,15 @@
 
 Comprehensive documentation for the Get Shit Done (GSDT) framework — a meta-prompting, context engineering, and spec-driven development system for AI coding agents.
 
-Language versions: [English](README.md) · [Português (pt-BR)](pt-BR/README.md) · [日本語](ja-JP/README.md) · [简体中文](zh-CN/README.md)
+Language versions: [English](README.md) · [简体中文](zh-CN/README.md)
+
+**Planning directory:** By default, project planning artifacts live in **`.gsdt-planning/`** at the repository root; legacy **`.claude/.gsdt-planning/`** is still supported. See [Configuration Reference](CONFIGURATION.md#configuration-file).
 
 ## Documentation Index
 
 | Document | Audience | Description |
 |----------|----------|-------------|
+| [GSD → GSDT migration](MIGRATION-GSD-TO-GSDT.md) | All users | Naming (`gsdt:` / `gsdt-*`), on-disk artifacts, installer migration, legacy exceptions, and changelog pointers |
 | [Architecture](ARCHITECTURE.md) | Contributors, advanced users | System architecture, agent model, data flow, and internal design |
 | [Feature Reference](FEATURES.md) | All users | Complete feature and function documentation with requirements |
 | [Command Reference](COMMANDS.md) | All users | Every command with syntax, flags, options, and examples |
@@ -31,3 +34,4 @@ Language versions: [English](README.md) · [Português (pt-BR)](pt-BR/README.md)
 - **Configuring GSDT:** [Configuration Reference](CONFIGURATION.md)
 - **How the system works internally:** [Architecture](ARCHITECTURE.md)
 - **Contributing or extending:** [CLI Tools Reference](CLI-TOOLS.md) + [Agent Reference](AGENTS.md)
+- **Migrating from GSD / `gsd:` naming:** [Migration guide](MIGRATION-GSD-TO-GSDT.md) · [中文摘要](zh-CN/MIGRATION-GSD-TO-GSDT.md)

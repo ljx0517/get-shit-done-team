@@ -6,9 +6,9 @@
 
 ## Configuration File
 
-GSDT stores project settings in `.gsdt-planning/config.json`. Created during `/gsdt:new-project`, updated via `/gsdt:settings`.
+GSDT stores project settings in `.gsdt-planning/config.json` at the repository root. Created during `/gsdt:new-project`, updated via `/gsdt:settings`.
 
-`/gsdt:new-project` seeds three core onboarding defaults without prompting: `granularity: "fine"`, `planning.commit_docs: true`, and `parallelization.enabled: true`. This keeps setup focused on product and workflow choices instead of repeatedly asking about those baseline preferences.
+Older projects may still keep planning files under `.claude/.gsdt-planning/`; `planningRoot()` in `gsdt/bin/lib/core.cjs` resolves the active directory (default first, then legacy).
 
 ### Full Schema
 
@@ -20,8 +20,7 @@ GSDT stores project settings in `.gsdt-planning/config.json`. Created during `/g
   "model_overrides": {},
   "planning": {
     "commit_docs": true,
-    "search_gitignored": false,
-    "map_ignore": []
+    "search_gitignored": false
   },
   "workflow": {
     "research": true,
@@ -124,46 +123,10 @@ All workflow toggles follow the **absent = enabled** pattern. If a key is missin
 |---------|------|---------|-------------|
 | `planning.commit_docs` | boolean | `true` | Whether `.gsdt-planning/` files are committed to git |
 | `planning.search_gitignored` | boolean | `false` | Add `--no-ignore` to broad searches to include `.gsdt-planning/` |
-| `planning.map_ignore` | string[] | `[]` | Repo-relative paths or glob-like patterns that codebase-first workflows should skip during broad exploration |
 
 ### Auto-Detection
 
 If `.gsdt-planning/` is in `.gitignore`, `commit_docs` is automatically `false` regardless of config.json. This prevents git errors.
-
-### Codebase Mapping Ignore Rules
-
-Use `planning.map_ignore` for project-local exclusions you want codebase-first agents to honor without teaching them each time:
-
-```json
-{
-  "planning": {
-    "map_ignore": [
-      "dist",
-      "coverage/**",
-      "apps/demo/.next",
-      "docs/generated"
-    ]
-  }
-}
-```
-
-You can also create a repo-root `.gsdt-mapignore` file for line-based rules:
-
-```text
-# Generated outputs
-dist
-coverage/**
-/apps/demo/.next
-docs/generated
-```
-
-Behavior:
-
-- `planning.map_ignore` and `.gsdt-mapignore` are merged before codebase-first workflows run
-- Current consumers include `/gsdt:map-codebase`, both `/gsdt:discuss-phase` scout modes, `/gsdt:autonomous` smart discuss, and `/gsdt:plant-seed` breadcrumb search
-- Patterns are interpreted as repo-relative exclusions for broad exploration
-- Blank lines and `#` comments in `.gsdt-mapignore` are ignored
-- Absolute paths and path traversal entries are discarded during normalization
 
 ---
 
@@ -212,10 +175,7 @@ Each path must be a directory containing a `SKILL.md` file. Paths are validated 
 
 ### Supported Agent Types
 
-Use the concrete agent name exactly as it appears in workflow `subagent_type="..."` values
-or the corresponding `agents/*.md` file name. Legacy aliases are not resolved.
-
-Common types:
+Any GSDT agent type can receive skills. Common types:
 
 - `gsdt-executor` -- executes implementation plans
 - `gsdt-planner` -- creates phase plans
@@ -223,26 +183,13 @@ Common types:
 - `gsdt-verifier` -- post-execution verification
 - `gsdt-phase-researcher` -- phase research
 - `gsdt-project-researcher` -- new-project research
-- `gsdt-research-synthesizer` -- research synthesis
-- `gsdt-advisor-researcher` -- discuss-phase advisors
-- `gsdt-ui-auditor` -- retroactive UI review
 - `gsdt-debugger` -- diagnostic agents
 - `gsdt-codebase-mapper` -- codebase analysis
+- `gsdt-advisor` -- discuss-phase advisors
 - `gsdt-ui-researcher` -- UI design contract creation
 - `gsdt-ui-checker` -- UI spec verification
 - `gsdt-roadmapper` -- roadmap creation
-- `gsdt-correctness-reviewer` -- assess correctness review
-- `gsdt-testing-reviewer` -- assess testing review
-- `gsdt-maintainability-reviewer` -- assess maintainability review
-- `gsdt-project-standards-reviewer` -- assess standards review
-- `gsdt-learnings-researcher` -- assess known-pattern review
-- `gsdt-security-reviewer` -- assess security review
-- `gsdt-performance-reviewer` -- assess performance review
-- `gsdt-reliability-reviewer` -- assess reliability review
-- `gsdt-cli-readiness-reviewer` -- assess CLI review
-- `gsdt-ui-regression-reviewer` -- assess UI regression review
-- `gsdt-agent-surface-reviewer` -- assess workflow/agent surface review
-- `gsdt-review-fixer` -- assess safe-auto fixes
+- `gsdt-research-synthesizer` -- research synthesis
 
 ### How It Works
 
@@ -256,10 +203,7 @@ Read these user-configured skills:
 </agent_skills>
 ```
 
-If no skills are configured, the block is omitted (zero overhead). The `<type>` lookup is exact:
-use canonical agent names such as `gsdt-research-synthesizer`, `gsdt-ui-auditor`,
-`gsdt-advisor-researcher`, and `gsdt-review-fixer`. Legacy keys like `gsd-synthesizer`,
-`gsd-ui-reviewer`, and `gsdt-advisor` are not supported.
+If no skills are configured, the block is omitted (zero overhead).
 
 ### CLI
 
@@ -402,7 +346,7 @@ Valid override values: `opus`, `sonnet`, `haiku`, `inherit`, or any fully-qualif
 
 ### Non-Claude Runtimes (Codex, OpenCode, Gemini CLI)
 
-When GSDT is installed for a non-Claude runtime, the installer automatically sets `resolve_model_ids: "omit"` in `~/.gsd/defaults.json`. This causes GSDT to return an empty model parameter for all agents, so each agent uses whatever model the runtime is configured with. No additional setup is needed for the default case.
+When GSDT is installed for a non-Claude runtime, the installer automatically sets `resolve_model_ids: "omit"` in `~/.gsdt/defaults.json`. This causes GSDT to return an empty model parameter for all agents, so each agent uses whatever model the runtime is configured with. No additional setup is needed for the default case.
 
 If you want different agents to use different models, use `model_overrides` with fully-qualified model IDs that your runtime recognizes:
 
@@ -462,8 +406,6 @@ The intent is the same as the Claude profile tiers -- use a stronger model for p
 
 Save settings as global defaults for future projects:
 
-**Location:** `~/.gsd/defaults.json`
+**Location:** `~/.gsdt/defaults.json`
 
 When `/gsdt:new-project` creates a new `config.json`, it reads global defaults and merges them as the starting configuration. Per-project settings always override globals.
-
-The fixed onboarding defaults still win for `granularity`, `planning.commit_docs`, and `parallelization.enabled` unless you edit the project config explicitly after initialization.

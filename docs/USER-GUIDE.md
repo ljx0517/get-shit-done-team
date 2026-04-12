@@ -440,7 +440,7 @@ The `security.cjs` module scans for known injection patterns (role overrides, in
 | `/gsdt:forensics` | Diagnostic report for workflow failures | When state, artifacts, or git history seem corrupted |
 | `/gsdt:add-todo [desc]` | Capture an idea for later | Think of something during a session |
 | `/gsdt:check-todos` | List pending todos | Review captured ideas |
-| `/gsdt:settings` | Configure core defaults, workflow toggles, discuss mode, and model profile | Change model, toggle agents, adjust strategy defaults |
+| `/gsdt:settings` | Configure workflow toggles and model profile | Change model, toggle agents |
 | `/gsdt:set-profile <profile>` | Quick profile switch | Change cost/quality tradeoff |
 | `/gsdt:reapply-patches` | Restore local modifications after update | After `/gsdt:update` if you had local edits |
 
@@ -465,7 +465,7 @@ The `security.cjs` module scans for known injection patterns (role overrides, in
 
 ## Configuration Reference
 
-GSDT stores project settings in `.gsdt-planning/config.json`. `/gsdt:new-project` now seeds `granularity: "fine"`, `planning.commit_docs: true`, and `parallelization.enabled: true` automatically, so onboarding questions stay focused on product and workflow choices. Update other preferences later with `/gsdt:settings`.
+GSDT stores project settings in `.gsdt-planning/config.json` at the repository root. Configure during `/gsdt:new-project` or update later with `/gsdt:settings`. Legacy trees may use `.claude/.gsdt-planning/config.json` instead; see [Configuration Reference](CONFIGURATION.md#configuration-file) and `planningRoot()`.
 
 ### Full config.json Schema
 
@@ -600,7 +600,7 @@ Example quick-task branching:
 
 ```bash
 claude --dangerously-skip-permissions
-/gsdt:new-project            # Answer product/workflow questions; fine/parallel/git-tracked defaults are preselected
+/gsdt:new-project            # Answer questions, configure, approve roadmap
 /clear
 /gsdt:discuss-phase 1        # Lock in your preferences
 /gsdt:ui-phase 1             # Design contract (frontend phases)
@@ -629,7 +629,7 @@ claude --dangerously-skip-permissions
 
 ```bash
 /gsdt:map-codebase           # Analyze what exists (parallel agents)
-/gsdt:new-project            # Questions focus on what you're ADDING; fine/parallel/git-tracked defaults stay fixed
+/gsdt:new-project            # Questions focus on what you're ADDING
 # (normal phase workflow from here)
 ```
 

@@ -79,9 +79,9 @@ const { createTempProject, createTempGitProject, createTempDir, cleanup, runGsdT
 
 | Helper | Creates | Use When |
 |--------|---------|----------|
-| `createTempProject(prefix?)` | tmpDir with `.gsdt-planning/phases/` | Testing GSDT tools that need planning structure |
+| `createTempProject(prefix?)` | tmpDir with `.gsdt-planning/phases/` (and minimal `PROJECT.md`, etc.) | Testing GSDT tools that need planning structure |
 | `createTempGitProject(prefix?)` | Same + git init + initial commit | Testing git-dependent features |
-| `createTempDir(prefix?)` | Bare temp directory | Testing features that don't need `.gsdt-planning/` |
+| `createTempDir(prefix?)` | Bare temp directory | Testing features that don't need a `.gsdt-planning/` tree |
 | `cleanup(tmpDir)` | Removes directory recursively | Always use in `afterEach` |
 | `runGsdTools(args, cwd, env?)` | Executes gsdt-tools.cjs | Testing CLI commands |
 

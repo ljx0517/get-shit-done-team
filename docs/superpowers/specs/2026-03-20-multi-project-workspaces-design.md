@@ -4,6 +4,8 @@
 **Date:** 2026-03-20
 **Status:** Approved
 
+**Planning paths:** This spec uses the default layout **`.gsdt-planning/`** at the workspace root. Legacy installs may still use **`.claude/.gsdt-planning/`**; `planningRoot()` in `gsdt/bin/lib/core.cjs` accepts both. See [`docs/CONFIGURATION.md`](../../CONFIGURATION.md).
+
 ## Problem
 
 GSDT is tied to one `.gsdt-planning/` directory per working directory. Users with multiple independent projects (monorepo-style setups with 20+ child repos) or users needing feature branch isolation in the same repo cannot run parallel GSDT sessions without manual cloning and state management.
@@ -51,7 +53,7 @@ Removes a workspace directory after confirmation. For worktree strategy, runs `g
 ```
 ~/gsdt-workspaces/feature-b/          # workspace root
 ├── WORKSPACE.md                      # manifest
-├── .gsdt-planning/                               # independent GSDT planning directory
+├── .gsdt-planning/                        # independent GSDT planning directory
 │   ├── PROJECT.md                    # (if user ran /gsdt:new-project)
 │   ├── STATE.md
 │   └── config.json

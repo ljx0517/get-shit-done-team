@@ -221,7 +221,7 @@
 | `/gsdt:debug [desc]` | 带持久状态的系统化调试 | 出问题时 |
 | `/gsdt:add-todo [desc]` | 捕获想法留待后用 | 会话期间想到什么 |
 | `/gsdt:check-todos` | 列出待处理事项 | 查看捕获的想法 |
-| `/gsdt:settings` | 配置核心默认值、工作流开关、讨论模式和模型配置 | 更改模型、切换代理、调整策略默认值 |
+| `/gsdt:settings` | 配置工作流开关和模型配置 | 更改模型、切换代理 |
 | `/gsdt:set-profile <profile>` | 快速切换配置 | 更改成本/质量权衡 |
 | `/gsdt:reapply-patches` | 更新后恢复本地修改 | 如果你有本地编辑，在 `/gsdt:update` 后 |
 
@@ -229,7 +229,7 @@
 
 ## 配置参考
 
-GSDT 在 `.gsdt-planning/config.json` 中存储项目设置。`/gsdt:new-project` 现在会自动写入 `granularity: "fine"`、`planning.commit_docs: true` 和 `parallelization.enabled: true`，所以初始化提问会更聚焦在产品和工作流选择上；其他偏好可稍后通过 `/gsdt:settings` 更新。
+GSDT 在仓库根目录的 `.gsdt-planning/config.json` 中存储项目设置（旧树可能为 `.claude/.gsdt-planning/config.json`）。在 `/gsdt:new-project` 期间配置或稍后用 `/gsdt:settings` 更新。路径解析见 [配置说明（英文）](../CONFIGURATION.md#configuration-file) 与 `planningRoot()`。
 
 ### 完整 config.json 模式
 
@@ -331,7 +331,7 @@ GSDT 在 `.gsdt-planning/config.json` 中存储项目设置。`/gsdt:new-project
 
 ```bash
 claude --dangerously-skip-permissions
-/gsdt:new-project            # 回答产品/工作流问题；最细颗粒度、并行执行、Git 跟踪规划文档已预设
+/gsdt:new-project            # 回答问题，配置，批准路线图
 /clear
 /gsdt:discuss-phase 1        # 锁定你的偏好
 /gsdt:plan-phase 1           # 研究 + 规划 + 验证
@@ -356,7 +356,7 @@ claude --dangerously-skip-permissions
 
 ```bash
 /gsdt:map-codebase           # 分析现有内容（并行代理）
-/gsdt:new-project            # 问题聚焦于你正在添加的内容；最细颗粒度、并行执行、Git 跟踪规划文档保持固定
+/gsdt:new-project            # 问题聚焦于你正在添加的内容
 # （从这里开始正常阶段工作流）
 ```
 
