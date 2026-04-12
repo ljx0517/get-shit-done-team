@@ -167,7 +167,7 @@ Output your review in structured format:
 If no issues found, return: `{ "findings": [] }`
 ```
 
-Write to a temp file: `/tmp/gsd-review-prompt-{phase}.md`
+Write to a temp file: `/tmp/gsdt-review-prompt-{phase}.md`
 </step>
 
 <step name="invoke_reviewers_parallel">
@@ -175,17 +175,17 @@ For each selected CLI, invoke IN PARALLEL (not sequential):
 
 **Gemini:**
 ```bash
-gemini -p "$(cat /tmp/gsd-review-prompt-{phase}.md)" 2>/dev/null > /tmp/gsd-review-gemini-{phase}.json &
+gemini -p "$(cat /tmp/gsdt-review-prompt-{phase}.md)" 2>/dev/null > /tmp/gsdt-review-gemini-{phase}.json &
 ```
 
 **Claude (separate session):**
 ```bash
-claude -p "$(cat /tmp/gsd-review-prompt-{phase}.md)" --no-input 2>/dev/null > /tmp/gsd-review-claude-{phase}.json &
+claude -p "$(cat /tmp/gsdt-review-prompt-{phase}.md)" --no-input 2>/dev/null > /tmp/gsdt-review-claude-{phase}.json &
 ```
 
 **Codex:**
 ```bash
-codex exec --skip-git-repo-check "$(cat /tmp/gsd-review-prompt-{phase}.md)" 2>/dev/null > /tmp/gsd-review-codex-{phase}.json &
+codex exec --skip-git-repo-check "$(cat /tmp/gsdt-review-prompt-{phase}.md)" 2>/dev/null > /tmp/gsdt-review-codex-{phase}.json &
 ```
 
 **Wait for all to complete:**
@@ -207,9 +207,9 @@ Parse each reviewer's output and merge with deduplication:
 
 ```bash
 # Parse each output
-GEMINI_FINDINGS=$(cat /tmp/gsd-review-gemini-{phase}.json 2>/dev/null | jq -r '.findings // []' 2>/dev/null || echo "[]")
-CLAUDE_FINDINGS=$(cat /tmp/gsd-review-claude-{phase}.json 2>/dev/null | jq -r '.findings // []' 2>/dev/null || echo "[]")
-CODEX_FINDINGS=$(cat /tmp/gsd-review-codex-{phase}.json 2>/dev/null | jq -r '.findings // []' 2>/dev/null || echo "[]")
+GEMINI_FINDINGS=$(cat /tmp/gsdt-review-gemini-{phase}.json 2>/dev/null | jq -r '.findings // []' 2>/dev/null || echo "[]")
+CLAUDE_FINDINGS=$(cat /tmp/gsdt-review-claude-{phase}.json 2>/dev/null | jq -r '.findings // []' 2>/dev/null || echo "[]")
+CODEX_FINDINGS=$(cat /tmp/gsdt-review-codex-{phase}.json 2>/dev/null | jq -r '.findings // []' 2>/dev/null || echo "[]")
 
 # Combine into unified JSON with source tracking
 COMBINED=$(jq -n \
@@ -225,7 +225,7 @@ COMBINED=$(jq -n \
   }')
 
 # Save combined for deduplication
-echo "$COMBINED" > /tmp/gsd-review-combined-{phase}.json
+echo "$COMBINED" > /tmp/gsdt-review-combined-{phase}.json
 ```
 
 Run deduplication and boost via the review engine:
@@ -235,14 +235,14 @@ Run deduplication and boost via the review engine:
 # For now, we'll use jq-based deduplication
 node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" review dedupe \
   --session "$SESSION_ID" \
-  --input /tmp/gsd-review-combined-{phase}.json
+  --input /tmp/gsdt-review-combined-{phase}.json
 ```
 
 Update session with findings:
 ```bash
 node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" review add-findings \
   --session "$SESSION_ID" \
-  --findings /tmp/gsd-review-combined-{phase}.json
+  --findings /tmp/gsdt-review-combined-{phase}.json
 ```
 </step>
 
@@ -343,11 +343,11 @@ To incorporate feedback into planning:
 
 Clean up temp files:
 ```bash
-rm -f /tmp/gsd-review-{phase}.md \
-       /tmp/gsd-review-gemini-{phase}.json \
-       /tmp/gsd-review-claude-{phase}.json \
-       /tmp/gsd-review-codex-{phase}.json \
-       /tmp/gsd-review-combined-{phase}.json
+rm -f /tmp/gsdt-review-prompt-{phase}.md \
+       /tmp/gsdt-review-gemini-{phase}.json \
+       /tmp/gsdt-review-claude-{phase}.json \
+       /tmp/gsdt-review-codex-{phase}.json \
+       /tmp/gsdt-review-combined-{phase}.json
 ```
 </step>
 

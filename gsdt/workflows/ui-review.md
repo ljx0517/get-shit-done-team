@@ -25,7 +25,7 @@ Valid GSDT subagent types (use exact names — do not fall back to 'general-purp
 ```bash
 INIT=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" init phase-op "${PHASE_ARG}")
 if [[ "$INIT" == @file:* ]]; then INIT=$(cat "${INIT#@file:}"); fi
-AGENT_SKILLS_UI_REVIEWER=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" agent-skills gsd-ui-reviewer 2>/dev/null)
+AGENT_SKILLS_UI_REVIEWER=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" agent-skills gsdt-ui-auditor 2>/dev/null)
 ```
 
 Parse: `phase_dir`, `phase_number`, `phase_name`, `phase_slug`, `padded_phase`, `commit_docs`.

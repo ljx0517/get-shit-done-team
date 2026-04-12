@@ -218,7 +218,7 @@ Exit.
 ⚠️  **Note:** The installer performs a clean install of GSDT folders:
 - `commands/gsdt/` will be wiped and replaced
 - `gsdt/` will be wiped and replaced
-- `agents/gsd-*` files will be replaced
+- `agents/gsdt-*` files will be replaced
 
 (Paths are relative to detected runtime install location:
 global: `~/.claude/`, `~/.config/opencode/`, `~/.opencode/`, `~/.gemini/`, or `~/.codex/`
@@ -226,7 +226,7 @@ local: `./.claude/`, `./.config/opencode/`, `./.opencode/`, `./.gemini/`, or `./
 
 Your custom files in other locations are preserved:
 - Custom commands not in `commands/gsdt/` ✓
-- Custom agents not prefixed with `gsd-` ✓
+- Custom agents not prefixed with `gsdt-` ✓
 - Custom hooks ✓
 - Your CLAUDE.md files ✓
 
@@ -271,6 +271,7 @@ Clear the update cache so statusline indicator disappears:
 
 ```bash
 # Clear update cache across all runtime directories
+rm -f "$HOME/.cache/gsdt/gsdt-update-check.json"
 for dir in .claude .config/opencode .opencode .gemini .codex; do
   rm -f "./$dir/cache/gsd-update-check.json"
   rm -f "$HOME/$dir/cache/gsd-update-check.json"

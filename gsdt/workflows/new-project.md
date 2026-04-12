@@ -60,7 +60,7 @@ The document should describe what you want to build.
 INIT=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" init new-project)
 if [[ "$INIT" == @file:* ]]; then INIT=$(cat "${INIT#@file:}"); fi
 AGENT_SKILLS_RESEARCHER=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" agent-skills gsdt-project-researcher 2>/dev/null)
-AGENT_SKILLS_SYNTHESIZER=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" agent-skills gsd-synthesizer 2>/dev/null)
+AGENT_SKILLS_SYNTHESIZER=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" agent-skills gsdt-research-synthesizer 2>/dev/null)
 AGENT_SKILLS_ROADMAPPER=$(node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" agent-skills gsdt-roadmapper 2>/dev/null)
 ```
 

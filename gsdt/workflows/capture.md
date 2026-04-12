@@ -4,7 +4,7 @@ description: Fragment capture workflow — AI-driven entity extraction and graph
 
 # Capture Workflow
 
-You are executing `gsd:capture`. The user's raw fragment is in `<context>`.
+You are executing `gsdt:capture`. The user's raw fragment is in `<context>`.
 
 ## Step 0 — 项目状态检测
 
