@@ -156,6 +156,8 @@ const profileOutput = require('./lib/profile-output.cjs');
 const workstream = require('./lib/workstream.cjs');
 const capture = require('./lib/capture.cjs');
 const intake = require('./lib/intake.cjs');
+const docs = require('./lib/docs.cjs');
+const learnings = require('./lib/learnings.cjs');
 
 // ─── Arg parsing helpers ──────────────────────────────────────────────────────
 
@@ -1060,6 +1062,77 @@ async function runCommand(command, args, cwd, raw) {
       else {
         error(`Unknown compound subcommand: ${compoundSubcmd}\nAvailable: find, process, dispatch, emit, hook, memory, anti-pattern, watch`);
       }
+      break;
+    }
+
+    // ─── Intel (codebase intelligence store under <planning>/intel/) ─────────
+
+    case 'intel': {
+      const intel = require('./lib/intel.cjs');
+      const planningDir = core.planningRoot(cwd);
+      const subcommand = args[1];
+      if (subcommand === 'query') {
+        const term = args[2];
+        if (!term) error('Usage: gsdt-tools intel query <term>');
+        core.output(intel.intelQuery(term, planningDir), raw);
+      } else if (subcommand === 'status') {
+        core.output(intel.intelStatus(planningDir), raw);
+      } else if (subcommand === 'diff') {
+        core.output(intel.intelDiff(planningDir), raw);
+      } else if (subcommand === 'snapshot') {
+        core.output(intel.intelSnapshot(planningDir), raw);
+      } else if (subcommand === 'patch-meta') {
+        const filePath = args[2];
+        if (!filePath) error('Usage: gsdt-tools intel patch-meta <file-path>');
+        core.output(intel.intelPatchMeta(path.resolve(cwd, filePath)), raw);
+      } else if (subcommand === 'validate') {
+        core.output(intel.intelValidate(planningDir), raw);
+      } else if (subcommand === 'extract-exports') {
+        const filePath = args[2];
+        if (!filePath) error('Usage: gsdt-tools intel extract-exports <file-path>');
+        core.output(intel.intelExtractExports(path.resolve(cwd, filePath)), raw);
+      } else if (subcommand === 'update') {
+        core.output(intel.intelUpdate(planningDir), raw);
+      } else {
+        error('Unknown intel subcommand. Available: query, status, update, diff, snapshot, patch-meta, validate, extract-exports');
+      }
+      break;
+    }
+
+    case 'docs-init': {
+      docs.cmdDocsInit(cwd, raw);
+      break;
+    }
+
+    case 'learnings': {
+      const subcommand = args[1];
+      if (subcommand === 'list') {
+        learnings.cmdLearningsList(raw);
+      } else if (subcommand === 'query') {
+        const tagIdx = args.indexOf('--tag');
+        const tag = tagIdx !== -1 ? args[tagIdx + 1] : null;
+        if (!tag) error('Usage: gsdt-tools learnings query --tag <tag>');
+        learnings.cmdLearningsQuery(tag, raw);
+      } else if (subcommand === 'copy') {
+        learnings.cmdLearningsCopy(cwd, raw);
+      } else if (subcommand === 'prune') {
+        const olderIdx = args.indexOf('--older-than');
+        const olderThan = olderIdx !== -1 ? args[olderIdx + 1] : null;
+        if (!olderThan) error('Usage: gsdt-tools learnings prune --older-than <duration>');
+        learnings.cmdLearningsPrune(olderThan, raw);
+      } else if (subcommand === 'delete') {
+        const id = args[2];
+        if (!id) error('Usage: gsdt-tools learnings delete <id>');
+        learnings.cmdLearningsDelete(id, raw);
+      } else {
+        error('Unknown learnings subcommand. Available: list, query, copy, prune, delete');
+      }
+      break;
+    }
+
+    case 'from-gsd2': {
+      const gsd2Import = require('./lib/gsd2-import.cjs');
+      gsd2Import.cmdFromGsd2(args.slice(1), cwd, raw);
       break;
     }
 
