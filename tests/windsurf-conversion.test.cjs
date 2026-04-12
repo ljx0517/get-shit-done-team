@@ -29,17 +29,17 @@ Test body
 </objective>
 `;
 
-    const result = convertClaudeCommandToWindsurfSkill(input, 'gsd-quick');
+    const result = convertClaudeCommandToWindsurfSkill(input, 'gsdt-quick');
     const nameMatch = result.match(/^name:\s*(.+)$/m);
 
     assert.ok(nameMatch, 'frontmatter contains name field');
-    assert.strictEqual(nameMatch[1], 'gsd-quick', 'skill name is plain scalar');
-    assert.ok(!result.includes('name: "gsd-quick"'), 'quoted skill name is not emitted');
+    assert.strictEqual(nameMatch[1], 'gsdt-quick', 'skill name is plain scalar');
+    assert.ok(!result.includes('name: "gsdt-quick"'), 'quoted skill name is not emitted');
   });
 
   test('preserves slash for slash commands in markdown body', () => {
     const input = `---
-name: gsd:plan-phase
+name: gsdt:plan-phase
 description: Plan a phase
 ---
 
@@ -49,11 +49,11 @@ Next:
 gsdt:progress
 `;
 
-    const result = convertClaudeCommandToWindsurfSkill(input, 'gsd-plan-phase');
-    // Slash commands: /gsdt:execute-phase -> /gsd-execute-phase
-    assert.ok(result.includes('/gsd-execute-phase 17'), 'slash command gsd: -> gsd-');
+    const result = convertClaudeCommandToWindsurfSkill(input, 'gsdt-plan-phase');
+    // Slash commands: /gsdt:execute-phase -> /gsdt-execute-phase
+    assert.ok(result.includes('/gsdt-execute-phase 17'), 'slash command gsdt: -> gsdt-');
     assert.ok(result.includes('/gsdt-help'), '/gsdt-help preserved');
-    assert.ok(result.includes('gsd-progress'), 'bare gsdt: -> gsd-');
+    assert.ok(result.includes('gsdt-progress'), 'bare gsdt: -> gsdt-');
   });
 
   test('includes windsurf_skill_adapter block', () => {
@@ -65,7 +65,7 @@ description: A test skill
 Body content.
 `;
 
-    const result = convertClaudeCommandToWindsurfSkill(input, 'gsd-test');
+    const result = convertClaudeCommandToWindsurfSkill(input, 'gsdt-test');
     assert.ok(result.includes('<windsurf_skill_adapter>'), 'adapter header present');
     assert.ok(result.includes('</windsurf_skill_adapter>'), 'adapter footer present');
     assert.ok(result.includes('Shell'), 'Shell tool mentioned');
@@ -76,7 +76,7 @@ Body content.
 describe('convertClaudeAgentToWindsurfAgent', () => {
   test('converts agent frontmatter with unquoted name', () => {
     const input = `---
-name: gsd-bugfix
+name: gsdt-bugfix
 description: "Fix bugs automatically"
 color: blue
 skills:
@@ -90,7 +90,7 @@ Agent body content.
     const result = convertClaudeAgentToWindsurfAgent(input);
     const nameMatch = result.match(/^name:\s*(.+)$/m);
     assert.ok(nameMatch, 'name field present');
-    assert.strictEqual(nameMatch[1], 'gsd-bugfix', 'agent name is plain scalar');
+    assert.strictEqual(nameMatch[1], 'gsdt-bugfix', 'agent name is plain scalar');
     // Should strip unsupported fields
     assert.ok(!result.includes('color:'), 'color field stripped');
     assert.ok(!result.includes('skills:'), 'skills field stripped');
@@ -105,10 +105,10 @@ describe('convertClaudeToWindsurfMarkdown', () => {
     assert.ok(!result.includes('Claude Code'), 'original brand removed');
   });
 
-  test('replaces CLAUDE.md with .windsurf/rules/', () => {
+  test('replaces CLAUDE.md with .windsurf/rules', () => {
     const input = 'See `CLAUDE.md` for configuration. Also check ./CLAUDE.md file.';
     const result = convertClaudeToWindsurfMarkdown(input);
-    assert.ok(result.includes('.windsurf/rules/'), 'CLAUDE.md replaced');
+    assert.ok(result.includes('.windsurf/rules'), 'CLAUDE.md replaced');
   });
 
   test('replaces .claude/skills/ with .windsurf/skills/', () => {

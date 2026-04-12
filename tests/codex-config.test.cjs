@@ -160,7 +160,7 @@ tools: Read
 Run /gsdt:execute-phase to proceed.`;
 
     const result = convertClaudeAgentToCodexAgent(input);
-    assert.ok(result.includes('$gsd-execute-phase'), 'converts slash commands');
+    assert.ok(result.includes('$gsdt-execute-phase'), 'converts slash commands');
     assert.ok(!result.includes('/gsdt:execute-phase'), 'original slash command removed');
   });
 
@@ -677,7 +677,7 @@ describe('installCodexConfig (integration)', () => {
 
     const executorToml = fs.readFileSync(path.join(agentsDir, 'gsdt-executor.toml'), 'utf8');
     assert.ok(executorToml.includes('name = "gsdt-executor"'), 'executor has name');
-    assert.ok(executorToml.includes('description = "Executes GSD plans with atomic commits, deviation handling, checkpoint protocols, and state management. Spawned by execute-phase orchestrator or execute-plan command."'), 'executor has description');
+    assert.ok(executorToml.includes('description = "Executes GSDT plans with atomic commits, deviation handling, checkpoint protocols, and state management. Spawned by execute-phase orchestrator or execute-plan command."'), 'executor has description');
     assert.ok(executorToml.includes('sandbox_mode = "workspace-write"'), 'executor is workspace-write');
     assert.ok(executorToml.includes('developer_instructions'), 'has developer_instructions');
 
