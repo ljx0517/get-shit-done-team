@@ -3,15 +3,25 @@ Analyze freeform text from the user and route to the most appropriate GSDT comma
 </purpose>
 
 <required_reading>
-Read all files referenced by the invoking prompt's execution_context before starting.
+Read all files referenced by the invoking prompt's  execution_context before starting.
 </required_reading>
+
+<claude_askuserquestion_shape>
+Claude Code’s **AskUserQuestion** tool validates JSON strictly. The **only** allowed top-level key is **`questions`** (an array). Each item may use **`question`**, **`header`** (short label, max 12 characters), **`multiSelect`**, and **`options`** (objects with **`label`** and **`description`**).
+
+**Invalid (causes `InputValidationError`):** passing **`question`**, **`header`**, **`options`**, or **`multiSelect` at the root** of the tool call — the runtime expects them **inside** `questions[0]`, not at the top level.
+
+**Safe patterns for this dispatcher:**
+- **Preferred:** ask in **plain assistant text** (numbered options if needed) and wait for the user’s next message — no tool call.
+- **If using AskUserQuestion:** one call with `{ "questions": [ { "question": "...", "header": "...", "multiSelect": false, "options": [ ... ] } ] }`.
+</claude_askuserquestion_shape>
 
 <process>
 
 <step name="validate">
 **Check for input.**
 
-If `$ARGUMENTS` is empty, ask via AskUserQuestion:
+If `$ARGUMENTS` is empty, ask what to route (plain text is fine):
 
 ```
 What would you like to do? Describe the task, bug, or idea and I'll route it to the right GSDT command.
@@ -57,7 +67,7 @@ Evaluate `$ARGUMENTS` against these routing rules. Apply the **first matching** 
 
 **Requires `.gsdt-planning/` directory:** All routes except `/gsdt:auto`, `/gsdt:new-project`, `/gsdt:map-codebase`, `/gsdt:help`, and `/gsdt:join-discord`. If the project doesn't exist and the route requires it, suggest `/gsdt:auto` first.
 
-**Ambiguity handling:** If the text could reasonably match multiple routes, ask the user via AskUserQuestion with the top 2-3 options. For example:
+**Ambiguity handling:** If the text could reasonably match multiple routes, present the top 2–3 routes in **plain text** (or use AskUserQuestion only with a valid `{ "questions": [ ... ] }` payload — see `<claude_askuserquestion_shape>`). For example:
 
 ```
 "Refactor the authentication system" could be:
@@ -94,7 +104,7 @@ Examples:
 - "我想开始新项目" → `SlashCommand("/gsdt:auto 我想开始一个新项目")`
 - "我想继续工作" → `SlashCommand("/gsdt:resume-work")`
 
-If the chosen command expects a phase number and one wasn't provided in the text, extract it from context or ask via AskUserQuestion.
+If the chosen command expects a phase number and one wasn't provided in the text, extract it from context or ask in plain text (or AskUserQuestion with a valid `questions` array per `<claude_askuserquestion_shape>`).
 
 After invoking, stop. The dispatched command handles everything from here.
 </step>
