@@ -34,6 +34,14 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- **`/gsdt:state-router`** — Slash command ([`commands/gsdt/state-router.md`](commands/gsdt/state-router.md)) and workflow ([`gsdt/workflows/flow-router.md`](gsdt/workflows/flow-router.md)) for **state-first routing** with a strict **JSON-only** reply contract (no markdown fences, no commentary) for Claude Code and scripting. Documented in [`gsdt/workflows/help.md`](gsdt/workflows/help.md) Quick Start. (Jaxon) *Renamed from `gsdt:flow-router` because Claude Code treats `/gsdt:…` as Skill lookup and reported “Unknown skill: gsdt:flow-router”; the skill id is `gsdt-flow-router`.*
+
+### Changed
+
+- **`gsdt/workflows/do.md`** — Documented Claude Code **AskUserQuestion** contract: top-level **`questions`** array only; root-level `question`/`header`/`options`/`multiSelect` cause `InputValidationError`. Dispatcher now recommends **plain-text** prompts when arguments are empty or routing is ambiguous, with optional correct JSON shape when the tool is used. (Jaxon)
+
+### Added
+
 - **Legacy install artifact migration** — [`bin/install.js`](bin/install.js) runs **`migrateLegacyInstallArtifacts`** before **`saveLocalPatches`**: renames **`gsd-file-manifest.json`** → **`gsdt-file-manifest.json`**, **`gsd-local-patches/`** → **`gsdt-local-patches/`**, **`gsd-pristine/`** → **`gsdt-pristine/`** when the new path is missing; if both old and new exist, logs a dim hint and does not overwrite. **`reportLocalPatches`** reads **`backup-meta.json`** from the legacy patch directory if the new one has none. **`uninstall`** also removes a leftover **`gsd-file-manifest.json`**. Cross-volume rename uses copy-then-delete. Coverage: [`tests/legacy-install-artifacts-migrate.test.cjs`](tests/legacy-install-artifacts-migrate.test.cjs). (Jaxon)
 - **Migration documentation** — Added [`docs/MIGRATION-GSD-TO-GSDT.md`](docs/MIGRATION-GSD-TO-GSDT.md) as the consolidated guide for GSD→GSDT naming, disk paths, installer behavior, runtime conversion notes, intentional legacy paths (`~/.gsd/`, GSD-2 `.gsd/`), and links to `CHANGELOG` / related docs; [`docs/zh-CN/MIGRATION-GSD-TO-GSDT.md`](docs/zh-CN/MIGRATION-GSD-TO-GSDT.md) provides a short Chinese summary; indexed from [`docs/README.md`](docs/README.md); top navigation in root [`README.md`](README.md), [`README.zh-CN.md`](README.zh-CN.md), and [`docs/zh-CN/README.md`](docs/zh-CN/README.md) links to the migration guide (Chinese README points at the zh-CN summary). Follow-up **code audit** expanded that guide: per-runtime converters in [`bin/install.js`](bin/install.js) (Codex **`$gsdt-*`** vs **`$gsd-*`**, CodeBuddy **`/gsd:`**-only skill mention helper, Cursor/Windsurf markdown), plus **`planningRoot()`** in [`gsdt/bin/lib/core.cjs`](gsdt/bin/lib/core.cjs). (Jaxon)
 
