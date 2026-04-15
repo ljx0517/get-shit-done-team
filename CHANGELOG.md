@@ -34,10 +34,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
-- **`/gsdt:state-router`** — Slash command ([`commands/gsdt/state-router.md`](commands/gsdt/state-router.md)) and workflow ([`gsdt/workflows/flow-router.md`](gsdt/workflows/flow-router.md)) for **state-first routing** with a strict **JSON-only** reply contract (no markdown fences, no commentary) for Claude Code and scripting. Documented in [`gsdt/workflows/help.md`](gsdt/workflows/help.md) Quick Start. (Jaxon) *Renamed from `gsdt:flow-router` because Claude Code treats `/gsdt:…` as Skill lookup and reported “Unknown skill: gsdt:flow-router”; the skill id is `gsdt-flow-router`.*
+- **`/gsdt:router`** — Slash command ([`commands/gsdt/router.md`](commands/gsdt/router.md)) and workflow ([`gsdt/workflows/flow-router.md`](gsdt/workflows/flow-router.md)) for **state-first routing** with a strict **JSON-only** reply contract (no markdown fences, no commentary) for Claude Code and scripting. Documented in [`gsdt/workflows/help.md`](gsdt/workflows/help.md) Quick Start. (Jaxon) *Renamed from `gsdt:flow-router` because Claude Code treats `/gsdt:…` as Skill lookup and reported “Unknown skill: gsdt:flow-router”; the skill id is `gsdt-flow-router`.*
 
 ### Changed
 
+- **`/gsdt:router`** — Slash command renamed from **`/gsdt:state-router`** (command file [`commands/gsdt/router.md`](commands/gsdt/router.md), formerly `state-router.md`) for a shorter name that does not collide with the **`gsdt-flow-router`** skill. (Jaxon)
 - **`gsdt/workflows/do.md`** — Documented Claude Code **AskUserQuestion** contract: top-level **`questions`** array only; root-level `question`/`header`/`options`/`multiSelect` cause `InputValidationError`. Dispatcher now recommends **plain-text** prompts when arguments are empty or routing is ambiguous, with optional correct JSON shape when the tool is used. (Jaxon)
 
 ### Added

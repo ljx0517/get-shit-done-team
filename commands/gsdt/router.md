@@ -1,5 +1,5 @@
 ---
-name: gsdt:state-router
+name: gsdt:router
 description: State-first GSDT router — outputs JSON only (next slash command)
 argument-hint: "<natural language> [key=value state flags]"
 allowed-tools:

@@ -12,7 +12,7 @@ Display the complete GSDT command reference. Output ONLY the reference content. 
 1. `/gsdt:auto 我想做一个...` - One-click automatic flow (capture -> decide -> initialize/plan)
 2. `/gsdt:plan-phase 1` - Create detailed plan for first phase
 3. `/gsdt:execute-phase 1` - Execute the phase
-4. `/gsdt:state-router <text> [key=value...]` - **JSON only** (no prose): next `/gsdt:*` recommendation from natural language + optional state flags (`needs_new_project=true`, etc.). (Formerly `gsdt:flow-router`; renamed because `/gsdt:flow-router` is resolved as a **Skill** id and collides with the skill `gsdt-flow-router`.)
+4. `/gsdt:router <text> [key=value...]` - **JSON only** (no prose): next `/gsdt:*` recommendation from natural language + optional state flags (`needs_new_project=true`, etc.). (Formerly `gsdt:flow-router`; `/gsdt:flow-router` is resolved as a **Skill** id and collides with the skill `gsdt-flow-router`.)
 
 ## Staying Updated
 

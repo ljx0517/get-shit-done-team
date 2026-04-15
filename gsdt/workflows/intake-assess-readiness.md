@@ -26,6 +26,11 @@ Rules:
 - separate project-level readiness from phase-level readiness
 - recommend routing, but do not enforce dispatch; deterministic CLI guards will decide the final safe action
 
+Cold-start optimization:
+- If project description contains "核心功能 + 平台/技术约束 + 至少一个可推断使用场景", score should reflect project_ready_score ≥ 0.7
+- For meta-questions (e.g., "还需补充什么"), if description is already sufficient, recommend "trigger_new_project" instead of "collect_more"
+- Absence of GSDT state files alone should not trigger "information insufficient" — evaluate description density instead
+
 Return exactly one machine-readable block:
 <intake_assessment_json>
 {

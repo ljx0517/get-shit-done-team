@@ -73,7 +73,7 @@ The sections below cover the detailed syntax. This cheat sheet is the fastest wa
 | `/gsdt:autonomous` | Run remaining phases automatically |
 | `/gsdt:auto` | One-click autopilot from natural language input |
 | `/gsdt:do` | Route freeform text to the right command |
-| `/gsdt:state-router` | JSON-only next-step router (natural language + optional `key=value` flags) |
+| `/gsdt:router` | JSON-only next-step router (natural language + optional `key=value` flags) |
 | `/gsdt:session-report` | Generate a session summary report |
 | `/gsdt:stats` | Show project metrics |
 | `/gsdt:health` | Validate planning-directory integrity |
@@ -673,12 +673,12 @@ Route freeform text to the right GSDT command.
 /gsdt:do                             # Then describe what you want
 ```
 
-### `/gsdt:state-router`
+### `/gsdt:router`
 
 State-first router for automation: the model reply MUST be **a single JSON object** (no markdown fences, no commentary). Pass natural language plus optional boolean flags such as `needs_new_project=true`.
 
 ```bash
-/gsdt:state-router 开始 needs_new_project=true gsdt_enabled=true
+/gsdt:router 开始 needs_new_project=true gsdt_enabled=true
 ```
 
 ### `/gsdt:find`
