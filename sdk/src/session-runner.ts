@@ -29,7 +29,7 @@ function resolveModel(options?: SessionOptions, config?: GSDConfig): string | un
     const profileMap: Record<string, string> = {
       balanced: 'claude-sonnet-4-6',
       quality: 'claude-opus-4-6',
-      speed: 'claude-haiku-3-5',
+      speed: 'claude-haiku-4-5',
     };
     return profileMap[config.model_profile] ?? config.model_profile;
   }
@@ -59,9 +59,10 @@ export async function runPlanSession(
   agentDef?: string,
   eventStream?: GSDEventStream,
   streamContext?: EventStreamContext,
+  phaseDir?: string,
 ): Promise<PlanResult> {
   // Build the executor prompt
-  const executorPrompt = buildExecutorPrompt(plan, agentDef);
+  const executorPrompt = buildExecutorPrompt(plan, { agentDef, phaseDir });
 
   // Resolve allowed tools — from agent definition or defaults
   const allowedTools = options?.allowedTools ??
@@ -277,7 +278,7 @@ export async function runPhaseStepSession(
   const cwd = options?.cwd ?? process.cwd();
 
   const queryStream = query({
-    prompt: prompt,
+    prompt: `Execute this phase step: ${phaseStep}`,
     options: {
       systemPrompt: {
         type: 'preset',

@@ -1,3 +1,9 @@
+// allow-test-rule: structural-implementation-guard
+// init.cjs cmdInitPlanPhase must expose text_mode in its returned flags object.
+// The behavioral alternative (run plan-phase init and inspect JSON output) is
+// fragile across runtime variations. Structural inspection guards the contract
+// until a stable behavioral API test is in place.
+
 /**
  * Discuss Mode Config Tests
  *
@@ -5,7 +11,7 @@
  */
 
 const { test, describe } = require('node:test');
-const assert = require('node:assert');
+const assert = require('node:assert/strict');
 const fs = require('fs');
 const path = require('path');
 

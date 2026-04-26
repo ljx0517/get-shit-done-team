@@ -12,9 +12,13 @@ const { output, loadConfig, resolveModelInternal, pathExistsInternal, toPosixPat
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
+<<<<<<< HEAD:gsdt/bin/lib/docs.cjs
 /** New docs use this marker; legacy installs may still have gsd-doc-writer. */
 const GSDT_DOC_MARKER = '<!-- generated-by: gsdt-doc-writer -->';
 const LEGACY_GSD_DOC_MARKER = '<!-- generated-by: gsd-doc-writer -->';
+=======
+const GSD_MARKER = '<!-- generated-by: gsd-doc-writer -->';
+>>>>>>> main:get-shit-done/bin/lib/docs.cjs
 
 const SKIP_DIRS = new Set([
   'node_modules', '.git', '.planning', '.claude', '__pycache__',
@@ -37,8 +41,12 @@ function hasGsdMarker(filePath) {
     const fd = fs.openSync(filePath, 'r');
     const bytesRead = fs.readSync(fd, buf, 0, 500, 0);
     fs.closeSync(fd);
+<<<<<<< HEAD:gsdt/bin/lib/docs.cjs
     const head = buf.slice(0, bytesRead).toString('utf-8');
     return head.includes(GSDT_DOC_MARKER) || head.includes(LEGACY_GSD_DOC_MARKER);
+=======
+    return buf.slice(0, bytesRead).toString('utf-8').includes(GSD_MARKER);
+>>>>>>> main:get-shit-done/bin/lib/docs.cjs
   } catch {
     return false;
   }
@@ -243,7 +251,11 @@ function detectMonorepoWorkspaces(cwd) {
  * resolution. Follows the cmdInitMapCodebase pattern.
  *
  * @example
+<<<<<<< HEAD:gsdt/bin/lib/docs.cjs
  * node gsdt-tools.cjs docs-init --raw
+=======
+ * node gsd-tools.cjs docs-init --raw
+>>>>>>> main:get-shit-done/bin/lib/docs.cjs
  *
  * @param {string} cwd - Project root directory
  * @param {boolean} raw - Pass raw JSON flag through to output()
@@ -251,7 +263,11 @@ function detectMonorepoWorkspaces(cwd) {
 function cmdDocsInit(cwd, raw) {
   const config = loadConfig(cwd);
   const result = {
+<<<<<<< HEAD:gsdt/bin/lib/docs.cjs
     doc_writer_model: resolveModelInternal(cwd, 'gsdt-doc-writer'),
+=======
+    doc_writer_model: resolveModelInternal(cwd, 'gsd-doc-writer'),
+>>>>>>> main:get-shit-done/bin/lib/docs.cjs
     commit_docs: config.commit_docs,
     existing_docs: scanExistingDocs(cwd),
     project_type: detectProjectType(cwd),

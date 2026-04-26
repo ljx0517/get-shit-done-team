@@ -1,5 +1,9 @@
 ---
+<<<<<<< HEAD:commands/gsdt/code-review.md
 name: gsdt:code-review
+=======
+name: gsdt:code-review
+>>>>>>> main:commands/gsd/code-review.md
 description: Review source files changed during a phase for bugs, security issues, and code quality problems
 argument-hint: "<phase-number> [--depth=quick|standard|deep] [--files file1,file2,...]"
 allowed-tools:
@@ -27,7 +31,11 @@ Output: {padded_phase}-REVIEW.md in phase directory + inline summary of findings
 </objective>
 
 <execution_context>
+<<<<<<< HEAD:commands/gsdt/code-review.md
 @~/.claude/gsdt/workflows/code-review.md
+=======
+@~/.claude/get-shit-done/workflows/code-review.md
+>>>>>>> main:commands/gsd/code-review.md
 </execution_context>
 
 <context>
@@ -37,13 +45,21 @@ Optional flags parsed from $ARGUMENTS:
 - `--depth=VALUE` — Depth override (quick|standard|deep). If provided, overrides workflow.code_review_depth config.
 - `--files=file1,file2,...` — Explicit file list override. Has highest precedence for file scoping per D-08. When provided, workflow skips SUMMARY.md extraction and git diff fallback entirely.
 
+<<<<<<< HEAD:commands/gsdt/code-review.md
 Context files (CLAUDE.md, SUMMARY.md, phase state) are resolved inside the workflow via `gsdt-tools init phase-op` and delegated to agent via `<files_to_read>` blocks.
+=======
+Context files (CLAUDE.md, SUMMARY.md, phase state) are resolved inside the workflow via `gsd-sdk query init.phase-op` and delegated to agent via `<files_to_read>` blocks.
+>>>>>>> main:commands/gsd/code-review.md
 </context>
 
 <process>
 This command is a thin dispatch layer. It parses arguments and delegates to the workflow.
 
+<<<<<<< HEAD:commands/gsdt/code-review.md
 Execute the code-review workflow from @~/.claude/gsdt/workflows/code-review.md end-to-end.
+=======
+Execute the code-review workflow from @~/.claude/get-shit-done/workflows/code-review.md end-to-end.
+>>>>>>> main:commands/gsd/code-review.md
 
 The workflow (not this command) enforces these gates:
 - Phase validation (before config gate)

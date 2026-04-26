@@ -1,6 +1,6 @@
 {
   "name": "gsdt",
-  "version": "1.35.0",
+  "version": "1.38.5",
   "description": "A meta-prompting, context engineering and spec-driven development system for Claude Code, Vibe Agent Team, Gemini and Codex by TÂCHES.",
   "bin": {
     "gsdt": "bin/install.js"

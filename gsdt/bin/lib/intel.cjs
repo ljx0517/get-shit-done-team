@@ -19,10 +19,17 @@ const crypto = require('crypto');
 const INTEL_DIR = '.planning/intel';
 
 const INTEL_FILES = {
+<<<<<<< HEAD:gsdt/bin/lib/intel.cjs
   files: 'files.json',
   apis: 'apis.json',
   deps: 'deps.json',
   arch: 'arch.md',
+=======
+  files: 'file-roles.json',
+  apis: 'api-map.json',
+  deps: 'dependency-graph.json',
+  arch: 'arch-decisions.json',
+>>>>>>> main:get-shit-done/bin/lib/intel.cjs
   stack: 'stack.json'
 };
 
@@ -204,10 +211,15 @@ function intelQuery(term, planningDir) {
   const matches = [];
   let total = 0;
 
+<<<<<<< HEAD:gsdt/bin/lib/intel.cjs
   // Search JSON intel files
   for (const [_key, filename] of Object.entries(INTEL_FILES)) {
     if (filename.endsWith('.md')) continue; // Skip arch.md here
 
+=======
+  // Search all JSON intel files
+  for (const [_key, filename] of Object.entries(INTEL_FILES)) {
+>>>>>>> main:get-shit-done/bin/lib/intel.cjs
     const filePath = intelFilePath(planningDir, filename);
     const data = safeReadJson(filePath);
     if (!data) continue;
@@ -219,6 +231,7 @@ function intelQuery(term, planningDir) {
     }
   }
 
+<<<<<<< HEAD:gsdt/bin/lib/intel.cjs
   // Search arch.md
   const archPath = intelFilePath(planningDir, INTEL_FILES.arch);
   const archMatches = searchArchMd(archPath, term);
@@ -227,6 +240,8 @@ function intelQuery(term, planningDir) {
     total += archMatches.length;
   }
 
+=======
+>>>>>>> main:get-shit-done/bin/lib/intel.cjs
   return { matches, term, total };
 }
 
@@ -257,6 +272,7 @@ function intelStatus(planningDir) {
 
     let updatedAt = null;
 
+<<<<<<< HEAD:gsdt/bin/lib/intel.cjs
     if (filename.endsWith('.md')) {
       // For arch.md, use file mtime
       try {
@@ -271,6 +287,12 @@ function intelStatus(planningDir) {
       if (data && data._meta && data._meta.updated_at) {
         updatedAt = data._meta.updated_at;
       }
+=======
+    // All intel files are JSON — read _meta.updated_at
+    const data = safeReadJson(filePath);
+    if (data && data._meta && data._meta.updated_at) {
+      updatedAt = data._meta.updated_at;
+>>>>>>> main:get-shit-done/bin/lib/intel.cjs
     }
 
     let stale = true;
@@ -336,7 +358,11 @@ function intelUpdate(planningDir) {
 
   return {
     action: 'spawn_agent',
+<<<<<<< HEAD:gsdt/bin/lib/intel.cjs
     message: 'Run gsdt-tools intel update or spawn gsdt-intel-updater agent for full refresh'
+=======
+    message: 'Run gsd-tools intel update or spawn gsd-intel-updater agent for full refresh'
+>>>>>>> main:get-shit-done/bin/lib/intel.cjs
   };
 }
 
@@ -409,8 +435,12 @@ function intelValidate(planningDir) {
       continue;
     }
 
+<<<<<<< HEAD:gsdt/bin/lib/intel.cjs
     // Skip non-JSON files (arch.md)
     if (filename.endsWith('.md')) continue;
+=======
+    // All intel files are JSON — validate _meta and entries structure
+>>>>>>> main:get-shit-done/bin/lib/intel.cjs
 
     // Parse JSON
     let data;

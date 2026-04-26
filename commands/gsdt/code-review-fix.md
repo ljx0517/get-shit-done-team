@@ -1,5 +1,9 @@
 ---
+<<<<<<< HEAD:commands/gsdt/code-review-fix.md
 name: gsdt:code-review-fix
+=======
+name: gsdt:code-review-fix
+>>>>>>> main:commands/gsd/code-review-fix.md
 description: Auto-fix issues found by code review in REVIEW.md. Spawns fixer agent, commits each fix atomically, produces REVIEW-FIX.md summary.
 argument-hint: "<phase-number> [--all] [--auto]"
 allowed-tools:
@@ -23,7 +27,11 @@ Output: {padded_phase}-REVIEW-FIX.md in phase directory + inline summary of fixe
 </objective>
 
 <execution_context>
+<<<<<<< HEAD:commands/gsdt/code-review-fix.md
 @~/.claude/gsdt/workflows/code-review-fix.md
+=======
+@~/.claude/get-shit-done/workflows/code-review-fix.md
+>>>>>>> main:commands/gsd/code-review-fix.md
 </execution_context>
 
 <context>
@@ -33,13 +41,21 @@ Optional flags parsed from $ARGUMENTS:
 - `--all` — Include Info findings in fix scope. Default behavior fixes Critical + Warning only.
 - `--auto` — Enable fix + re-review iteration loop. After applying fixes, re-run code-review at same depth. If new issues found, iterate. Cap at 3 iterations total. Without this flag, single fix pass only.
 
+<<<<<<< HEAD:commands/gsdt/code-review-fix.md
 Context files (CLAUDE.md, REVIEW.md, phase state) are resolved inside the workflow via `gsdt-tools init phase-op` and delegated to agent via config blocks.
+=======
+Context files (CLAUDE.md, REVIEW.md, phase state) are resolved inside the workflow via `gsd-sdk query init.phase-op` and delegated to agent via config blocks.
+>>>>>>> main:commands/gsd/code-review-fix.md
 </context>
 
 <process>
 This command is a thin dispatch layer. It parses arguments and delegates to the workflow.
 
+<<<<<<< HEAD:commands/gsdt/code-review-fix.md
 Execute the code-review-fix workflow from @~/.claude/gsdt/workflows/code-review-fix.md end-to-end.
+=======
+Execute the code-review-fix workflow from @~/.claude/get-shit-done/workflows/code-review-fix.md end-to-end.
+>>>>>>> main:commands/gsd/code-review-fix.md
 
 The workflow (not this command) enforces these gates:
 - Phase validation (before config gate)

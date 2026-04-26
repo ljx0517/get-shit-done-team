@@ -1,5 +1,9 @@
 ---
+<<<<<<< HEAD:commands/gsdt/docs-update.md
 name: gsdt:docs-update
+=======
+name: gsdt:docs-update
+>>>>>>> main:commands/gsd/docs-update.md
 description: Generate or update project documentation verified against the codebase
 argument-hint: "[--force] [--verify-only]"
 allowed-tools:
@@ -13,7 +17,11 @@ allowed-tools:
   - AskUserQuestion
 ---
 <objective>
+<<<<<<< HEAD:commands/gsdt/docs-update.md
 Generate and update up to 9 documentation files for the current project. Each doc type is written by a gsdt-doc-writer subagent that explores the codebase directly — no hallucinated paths, phantom endpoints, or stale signatures.
+=======
+Generate and update up to 9 documentation files for the current project. Each doc type is written by a gsd-doc-writer subagent that explores the codebase directly — no hallucinated paths, phantom endpoints, or stale signatures.
+>>>>>>> main:commands/gsd/docs-update.md
 
 Flag handling rule:
 - The optional flags documented below are available behaviors, not implied active behaviors
@@ -25,7 +33,11 @@ Flag handling rule:
 </objective>
 
 <execution_context>
+<<<<<<< HEAD:commands/gsdt/docs-update.md
 @~/.claude/gsdt/workflows/docs-update.md
+=======
+@~/.claude/get-shit-done/workflows/docs-update.md
+>>>>>>> main:commands/gsd/docs-update.md
 </execution_context>
 
 <context>
@@ -33,7 +45,11 @@ Arguments: $ARGUMENTS
 
 **Available optional flags (documentation only — not automatically active):**
 - `--force` — Regenerate all docs. Overwrites hand-written and GSD docs alike. No preservation prompts.
+<<<<<<< HEAD:commands/gsdt/docs-update.md
 - `--verify-only` — Check existing docs for accuracy against the codebase. No files are written. Reports VERIFY marker count. Full codebase fact-checking requires the gsdt-doc-verifier agent (Phase 4).
+=======
+- `--verify-only` — Check existing docs for accuracy against the codebase. No files are written. Reports VERIFY marker count. Full codebase fact-checking requires the gsd-doc-verifier agent (Phase 4).
+>>>>>>> main:commands/gsd/docs-update.md
 
 **Active flags must be derived from `$ARGUMENTS`:**
 - `--force` is active only if the literal `--force` token is present in `$ARGUMENTS`
@@ -43,6 +59,10 @@ Arguments: $ARGUMENTS
 </context>
 
 <process>
+<<<<<<< HEAD:commands/gsdt/docs-update.md
 Execute the docs-update workflow from @~/.claude/gsdt/workflows/docs-update.md end-to-end.
+=======
+Execute the docs-update workflow from @~/.claude/get-shit-done/workflows/docs-update.md end-to-end.
+>>>>>>> main:commands/gsd/docs-update.md
 Preserve all workflow gates (preservation_check, flag handling, wave execution, monorepo dispatch, commit, reporting).
 </process>

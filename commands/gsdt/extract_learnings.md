@@ -1,5 +1,9 @@
 ---
+<<<<<<< HEAD:commands/gsdt/extract_learnings.md
 name: gsdt:extract-learnings
+=======
+name: gsdt:extract-learnings
+>>>>>>> main:commands/gsd/extract_learnings.md
 description: Extract decisions, lessons, patterns, and surprises from completed phase artifacts
 argument-hint: <phase-number>
 allowed-tools:
@@ -16,7 +20,14 @@ Extract structured learnings from completed phase artifacts (PLAN.md, SUMMARY.md
 </objective>
 
 <execution_context>
+<<<<<<< HEAD:commands/gsdt/extract_learnings.md
 @~/.claude/gsdt/workflows/extract_learnings.md
 </execution_context>
 
 Execute the extract-learnings workflow from @~/.claude/gsdt/workflows/extract_learnings.md end-to-end.
+=======
+@~/.claude/get-shit-done/workflows/extract_learnings.md
+</execution_context>
+
+Execute the extract-learnings workflow from @~/.claude/get-shit-done/workflows/extract_learnings.md end-to-end.
+>>>>>>> main:commands/gsd/extract_learnings.md

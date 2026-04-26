@@ -1,5 +1,9 @@
 ---
+<<<<<<< HEAD:commands/gsdt/secure-phase.md
 name: gsdt:secure-phase
+=======
+name: gsdt:secure-phase
+>>>>>>> main:commands/gsd/secure-phase.md
 description: Retroactively verify threat mitigations for a completed phase
 argument-hint: "[phase number]"
 allowed-tools:
@@ -22,7 +26,11 @@ Output: updated SECURITY.md.
 </objective>
 
 <execution_context>
+<<<<<<< HEAD:commands/gsdt/secure-phase.md
 @~/.claude/gsdt/workflows/secure-phase.md
+=======
+@~/.claude/get-shit-done/workflows/secure-phase.md
+>>>>>>> main:commands/gsd/secure-phase.md
 </execution_context>
 
 <context>
@@ -30,6 +38,10 @@ Phase: $ARGUMENTS — optional, defaults to last completed phase.
 </context>
 
 <process>
+<<<<<<< HEAD:commands/gsdt/secure-phase.md
 Execute @~/.claude/gsdt/workflows/secure-phase.md.
+=======
+Execute @~/.claude/get-shit-done/workflows/secure-phase.md.
+>>>>>>> main:commands/gsd/secure-phase.md
 Preserve all workflow gates.
 </process>

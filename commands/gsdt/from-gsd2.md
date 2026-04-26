@@ -1,6 +1,11 @@
 ---
+<<<<<<< HEAD:commands/gsdt/from-gsd2.md
 name: gsdt:from-gsd2
 description: Import a GSD-2 (.gsd/) project back to GSD v1 (.gsdt-planning/) format
+=======
+name: gsdt:from-gsd2
+description: Import a GSD-2 (.gsd/) project back to GSD v1 (.planning/) format
+>>>>>>> main:commands/gsd/from-gsd2.md
 argument-hint: "[--path <dir>] [--force]"
 allowed-tools:
   - Read
@@ -10,16 +15,28 @@ type: prompt
 ---
 
 <objective>
+<<<<<<< HEAD:commands/gsdt/from-gsd2.md
 Reverse-migrate a GSD-2 project (`.gsd/` directory) back to GSD v1 (`.gsdt-planning/`) format.
 
 Maps the GSD-2 hierarchy (Milestone → Slice → Task) to the GSD v1 hierarchy (Milestone sections in ROADMAP.md → Phase → Plan), preserving completion state, research files, and summaries.
+=======
+Reverse-migrate a GSD-2 project (`.gsd/` directory) back to GSD v1 (`.planning/`) format.
+
+Maps the GSD-2 hierarchy (Milestone → Slice → Task) to the GSD v1 hierarchy (Milestone sections in ROADMAP.md → Phase → Plan), preserving completion state, research files, and summaries.
+
+**CJS-only:** `from-gsd2` is not on the `gsd-sdk query` registry; call `gsd-tools.cjs` as shown below (see `docs/CLI-TOOLS.md`).
+>>>>>>> main:commands/gsd/from-gsd2.md
 </objective>
 
 <process>
 
 1. **Locate the .gsd/ directory** — check the current working directory (or `--path` argument):
    ```bash
+<<<<<<< HEAD:commands/gsdt/from-gsd2.md
    node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" from-gsd2 --dry-run
+=======
+   node "$HOME/.claude/get-shit-done/bin/gsd-tools.cjs" from-gsd2 --dry-run
+>>>>>>> main:commands/gsd/from-gsd2.md
    ```
    If no `.gsd/` is found, report the error and stop.
 
@@ -27,9 +44,15 @@ Maps the GSD-2 hierarchy (Milestone → Slice → Task) to the GSD v1 hierarchy 
 
 3. **Run the migration** after confirmation:
    ```bash
+<<<<<<< HEAD:commands/gsdt/from-gsd2.md
    node "$HOME/.claude/gsdt/bin/gsdt-tools.cjs" from-gsd2
    ```
    Use `--force` if `.gsdt-planning/` already exists and the user has confirmed overwrite.
+=======
+   node "$HOME/.claude/get-shit-done/bin/gsd-tools.cjs" from-gsd2
+   ```
+   Use `--force` if `.planning/` already exists and the user has confirmed overwrite.
+>>>>>>> main:commands/gsd/from-gsd2.md
 
 4. **Report the result** — show the `filesWritten` count, `planningDir` path, and the preview summary.
 
